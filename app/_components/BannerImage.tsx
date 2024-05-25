@@ -5,7 +5,7 @@ function getAligned(aligned: 'center' | 'left' | 'right' | undefined) {
 }
 
 export default function BannerImage(props: {
-	imgName: string
+	imgUrl: string
 	height: string
 	aligned?: 'center' | 'left' | 'right'
 	children?: React.ReactNode
@@ -13,10 +13,12 @@ export default function BannerImage(props: {
 	return (
 		<>
 			<section
-				className={`bg-${props.imgName} h-[${
-					props.height
-				}] w-full bg-no-repeat 
-				bg-cover bg-center flex ${getAligned(props.aligned)} items-center`}
+				className={`w-full bg-no-repeat bg-cover bg-center flex 
+				${getAligned(props.aligned)} items-center`}
+				style={{
+					backgroundImage: `url(${props.imgUrl})`,
+					height: props.height,
+				}}
 			>
 				{props.children}
 			</section>
