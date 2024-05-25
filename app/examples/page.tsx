@@ -109,13 +109,15 @@ export default function Components() {
 				<h3 className="text-title-3 text-dark-grey">
 					Banner with Image Component
 				</h3>
-				<BannerImage imgName="mecanic-banner" height="561px">
-					<div className="max-w-[728px] mx-auto">
-						<h1 className="text-title-1 text-white">
-							ponemos a tu alcance la mayor variedad de piezas de
-							coche recuperadas, reconstruidas y nuevas.
-						</h1>
-					</div>
+				<BannerImage
+					imgName="mecanic-banner"
+					height="561px"
+					aligned="center"
+				>
+					<h1 className="text-title-1 text-white text-center max-w-[728px]">
+						ponemos a tu alcance la mayor variedad de piezas de
+						coche recuperadas, reconstruidas y nuevas.
+					</h1>
 				</BannerImage>
 			</section>
 		</>
