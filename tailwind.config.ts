@@ -24,8 +24,8 @@ const config: Config = {
         "gray-dark": "var(--gray-dark)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)"],
-        mono: ["var(--font-geist-mono)"],
+        "primary-font": ["var(--font-work-sans)"],
+        "secondary-font": ["var(--font-bebas-neue)"],
       },
     },
   },
