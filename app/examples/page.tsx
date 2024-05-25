@@ -75,6 +75,45 @@ const cardInfoPropsArray = [
 	},
 ]
 
+const cardValorationPropsArray = [
+	{
+		title: 'Comentario',
+		valoration: 3,
+		comments:
+			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
+	},
+	{
+		title: 'Comentario',
+		valoration: 3,
+		comments:
+			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
+	},
+	{
+		title: 'Comentario',
+		valoration: 5,
+		comments:
+			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
+	},
+	{
+		title: 'Comentario',
+		valoration: 2,
+		comments:
+			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
+	},
+	{
+		title: 'Comentario',
+		valoration: 4,
+		comments:
+			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
+	},
+	{
+		title: 'Comentario',
+		valoration: 1,
+		comments:
+			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
+	},
+]
+
 export default function Components() {
 	return (
 		<>
@@ -115,7 +154,16 @@ export default function Components() {
 						<CardInfo key={index} title={cardInfoProps.title} />
 					))}
 				</div>
-				<CardValoration title="Parachoques delantero" valoration={4} />
+				<div className="flex justify-between gap-6">
+					{cardValorationPropsArray.map((cardValoration, index) => (
+						<CardValoration
+							key={index}
+							title={cardValoration.title}
+							valoration={cardValoration.valoration}
+							comments={cardValoration.comments}
+						/>
+					))}
+				</div>
 				<Divider />
 				<h3 className="text-title-3 text-dark-grey">
 					Banner with Image Component
