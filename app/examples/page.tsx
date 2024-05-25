@@ -4,6 +4,8 @@ import CardInfo from '../_components/CardInfo'
 import { Footer } from '../_components/global/footer'
 import { Header } from '../_components/global/header'
 import BannerImage from '../_components/BannerImage'
+import SearchBar from '../_components/SearchBar'
+import CardValoration from '../_components/CardValoration'
 
 function TitleComponentSection(props: { name: string }) {
 	return <h2 className="text-title-2 text-center m-0">{props.name} </h2>
@@ -90,6 +92,7 @@ export default function Components() {
 						labelName="Accede a todas las categorías"
 					/>
 				</div>
+				<SearchBar />
 				<Divider />
 				<TitleComponentSection name="Card components" />
 				<h3 className="text-title-3 text-dark-grey">Card with price</h3>
@@ -112,6 +115,8 @@ export default function Components() {
 						<CardInfo key={index} title={cardInfoProps.title} />
 					))}
 				</div>
+				<CardValoration title="Parachoques delantero" valoration={4} />
+				<Divider />
 				<h3 className="text-title-3 text-dark-grey">
 					Banner with Image Component
 				</h3>
