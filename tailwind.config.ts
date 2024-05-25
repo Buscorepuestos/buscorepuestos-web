@@ -7,10 +7,21 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+    },
     extend: {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "custom-white": "var(--custom-white)",
+        "custom-black": "var(--custom-black)",
+        "primary-blue": "var(--primary-blue)",
+        "secondary-blue": "var(--secondary-blue)",
+        "gray-dark": "var(--gray-dark)",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
