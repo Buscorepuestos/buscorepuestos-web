@@ -21,30 +21,26 @@
   }
 } */
 
-body {
-	color: var(--foreground);
-	background: var(--background);
-	font-size: 16px;
-	font-family: var(--font-work-sans), sans-serif;
+h1,
+h2,
+h3 {
+	line-height: 1.2;
 }
 
 h1 {
 	font-size: 64px;
-	line-height: 1.2;
 	font-family: var(--font-bebas-neue), sans-serif;
 }
 
 h2 {
 	font-size: 40px;
 	font-weight: bold;
-	line-height: 1.2;
 	letter-spacing: -2%;
 }
 
 h3 {
-	font-size: 2rem;
+	font-size: 24px;
 	font-weight: 700;
-	line-height: 1.2;
 	letter-spacing: -2%;
 }
 
@@ -53,4 +49,22 @@ h3 {
 h4 {
 	font-size: 24px;
 	font-weight: 400;
+}
+
+a {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+button {
+	font-size: 24px;
+	font-weight: 400;
+}
+
+body {
+	color: var(--foreground);
+	background: var(--background);
+	font-size: 16px;
+	/* General font */
+	font-family: var(--font-work-sans), sans-serif;
 }
