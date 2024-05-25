@@ -22,6 +22,9 @@ const config: Config = {
 			xs: '1.2rem',
 		},
 		extend: {
+			backgroundImage: {
+				'mecanic-banner': "url('/banner-motor.webp')",
+			},
 			boxShadow: {
 				inter: '0px 6px 13px -4px #424242 inset',
 			},

@@ -3,6 +3,7 @@ import CardPrice from '../_components/CardPrice'
 import CardInfo from '../_components/CardInfo'
 import { Footer } from '../_components/global/footer'
 import { Header } from '../_components/global/header'
+import BannerImage from '../_components/BannerImage'
 
 function TitleComponentSection(props: { name: string }) {
 	return <h2 className="text-title-2 text-center m-0">{props.name} </h2>
@@ -75,7 +76,7 @@ const cardInfoPropsArray = [
 export default function Components() {
 	return (
 		<>
-			<section className="pl-4 pb-4 pt-4 flex flex-col gap-8 row-start-2 items-center sm:items-start">
+			<section className="p-4 flex flex-col gap-8 row-start-2 items-center sm:items-start">
 				<h1 className="text-title-1">Component page</h1>
 				<TitleComponentSection name="Global components" />
 				<Header />
@@ -105,6 +106,17 @@ export default function Components() {
 						<CardInfo key={index} title={cardInfoProps.title} />
 					))}
 				</div>
+				<h3 className="text-title-3 text-dark-grey">
+					Banner with Image Component
+				</h3>
+				<BannerImage imgName="mecanic-banner" height="561px">
+					<div className="max-w-[728px] mx-auto">
+						<h1 className="text-title-1 text-white">
+							ponemos a tu alcance la mayor variedad de piezas de
+							coche recuperadas, reconstruidas y nuevas.
+						</h1>
+					</div>
+				</BannerImage>
 			</section>
 		</>
 	)
