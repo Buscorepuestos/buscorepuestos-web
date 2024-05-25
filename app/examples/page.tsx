@@ -83,7 +83,13 @@ export default function Components() {
 				<Footer />
 				<Divider />
 				<TitleComponentSection name="Main components" />
-				<Button />
+				<div className="flex flex-row gap-4">
+					<Button />
+					<Button
+						type="secondary"
+						labelName="Accede a todas las categorías"
+					/>
+				</div>
 				<Divider />
 				<TitleComponentSection name="Card components" />
 				<h3 className="text-title-3 text-dark-grey">Card with price</h3>
@@ -110,7 +116,7 @@ export default function Components() {
 					Banner with Image Component
 				</h3>
 				<BannerImage
-					imgName="mecanic-banner"
+					imgUrl="/banner-motor.webp"
 					height="561px"
 					aligned="center"
 				>

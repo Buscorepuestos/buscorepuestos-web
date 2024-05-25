@@ -1,9 +1,9 @@
 export function Header() {
-  return (
-    <>
-      <div>
-        <p>I am the header</p>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<section>
+				<p>I am the header</p>
+			</section>
+		</>
+	)
 }

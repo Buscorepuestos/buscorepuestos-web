@@ -14,7 +14,7 @@ export default function CardInfo(props: { title: string }) {
 					width={0}
 					height={0}
 					priority
-					className="w-[180px] h-[180px] w-full object-fill 
+					className="w-[180px] h-[180px] object-fill 
 							sm:max-w-[120px] sm:h-[120px] md:max-w-[100px] md:h-[100px]"
 				/>
 				<h4 className=" flex items-center text-base text-dark-grey font-bold text-center flex-grow pl-3 pr-3">
