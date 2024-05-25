@@ -11,7 +11,10 @@
 
 	--primary-blue: #0065ff;
 	--secondary-blue: #12b1bb;
-	--gray-dark: #424242;
+	--dark-grey: #424242;
+	--light-grey: #d9d9d9;
+
+	--font-size: 62.5%;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -21,6 +24,10 @@
   }
 } */
 
+html {
+	font-size: var(--font-size);
+}
+
 h1,
 h2,
 h3 {
@@ -28,18 +35,18 @@ h3 {
 }
 
 h1 {
-	font-size: 64px;
+	/* 2xl */
 	font-family: var(--font-bebas-neue), sans-serif;
 }
 
 h2 {
-	font-size: 40px;
+	/* xl */
 	font-weight: bold;
 	letter-spacing: -2%;
 }
 
 h3 {
-	font-size: 24px;
+	/* lg */
 	font-weight: 700;
 	letter-spacing: -2%;
 }
@@ -47,7 +54,13 @@ h3 {
 /* Subtitle */
 
 h4 {
-	font-size: 24px;
+	/* lg */
+	font-weight: 400;
+}
+
+button {
+	/* lg */
+	font-size: 2.4rem;
 	font-weight: 400;
 }
 
@@ -56,15 +69,10 @@ a {
 	text-decoration: underline;
 }
 
-button {
-	font-size: 24px;
-	font-weight: 400;
-}
-
 body {
-	color: var(--foreground);
-	background: var(--background);
-	font-size: 16px;
-	/* General font */
+	/* md */
 	font-family: var(--font-work-sans), sans-serif;
+	background: var(--background);
+	color: var(--foreground);
+	font-size: 1.6rem;
 }
