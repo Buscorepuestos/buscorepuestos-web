@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${bebasNeue.variable} ${workSans.variable}`}>
+			<body className={`${bebasNeue.variable} ${workSans.variable} bg-light-grey`}>
 				{/*   <Header /> */}
 				{children}
 				{/* <Footer /> */}
