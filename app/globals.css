@@ -65,10 +65,14 @@ button {
 	font-weight: 400;
 }
 
+/* 
+It is not defined on the figma.
+Needs to be clarified.
+
 a {
 	font-weight: bold;
 	text-decoration: underline;
-}
+} */
 
 body {
 	/* md */

@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '../_components/Button'
 import CardPrice from '../_components/CardPrice'
 import CardInfo from '../_components/CardInfo'
@@ -6,6 +8,10 @@ import { Header } from '../_components/global/header'
 import BannerImage from '../_components/BannerImage'
 import SearchBar from '../_components/SearchBar'
 import CardValoration from '../_components/CardValoration'
+import Slider from '../_components/Slider'
+
+import React, { createContext } from 'react'
+import { SwiperSlide } from 'swiper/react'
 
 function TitleComponentSection(props: { name: string }) {
 	return <h2 className="text-title-2 text-center m-0">{props.name} </h2>
@@ -165,6 +171,32 @@ export default function Components() {
 					))}
 				</div>
 				<Divider />
+				<h3 className="text-title-3 text-dark-grey">
+					Slider Component Component
+				</h3>
+				<Slider>
+					{cardValorationPropsArray.map((cardValoration, index) => (
+						<SwiperSlide key={index}>
+							<CardValoration
+								title={cardValoration.title}
+								valoration={cardValoration.valoration}
+								comments={cardValoration.comments}
+							/>
+						</SwiperSlide>
+					))}
+				</Slider>
+				<Slider>
+					{cardPropsArray.map((cardProps, index) => (
+						<SwiperSlide key={index}>
+							<CardPrice
+								title={cardProps.title}
+								price={cardProps.price}
+								description={cardProps.description}
+								reference={cardProps.reference}
+							/>
+						</SwiperSlide>
+					))}
+				</Slider>
 				<h3 className="text-title-3 text-dark-grey">
 					Banner with Image Component
 				</h3>
