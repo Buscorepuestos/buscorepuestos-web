@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-	--background: #ffffff;
+	--background: var(--light-grey);
 	--foreground: #171717;
 
 	--custom-white: #ffffff;
@@ -14,8 +14,6 @@
 	--warning: #edd443;
 	--dark-grey: #424242;
 	--light-grey: #d9d9d9;
-
-	--font-size: 62.5%;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -26,7 +24,7 @@
 } */
 
 html {
-	font-size: var(--font-size);
+	font-size: 62.5%;
 }
 
 h1,

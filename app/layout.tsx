@@ -28,7 +28,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${bebasNeue.variable} ${workSans.variable} bg-light-grey`}
+				className={`${bebasNeue.variable} ${workSans.variable} flex flex-col justify-center items-center `}
 			>
 				<Header />
 				{children}

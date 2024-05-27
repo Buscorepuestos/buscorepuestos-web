@@ -3,7 +3,7 @@ export default function SearchBar() {
 	return (
 		<section
 			className="relative flex items-center border-[1px] bg-custom-white 
-    border-dark-grey rounded-[34px] w-[585px] h-[44px] pl-4"
+    border-dark-grey rounded-[34px] w-full h-[44px] pl-4"
 		>
 			<Image
 				src="/search-icon.svg"

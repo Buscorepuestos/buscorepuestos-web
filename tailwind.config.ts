@@ -14,8 +14,8 @@ const config: Config = {
 			xl: '1280px',
 		},
 		fontSize: {
-			'title-1': '6.4rem',
-			'title-2': '4rem',
+			'title-1': '5.6rem',
+			'title-2': '4.8rem',
 			'title-3': '2.4rem',
 			base: '1.6rem',
 			sm: '1.4rem',

@@ -22,7 +22,10 @@ export function Header() {
 	]
 
 	return (
-		<section className="w-[1213px] h-[122px] rounded-[21px] bg-custom-white border-[1px] border-secondary-blue pl-[25px] pr-[25px]">
+		<section
+			className="w-[1213px] h-[122px] rounded-[21px] bg-custom-white border-[1px] 
+		border-secondary-blue pl-[25px] pr-[25px] absolute top-[32px] left-[50%] transform -translate-x-1/2 z-10 m-auto"
+		>
 			<div className="flex flex-row justify-between items-center">
 				<Image
 					src="/logo-br-desktop.svg"
