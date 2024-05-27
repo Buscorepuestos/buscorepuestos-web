@@ -183,7 +183,7 @@ export default function Home() {
 				aligned="center"
 			>
 				<div className="flex flex-col justify-center align-middle mt-[86px]">
-					<h1 className="text-title-1 text-white text-center max-w-[728px] mb-[60px]">
+					<h1 className="text-title-1 text-custom-white text-center max-w-[728px] mb-[60px]">
 						Ponemos a tu alcance la mayor variedad de piezas de
 						coche <span className="text-warning">recuperadas</span>,
 						<span className="text-warning">reconstruidas</span> y
@@ -192,6 +192,7 @@ export default function Home() {
 					<SearchBar />
 				</div>
 			</BannerImage>
+
 			<section className="pt-[72px]">
 				<div className="flex justify-center items-center">
 					<h2 className="text-title-2 text-center max-w-[505px] mb-[31px]">
@@ -212,6 +213,7 @@ export default function Home() {
 					/>
 				</div>
 			</section>
+
 			<section className="pt-[72px]">
 				<h2 className="text-title-2 mb-[46px]"> Novedades</h2>
 				<div className="pb-[72px]">
@@ -229,6 +231,7 @@ export default function Home() {
 					</Slider>
 				</div>
 			</section>
+
 			<section>
 				<BannerImage
 					imgUrl="/banner-truck.webp"
