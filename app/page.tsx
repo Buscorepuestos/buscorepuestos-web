@@ -196,9 +196,7 @@ export default function Home() {
 				<div className="flex justify-center items-center">
 					<h2 className="text-title-2 text-center max-w-[505px] mb-[31px]">
 						Disponemos del catálogo de
-						<span className="text-primary-blue">
-							15.435.468
-						</span>{' '}
+						<span className="text-primary-blue">15.435.468</span>
 						piezas diferentes
 					</h2>
 				</div>
