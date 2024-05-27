@@ -10,9 +10,15 @@ export default function slider(props: {
 	slidePerView?: number
 	spaceBetween?: number
 	height?: number
+	maxWidth?: number
 	children: React.ReactNode
 }) {
-	const { slidePerView = 5, spaceBetween = 100, height = 420 } = props
+	const {
+		slidePerView = 5,
+		spaceBetween = 100,
+		height = 420,
+		maxWidth = 1400,
+	} = props
 
 	return (
 		<>
@@ -23,8 +29,7 @@ export default function slider(props: {
 					clickable: true,
 				}}
 				modules={[Pagination]}
-				className="max-w-[1400]"
-				style={{ height: height }}
+				style={{ height: height, maxWidth }}
 			>
 				{props.children}
 			</Swiper>

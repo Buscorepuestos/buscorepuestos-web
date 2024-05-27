@@ -176,7 +176,7 @@ const cardValorationPropsArray = [
 
 export default function Home() {
 	return (
-		<main className="m-auto">
+		<main className="m-auto max-w-[1440]">
 			<BannerImage
 				imgUrl="/banner-motor.webp"
 				height="561px"
@@ -186,7 +186,7 @@ export default function Home() {
 					<h1 className="text-title-1 text-white text-center max-w-[728px] mb-[60px]">
 						Ponemos a tu alcance la mayor variedad de piezas de
 						coche <span className="text-warning">recuperadas</span>,
-						<span className="text-warning">reconstruidas</span> y{' '}
+						<span className="text-warning">reconstruidas</span> y
 						<span className="text-warning">nuevas</span>.
 					</h1>
 					<SearchBar />
