@@ -176,7 +176,7 @@ const cardValorationPropsArray = [
 
 export default function Home() {
 	return (
-		<main className="m-auto max-w-[1440]">
+		<main>
 			<BannerImage
 				imgUrl="/banner-motor.webp"
 				height="561px"

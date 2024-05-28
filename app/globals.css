@@ -14,6 +14,10 @@
 	--warning: #edd443;
 	--dark-grey: #424242;
 	--light-grey: #d9d9d9;
+
+	--mobile-breakpoint: 425px;
+	--tablet-breakpoint: 768px;
+	--desktop-breakpoint: 1440px;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -61,6 +65,10 @@ button {
 	/* lg */
 	font-size: 2.4rem;
 	font-weight: 400;
+}
+
+.debug {
+	border: 2px solid red;
 }
 
 /* 

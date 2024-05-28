@@ -7,12 +7,6 @@ const config: Config = {
 		'./app/**/*.{js,ts,jsx,tsx,mdx}',
 	],
 	theme: {
-		screens: {
-			sm: '640px',
-			md: '768px',
-			lg: '1024px',
-			xl: '1280px',
-		},
 		fontSize: {
 			'title-1': '5.6rem',
 			'title-2': '4.8rem',
@@ -22,8 +16,10 @@ const config: Config = {
 			xs: '1.2rem',
 		},
 		extend: {
-			backgroundImage: {
-				'mecanic-banner': "url('/banner-motor.webp')",
+			screens: {
+				mobile: 'var(--mobile-breakpoint)',
+				tablet: 'var(--tablet-breakpoint)',
+				desktop: 'var(--desktop-breakpoint)',
 			},
 			boxShadow: {
 				inter: '0px 6px 13px -4px #424242 inset',
