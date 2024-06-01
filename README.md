@@ -1,6 +1,6 @@
 # Buscorepuesto website
 
-We have decide to change the website to a new one, this time we are going to use Next.js, a React framework that allows
+We have decided to change the website to a new one, this time we are going to use Next.js, a React framework that allows
 us to create a website with a better performance and SEO.
 
 ## Getting Started
