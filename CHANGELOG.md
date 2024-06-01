@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 - [BR-337] new husky installation to have hooks and control on the code. [Pedro Arenas ( antonioaren2@gmail.com) ]01-06-2024
 
+- [BR-337] new husky installation to have hooks and control on the code. [Pedro Arenas ( antonioaren2@gmail.com) ]01-06-2024
+
 - New husky installation to have hooks and control on the code. [Pedro Arenas ( antonioaren2@gmail.com) ]01-06-2024
 
 - Adding cliff to generate changelog automatically. Pedro Arenas (antonioaren2@gmail.com) 01-06-2024
