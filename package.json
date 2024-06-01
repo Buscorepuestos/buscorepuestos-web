@@ -2,6 +2,7 @@
 	"name": "buscorepuestos-web",
 	"version": "0.1.0",
 	"scripts": {
+		"prepare": "husky",
 		"dev": "next dev --turbo",
 		"build": "next build",
 		"start": "next start",
@@ -21,6 +22,8 @@
 		"eslint": "^8",
 		"eslint-config-next": "15.0.0-rc.0",
 		"git-cliff": "^2.2.2",
+		"husky": "^9.0.11",
+		"lint-staged": "^15.2.5",
 		"postcss": "^8",
 		"prettier": "^3.2.5",
 		"tailwindcss": "^3.4.1",
