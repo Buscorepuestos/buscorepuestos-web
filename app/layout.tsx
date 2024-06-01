@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
 
-import { Header } from './_components/global/header'
-import { Footer } from './_components/global/footer'
+import { Header } from '@/app/(core)/_components/global/header'
+import { Footer } from '@/app/(core)/_components/global/footer'
 
 const workSans = localFont({
 	src: './fonts/WorkSans_wght.ttf',
