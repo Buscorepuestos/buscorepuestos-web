@@ -18,7 +18,16 @@ body = """
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | upper_first }}
     {% for commit in commits %}
-        - {{ commit.message | upper_first | trim_end }} {% if commit.conventional %}✔️{% else %}❌{% endif %}\
+	   - {{ commit.message | upper_first | trim_end }} \
+	     {% if commit.author.email == 'parenas@nextlane.com' %}\
+	        Pedro Arenas (antonioaren2@gmail.com) \
+	     {% else %}\
+	        [{{ commit.author.name }} ( {{ commit.author.email }}) ]\
+	     {% endif %}\
+	     {{ commit.author.timestamp | date(format="%d-%m-%Y") }}
+		 {% if commit.breaking %}\
+			**BREAKING CHANGE:** {{ commit.breaking }}\
+		 {% endif %}\
     {% endfor %}
 {% endfor %}\n
 """
@@ -60,6 +69,6 @@ skip_tags = "v0.1.0-beta.1"
 # regex for ignoring tags
 ignore_tags = ""
 # sort the tags topologically
-topo_order = false
+topo_order = true
 # sort the commits inside sections by oldest/newest order
-sort_commits = "oldest"
+sort_commits = "newest"
