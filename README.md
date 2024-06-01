@@ -19,12 +19,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 We are going to use the following technologies:
 
--   Next.js
--   React
--   Tailwind CSS
--   TypeScript
--   ESLint
--   Prettier
+- Next.js
+- React
+- Tailwind CSS
+- TypeScript
+- ESLint
+- Prettier
 
 ## Architecture
 
@@ -60,13 +60,54 @@ Also we will follow convention from next.js to keep our structure clean and easy
 
 ## Code Style
 
-We are going to use ESLint and Prettier to keep our code clean and easy to read.
+We are going to use ESLint and Prettier to keep our code clean and easy to read. So make you have everything well
+indented
+and with the correct format.
 
-## Deploy on Vercel
+## Branches
 
-The easiest way to deploy your Next.js app is to use
-the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
+We are going to use the following branches:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for
-more details.
+```mermaid
+---
+title: Following git flow structure
+---
+gitGraph
+    commit
+    commit
+    branch develop order: 2
+    checkout develop
+    commit
+    branch feature/Br-123-what-ever order: 3
+    checkout feature/Br-123-what-ever
+    commit
+    commit
+    checkout develop
+    merge feature/Br-123-what-ever
+    branch staging order: 1
+    checkout staging
+    commit
+    commit
+    checkout main
+    merge staging tag: "v1.0.0"
+    checkout develop
+    merge staging id: "Merge 'staging' update into develop"
+```
+
+All commits need to follow conventional commits, you can find more information
+here: https://www.conventionalcommits.org/en/v1.0.0/
+
+## Deploy
+
+Now we can deploy by branch, develop and production environments. The branch environment is deployed automatically when
+a PR is merged into the branch.
+
+For production, we will do an automatic deployment, means like, every 2 weeks we will deploy the changes that we have in
+master/main branch.
+
+That means that everything that we need try to get accepted all staging changes in production before production
+automatic deployment.
+
+
+
+
