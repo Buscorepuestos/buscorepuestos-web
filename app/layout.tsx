@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import './globals.css'
 
 import { Header } from '@/app/core/components/global/header'
@@ -30,6 +32,8 @@ export default function RootLayout({
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} flex flex-col justify-center items-center `}
 			>
+				<Analytics/>
+				<SpeedInsights/>
 				<Header />
 				{children}
 				<Footer />
