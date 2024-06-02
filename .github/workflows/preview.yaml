@@ -33,7 +33,7 @@ jobs:
     - name: Run Linting
       run: pnpm run lint
     - name: Run coverage test
-      run: pnpm run test
+      run: pnpm run coverage
     - name: Build Frontend
       run: pnpm run build
 
