@@ -70,6 +70,8 @@ All notable changes to this project will be documented in this file.
 
 ### <!-- 7 -->⚙️ Miscellaneous
 
+- [BR-337] No need prepare for husky #BR-337 [Pedro Arenas](antonioaren2@gmail.com) - 02-06-2024
+
 - [BR-337] No need prepare for husky [Pedro Arenas](antonioaren2@gmail.com) - 02-06-2024
 
 - [BR-337] New template for pull request [Pedro Arenas](antonioaren2@gmail.com) - 02-06-2024
