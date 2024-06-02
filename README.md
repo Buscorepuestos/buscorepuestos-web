@@ -97,6 +97,15 @@ gitGraph
 All commits need to follow conventional commits, you can find more information
 here: https://www.conventionalcommits.org/en/v1.0.0/
 
+## How to test
+
+```bash
+$ pnpm run test
+$ pnpm run coverage
+```
+
+This will be run by GitHub Actions, so we need to make sure that all tests are passing before merging any PR.
+
 ## Deploy
 
 Now we can deploy by branch, develop and production environments. The branch environment is deployed automatically when
