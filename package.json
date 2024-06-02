@@ -7,6 +7,7 @@
 		"start": "next start",
 		"lint": "next lint",
 		"test": "vitest",
+		"coverage": "vitest --coverage",
 		"changelog:gen": "git cliff --bump --unreleased --output CHANGELOG.md"
 	},
 	"dependencies": {
@@ -24,6 +25,8 @@
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
 		"@vitejs/plugin-react": "^4.3.0",
+		"@vitest/coverage-istanbul": "^1.6.0",
+		"@vitest/coverage-v8": "^1.6.0",
 		"eslint": "^8",
 		"eslint-config-next": "15.0.0-rc.0",
 		"git-cliff": "^2.2.2",

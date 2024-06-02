@@ -27,7 +27,7 @@ jobs:
       run: pnpm install --no-frozen-lockfile
     - name: Run Linting
       run: pnpm run lint
-    - name: Run Tests
-      run: pnpm run test
+    - name: Run coverage test
+      run: pnpm run coverage
     - name: Build Frontend
       run: pnpm run build
