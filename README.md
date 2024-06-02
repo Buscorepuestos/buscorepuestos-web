@@ -46,7 +46,7 @@ So, for example, something similiar to this structure is what we here below:
         │   ├── services
         │   └── states
         ├── auth
-        ├── core
+        ├── (core)
         │   ├── components
         │   ├── design
         │   ├── hooks
@@ -96,6 +96,15 @@ gitGraph
 
 All commits need to follow conventional commits, you can find more information
 here: https://www.conventionalcommits.org/en/v1.0.0/
+
+## How to test
+
+```bash
+$ pnpm run test
+$ pnpm run coverage
+```
+
+This will be run by GitHub Actions, so we need to make sure that all tests are passing before merging any PR.
 
 ## Deploy
 

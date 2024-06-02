@@ -11,23 +11,15 @@ export default function BannerImage(props: {
 	children?: React.ReactNode
 }) {
 	return (
-		<>
-			<section
-				className={`w-full bg-no-repeat bg-cover bg-center flex 
+		<section
+			className={`w-full bg-no-repeat bg-cover bg-center flex 
 				${getAligned(props.aligned)} items-center`}
-				style={{
-					backgroundImage: `url(${props.imgUrl})`,
-					height: props.height,
-				}}
-			>
-				{props.children}
-			</section>
-		</>
+			style={{
+				backgroundImage: `url(${props.imgUrl})`,
+				height: props.height,
+			}}
+		>
+			{props.children}
+		</section>
 	)
 }
-
-//<section
-//className={`bg-${props.imgName} h-[${props.height}] w-auto
-//border-2 border-black bg-no-repeat bg-cover bg-center
-//`}
-//>

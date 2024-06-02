@@ -1,0 +1,4 @@
+pnpm run lint
+echo "Litter has been cleaned!"
+echo "Please, make sure you have run 'pnpm run build' before commiting!"
+echo "We will avoid this part of the process, for speed commit optimization."

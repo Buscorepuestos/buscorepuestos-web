@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import './globals.css'
 
-import { Header } from '@/app/(core)/_components/global/header'
-import { Footer } from '@/app/(core)/_components/global/footer'
+import { Header } from '@/app/core/components/global/header'
+import { Footer } from '@/app/core/components/global/footer'
 
 const workSans = localFont({
 	src: './fonts/WorkSans_wght.ttf',
@@ -30,8 +32,10 @@ export default function RootLayout({
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} flex flex-col justify-center items-center `}
 			>
+				<Analytics/>
 				<Header />
 				{children}
+				<SpeedInsights/>
 				<Footer />
 			</body>
 		</html>
