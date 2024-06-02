@@ -1,0 +1,28 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ "develop", "feature/*" ]
+  pull_request:
+    branches: [ "develop", "feature/*" ]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+      - name: Install Dependencies
+        run: pnpm ci
+      - name: Run Linting
+        run: pnpm run lint
+      - name: Run Tests
+        run: pnpm run test
+      - name: Build Frontend
+        run: pnpm run build
