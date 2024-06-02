@@ -2,84 +2,98 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.0] - 2024-06-02
 
 ### <!-- 0 -->🚀 New features
 
-- [BR-337] new husky installation to have hooks and control on the code. [Pedro Arenas ( antonioaren2@gmail.com) ]01-06-2024
+- [BR-337] Verify only develop branch. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- [BR-337] new husky installation to have hooks and control on the code. [Pedro Arenas ( antonioaren2@gmail.com) ]01-06-2024
+- [BR-337] Add next linter. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- New husky installation to have hooks and control on the code. [Pedro Arenas ( antonioaren2@gmail.com) ]01-06-2024
+- [BR-337] pre-push handle for correct branch. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- Adding cliff to generate changelog automatically. Pedro Arenas (antonioaren2@gmail.com) 01-06-2024
+- [BR-337] new husky installation to have hooks and control on the code. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- [WIP] footer done, need responsive Pedro Arenas (antonioaren2@gmail.com) 28-05-2024
+- BR-337 new husky installation to have hooks and control on the code. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- [WIP] starting home page. Pedro Arenas (antonioaren2@gmail.com) 27-05-2024
+- [BR-337] new husky installation to have hooks and control on the code. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- Carousel component for different elements Pedro Arenas (antonioaren2@gmail.com) 26-05-2024
+- [BR-337] new husky installation to have hooks and control on the code. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- New component valoration card Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- New husky installation to have hooks and control on the code. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- Searchbar component Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- Adding cliff to generate changelog automatically. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- Source for header. Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- [WIP] footer done, need responsive [Pedro Arenas](antonioaren2@gmail.com) - 28-05-2024
 
-- Component banner finished with images also. Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- [WIP] starting home page. [Pedro Arenas](antonioaren2@gmail.com) - 27-05-2024
 
-- [WIP] adding new banner images Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- Carousel component for different elements [Pedro Arenas](antonioaren2@gmail.com) - 26-05-2024
 
-- Adding card info Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- New component valoration card [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
+
+- Searchbar component [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
+
+- Source for header. [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
+
+- Component banner finished with images also. [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
+
+- [WIP] adding new banner images [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
+
+- Adding card info [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
 
 
 ### <!-- 1 -->🐞 Bug fixes
 
-- Little bugs fixed. Pedro Arenas (antonioaren2@gmail.com) 27-05-2024
+- Little bugs fixed. [Pedro Arenas](antonioaren2@gmail.com) - 27-05-2024
 
-- Vertical scroll infinity Pedro Arenas (antonioaren2@gmail.com) 27-05-2024
+- Vertical scroll infinity [Pedro Arenas](antonioaren2@gmail.com) - 27-05-2024
 
-- Type error Pedro Arenas (antonioaren2@gmail.com) 27-05-2024
+- Type error [Pedro Arenas](antonioaren2@gmail.com) - 27-05-2024
 
-- Problem img props sending image name as props Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- Problem img props sending image name as props [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
 
 
 ### <!-- 4 -->👷‍Refactor
 
-- Improving the structure. Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- Improving the structure. [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
 
-- Cleaning a bot the structure Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- Cleaning a bot the structure [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
 
-- Update text in Home component to clarify instructions. Only a excuse to deploy in Vercel Pedro Arenas (antonioaren2@gmail.com) 24-05-2024
+- Update text in Home component to clarify instructions. Only a excuse to deploy in Vercel [Pedro Arenas](antonioaren2@gmail.com) - 24-05-2024
 
 
 ### <!-- 5 -->👨‍🎨 Styling
 
-- Adding some component and styling for them. Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- Adding some component and styling for them. [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
 
 
 ### <!-- 7 -->⚙️ Miscellaneous
 
-- Pushing cliff configuration. Pedro Arenas (antonioaren2@gmail.com) 01-06-2024
+- [BR-337] No need prepare for husky [Pedro Arenas](antonioaren2@gmail.com) - 02-06-2024
 
-- [WIP] working over the architecture an structure, explaining the way that should be develop. Pedro Arenas (antonioaren2@gmail.com) 01-06-2024
+- [BR-337] New template for pull request [Pedro Arenas](antonioaren2@gmail.com) - 02-06-2024
 
-- Moving preview to br-vercel [Pedro Arenas ( antonioaren2@gmail.com) ]31-05-2024
+- Pushing cliff configuration. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- Moving preview to br-vercel [Pedro Arenas ( antonioaren2@gmail.com) ]31-05-2024
+- [WIP] working over the architecture an structure, explaining the way that should be develop. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
-- Moving preview to br-vercel [Pedro Arenas ( antonioaren2@gmail.com) ]31-05-2024
+- Moving preview to br-vercel [Pedro Arenas](antonioaren2@gmail.com) - 31-05-2024
 
-- Deploying in dev pointing to vercel buscorepuestos account Pedro Arenas (antonioaren2@gmail.com) 31-05-2024
+- Moving preview to br-vercel [Pedro Arenas](antonioaren2@gmail.com) - 31-05-2024
 
-- General fonts added Pedro Arenas (antonioaren2@gmail.com) 25-05-2024
+- Moving preview to br-vercel [Pedro Arenas](antonioaren2@gmail.com) - 31-05-2024
 
-- Modifying .gitignore Pedro Arenas (antonioaren2@gmail.com) 24-05-2024
+- Deploying in dev pointing to vercel buscorepuestos account [Pedro Arenas](antonioaren2@gmail.com) - 31-05-2024
+
+- General fonts added [Pedro Arenas](antonioaren2@gmail.com) - 25-05-2024
+
+- Modifying .gitignore [Pedro Arenas](antonioaren2@gmail.com) - 24-05-2024
 
 
 ### Deploy
 
-- Pushing everything to vercel. [Pedro Arenas ( antonioaren2@gmail.com) ]01-06-2024
+- Pushing everything to vercel. [Pedro Arenas](antonioaren2@gmail.com) - 01-06-2024
 
 
 <!-- generated by git-cliff -->

@@ -1,6 +1,9 @@
 # git-cliff ~ configuration file
 # https://git-cliff.org/docs/configuration
 
+[dependencies]
+regex = "1"
+
 [changelog]
 # changelog header
 header = """
@@ -20,11 +23,11 @@ body = """
     {% for commit in commits %}
 	   - {{ commit.message | upper_first | trim_end }} \
 	     {% if commit.author.email == 'parenas@nextlane.com' %}\
-	        Pedro Arenas (antonioaren2@gmail.com) \
+	        [Pedro Arenas](antonioaren2@gmail.com) \
 	     {% else %}\
-	        [{{ commit.author.name }} ( {{ commit.author.email }}) ]\
+	        [{{ commit.author.name }}]({{ commit.author.email }}) \
 	     {% endif %}\
-	     {{ commit.author.timestamp | date(format="%d-%m-%Y") }}
+	     - {{ commit.author.timestamp | date(format="%d-%m-%Y") }}
 		 {% if commit.breaking %}\
 			**BREAKING CHANGE:** {{ commit.breaking }}\
 		 {% endif %}\
