@@ -2,7 +2,6 @@
 	"name": "buscorepuestos-web",
 	"version": "0.1.0",
 	"scripts": {
-		"prepare": "husky",
 		"dev": "next dev --turbo",
 		"build": "next build",
 		"start": "next start",
