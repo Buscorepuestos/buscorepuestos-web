@@ -1,13 +1,13 @@
 'use client'
 import React, { createContext } from 'react'
 import { SwiperSlide } from 'swiper/react'
-import BannerImage from '@/app/(core)/_components/BannerImage'
-import Button from '@/app/(core)/_components/Button'
-import CardInfo from '@/app/(core)/_components/CardInfo'
-import SearchBar from '@/app/(core)/_components/SearchBar'
-import Slider from '@/app/(core)/_components/Slider'
-import CardPrice from '@/app/(core)/_components/CardPrice'
-import CardValoration from '@/app/(core)/_components/CardValoration'
+import BannerImage from '@/app/(core)/components/BannerImage/BannerImage'
+import Button from '@/app/(core)/components/Button/Button'
+import CardInfo from '@/app/(core)/components/CardInfo/CardInfo'
+import SearchBar from '@/app/(core)/components/SearchBar/SearchBar'
+import Slider from '@/app/(core)/components/Slider/Slider'
+import CardPrice from '@/app/(core)/components/CardPrice/CardPrice'
+import CardValoration from '@/app/(core)/components/CardValoration/CardValoration'
 
 const cardInfoPropsArray = [
 	{

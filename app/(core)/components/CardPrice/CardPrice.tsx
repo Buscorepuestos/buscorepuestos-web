@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Button from './Button'
+import Button from '../Button/Button'
 
 function PriceView() {
 	return <p className="text-title-3 font-bold text-primary-blue">10€</p>

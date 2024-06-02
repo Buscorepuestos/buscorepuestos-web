@@ -1,4 +1,4 @@
-import Star from './svg/star'
+import Star from '../svg/star'
 
 const MAX_VALORATION = 5
 

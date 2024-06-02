@@ -46,7 +46,7 @@ So, for example, something similiar to this structure is what we here below:
         │   ├── services
         │   └── states
         ├── auth
-        ├── core
+        ├── (core)
         │   ├── components
         │   ├── design
         │   ├── hooks
