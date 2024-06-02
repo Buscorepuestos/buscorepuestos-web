@@ -33,9 +33,9 @@ export default function RootLayout({
 				className={`${bebasNeue.variable} ${workSans.variable} flex flex-col justify-center items-center `}
 			>
 				<Analytics/>
-				<SpeedInsights/>
 				<Header />
 				{children}
+				<SpeedInsights/>
 				<Footer />
 			</body>
 		</html>
