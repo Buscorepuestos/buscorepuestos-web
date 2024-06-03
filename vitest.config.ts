@@ -5,7 +5,7 @@ export default defineConfig({
 	plugins: [react()],
 	test: {
 		environment: 'jsdom',
-		reporters: process.env.NEXT_PUBLIC_CI === 'True' ? ['dot', 'github-actions'] : ['verbose'],
+		reporters: process.env.CI === 'True' ? ['dot', 'github-actions'] : ['verbose'],
 		coverage: {
 			thresholds: {
 				statements: 60,
