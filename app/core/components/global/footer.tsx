@@ -20,7 +20,7 @@ const footerLinks = [
 		],
 	},
 	{
-		category: 'Te puede interesar',
+		category: 'Te puede gustar',
 		links: [
 			{ name: 'Outlet', href: '#' },
 			{ name: 'Más buscados', href: '#' },
@@ -29,7 +29,7 @@ const footerLinks = [
 		],
 	},
 	{
-		category: 'Te puede interesar',
+		category: 'Te puede atraer',
 		links: [
 			{ name: 'Outlet', href: '#' },
 			{ name: 'Más buscados', href: '#' },
