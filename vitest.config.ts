@@ -5,13 +5,13 @@ export default defineConfig({
 	plugins: [react()],
 	test: {
 		environment: 'jsdom',
-		reporters: process.env.CI === 'True' ? ['dot', 'github-actions'] : ['verbose'],
+		reporters: process.env.CI === 'yes' ? ['dot', 'github-actions'] : ['verbose'],
 		coverage: {
 			thresholds: {
-				statements: 60,
-				branches: 60,
-				functions: 60,
-				lines: 60,
+				statements: 90,
+				branches: 90,
+				functions: 90,
+				lines: 90,
 			},
 			provider: 'v8',
 			ignoreEmptyLines: true,
