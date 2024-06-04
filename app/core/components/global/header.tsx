@@ -23,22 +23,23 @@ export function Header() {
 
 	return (
 		<section
-			className="w-[1213px] h-[122px] rounded-[21px] bg-custom-white border-[1px] 
-		border-secondary-blue pl-[25px] pr-[25px] absolute top-[32px] left-[50%] transform -translate-x-1/2 z-10 m-auto"
+			className="w-full max-w-[1213px] h-[122px] rounded-[21px] bg-custom-white border-[1px] 
+			border-secondary-blue px-4 md:px-[25px] absolute top-[32px] left-1/2 transform -translate-x-1/2 z-10 m-auto"
 		>
-			<div className="flex flex-row justify-between items-center">
+			<div className="flex flex-col md:flex-row justify-between items-center">
 				<Image
 					src="/logo-br-desktop.svg"
 					alt="Header"
 					width={101}
 					height={71}
+					className="mb-4 md:mb-0"
 				/>
-				<div className="flex flex-row gap-[64px]">
+				<div className="flex flex-col md:flex-row md:gap-[64px] gap-4 mb-4 md:mb-0 md:text-">
 					{principalMenuLinks.map((link, index) => (
 						<Link
 							key={index}
 							href={link.href}
-							className="text-title-3 text-dark-grey transition duration-300 ease-in-out hover:underline"
+							className="lg:text-title-3 md:text-[18px] text-dark-grey transition duration-300 ease-in-out hover:underline"
 						>
 							{link.label}
 						</Link>
@@ -48,24 +49,23 @@ export function Header() {
 					<Link href="#">
 						<Image
 							src="/user-logo.svg"
-							alt="Search"
+							alt="User"
 							width={20}
 							height={20}
 						/>
 					</Link>
-
 					<Link href="#">
 						<Image
 							src="/cart-logo.svg"
-							alt="Search"
+							alt="Cart"
 							width={20}
 							height={20}
 						/>
 					</Link>
 				</div>
 			</div>
-			<div className="w-full h-0.5 bg-secondary-blue" />
-			<div className="flex flex-row justify-between gap-4 pl-[43px] pr-[43px] pt-3">
+			<div className="w-full h-0.5 bg-secondary-blue my-2 md:my-0" />
+			<div className="lg:text-[0.9vw] md:text-[1.4vw] sm:text-[0.5vw] flex flex-wrap justify-between gap-4 px-4 md:px-[43px] pt-3">
 				{secondaryMenuLinks.map((link, index) => (
 					<Link
 						key={index}
