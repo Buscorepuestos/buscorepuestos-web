@@ -7,9 +7,9 @@ env:
 
 on:
   push:
-    branches: [ "develop", "feature/*" ]
+    branches: [ "develop", "release/*" ]
   pull_request:
-    branches: [ "develop", "feature/*" ]
+    branches: ["feature/*" ]
 
 jobs:
   setup:
