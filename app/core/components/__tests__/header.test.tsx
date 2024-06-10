@@ -4,7 +4,7 @@ import { Header } from '../global/header'
 
 const principalMenuLinks = [
 	{ label: 'Tienda', href: '#' },
-	{ label: 'Quienes somos', href: '#' },
+	{ label: 'Quiénes somos', href: '#' },
 	{ label: 'Ayuda', href: '#' },
 	{ label: 'Contacto', href: '#' },
 ]
