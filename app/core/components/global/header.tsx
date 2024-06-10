@@ -24,10 +24,15 @@ export function Header() {
 	]
 
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
 	};
+
+	const toggleSecondaryMenu = () => {
+		setIsSecondaryMenuOpen(!isSecondaryMenuOpen)
+	}
 
 	const [isWideScreen, setIsWideScreen] = useState(false);
 
@@ -46,16 +51,36 @@ export function Header() {
 
 	return (
 		<section
-			className="lg:w-[95%] md:w-[90%] sm:w-[90%] max-w-[1213px] mobile:w-[100%] h-[122px] sm:rounded-[21px] bg-custom-white sm:border-[2px] mobile:border-b-[2px]
-			border-secondary-blue fixed top-[32px] mobile:top-0 left-0 right-0 z-10 m-auto "
+			className="lg:w-[95%] md:w-[90%] sm:w-[90%] max-w-[1213px] mobile:w-[100%] h-[122px] mobile:h-[13vw] sm:rounded-[21px] bg-custom-white sm:border-[2px] mobile:border-b-[2px]
+			border-secondary-blue absolute top-[32px] mobile:p-[7px] mobile:top-0 left-0 right-0 z-10 m-auto shadow-md"
 		>
-			<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row justify-between items-center px-28 md:px-14 sm:px-12">
-				<Image
-					src="/logo-br-desktop.svg"
-					alt="Header"
-					width={101}
-					height={71}
-				/>
+			<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row justify-between items-center px-28 mobile:px-10 md:px-14 sm:px-12">
+				{isWideScreen ? (
+					<Image
+						src="/logo-br-desktop.svg"
+						alt="Header"
+						width={101}
+						height={71}
+					/>
+				): (
+					<>
+						<Image
+							src="/hamburguesa.svg"
+							alt="Header"
+							width={40}
+							height={40}
+							onClick={toggleMenu}
+							className='mobile:w-[7.5vw] mobile:h-[7.5vw] cursor-pointer'
+						/>
+						<Image
+							src="/buscorepuestos.svg"
+							alt="Header"
+							width={63}
+							height={63}
+							className='mobile:w-[10vw] mobile:h-[10vw] cursor-pointer'
+						/>
+					</>
+				)}
 				{isWideScreen && (
 					<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row md:gap-[64px] gap-4 mb-4 md:mb-0 sm:mb-0">
 					{principalMenuLinks.map((link, index) => (
@@ -91,9 +116,12 @@ export function Header() {
 								alt="Cart"
 								width={30}
 								height={30}
+								className='mobile:w-[7.5vw] mobile:h-[7.5vw] cursor-pointer'
 							/>
 						</Link>
-						<p className="text-[0.8vw] text-secondary-blue">Carrito</p>
+						{isWideScreen && (
+							<p className="text-[0.8vw] text-secondary-blue">Carrito</p>
+						)}
 					</div>
 				</div>
 			</div>
@@ -113,6 +141,65 @@ export function Header() {
 						))}
 					</div>
 				</>
+			)}
+			{!isWideScreen && isMenuOpen && (
+				<div className="absolute top-[12.8vw] left-0 right-0 bg-custom-white shadow-md z-20 ">
+					<div className="flex flex-col items-start border-t border-secondary-blue">
+						<div className='w-full flex items-center gap-5 text-[4vw] py-5 text-secondary-blue font-semibold hover:bg-gray-100 h-[12vw] border-secondary-blue border-b-[1px] pl-14'>
+							<Image
+								src="/USUARIO.svg"
+								alt="User"
+								width={30}
+								height={30}
+								className='mobile:w-[7vw] mobile:h-[7vw]'
+							/>
+							<p style={{ color: 'var(--neutro300)' }} >Accede</p>
+						</div>
+						{principalMenuLinks.map((link, index) => (
+							<div key={index} className='w-full flex flex-col' onClick={
+								link.label === 'Tienda' ? toggleSecondaryMenu : undefined
+							}>
+								<div className='w-full flex items-center hover:bg-gray-100 h-[10vw] border-secondary-blue border-b-[1px] pl-14'>
+									<Link
+										key={index}
+										href={link.href}
+										className="text-[4vw] font-semibold"
+										style={{ color: 'var(--neutro300)' }}
+									>
+										{link.label === 'Tienda' ? (
+											<div className='flex items-center gap-10'>
+												<p>{link.label}</p>
+												<Image
+													src="/right-arrow.svg"
+													alt="Store"
+													width={30}
+													height={30}
+													className='mobile:w-[5vw] mobile:h-[5vw] cursor-pointer'
+												/>
+											</div>
+										) : (
+											link.label
+										)}
+									</Link>
+								</div>
+								{link.label === 'Tienda' && isSecondaryMenuOpen && (
+									<div className="flex flex-col">
+										{secondaryMenuLinks.map((sublink, subindex) => (
+											<Link
+												key={subindex}
+												href={sublink.href}
+												className="w-full text-[4vw] py-4 font-semibold hover:bg-gray-100 h-[10vw] border-secondary-blue border-b-[1px] pl-28"
+												style={{ color: 'var(--neutro300)' }}
+											>
+												{sublink.label}
+											</Link>
+										))}
+									</div>
+								)}
+							</div>
+						))}
+					</div>
+				</div>
 			)}
 		</section>
 	)

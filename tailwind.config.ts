@@ -34,6 +34,7 @@ const config: Config = {
 				warning: 'var(--warning)',
 				'dark-grey': 'var(--dark-grey)',
 				'light-grey': 'var(--light-grey)',
+				'neutro-100': 'var(--neutro100)',
 			},
 			fontFamily: {
 				'primary-font': ['var(--font-work-sans)'],
