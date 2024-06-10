@@ -66,7 +66,7 @@ export function Header() {
 					<>
 						<Image
 							src="/hamburguesa.svg"
-							alt="Header"
+							alt="Hamburguesa"
 							width={40}
 							height={40}
 							onClick={toggleMenu}
@@ -74,7 +74,7 @@ export function Header() {
 						/>
 						<Image
 							src="/buscorepuestos.svg"
-							alt="Header"
+							alt="IconoMobile"
 							width={63}
 							height={63}
 							className='mobile:w-[10vw] mobile:h-[10vw] cursor-pointer'
@@ -143,12 +143,12 @@ export function Header() {
 				</>
 			)}
 			{!isWideScreen && isMenuOpen && (
-				<div className="absolute top-[12.8vw] left-0 right-0 bg-custom-white shadow-md z-20 ">
+				<div data-testid='Menu' className="absolute top-[12.8vw] left-0 right-0 bg-custom-white shadow-md z-20">
 					<div className="flex flex-col items-start border-t border-secondary-blue">
 						<div className='w-full flex items-center gap-5 text-[4vw] py-5 text-secondary-blue font-semibold hover:bg-gray-100 h-[12vw] border-secondary-blue border-b-[1px] pl-14'>
 							<Image
 								src="/USUARIO.svg"
-								alt="User"
+								alt="UserMobile"
 								width={30}
 								height={30}
 								className='mobile:w-[7vw] mobile:h-[7vw]'
@@ -158,6 +158,8 @@ export function Header() {
 						{principalMenuLinks.map((link, index) => (
 							<div key={index} className='w-full flex flex-col' onClick={
 								link.label === 'Tienda' ? toggleSecondaryMenu : undefined
+							} data-testid={
+								link.label === 'Tienda' ? 'secondary-toggle' : undefined
 							}>
 								<div className='w-full flex items-center hover:bg-gray-100 h-[10vw] border-secondary-blue border-b-[1px] pl-14'>
 									<Link
@@ -171,7 +173,7 @@ export function Header() {
 												<p>{link.label}</p>
 												<Image
 													src="/right-arrow.svg"
-													alt="Store"
+													alt="right-Arrow"
 													width={30}
 													height={30}
 													className='mobile:w-[5vw] mobile:h-[5vw] cursor-pointer'
@@ -183,7 +185,7 @@ export function Header() {
 									</Link>
 								</div>
 								{link.label === 'Tienda' && isSecondaryMenuOpen && (
-									<div className="flex flex-col">
+									<div data-testid='secondary-menu' className="flex flex-col">
 										{secondaryMenuLinks.map((sublink, subindex) => (
 											<Link
 												key={subindex}
