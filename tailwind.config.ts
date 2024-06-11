@@ -39,6 +39,7 @@ const config: Config = {
 			fontFamily: {
 				'primary-font': ['var(--font-work-sans)'],
 				'secondary-font': ['var(--font-bebas-neue)'],
+				'tertiary-font': ['var(--font-family-popins)'],
 			},
 		},
 	},
