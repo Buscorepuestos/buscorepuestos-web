@@ -4,7 +4,7 @@ import { Footer } from '../global/footer'
 
 const footerLinks = [
 	{
-		category: 'TE PUEDE\nINTERESAR',
+		category: 'TE PUEDE INTERESAR',
 		links: [
 			{ name: 'Outlet', href: '#' },
 			{ name: 'Más buscados', href: '#' },
@@ -13,7 +13,7 @@ const footerLinks = [
 		],
 	},
 	{
-		category: 'PÁGINAS\nRECIENTES',
+		category: 'PÁGINAS RECIENTES',
 		links: [
 			{ name: 'Tienda', href: '#' },
 			{ name: 'Menú', href: '#' },
@@ -22,7 +22,7 @@ const footerLinks = [
 		],
 	},
 	{
-		category: 'MÁS\nINFORMACIÓN',
+		category: 'MÁS INFORMACIÓN',
 		links: [
 			{ name: 'Aviso Legal', href: '#' },
 			{ name: 'Política de privacidad', href: '#' },
