@@ -80,6 +80,10 @@ a {
 	text-decoration: underline;
 } */
 
+.swiper-pagination-bullet-active {
+	background: var(--light-grey)!important;
+}
+
 body {
 	/* md */
 	font-family: var(--font-work-sans), sans-serif;
