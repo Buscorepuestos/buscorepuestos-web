@@ -15,7 +15,7 @@ const config: Config = {
 			sm: '1.4rem',
 			xs: '1.2rem',
 			lg: '3rem',
-			xl: '3.5rem'
+			xl: '4rem'
 		},
 		extend: {
 			screens: {
