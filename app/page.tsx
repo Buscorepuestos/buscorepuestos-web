@@ -182,12 +182,12 @@ export default function Home() {
 				height="561px"
 				aligned="center"
 			>
-				<div className="flex flex-col justify-center align-middle mt-[86px]">
-					<h1 className="text-title-1 text-custom-white text-center max-w-[728px] mb-[60px]">
+				<div className="flex flex-col justify-center align-middle mt-[180px] mobile:mt-[100px]">
+					<h1 className="text-title-1 text-custom-white text-center max-w-[728px] mb-[35px] mobile:max-w-[350px] mobile:text-xl">
 						Ponemos a tu alcance la mayor variedad de piezas de
 						coche <span className="text-warning">recuperadas</span>,
-						<span className="text-warning">reconstruidas</span> y
-						<span className="text-warning">nuevas</span>.
+						<span className="text-warning"> reconstruidas</span> y
+						<span className="text-warning"> nuevas</span>.
 					</h1>
 					<SearchBar />
 				</div>
