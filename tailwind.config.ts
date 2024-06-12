@@ -14,12 +14,14 @@ const config: Config = {
 			base: '1.6rem',
 			sm: '1.4rem',
 			xs: '1.2rem',
+			lg: '3rem',
+			xl: '3.5rem'
 		},
 		extend: {
 			screens: {
-				mobile: 'var(--mobile-breakpoint)',
-				tablet: 'var(--tablet-breakpoint)',
-				desktop: 'var(--desktop-breakpoint)',
+				mobile: {max: '640px'},
+				tablet: '768px',
+				desktop: '1440px',
 			},
 			boxShadow: {
 				inter: '0px 6px 13px -4px #424242 inset',
