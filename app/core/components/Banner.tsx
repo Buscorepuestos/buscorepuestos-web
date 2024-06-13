@@ -4,7 +4,7 @@ function getAligned(aligned: 'center' | 'left' | 'right' | undefined) {
 	return 'justify-center'
 }
 
-export default function BannerImage(props: {
+export default function Banner(props: {
 	imgUrl: string
 	height: string
 	aligned?: 'center' | 'left' | 'right'
