@@ -1,7 +1,7 @@
 'use client'
 import React, { createContext } from 'react'
 import { SwiperSlide } from 'swiper/react'
-import BannerImage from '@/app/core/components/BannerImage'
+import Banner from '@/app/core/components/Banner'
 import Button from '@/app/core/components/Button'
 import CardInfo from '@/app/core/components/cards/CardInfo'
 import SearchBar from '@/app/core/components/SearchBar'
@@ -177,10 +177,11 @@ const cardValorationPropsArray = [
 export default function Home() {
 	return (
 		<main>
-			<BannerImage
+			<Banner
 				imgUrl="/banner-motor.webp"
 				height="561px"
 				aligned="center"
+				color="blue"
 			>
 				<div className="flex flex-col justify-center align-middle mt-[180px] mobile:mt-[100px]">
 					<h1 className="text-title-1 text-custom-white text-center max-w-[728px] mb-[35px] mobile:max-w-[350px] mobile:text-xl">
@@ -191,7 +192,7 @@ export default function Home() {
 					</h1>
 					<SearchBar />
 				</div>
-			</BannerImage>
+			</Banner>
 
 			<section className="pt-[72px]">
 				<div className="flex justify-center items-center">
@@ -233,10 +234,11 @@ export default function Home() {
 			</section>
 
 			<section>
-				<BannerImage
+				<Banner
 					imgUrl="/banner-truck.webp"
 					height="740px"
 					aligned="center"
+					color="blue"
 				>
 					<div className="flex flex-col items-center">
 						<div className="max-w-[1034px] mb-[96px]">
@@ -271,7 +273,7 @@ export default function Home() {
 							)}
 						</Slider>
 					</div>
-				</BannerImage>
+				</Banner>
 			</section>
 			<section className="pt-[72px]">
 				<h2 className="text-title-2 mb-[46px]"> Podría interesarte</h2>
