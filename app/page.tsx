@@ -211,11 +211,38 @@ const breakPointsCardValoration = {
 	}
 }
 
+const breakPointsCardPrices = {
+	300: {
+		slidesPerView: 2,
+		spaceBetween: 10,
+	},
+	550: {
+		slidesPerView: 2.5,
+		spaceBetween: 10,
+	},
+	716: {
+		slidesPerView: 3,
+		spaceBetween: 100,
+	},
+	900: {
+		slidesPerView: 4,
+		spaceBetween: 10,
+	},
+	1120: {
+		slidesPerView: 5,
+		spaceBetween: 10,
+	},
+	1524: {
+		slidesPerView: 6,
+		spaceBetween: 100,
+	}
+}
+
 const classCardCategories = "w-full h-auto object-cover";
 
 export default function Home() {
 	return (
-		<main>
+		<main className='w-[100%]'>
 			<BannerImage
 				imgUrl="/banner-motor.webp"
 				height="561px"
@@ -258,7 +285,7 @@ export default function Home() {
 			<section className="pt-[72px]">
 				<h2 className="text-title-2 mb-[46px]"> Novedades</h2>
 				<div className="pb-[72px]">
-					<Slider breakpoints={breakPointsCardValoration}>
+					<Slider breakpoints={breakPointsCardPrices}>
 						{cardPropsArray.map((cardProps, index) => (
 							<SwiperSlide key={index}>
 								<CardPrice
@@ -315,7 +342,7 @@ export default function Home() {
 			</section>
 			<section className="pt-[72px]">
 				<h2 className="text-title-2 mb-[46px]"> Podría interesarte</h2>
-				<Slider breakpoints={breakPointsCardValoration}>
+				<Slider breakpoints={breakPointsCardPrices}>
 					{cardPropsArray.map((cardProps, index) => (
 						<SwiperSlide key={index}>
 							<CardPrice
