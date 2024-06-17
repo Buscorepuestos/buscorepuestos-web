@@ -38,7 +38,7 @@ export function Header() {
 
 	useEffect(() => {
 		const handleResize = () => {
-			setIsWideScreen(window.innerWidth > 640);
+			setIsWideScreen(window.innerWidth < 640);
 		};
 
 		handleResize();
