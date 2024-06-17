@@ -256,7 +256,7 @@ export default function Home() {
 			</section>
 
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px]"> Novedades</h2>
+				<h2 className="text-title-2 mb-[46px] font-tertiary-font text-dark-grey ml-[5vw]"> Novedades</h2>
 				<div className="pb-[72px]">
 					<Slider breakpoints={breakPointsCardValoration}>
 						{cardPropsArray.map((cardProps, index) => (
@@ -314,7 +314,7 @@ export default function Home() {
 				</BannerImage>
 			</section>
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px]"> Podría interesarte</h2>
+				<h2 className="text-title-2 mb-[46px] font-tertiary-font text-dark-grey ml-[5vw]"> Podría interesarte</h2>
 				<Slider breakpoints={breakPointsCardValoration}>
 					{cardPropsArray.map((cardProps, index) => (
 						<SwiperSlide key={index}>
