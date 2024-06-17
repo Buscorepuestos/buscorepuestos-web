@@ -17,8 +17,8 @@ export default function CardPrice(props: {
 
 			<div
 				className="max-w-[207px] max-h-[366px]
-					 flex flex-col justify-between pb-[23px] gap-4 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl 
-					 transition duration-300 ease-in-out"
+					flex flex-col justify-between pb-[23px] gap-4 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl 
+					transition duration-300 ease-in-out"
 			>
 				<Image
 					src="/card-preview.webp"
@@ -26,9 +26,9 @@ export default function CardPrice(props: {
 					width={205}
 					height={140}
 					priority
-					className="rounded-t-[23px]"
+					className="rounded-t-[23px] w-[100%]"
 				/>
-				<div className="flex flex-col items-center w-full">
+				<div className="flex flex-col items-start px-[0.5vw] w-full">
 					<div className="mb-[37px]">
 						<h4 className="text-base text-dark-grey font-bold">
 							{props.title}
@@ -39,10 +39,12 @@ export default function CardPrice(props: {
 						</p>
 						<p className="text-sm">{props.description}</p>
 					</div>
-					<div className="mb-[13.5px]">
+					<div className="mb-[13.5px] flex justify-center w-[100%]">
 						<PriceView price={props.price} />
 					</div>
-					<Button />
+					<div className='flex justify-center w-[100%]'>
+						<Button />
+					</div>
 				</div>
 			</div>
 		</>
