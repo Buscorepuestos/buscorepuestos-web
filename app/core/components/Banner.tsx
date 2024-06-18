@@ -21,7 +21,7 @@ export default function Banner(props: {
 	extraCss?: string
 }) {
 	const styles: BannerStyle = {
-		backgroundColor: "blue",
+		backgroundColor: props.color,
 		height: props.height,
 		justifyContent: getAligned(props.aligned),
 	};
