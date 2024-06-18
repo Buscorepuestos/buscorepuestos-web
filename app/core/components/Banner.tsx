@@ -17,6 +17,7 @@ export default function Banner(props: {
 	imgUrl?: string
 	aligned?: 'center' | 'left' | 'right'
 	children?: React.ReactNode
+	position?: string
 }) {
 	const styles: BannerStyle = {
 		backgroundColor: "blue",
@@ -27,7 +28,7 @@ export default function Banner(props: {
 		styles.backgroundImage = `url(${props.imgUrl})`;
 	return (
 		<section
-			className={`w-full bg-no-repeat bg-cover bg-center flex justify-center`}
+			className={`w-full bg-no-repeat bg-cover bg-center flex justify-center ${props.position}`}
 			style={styles}
 		>
 			{props.children}
