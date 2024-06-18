@@ -125,14 +125,14 @@ const ValorationInfo = [
 			'Encuentra repuestos y compara precios entre cientos de tiendas al mismo tiempo. Ponemos a tu disposición una extensa selección para que encuentres exactamente lo que necesitas.',
 	},
 	{
-		title: 'Centralización de Compras',
-		description:
-			'Centraliza en un único proveedor todas tus compras. Simplifica tu proceso de compra y gestión de repuestos con nosotros.',
-	},
-	{
 		title: 'Preferidos en España',
 		description:
 			'Somos el Comparador de Repuestos preferido en España. Nuestra reputación se basa en la sencillez y rapidez para encontrar artículos, una amplia variedad de precios y, sobre todo, en las garantías de calidad de todos los repuestos vendidos.',
+	},
+	{
+		title: 'Centralización de Compras',
+		description:
+			'Centraliza en un único proveedor todas tus compras. Simplifica tu proceso de compra y gestión de repuestos con nosotros.',
 	},
 ]
 
@@ -324,50 +324,49 @@ export default function Home() {
 				</div>
 			</section>
 
-			<section>
-				<Banner
-					imgUrl="/banner-truck.webp"
-					height="740px"
-					aligned="center"
-					color="blue"
-					position={''}
-					extraCss={''}
-				>
-					<div className="flex flex-col items-center">
-						<div className="max-w-[1034px] mb-[96px]">
-							{ValorationInfo.map((info, index) => (
-								<div key={index} className="mb-[20px]">
-									<h3 className="text-title-3 text-custom-white">
-										{info.title}
-									</h3>
-									<p className="text-custom-white">
-										{info.description}
-									</p>
-								</div>
-							))}
-						</div>
-						<Slider
-							height={280}
-							slidePerView={3.2}
-							spaceBetween={10}
-						>
-							{cardValorationPropsArray.map(
-								(cardValoration, index) => (
-									<SwiperSlide key={index}>
-										<CardValoration
-											title={cardValoration.title}
-											valoration={
-												cardValoration.valoration
-											}
-											comments={cardValoration.comments}
-										/>
-									</SwiperSlide>
-								),
-							)}
-						</Slider>
+			<Banner
+				imgUrl="/banner-truck.webp"
+				height="740px"
+				aligned="center"
+				color="blue"
+				position={''}
+				extraCss={''}
+			>
+				<div className="flex flex-col items-center">
+					<div className="max-w-[1034px] mb-[96px]">
+						{ValorationInfo.map((info, index) => (
+							<div key={index} className="mt-[30px]">
+								<h2 className="text-xl font-normal text-custom-white">
+									{info.title}
+								</h2>
+								<p className="text-title-4 text-custom-white">
+									{info.description}
+								</p>
+							</div>
+						))}
 					</div>
-				</Banner>
-			</section>
+					<Slider
+						height={280}
+						slidePerView={3.2}
+						spaceBetween={10}
+					>
+						{cardValorationPropsArray.map(
+							(cardValoration, index) => (
+								<SwiperSlide key={index}>
+									<CardValoration
+										title={cardValoration.title}
+										valoration={
+											cardValoration.valoration
+										}
+										comments={cardValoration.comments}
+									/>
+								</SwiperSlide>
+							),
+						)}
+					</Slider>
+				</div>
+			</Banner>
+
 			<section className="pt-[72px]">
 				<h2 className="text-title-2 mb-[46px]"> Podría interesarte</h2>
 				<Slider>
