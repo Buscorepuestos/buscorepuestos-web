@@ -257,10 +257,8 @@ export default function Home() {
 		};
 	}, []);
 
-	console.log(isMobile, "isMobile")
-
 	return (
-		<main className='w-[100vw]'>
+		<main>
 			<BannerImage
 				imgUrl="/banner-motor.webp"
 				height="561px"

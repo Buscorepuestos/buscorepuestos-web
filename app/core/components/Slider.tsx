@@ -50,6 +50,7 @@ export default function slider(props: SliderProps) {
 				style={{ height: height, maxWidth }}
 				breakpoints={breakpoints}
 				grid={isMobile ? grid : {}}
+				role='region'
 			>
 				{props.children}
 			</Swiper>
