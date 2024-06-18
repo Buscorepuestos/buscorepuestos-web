@@ -24,7 +24,7 @@ const config: Config = {
 		extend: {
 			screens: {
 				mobile: {max: '640px'},
-				tablet: '768px',
+				tablet: {max:'768px'},
 				desktop: '1440px',
 			},
 			boxShadow: {
