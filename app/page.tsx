@@ -184,7 +184,7 @@ export default function Home() {
 				aligned="center"
 				color="blue"
 				position=""
-				extraCss=""
+				extraCss="m-auto"
 			>
 				<div className="flex flex-col justify-center align-middle mt-[180px] mobile:mt-[100px]">
 					<h1 className="text-title-1 text-custom-white text-center max-w-[728px] mb-[35px] mobile:max-w-[350px] mobile:text-xl">
