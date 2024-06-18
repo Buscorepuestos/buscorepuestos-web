@@ -215,7 +215,7 @@ export default function Home() {
 						aligned="left"
 						color="blue"
 						position="desktop:absolute"
-						extraCss={'mobile:hidden'}
+						extraCss={'mobile:hidden tablet:hidden'}
 				>
 					<div className="flex justify-center">
 						<h1 className="content-center text-8xl text-custom-white text-left ml-[150px] max-w-[450px] mobile:max-w-[350px] mobile:text-xl">
@@ -223,7 +223,7 @@ export default function Home() {
 						</h1>
 					</div>
 				</Banner>
-				<section className="flex flex-col items-end relative bottom-12 mobile:hidden">
+				<section className="flex flex-col items-end relative bottom-12 mobile:hidden tablet:hidden">
 					<TagBanner title={'Rapidez'} fontColor={'white'} color={'#3A27B0'} width={'1000px'} height={'130px'}
 							   align={'center'} alignItems={'center'} position={'relative'} zIndex={'1'}
 							   radius={'rounded-tl-3xl rounded-bl-3xl'}>
@@ -263,7 +263,7 @@ export default function Home() {
 						</h1>
 					</div>
 				</Banner>
-				<section className="desktop:hidden flex justify-center relative z-10" style={{ bottom: '700px' }}>
+				<section className="desktop:hidden flex justify-center relative z-10 tablet:pt-20" style={{ bottom: '700px' }}>
 					<div className="flex flex-col align-end w-[100vw]">
 						<TagBanner title={'Rapidez'} flexDir={'flex-col'} fontColor={'white'} color={'#3A27B0'}
 								   width={'90vw'} height={'auto'}
