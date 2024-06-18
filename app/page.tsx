@@ -8,6 +8,7 @@ import SearchBar from '@/app/core/components/SearchBar'
 import Slider from '@/app/core/components/Slider'
 import CardPrice from '@/app/core/components/cards/CardPrice'
 import CardValoration from '@/app/core/components/cards/CardValoration'
+import TagBanner from './core/components/tags/TagBanner'
 
 const cardInfoPropsArray = [
 	{
@@ -207,11 +208,44 @@ export default function Home() {
 						<CardInfo key={index} title={cardInfoProps.title} />
 					))}
 				</div>
-				<div className="flex justify-center">
-					<Button
-						type="secondary"
-						labelName="Accede a todas las categorías"
-					/>
+			</section>
+
+			<section>
+				<Banner imgUrl="/banner-warehouse.webp"
+						height="305px"
+						aligned="left"
+						color="blue"
+						position="absolute"
+				>
+					<div className="flex justify-center">
+						<h1 className="content-center text-8xl text-custom-white text-left ml-[150px] max-w-[450px] mobile:max-w-[350px] mobile:text-xl">
+							Busca repuestos inter<span className="text-warning">nacionales</span> y compara precios
+						</h1>
+					</div>
+				</Banner>
+				<div className="flex flex-col items-end relative bottom-12">
+					<TagBanner title={'Rapidez'} fontColor={'white'} color={'#3A27B0'} width={'1000px'} height={'130px'}
+							   align={'center'} position={'relative'} zIndex={'1'}
+							   radius={'rounded-tl-3xl rounded-bl-3xl'}>
+						<p className="w-[40vw] text-title-4">Con solo unos clics, nos encargamos de buscar el repuesto que necesitas
+							de forma rápida y
+							fácil.
+							Comparamos entre el stock de cientos de tiendas para garantizar la mejor opción en tiempo
+							récord.</p>
+					</TagBanner>
+					<TagBanner title={'Eficacia'} fontColor={'white'} color={'#12B1BB'} width={'870px'}
+							   height={'130px'} align={'center'} position={'relative'} zIndex={'2'} axis={'bottom-5'}
+							   radius={'rounded-tl-3xl rounded-bl-3xl'}>
+						<p className="w-[35vw] text-title-4">Todas nuestras piezas han sido validadas por profesionales, es por ello
+							que tenemos el
+							porcentaje de devoluciones más bajo del mercado. </p>
+					</TagBanner>
+					<TagBanner title={'100% Fiabilidad'} fontColor={'white'} color={'#1A61F1'} width={'650px'}
+							   height={'130px'} align={'center'} position={'relative'} zIndex={'2'} axis={'bottom-9'}
+							   radius={'rounded-tl-3xl rounded-bl-3xl'}>
+						<p className="w-[25vw] text-title-4">Devoluciones sin coste en el plazo de 14 días.
+							Tu satisfacción y confianza son nuestra prioridad.</p>
+					</TagBanner>
 				</div>
 			</section>
 
@@ -269,7 +303,7 @@ export default function Home() {
 											comments={cardValoration.comments}
 										/>
 									</SwiperSlide>
-								)
+								),
 							)}
 						</Slider>
 					</div>
