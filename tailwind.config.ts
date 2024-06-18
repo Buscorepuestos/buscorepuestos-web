@@ -30,6 +30,7 @@ const config: Config = {
 				'custom-white': 'var(--custom-white)',
 				'custom-black': 'var(--custom-black)',
 				'primary-blue': 'var(--primary-blue)',
+				'primary-lila': 'var(--primary-lila)',
 				'secondary-blue': 'var(--secondary-blue)',
 				warning: 'var(--warning)',
 				'dark-grey': 'var(--dark-grey)',
