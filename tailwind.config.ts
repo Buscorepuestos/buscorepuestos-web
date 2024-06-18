@@ -11,11 +11,15 @@ const config: Config = {
 			'title-1': '5.6rem',
 			'title-2': '4.8rem',
 			'title-3': '2.4rem',
+			'title-4': '1.8rem',
 			base: '1.6rem',
 			sm: '1.4rem',
 			xs: '1.2rem',
 			lg: '3rem',
-			xl: '4rem'
+			xl: '4rem',
+			'8xl': '6rem',
+			'9xl': '8rem',
+
 		},
 		extend: {
 			screens: {
