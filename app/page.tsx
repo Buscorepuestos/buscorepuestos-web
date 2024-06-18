@@ -326,20 +326,20 @@ export default function Home() {
 
 			<Banner
 				imgUrl="/banner-truck.webp"
-				height="740px"
+				height="800px"
 				aligned="center"
 				color="blue"
 				position={''}
-				extraCss={''}
+				extraCss={'py-10 mobile:py-4 m-auto'}
 			>
 				<div className="flex flex-col items-center">
-					<div className="max-w-[1034px] mb-[96px]">
+					<div className="max-w-[70vw] mb-[40px] mobile:mb-[20px]">
 						{ValorationInfo.map((info, index) => (
-							<div key={index} className="mt-[30px]">
-								<h2 className="text-xl font-normal text-custom-white">
+							<div key={index} className="mb-[30px]">
+								<h2 className="text-xl mobile:text-lg tablet:text-lg font-normal text-custom-white">
 									{info.title}
 								</h2>
-								<p className="text-title-4 text-custom-white">
+								<p className="text-title-4 mobile:text-sm tablet:text-base text-custom-white">
 									{info.description}
 								</p>
 							</div>
