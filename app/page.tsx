@@ -196,7 +196,15 @@ export default function Home() {
 					<SearchBar />
 				</div>
 			</Banner>
-
+			<Banner imgUrl=""
+					height="32px"
+					aligned="center"
+					color="#12B1BB"
+					position=""
+					extraCss="justify-center items-center m-auto"
+			>
+				<p className="font-semibold text-warning">Dos años de garantía en todas las piezas</p>
+			</Banner>
 			<section className="pt-[72px]">
 				<div className="flex justify-center items-center">
 					<h2 className="text-title-2 text-center max-w-[505px] mb-[31px]">
