@@ -1,7 +1,7 @@
 function getAligned(aligned: 'center' | 'left' | 'right' | undefined) {
 	if (aligned === 'left') return 'flex-start'
 	if (aligned === 'right') return 'flex-end'
-	return 'justify-center'
+	return 'center'
 }
 
 interface BannerStyle {
@@ -18,6 +18,7 @@ export default function Banner(props: {
 	aligned?: 'center' | 'left' | 'right'
 	children?: React.ReactNode
 	position?: string
+	extraCss?: string
 }) {
 	const styles: BannerStyle = {
 		backgroundColor: "blue",
@@ -28,7 +29,7 @@ export default function Banner(props: {
 		styles.backgroundImage = `url(${props.imgUrl})`;
 	return (
 		<section
-			className={`w-full bg-no-repeat bg-cover bg-center flex justify-center ${props.position}`}
+			className={`desktop:w-full mobile:w-[100vw] bg-no-repeat bg-cover bg-center flex ${props.position} z-0 ${props.extraCss}`}
 			style={styles}
 		>
 			{props.children}
