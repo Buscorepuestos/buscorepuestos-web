@@ -24,8 +24,8 @@ export default function TagBanner(props: {
 	position: string
 	zIndex: string
 	axis: string
-	padding: ''
-	alignSelf: ''
+	padding: string
+	alignSelf: string
 }) {
 	return (
 		<article className={`flex ${props.flexDir} justify-around ${getItemsAligned(props.alignItems)} ${props.alignSelf} ${props.position} ${props.axis} ${props.radius} ${props.padding}`} style={{
