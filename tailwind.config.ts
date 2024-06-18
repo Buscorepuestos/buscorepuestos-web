@@ -23,8 +23,8 @@ const config: Config = {
 		},
 		extend: {
 			screens: {
-				mobile: {max: '640px'},
-				tablet: {max:'768px'},
+				mobile: {max: '639px'},
+				tablet: {min:'640px', max: '1439px'},
 				desktop: '1440px',
 			},
 			boxShadow: {
