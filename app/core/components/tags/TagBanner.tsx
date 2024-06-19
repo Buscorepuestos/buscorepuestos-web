@@ -5,9 +5,9 @@ function getAligned(aligned: 'center' | 'left' | 'right' | undefined) {
 }
 
 function getItemsAligned(aligned: 'center' | 'left' | 'right' | undefined) {
-	if (aligned === 'left') return 'items-start'
-	if (aligned === 'right') return 'items-end'
-	return 'items-center'
+	if (aligned === 'left') return 'flex-start'
+	if (aligned === 'right') return 'flex-end'
+	return 'center'
 }
 
 export default function TagBanner(props: {
@@ -28,8 +28,9 @@ export default function TagBanner(props: {
 	alignSelf: string
 }) {
 	return (
-		<article className={`flex ${props.flexDir} justify-around ${getItemsAligned(props.alignItems)} ${props.alignSelf} ${props.position} ${props.axis} ${props.radius} ${props.padding}`} style={{
+		<article className={`flex ${props.flexDir} justify-around ${props.alignSelf} ${props.position} ${props.axis} ${props.radius} ${props.padding}`} style={{
 			justifyContent: getAligned(props.align),
+			alignItems: getItemsAligned(props.alignItems),
 			backgroundColor: props.color,
 			width: props.width,
 			height: props.height,
