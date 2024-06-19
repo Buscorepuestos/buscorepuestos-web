@@ -203,7 +203,7 @@ export default function Home() {
 					position=""
 					extraCss="justify-center items-center m-auto"
 			>
-				<p className="font-semibold text-warning">Dos años de garantía en todas las piezas</p>
+				<p className="font-semibold text-warning uppercase">Dos años de garantía en todas las piezas</p>
 			</Banner>
 			<section className="pt-[72px]">
 				<div className="flex justify-center items-center">
