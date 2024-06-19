@@ -43,7 +43,7 @@ export default function CardPrice(props: {
 						<PriceView price={props.price} />
 					</div>
 					<div className='flex justify-center w-[100%]'>
-						<Button type='tertiary' labelName='Volver'/>
+						<Button type='primary'/>
 					</div>
 				</div>
 			</div>
