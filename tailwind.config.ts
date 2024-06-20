@@ -11,15 +11,16 @@ const config: Config = {
 			'title-1': '5.6rem',
 			'title-2': '4.8rem',
 			'title-3': '2.4rem',
+			'title-4': '1.8rem',
 			base: '1.6rem',
 			sm: '1.4rem',
 			xs: '1.2rem',
 		},
 		extend: {
 			screens: {
-				mobile: 'var(--mobile-breakpoint)',
-				tablet: 'var(--tablet-breakpoint)',
-				desktop: 'var(--desktop-breakpoint)',
+				mobile: {max: '639px'},
+				tablet: {min:'640px', max: '1439px'},
+				desktop: '1440px',
 			},
 			boxShadow: {
 				inter: '0px 6px 13px -4px #424242 inset',
