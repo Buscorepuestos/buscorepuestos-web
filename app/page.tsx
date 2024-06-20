@@ -189,7 +189,7 @@ export default function Home() {
 						<span className="text-warning">reconstruidas</span> y
 						<span className="text-warning">nuevas</span>.
 					</h1>
-					<SearchBar />
+					<SearchBar height={'52px'} width={'w-[496px] mobile:w-[80vw]'} borderColor={'#12B1BB'} borderWidth={'2px'}/>
 				</div>
 			</BannerImage>
 
