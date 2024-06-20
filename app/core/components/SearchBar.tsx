@@ -27,7 +27,7 @@ export default function SearchBar(props: {
 			<input
 				className="text-title-4 flex-grow bg-transparent outline-none font-semibold"
 				type="text"
-				placeholder="escribe lo que necesitas"
+				placeholder="Escribe lo que necesitas"
 				style={{
 					color: '#A9A9A9'
 				}}
