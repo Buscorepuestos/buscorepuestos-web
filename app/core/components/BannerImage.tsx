@@ -1,7 +1,7 @@
 function getAligned(aligned: 'center' | 'left' | 'right' | undefined) {
 	if (aligned === 'left') return 'flex-start'
 	if (aligned === 'right') return 'flex-end'
-	return 'justify-center'
+	return 'center'
 }
 
 export default function BannerImage(props: {
