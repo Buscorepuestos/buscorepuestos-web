@@ -8,6 +8,7 @@ import SearchBar from '@/app/core/components/SearchBar'
 import Slider from '@/app/core/components/Slider'
 import CardPrice from '@/app/core/components/cards/CardPrice'
 import CardValoration from '@/app/core/components/cards/CardValoration'
+import Dropdown from './core/components/Dropdown'
 
 const cardInfoPropsArray = [
 	{
@@ -315,6 +316,8 @@ export default function Home() {
 					))}
 				</Slider>
 			</section>
+
+			<Dropdown />
 
 			<section>
 				<BannerImage
