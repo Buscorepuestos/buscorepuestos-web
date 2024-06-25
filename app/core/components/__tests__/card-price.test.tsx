@@ -17,6 +17,6 @@ describe('CardPrice component', () => {
 		expect(screen.getByText('500€')).toBeDefined()
 	})
 	test('Test button shows up', () => {
-		expect(screen.getByRole('button', { name: 'Compras' })).toBeDefined()
+		expect(screen.getByRole('button', { name: 'Comprar' })).toBeDefined()
 	})
 })
