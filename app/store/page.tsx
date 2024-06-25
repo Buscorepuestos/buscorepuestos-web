@@ -13,9 +13,8 @@ export default function Store() {
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
-				const data = await getProducts()
-				console.log(data)
-				setProducts(data)
+				const response = await getProducts()
+				setProducts(response.data.data.selectedProducts as IProductMongoose[])
 			} catch (error) {
 				setError((error as Error).message)
 			} finally {
