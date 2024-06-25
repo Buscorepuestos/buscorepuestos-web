@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 export function Header() {
 	const principalMenuLinks = [
@@ -23,8 +24,12 @@ export function Header() {
 		{ label: 'Motor', href: '#' },
 	]
 
+	
+
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
+	const [isProductPage, setIsProductPage] = useState(false)
+	const pathname = usePathname()
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
@@ -49,10 +54,15 @@ export function Header() {
 		};
 	}, []);
 
+	useEffect(() => {
+		setIsProductPage(pathname.startsWith('/producto'))
+	}, [pathname])
+	
 	return (
 		<section
-			className="lg:w-[95%] md:w-[90%] sm:w-[90%] max-w-[1213px] mobile:w-[100%] h-[122px] mobile:h-[13vw] sm:rounded-[21px] bg-custom-white sm:border-[2px] mobile:border-b-[2px]
-			border-secondary-blue absolute top-[32px] mobile:p-[7px] mobile:top-0 left-0 right-0 z-10 m-auto shadow-md"
+			className={`lg:w-[95%] md:w-[90%] sm:w-[90%] max-w-[1213px] mobile:w-[100%] h-[122px] mobile:h-[13vw] sm:rounded-[21px] bg-custom-white sm:border-[2px] mobile:border-b-[2px]
+			border-secondary-blue ${isProductPage ? 'mt-[1vw]' : 'absolute'} top-[32px] mobile:p-[7px] mobile:top-0 left-0 right-0 z-10 m-auto shadow-md`}
+			role='region'
 		>
 			<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row justify-between items-center px-28 mobile:px-10 md:px-14 sm:px-12">
 				{isWideScreen ? (
@@ -133,7 +143,7 @@ export function Header() {
 							<Link
 								key={index}
 								href={link.href}
-								className="lg:text-[1.1vw] md:text-[1.3vw] sm:text-[1.4vw] transition duration-300 ease-in-out hover:underline font-semibold"
+								className="lg:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] transition duration-300 ease-in-out hover:underline font-semibold"
 								style={{ color: 'var(--neutro300)' }}
 							>
 								{link.label}
