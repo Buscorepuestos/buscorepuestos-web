@@ -3,21 +3,31 @@ import React, { createContext } from 'react'
 import { Swiper } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/pagination'
-
 import { Pagination } from 'swiper/modules'
 
-export default function slider(props: {
+type Breakpoints = {
+	[key: number]: {
+		slidesPerView?: number
+		spaceBetween?: number
+	}
+}
+
+interface SliderProps {
 	slidePerView?: number
 	spaceBetween?: number
 	height?: number
-	maxWidth?: number
+	maxWidth?: string
+	breakpoints?: Breakpoints
 	children: React.ReactNode
-}) {
+}
+
+export default function slider(props: SliderProps) {
 	const {
 		slidePerView = 5,
 		spaceBetween = 100,
 		height = 420,
-		maxWidth = 1400,
+		maxWidth = '95vw',
+		breakpoints,
 	} = props
 
 	return (
@@ -26,10 +36,11 @@ export default function slider(props: {
 				slidesPerView={slidePerView}
 				spaceBetween={spaceBetween}
 				pagination={{
-					clickable: true,
+					clickable: true
 				}}
 				modules={[Pagination]}
 				style={{ height: height, maxWidth }}
+				breakpoints={breakpoints}
 			>
 				{props.children}
 			</Swiper>

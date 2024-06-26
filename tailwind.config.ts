@@ -17,9 +17,9 @@ const config: Config = {
 		},
 		extend: {
 			screens: {
-				mobile: 'var(--mobile-breakpoint)',
-				tablet: 'var(--tablet-breakpoint)',
-				desktop: 'var(--desktop-breakpoint)',
+				mobile: {max: '639px'},
+				tablet: {min:'640px', max: '1439px'},
+				desktop: '1440px',
 			},
 			boxShadow: {
 				inter: '0px 6px 13px -4px #424242 inset',
@@ -34,10 +34,12 @@ const config: Config = {
 				warning: 'var(--warning)',
 				'dark-grey': 'var(--dark-grey)',
 				'light-grey': 'var(--light-grey)',
+				'neutro-100': 'var(--neutro100)',
 			},
 			fontFamily: {
 				'primary-font': ['var(--font-work-sans)'],
 				'secondary-font': ['var(--font-bebas-neue)'],
+				'tertiary-font': ['var(--font-family-popins)'],
 			},
 		},
 	},

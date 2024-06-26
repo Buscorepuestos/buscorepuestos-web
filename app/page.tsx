@@ -11,35 +11,45 @@ import CardValoration from '@/app/core/components/cards/CardValoration'
 
 const cardInfoPropsArray = [
 	{
-		title: 'Parachoques delantero',
+		title: 'Interior\nHabitáculo',
+		image: '/Interior.svg',
+		href: '#'
 	},
 	{
-		title: 'Parachoques trasero',
+		title: 'Carrocería\ny lunas',
+		image: '/Carroceria.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro delantero',
+		title: 'Faros y\npilotos',
+		image: '/Faros.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro trasero',
+		title: 'Sistema de\nseguridad',
+		image: '/Seguridad.svg',
+		href: '#'
 	},
 	{
-		title: 'Espejo lateral',
+		title: 'Electrónica\ny electricidad',
+		image: '/Electricidad.svg',
+		href: '#'
 	},
 	{
-		title: 'Rueda',
+		title: 'Suspensión,\nEjes y Dirección',
+		image: '/Suspension.svg',
+		href: '#'
 	},
 	{
-		title: 'Parachoques trasero',
+		title: 'Cajas de\ncambio y\ntransmisión',
+		image: '/Transmision.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro delantero',
-	},
-	{
-		title: 'Faro trasero',
-	},
-	{
-		title: 'Espejo lateral',
-	},
+		title: 'Refrigeración y\naire\nacondicionado',
+		image: '/Refrigeracion.svg',
+		href: '#'
+	}
 ]
 
 const cardPropsArray = [
@@ -174,6 +184,35 @@ const cardValorationPropsArray = [
 	},
 ]
 
+const breakPointsCardValoration = {
+	300: {
+		slidesPerView: 1.1,
+		spaceBetween: 10,
+	},
+	550: {
+		slidesPerView: 1.5,
+		spaceBetween: 10,
+	},
+	716: {
+		slidesPerView: 2.2,
+		spaceBetween: 100,
+	},
+	900: {
+		slidesPerView: 2.5,
+		spaceBetween: 10,
+	},
+	1120: {
+		slidesPerView: 3,
+		spaceBetween: 10,
+	},
+	1524: {
+		slidesPerView: 4,
+		spaceBetween: 100,
+	}
+}
+
+const classCardCategories = "w-full h-auto object-cover";
+
 export default function Home() {
 	return (
 		<main>
@@ -201,23 +240,25 @@ export default function Home() {
 						piezas diferentes
 					</h2>
 				</div>
-				<div className="flex flex-row flex-wrap gap-[85px] mb-[85px] justify-center">
-					{cardInfoPropsArray.map((cardInfoProps, index) => (
-						<CardInfo key={index} title={cardInfoProps.title} />
-					))}
-				</div>
-				<div className="flex justify-center">
-					<Button
-						type="secondary"
-						labelName="Accede a todas las categorías"
-					/>
+				<div className='flex w-screen justify-center mx-auto'>
+					<div className="grid grid-cols-2 md:grid-cols-4 gap-[85px] mobile:gap-[20px] mb-[85px]">
+						{cardInfoPropsArray.map((cardInfoProps, index) => (
+							<CardInfo 
+								key={index} 
+								title={cardInfoProps.title} 
+								image={cardInfoProps.image}
+								href={cardInfoProps.href}
+								className={classCardCategories}
+							/>
+						))}
+					</div>
 				</div>
 			</section>
 
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px]"> Novedades</h2>
+				<h2 className="text-title-2 mb-[46px] font-tertiary-font text-dark-grey ml-[5vw]"> Novedades</h2>
 				<div className="pb-[72px]">
-					<Slider>
+					<Slider breakpoints={breakPointsCardValoration}>
 						{cardPropsArray.map((cardProps, index) => (
 							<SwiperSlide key={index}>
 								<CardPrice
@@ -253,8 +294,7 @@ export default function Home() {
 						</div>
 						<Slider
 							height={280}
-							slidePerView={3.2}
-							spaceBetween={10}
+							breakpoints={breakPointsCardValoration}
 						>
 							{cardValorationPropsArray.map(
 								(cardValoration, index) => (
@@ -274,8 +314,8 @@ export default function Home() {
 				</BannerImage>
 			</section>
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px]"> Podría interesarte</h2>
-				<Slider>
+				<h2 className="text-title-2 mb-[46px] font-tertiary-font text-dark-grey ml-[5vw]"> Podría interesarte</h2>
+				<Slider breakpoints={breakPointsCardValoration}>
 					{cardPropsArray.map((cardProps, index) => (
 						<SwiperSlide key={index}>
 							<CardPrice

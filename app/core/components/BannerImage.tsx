@@ -1,7 +1,7 @@
 function getAligned(aligned: 'center' | 'left' | 'right' | undefined) {
 	if (aligned === 'left') return 'flex-start'
 	if (aligned === 'right') return 'flex-end'
-	return 'justify-center'
+	return 'center'
 }
 
 export default function BannerImage(props: {
@@ -12,7 +12,7 @@ export default function BannerImage(props: {
 }) {
 	return (
 		<section
-			className={`w-full bg-no-repeat bg-cover bg-center flex  items-center`}
+			className={`w-full bg-no-repeat bg-cover bg-center flex items-center`}
 			style={{
 				backgroundImage: `url(${props.imgUrl})`,
 				height: props.height,

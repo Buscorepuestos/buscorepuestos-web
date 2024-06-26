@@ -9,11 +9,11 @@ describe('Button component', () => {
 	})
 	test('Default primary button', () => {
 		render(<Button />)
-		expect(screen.getByRole('button', { name: 'Compras' })).toBeDefined()
+		expect(screen.getByRole('button', { name: 'Comprar' })).toBeDefined()
 	})
 	test('Secondary button', () => {
 		render(<Button type="secondary" />)
-		expect(screen.getByRole('button', { name: 'Compras' })).toBeDefined()
+		expect(screen.getByRole('button', { name: 'Comprar' })).toBeDefined()
 	})
 	test('Passing a label name', () => {
 		render(<Button labelName="prueba" type="secondary" />)
