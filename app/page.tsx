@@ -174,6 +174,33 @@ const cardValorationPropsArray = [
 	},
 ]
 
+const breakPointsCardValoration = {
+	300: {
+		slidesPerView: 1.1,
+		spaceBetween: 10,
+	},
+	550: {
+		slidesPerView: 1.5,
+		spaceBetween: 10,
+	},
+	716: {
+		slidesPerView: 2.2,
+		spaceBetween: 100,
+	},
+	900: {
+		slidesPerView: 2.5,
+		spaceBetween: 10,
+	},
+	1120: {
+		slidesPerView: 3,
+		spaceBetween: 10,
+	},
+	1524: {
+		slidesPerView: 4,
+		spaceBetween: 100,
+	}
+}
+
 export default function Home() {
 	return (
 		<main>
@@ -217,7 +244,7 @@ export default function Home() {
 			<section className="pt-[72px]">
 				<h2 className="text-title-2 mb-[46px]"> Novedades</h2>
 				<div className="pb-[72px]">
-					<Slider>
+					<Slider breakpoints={breakPointsCardValoration}>
 						{cardPropsArray.map((cardProps, index) => (
 							<SwiperSlide key={index}>
 								<CardPrice
@@ -253,8 +280,7 @@ export default function Home() {
 						</div>
 						<Slider
 							height={280}
-							slidePerView={3.2}
-							spaceBetween={10}
+							breakpoints={breakPointsCardValoration}
 						>
 							{cardValorationPropsArray.map(
 								(cardValoration, index) => (
@@ -275,7 +301,7 @@ export default function Home() {
 			</section>
 			<section className="pt-[72px]">
 				<h2 className="text-title-2 mb-[46px]"> Podría interesarte</h2>
-				<Slider>
+				<Slider breakpoints={breakPointsCardValoration}>
 					{cardPropsArray.map((cardProps, index) => (
 						<SwiperSlide key={index}>
 							<CardPrice

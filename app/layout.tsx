@@ -32,11 +32,11 @@ export default function RootLayout({
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} flex flex-col justify-center items-center `}
 			>
-				{/* <Analytics/> */}
-				{/* <Header /> */}
-				{/* {children} */}
-				{/* <SpeedInsights/> */}
-				<Footer />
+				{/* <Analytics/>
+				<Header /> */}
+				{children}
+				{/* <SpeedInsights/>
+				<Footer /> */}
 			</body>
 		</html>
 	)
