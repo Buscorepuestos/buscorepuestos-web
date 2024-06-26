@@ -19,12 +19,14 @@ interface CarouselProps {
     thumbImageStyles?: React.CSSProperties;
 }
 
-const convertCssProperties = (styles?: React.CSSProperties) => {
+export const convertCssProperties = (styles?: React.CSSProperties) => {
     if (!styles) return '';
-    return Object.entries(styles).map(([key, value]) => `${key}: ${value};`).join(' ');
+    return Object.entries(styles)
+        .map(([key, value]) => `${key.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`)}: ${value};`)
+        .join(' ');
 };
 
-const CarouselContainer = styled.div<{ containerStyles?: React.CSSProperties }>`
+export const CarouselContainer = styled.div<{ containerStyles?: React.CSSProperties }>`
     ${(props) => props.containerStyles && css`${convertCssProperties(props.containerStyles)}`}
 
     width: 100%;
@@ -55,7 +57,7 @@ const CarouselContainer = styled.div<{ containerStyles?: React.CSSProperties }>`
     }
 `;
 
-const CarouselImage = styled(Image)<{ imageStyles?: React.CSSProperties }>`
+export const CarouselImage = styled(Image)<{ imageStyles?: React.CSSProperties }>`
     ${(props) => props.imageStyles && css`${convertCssProperties(props.imageStyles)}`}
     height: 25vw;
     border-radius: 1rem;
@@ -65,7 +67,7 @@ const CarouselImage = styled(Image)<{ imageStyles?: React.CSSProperties }>`
     }
 `;
 
-const ThumbImage = styled(Image)<{ thumbImageStyles?: React.CSSProperties }>`
+export const ThumbImage = styled(Image)<{ thumbImageStyles?: React.CSSProperties }>`
     ${(props) => props.thumbImageStyles && css`${convertCssProperties(props.thumbImageStyles)}`}
     height: 5.5vw;
     border-radius: 1rem;
@@ -78,7 +80,7 @@ const ThumbImage = styled(Image)<{ thumbImageStyles?: React.CSSProperties }>`
 export default function Carousel({ images, className = '', containerStyles, imageStyles, thumbImageStyles }: CarouselProps) {
 
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType>();
-
+    
     return (
         <CarouselContainer containerStyles={containerStyles} className={className}>
             <Swiper
