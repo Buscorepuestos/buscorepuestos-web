@@ -1,5 +1,5 @@
 'use client'
-import React, { createContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SwiperSlide } from 'swiper/react'
 import Banner from '@/app/core/components/Banner'
 import Button from '@/app/core/components/Button'
@@ -12,35 +12,45 @@ import TagBanner from './core/components/tags/TagBanner'
 
 const cardInfoPropsArray = [
 	{
-		title: 'Parachoques delantero',
+		title: 'Interior\nHabitáculo',
+		image: '/Interior.svg',
+		href: '#'
 	},
 	{
-		title: 'Parachoques trasero',
+		title: 'Carrocería\ny lunas',
+		image: '/Carroceria.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro delantero',
+		title: 'Faros y\npilotos',
+		image: '/Faros.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro trasero',
+		title: 'Sistema de\nseguridad',
+		image: '/Seguridad.svg',
+		href: '#'
 	},
 	{
-		title: 'Espejo lateral',
+		title: 'Electrónica\ny electricidad',
+		image: '/Electricidad.svg',
+		href: '#'
 	},
 	{
-		title: 'Rueda',
+		title: 'Suspensión,\nEjes y Dirección',
+		image: '/Suspension.svg',
+		href: '#'
 	},
 	{
-		title: 'Parachoques trasero',
+		title: 'Cajas de\ncambio y\ntransmisión',
+		image: '/Transmision.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro delantero',
-	},
-	{
-		title: 'Faro trasero',
-	},
-	{
-		title: 'Espejo lateral',
-	},
+		title: 'Refrigeración y\naire\nacondicionado',
+		image: '/Refrigeracion.svg',
+		href: '#'
+	}
 ]
 
 const cardPropsArray = [
@@ -175,7 +185,79 @@ const cardValorationPropsArray = [
 	},
 ]
 
+const breakPointsCardValoration = {
+	300: {
+		slidesPerView: 1.1,
+		spaceBetween: 10,
+	},
+	550: {
+		slidesPerView: 1.5,
+		spaceBetween: 10,
+	},
+	716: {
+		slidesPerView: 2.2,
+		spaceBetween: 100,
+	},
+	900: {
+		slidesPerView: 2.5,
+		spaceBetween: 10,
+	},
+	1120: {
+		slidesPerView: 3,
+		spaceBetween: 10,
+	},
+	1524: {
+		slidesPerView: 4,
+		spaceBetween: 100,
+	}
+}
+
+const breakPointsCardPrices = {
+	300: {
+		slidesPerView: 2,
+		spaceBetween: 10,
+	},
+	550: {
+		slidesPerView: 2.5,
+		spaceBetween: 10,
+	},
+	716: {
+		slidesPerView: 2.8,
+		spaceBetween: 10,
+	},
+	900: {
+		slidesPerView: 4,
+		spaceBetween: 10,
+	},
+	1120: {
+		slidesPerView: 5,
+		spaceBetween: 10,
+	},
+	1524: {
+		slidesPerView: 5,
+		spaceBetween: 100,
+	}
+}
+
+const classCardCategories = "w-full h-auto object-cover";
+
 export default function Home() {
+
+	const [isMobile, setIsMobile] = useState(false)
+
+	useEffect(() => {
+		const handleResize = () => {
+			setIsMobile(window.innerWidth < 640);
+		};
+
+		handleResize();
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
 	return (
 		<main>
 			<Banner
@@ -213,10 +295,18 @@ export default function Home() {
 						piezas diferentes
 					</h2>
 				</div>
-				<div className="flex flex-row flex-wrap gap-[85px] mb-[85px] justify-center">
-					{cardInfoPropsArray.map((cardInfoProps, index) => (
-						<CardInfo key={index} title={cardInfoProps.title} />
-					))}
+				<div className='flex w-screen justify-center mx-auto'>
+					<div className="grid grid-cols-2 md:grid-cols-4 gap-[85px] mobile:gap-[20px] mb-[85px]">
+						{cardInfoPropsArray.map((cardInfoProps, index) => (
+							<CardInfo
+								key={index}
+								title={cardInfoProps.title}
+								image={cardInfoProps.image}
+								href={cardInfoProps.href}
+								className={classCardCategories}
+							/>
+						))}
+					</div>
 				</div>
 			</section>
 
@@ -315,21 +405,21 @@ export default function Home() {
 			</section>
 
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px]"> Novedades</h2>
-				<div className="pb-[72px]">
-					<Slider>
-						{cardPropsArray.map((cardProps, index) => (
-							<SwiperSlide key={index}>
-								<CardPrice
-									title={cardProps.title}
-									price={cardProps.price}
-									description={cardProps.description}
-									reference={cardProps.reference}
-								/>
-							</SwiperSlide>
-						))}
-					</Slider>
+				<div className=' flex justify-start ml-36 mobile:ml-12'>
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey"> Novedades</h2>
 				</div>
+				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+					{cardPropsArray.map((cardProps, index) => (
+						<SwiperSlide key={index} className="flex justify-center items-center">
+							<CardPrice
+								title={cardProps.title}
+								price={cardProps.price}
+								description={cardProps.description}
+								reference={cardProps.reference}
+							/>
+						</SwiperSlide>
+					))}
+				</Slider>
 			</section>
 
 			<Banner
@@ -376,10 +466,12 @@ export default function Home() {
 			</Banner>
 
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px]"> Podría interesarte</h2>
-				<Slider>
+				<div className='w-full flex justify-start ml-36 mobile:ml-12'>
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey"> Podría interesarte</h2>
+				</div>
+				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
 					{cardPropsArray.map((cardProps, index) => (
-						<SwiperSlide key={index}>
+						<SwiperSlide key={index} className="flex justify-center items-center">
 							<CardPrice
 								title={cardProps.title}
 								price={cardProps.price}

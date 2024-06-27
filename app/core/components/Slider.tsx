@@ -2,22 +2,40 @@
 import React, { createContext } from 'react'
 import { Swiper } from 'swiper/react'
 import 'swiper/css'
+import 'swiper/css/grid'
 import 'swiper/css/pagination'
+import { Grid, Pagination} from 'swiper/modules'
 
-import { Pagination } from 'swiper/modules'
+type Breakpoints = {
+	[key: number]: {
+		slidesPerView?: number
+		spaceBetween?: number
+	}
+}
 
-export default function slider(props: {
+interface SliderProps {
 	slidePerView?: number
 	spaceBetween?: number
 	height?: number
-	maxWidth?: number
+	maxWidth?: string
+	breakpoints?: Breakpoints
+	isMobile?: boolean
 	children: React.ReactNode
-}) {
+}
+
+const grid = {
+	rows: 2,
+	fill: 'row' as const,
+};
+
+export default function slider(props: SliderProps) {
 	const {
+		isMobile,
 		slidePerView = 5,
 		spaceBetween = 100,
-		height = 420,
-		maxWidth = 1400,
+		height = isMobile ? 840 : 420,
+		maxWidth = '95vw',
+		breakpoints,
 	} = props
 
 	return (
@@ -26,10 +44,13 @@ export default function slider(props: {
 				slidesPerView={slidePerView}
 				spaceBetween={spaceBetween}
 				pagination={{
-					clickable: true,
+					clickable: true
 				}}
-				modules={[Pagination]}
+				modules={[Grid, Pagination]}
 				style={{ height: height, maxWidth }}
+				breakpoints={breakpoints}
+				grid={isMobile ? grid : {}}
+				role='region'
 			>
 				{props.children}
 			</Swiper>

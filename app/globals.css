@@ -14,10 +14,13 @@
 	--warning: #edd443;
 	--dark-grey: #424242;
 	--light-grey: #d9d9d9;
+	--neutro300: #5F5F5F;
 
 	--mobile-breakpoint: 640px;
 	--tablet-breakpoint: 768px;
 	--desktop-breakpoint: 1440px;
+
+	--font-family-popins: 'Poppins', sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -79,6 +82,10 @@ a {
 	font-weight: bold;
 	text-decoration: underline;
 } */
+
+.swiper-pagination-bullet-active {
+	background: var(--light-grey)!important;
+}
 
 body {
 	/* md */
