@@ -35,13 +35,15 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center items-center `}
+				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center items-center min-h-screen`}
 			>
 				<Analytics/>
 				<Header />
-				{children}
-				<SpeedInsights/>
+				<main className="flex-1">
+                    {children}
+                </main>
 				<Footer />
+				<SpeedInsights/>
 			</body>
 		</html>
 	)
