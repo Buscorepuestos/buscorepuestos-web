@@ -4,6 +4,7 @@ import CardPrice from '../core/components/cards/CardPrice'
 import { getProducts } from '../services/products/products.service'
 import { IProductMongoose } from '../types/product'
 import algoliasearch from 'algoliasearch'
+import SearchBar from '../core/components/SearchBar'
 
 const appID = 'DSKGGHHS58'
 const apiKey = '6f49eeb288faef802bf5236c9fa6720d'
@@ -55,15 +56,9 @@ export default function Store() {
 
 	return (
 		<main>
-			{/*<div>*/}
-			{/*	<input*/}
-			{/*		type="text"*/}
-			{/*		value={inputValue}*/}
-			{/*		onChange={handleInputChange}*/}
-			{/*		placeholder="Type something..."*/}
-			{/*		className="border rounded p-2"*/}
-			{/*	/>*/}
-			{/*</div>*/}
+			<div className={'flex justify-end mr-6 mt-80'}>
+				<SearchBar onChange={handleInputChange} height={'52px'} width={'w-[480px] mobile:w-[80vw]'} borderColor={'#12B1BB'} borderWidth={'2px'}/>
+			</div>
 			<section
 				className={'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'}>
 				{products.map((product: any) => (
