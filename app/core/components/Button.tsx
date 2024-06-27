@@ -2,7 +2,7 @@ export default function Button(props: {
 	labelName?: string
 	type?: 'primary' | 'secondary'
 }) {
-	const { labelName = 'Compras', type = 'primary' } = props
+	const { labelName = 'Comprar', type = 'primary' } = props
 
 	if (type === 'secondary') {
 		return (

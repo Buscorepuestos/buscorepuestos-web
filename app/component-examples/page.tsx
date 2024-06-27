@@ -62,23 +62,45 @@ const cardPropsArray = [
 
 const cardInfoPropsArray = [
 	{
-		title: 'Parachoques delantero',
+		title: 'Interior\nHabitáculo',
+		image: '/Interior.svg',
+		href: '#'
 	},
 	{
-		title: 'Parachoques trasero',
+		title: 'Carrocería\ny lunas',
+		image: '/Carroceria.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro delantero',
+		title: 'Faros y\npilotos',
+		image: '/Faros.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro trasero',
+		title: 'Sistema de\nseguridad',
+		image: '/Seguridad.svg',
+		href: '#'
 	},
 	{
-		title: 'Espejo lateral',
+		title: 'Electrónica\ny electricidad',
+		image: '/Electricidad.svg',
+		href: '#'
 	},
 	{
-		title: 'Rueda',
+		title: 'Suspensión,\nEjes y Dirección',
+		image: '/Suspension.svg',
+		href: '#'
 	},
+	{
+		title: 'Cajas de\ncambio y\ntransmisión',
+		image: '/Transmision.svg',
+		href: '#'
+	},
+	{
+		title: 'Refrigeración y\naire\nacondicionado',
+		image: '/Refrigeracion.svg',
+		href: '#'
+	}
 ]
 
 const cardValorationPropsArray = [
@@ -157,7 +179,7 @@ export default function Components() {
 				</h3>
 				<div className="flex justify-between gap-6">
 					{cardInfoPropsArray.map((cardInfoProps, index) => (
-						<CardInfo key={index} title={cardInfoProps.title} />
+						<CardInfo key={index} title={cardInfoProps.title} image={cardInfoProps.image}/>
 					))}
 				</div>
 				<div className="flex justify-between gap-6">

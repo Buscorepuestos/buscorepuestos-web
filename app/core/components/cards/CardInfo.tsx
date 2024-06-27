@@ -1,23 +1,22 @@
 import Image from 'next/image'
 
-export default function CardInfo(props: { title: string }) {
+export default function CardInfo(props: { title: string, image: string, href?: string, className?: string}) {
 	return (
 		<>
 			<div
-				className="w-[178px] max-h-[174px]
-					 flex flex-col items-center shadow-inter rounded-[24px] pt-3 pb-3 box-border
-					 hover:transition duration-300 ease-in-out bg-custom-white "
+				className="w-[178px] max-h-[350px]
+					flex flex-col items-center shadow-inter rounded-[24px] pt-3 pb-3 box-border
+					hover:transition duration-300 ease-in-out bg-custom-white "
 			>
-				<Image
-					src="/card-no-price.svg"
-					alt="card image"
-					width={0}
-					height={0}
-					priority
-					className="w-[180px] h-[180px] object-fill 
-							sm:max-w-[120px] sm:h-[120px] md:max-w-[100px] md:h-[100px]"
-				/>
-				<h4 className=" flex items-center text-base text-dark-grey font-bold text-center flex-grow pl-3 pr-3">
+					<Image
+						src={props.image}
+						alt="card image"
+						width={0}
+						height={0}
+						priority
+						className={props.className}
+					/>
+				<h4 className="whitespace-pre-wrap flex items-center text-[20px] text-dark-grey font-semibold text-center flex-grow pl-3 pr-3">
 					{props.title}
 				</h4>
 			</div>
