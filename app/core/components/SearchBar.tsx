@@ -1,13 +1,15 @@
 import Image from 'next/image'
+import { ChangeEvent } from 'react'
 
 export default function SearchBar(props: {
 	height?: string
 	width?: string
 	borderColor?: string
 	borderWidth?: string
+	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }) {
 	return (
-		<section
+		<div
 			className={`${props.width} relative flex items-center bg-custom-white
 				rounded-[34px] pl-8 self-center`}
 			style={{
@@ -27,11 +29,12 @@ export default function SearchBar(props: {
 			<input
 				className="text-title-4 flex-grow bg-transparent outline-none font-semibold"
 				type="text"
+				onChange={props.onChange}
 				placeholder="Escribe lo que necesitas"
 				style={{
 					color: '#A9A9A9'
 				}}
 			/>
-		</section>
+		</div>
 	)
 }
