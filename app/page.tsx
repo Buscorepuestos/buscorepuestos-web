@@ -9,6 +9,7 @@ import Slider from '@/app/core/components/Slider'
 import CardPrice from '@/app/core/components/cards/CardPrice'
 import CardValoration from '@/app/core/components/cards/CardValoration'
 import TagBanner from './core/components/tags/TagBanner'
+import Dropdown from './core/components/Dropdown'
 
 const cardInfoPropsArray = [
 	{
@@ -421,6 +422,8 @@ export default function Home() {
 					))}
 				</Slider>
 			</section>
+
+			<Dropdown />
 
 			<Banner
 				imgUrl="/banner-truck.webp"
