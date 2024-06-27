@@ -28,9 +28,9 @@ export default function CardPrice(props: {
 					priority
 					className="rounded-t-[23px] w-[100%]"
 				/>
-				<div className="flex flex-col items-start px-[0.5vw] w-full">
+				<div className="flex flex-col items-start px-[0.5vw] mobile:px-[1.5vw] w-full">
 					<div className="mb-[37px]">
-						<h4 className="text-base text-dark-grey font-bold">
+						<h4 className="text-base mobile:text-[14px] text-dark-grey font-bold">
 							{props.title}
 						</h4>
 						<p className="text-sm">

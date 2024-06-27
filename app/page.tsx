@@ -1,5 +1,5 @@
 'use client'
-import React, { createContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SwiperSlide } from 'swiper/react'
 import BannerImage from '@/app/core/components/BannerImage'
 import Button from '@/app/core/components/Button'
@@ -211,9 +211,52 @@ const breakPointsCardValoration = {
 	}
 }
 
+const breakPointsCardPrices = {
+	300: {
+		slidesPerView: 2,
+		spaceBetween: 10,
+	},
+	550: {
+		slidesPerView: 2.5,
+		spaceBetween: 10,
+	},
+	716: {
+		slidesPerView: 2.8,
+		spaceBetween: 10,
+	},
+	900: {
+		slidesPerView: 4,
+		spaceBetween: 10,
+	},
+	1120: {
+		slidesPerView: 5,
+		spaceBetween: 10,
+	},
+	1524: {
+		slidesPerView: 5,
+		spaceBetween: 100,
+	}
+}
+
 const classCardCategories = "w-full h-auto object-cover";
 
 export default function Home() {
+
+	const [isMobile, setIsMobile] = useState(false)
+
+	useEffect(() => {
+		const handleResize = () => {
+			setIsMobile(window.innerWidth < 640);
+		};
+
+		handleResize();
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
 	return (
 		<main>
 			<BannerImage
@@ -256,21 +299,21 @@ export default function Home() {
 			</section>
 
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px] font-tertiary-font text-dark-grey ml-[5vw]"> Novedades</h2>
-				<div className="pb-[72px]">
-					<Slider breakpoints={breakPointsCardValoration}>
-						{cardPropsArray.map((cardProps, index) => (
-							<SwiperSlide key={index}>
-								<CardPrice
-									title={cardProps.title}
-									price={cardProps.price}
-									description={cardProps.description}
-									reference={cardProps.reference}
-								/>
-							</SwiperSlide>
-						))}
-					</Slider>
+				<div className=' flex justify-start ml-36 mobile:ml-12'>
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey"> Novedades</h2>
 				</div>
+				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+					{cardPropsArray.map((cardProps, index) => (
+						<SwiperSlide key={index} className="flex justify-center items-center">
+							<CardPrice
+								title={cardProps.title}
+								price={cardProps.price}
+								description={cardProps.description}
+								reference={cardProps.reference}
+							/>
+						</SwiperSlide>
+					))}
+				</Slider>
 			</section>
 
 			<section>
@@ -314,10 +357,12 @@ export default function Home() {
 				</BannerImage>
 			</section>
 			<section className="pt-[72px]">
-				<h2 className="text-title-2 mb-[46px] font-tertiary-font text-dark-grey ml-[5vw]"> Podría interesarte</h2>
-				<Slider breakpoints={breakPointsCardValoration}>
+				<div className='w-full flex justify-start ml-36 mobile:ml-12'>
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey"> Podría interesarte</h2>
+				</div>
+				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
 					{cardPropsArray.map((cardProps, index) => (
-						<SwiperSlide key={index}>
+						<SwiperSlide key={index} className="flex justify-center items-center">
 							<CardPrice
 								title={cardProps.title}
 								price={cardProps.price}

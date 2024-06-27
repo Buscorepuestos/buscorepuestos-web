@@ -17,4 +17,16 @@ describe('Slidera component', () => {
 		expect(screen.getByText('Slide 2')).toBeDefined()
 		expect(screen.getByText('Slide 3')).toBeDefined()
 	})
+	test('Slider with isMobile as true', () => {
+		render(
+			<Slider isMobile={true}>
+				<div>Slide 1</div>
+				<div>Slide 2</div>
+				<div>Slide 3</div>
+			</Slider>
+		)
+		const slider = screen.getByRole('region') // Assuming Swiper component renders with role="region"
+		expect(slider.style.height).toBe('840px')
+		expect(slider.style.maxWidth).toBe('95vw')
+	})
 })
