@@ -5,7 +5,7 @@ import CardPrice from '@/app/core/components/cards/CardPrice'
 import CardInfo from '@/app/core/components/cards/CardInfo'
 import { Footer } from '@/app/core/components/global/footer'
 import { Header } from '@/app/core/components/global/header'
-import BannerImage from '@/app/core/components/BannerImage'
+import Banner from '@/app/core/components/Banner'
 import SearchBar from '@/app/core/components/SearchBar'
 import CardValoration from '@/app/core/components/cards/CardValoration'
 import Slider from '@/app/core/components/Slider'
@@ -222,16 +222,17 @@ export default function Components() {
 				<h3 className="text-title-3 text-dark-grey">
 					Banner with Image Component
 				</h3>
-				<BannerImage
+				<Banner
 					imgUrl="/banner-motor.webp"
 					height="561px"
 					aligned="center"
+					color="blue"
 				>
 					<h1 className="text-title-1 text-white text-center max-w-[728px]">
 						ponemos a tu alcance la mayor variedad de piezas de
 						coche recuperadas, reconstruidas y nuevas.
 					</h1>
-				</BannerImage>
+				</Banner>
 			</section>
 		</>
 	)
