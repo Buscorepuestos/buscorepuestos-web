@@ -1,6 +1,7 @@
 import React from 'react'
 import Carousel from '../core/components/carousel/carousel'
 import ProductTitle from '../core/components/productTitle/productTitle'
+import SupplierRating from '../core/components/supplierRating/supplierRating'
 
 export default function Product() {
 
@@ -31,12 +32,19 @@ export default function Product() {
                     />
                 </div>
                 <div className='mobile:order-1'>
-                <ProductTitle 
-                    title="Parachoques delantero Mitsubishi Evo VIII 2004"
-                    refNumber="5FG8715S52SA"
-                    productName="MITSUBISHI EVO VIII 2004"
-                    imageSrc="/COMPARTIR.svg"
-                />
+                    <ProductTitle 
+                        title="Parachoques delantero Mitsubishi Evo VIII 2004"
+                        refNumber="5FG8715S52SA"
+                        productName="MITSUBISHI EVO VIII 2004"
+                        imageSrc="/COMPARTIR.svg"
+                    />
+                    <div>
+                        <SupplierRating 
+                            valoration={4} 
+                            location="Huelva" 
+                            title="Valoración del proveedor" 
+                        />
+                    </div>
                 </div>
             </div>
         </div>

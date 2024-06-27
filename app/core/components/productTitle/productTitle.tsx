@@ -1,7 +1,14 @@
 import React from 'react'
 import Image from 'next/image'
 
-export default function ProductTitle({ title, refNumber, productName, imageSrc }) {
+interface ProductTitleProps {
+    title: string;
+    refNumber: string;
+    productName: string;
+    imageSrc: string;
+}
+
+export default function ProductTitle({ title, refNumber, productName, imageSrc } : ProductTitleProps) {
     return (
         <div>
             <div className="w-full h-[3px] bg-secondary-blue mb-6" />
