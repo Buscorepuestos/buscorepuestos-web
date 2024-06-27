@@ -10,14 +10,18 @@
 	--custom-black: #000000;
 
 	--primary-blue: #0065ff;
+	--primary-lila: #3A27B0;
 	--secondary-blue: #12b1bb;
 	--warning: #edd443;
 	--dark-grey: #424242;
 	--light-grey: #d9d9d9;
+	--neutro300: #5F5F5F;
 
-	--mobile-breakpoint: 425px;
+	--mobile-breakpoint: 640px;
 	--tablet-breakpoint: 768px;
 	--desktop-breakpoint: 1440px;
+
+	--font-family-popins: 'Poppins', sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -37,7 +41,7 @@ h3 {
 	line-height: 1.2;
 }
 
-h1 {
+h1, h2, h3 {
 	/* 2xl */
 	font-family: var(--font-bebas-neue), sans-serif;
 }
@@ -79,6 +83,10 @@ a {
 	font-weight: bold;
 	text-decoration: underline;
 } */
+
+.swiper-pagination-bullet-active {
+	background: var(--light-grey)!important;
+}
 
 body {
 	/* md */

@@ -15,6 +15,11 @@ const config: Config = {
 			base: '1.6rem',
 			sm: '1.4rem',
 			xs: '1.2rem',
+			lg: '3rem',
+			xl: '4rem',
+			'8xl': '6rem',
+			'9xl': '8rem',
+
 		},
 		extend: {
 			screens: {
@@ -31,14 +36,17 @@ const config: Config = {
 				'custom-white': 'var(--custom-white)',
 				'custom-black': 'var(--custom-black)',
 				'primary-blue': 'var(--primary-blue)',
+				'primary-lila': 'var(--primary-lila)',
 				'secondary-blue': 'var(--secondary-blue)',
 				warning: 'var(--warning)',
 				'dark-grey': 'var(--dark-grey)',
 				'light-grey': 'var(--light-grey)',
+				'neutro-100': 'var(--neutro100)',
 			},
 			fontFamily: {
 				'primary-font': ['var(--font-work-sans)'],
 				'secondary-font': ['var(--font-bebas-neue)'],
+				'tertiary-font': ['var(--font-family-popins)'],
 			},
 		},
 	},

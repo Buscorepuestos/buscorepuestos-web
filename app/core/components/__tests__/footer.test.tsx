@@ -4,7 +4,7 @@ import { Footer } from '../global/footer'
 
 const footerLinks = [
 	{
-		category: 'Te puede interesar',
+		category: 'TE PUEDE INTERESAR',
 		links: [
 			{ name: 'Outlet', href: '#' },
 			{ name: 'Más buscados', href: '#' },
@@ -13,21 +13,21 @@ const footerLinks = [
 		],
 	},
 	{
-		category: 'Te puede gustar',
+		category: 'PÁGINAS RECIENTES',
 		links: [
-			{ name: 'Outlet', href: '#' },
-			{ name: 'Más buscados', href: '#' },
-			{ name: 'Servicios', href: '#' },
-			{ name: 'Partners', href: '#' },
+			{ name: 'Tienda', href: '#' },
+			{ name: 'Menú', href: '#' },
+			{ name: 'Quienes somos', href: '#' },
+			{ name: 'Contacto', href: '#' },
 		],
 	},
 	{
-		category: 'Te puede atraer',
+		category: 'MÁS INFORMACIÓN',
 		links: [
-			{ name: 'Outlet', href: '#' },
-			{ name: 'Más buscados', href: '#' },
-			{ name: 'Servicios', href: '#' },
-			{ name: 'Partners', href: '#' },
+			{ name: 'Aviso Legal', href: '#' },
+			{ name: 'Política de privacidad', href: '#' },
+			{ name: 'Política de cookies', href: '#' },
+			{ name: 'Términos y condiciones', href: '#' },
 		],
 	},
 ]

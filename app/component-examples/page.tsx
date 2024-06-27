@@ -5,7 +5,7 @@ import CardPrice from '@/app/core/components/cards/CardPrice'
 import CardInfo from '@/app/core/components/cards/CardInfo'
 import { Footer } from '@/app/core/components/global/footer'
 import { Header } from '@/app/core/components/global/header'
-import BannerImage from '@/app/core/components/BannerImage'
+import Banner from '@/app/core/components/Banner'
 import SearchBar from '@/app/core/components/SearchBar'
 import CardValoration from '@/app/core/components/cards/CardValoration'
 import Slider from '@/app/core/components/Slider'
@@ -62,23 +62,45 @@ const cardPropsArray = [
 
 const cardInfoPropsArray = [
 	{
-		title: 'Parachoques delantero',
+		title: 'Interior\nHabitáculo',
+		image: '/Interior.svg',
+		href: '#'
 	},
 	{
-		title: 'Parachoques trasero',
+		title: 'Carrocería\ny lunas',
+		image: '/Carroceria.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro delantero',
+		title: 'Faros y\npilotos',
+		image: '/Faros.svg',
+		href: '#'
 	},
 	{
-		title: 'Faro trasero',
+		title: 'Sistema de\nseguridad',
+		image: '/Seguridad.svg',
+		href: '#'
 	},
 	{
-		title: 'Espejo lateral',
+		title: 'Electrónica\ny electricidad',
+		image: '/Electricidad.svg',
+		href: '#'
 	},
 	{
-		title: 'Rueda',
+		title: 'Suspensión,\nEjes y Dirección',
+		image: '/Suspension.svg',
+		href: '#'
 	},
+	{
+		title: 'Cajas de\ncambio y\ntransmisión',
+		image: '/Transmision.svg',
+		href: '#'
+	},
+	{
+		title: 'Refrigeración y\naire\nacondicionado',
+		image: '/Refrigeracion.svg',
+		href: '#'
+	}
 ]
 
 const cardValorationPropsArray = [
@@ -157,7 +179,7 @@ export default function Components() {
 				</h3>
 				<div className="flex justify-between gap-6">
 					{cardInfoPropsArray.map((cardInfoProps, index) => (
-						<CardInfo key={index} title={cardInfoProps.title} />
+						<CardInfo key={index} title={cardInfoProps.title} image={cardInfoProps.image}/>
 					))}
 				</div>
 				<div className="flex justify-between gap-6">
@@ -200,16 +222,17 @@ export default function Components() {
 				<h3 className="text-title-3 text-dark-grey">
 					Banner with Image Component
 				</h3>
-				<BannerImage
+				<Banner
 					imgUrl="/banner-motor.webp"
 					height="561px"
 					aligned="center"
+					color="blue"
 				>
 					<h1 className="text-title-1 text-white text-center max-w-[728px]">
 						ponemos a tu alcance la mayor variedad de piezas de
 						coche recuperadas, reconstruidas y nuevas.
 					</h1>
-				</BannerImage>
+				</Banner>
 			</section>
 		</>
 	)
