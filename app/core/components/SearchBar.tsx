@@ -1,10 +1,10 @@
 import Image from 'next/image'
 
 export default function SearchBar(props: {
-	height: string
-	width: string
-	borderColor: string
-	borderWidth: string
+	height?: string
+	width?: string
+	borderColor?: string
+	borderWidth?: string
 }) {
 	return (
 		<section
