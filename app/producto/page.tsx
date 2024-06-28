@@ -51,6 +51,7 @@ export default function Product() {
                                 refNumber="5FG8715S52SA"
                                 productName="MITSUBISHI EVO VIII 2004"
                                 imageSrc="/COMPARTIR.svg"
+                                isWideScreen={isWideScreen}
                             />
                         )
                     }
@@ -66,6 +67,7 @@ export default function Product() {
                                 refNumber="5FG8715S52SA"
                                 productName="MITSUBISHI EVO VIII 2004"
                                 imageSrc="/COMPARTIR.svg"
+                                isWideScreen={isWideScreen}
                             />
                         )
                     }
