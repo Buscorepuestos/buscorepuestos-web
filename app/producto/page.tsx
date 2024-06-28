@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Carousel from '../core/components/carousel/carousel'
 import ProductTitle from '../core/components/productTitle/productTitle'
 import SupplierRating from '../core/components/supplierRating/supplierRating'
+import './product.css'
 
 const TestImages = [
     {
