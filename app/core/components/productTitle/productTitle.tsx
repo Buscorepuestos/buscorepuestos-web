@@ -12,7 +12,7 @@ interface ProductTitleProps {
 export default function ProductTitle({ title, refNumber, productName, imageSrc, isWideScreen } : ProductTitleProps) {
     return (
         <div className='mobile:mb-10'>
-            <div className="w-full h-[3px] bg-secondary-blue mb-6 mobile:mb-2" />
+            <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-2" />
             <div className='mobile:grid mobile:grid-cols-custom-layout-mobile mobile:items-center'>
                 <div>
                     <div className='grid grid-cols-custom-layout mobile:flex items-center mb-0'>
@@ -59,7 +59,7 @@ export default function ProductTitle({ title, refNumber, productName, imageSrc, 
                     )
                 }
             </div>
-            <div className="w-full h-[3px] bg-secondary-blue mt-4" />
+            <div className="w-full h-[2px] bg-secondary-blue mt-4" />
         </div>
     )
 }

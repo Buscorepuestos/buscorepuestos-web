@@ -42,7 +42,7 @@ export default function Product() {
 
     return (
         <div>
-            <div className='my-[4vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
+            <div className='my-[4vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div>
                     {
                         isWideScreen && (
@@ -57,8 +57,14 @@ export default function Product() {
                     }
                     <Carousel 
                         images={TestImages}
+                        isWideScreen={isWideScreen}
                     />
                 </div>
+                {
+                    isWideScreen && (
+                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-2" />
+                    )
+                }
                 <div>
                     {
                         !isWideScreen && (
