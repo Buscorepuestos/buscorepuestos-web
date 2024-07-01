@@ -48,6 +48,10 @@ const config: Config = {
 				'secondary-font': ['var(--font-bebas-neue)'],
 				'tertiary-font': ['var(--font-family-popins)'],
 			},
+			gridTemplateColumns: {
+				'custom-layout': '60% 30% 10%',
+				'custom-layout-mobile': '80% 20%'
+			}
 		},
 	},
 	plugins: [],
