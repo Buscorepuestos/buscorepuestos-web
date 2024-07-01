@@ -27,7 +27,7 @@ export default function ProductTitle({ title, refNumber, productName, imageSrc, 
                                     </h1>
                                     <Image
                                         src={imageSrc} 
-                                        alt="compartir"
+                                        alt="compartir-desktop"
                                         width={34}
                                         height={34}
                                     />
@@ -40,7 +40,7 @@ export default function ProductTitle({ title, refNumber, productName, imageSrc, 
                     </h1>
                     {
                         isWideScreen && (
-                            <h1 className="text-[3vw] font-tertiary-font mt-1">
+                            <h1 className="text-[3vw] font-tertiary-font mt-1" role='ref-mobile'>
                                 <span className="ref">Ref.</span>{refNumber}
                             </h1>
                         )
