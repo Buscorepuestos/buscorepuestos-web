@@ -4,6 +4,7 @@ import Carousel from '../core/components/carousel/carousel'
 import ProductTitle from '../core/components/productTitle/productTitle'
 import SupplierRating from '../core/components/supplierRating/supplierRating'
 import ProductInfo from '../core/components/productInfo/productInfo'
+import PaymentMethod from '../core/components/paymentMethod/paymentMethod'
 import './product.css'
 
 const TestImages = [
@@ -63,7 +64,7 @@ export default function Product() {
 
     return (
         <div>
-            <div className='my-[4vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
+            <div className='mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div>
                     {
                         isWideScreen && (
@@ -115,6 +116,16 @@ export default function Product() {
                             observations={observations}
                         />
                     </div>
+                </div>
+                {
+                    isWideScreen && (
+                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
+                    )
+                }
+            </div>
+            <div className='flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
+                <div className='flex justify-end'>
+                    <PaymentMethod />
                 </div>
             </div>
         </div>

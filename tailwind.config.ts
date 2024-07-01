@@ -29,6 +29,7 @@ const config: Config = {
 				foreground: 'var(--foreground)',
 				'custom-white': 'var(--custom-white)',
 				'custom-black': 'var(--custom-black)',
+				'custom-grey': 'var(--custom-grey)',
 				'primary-blue': 'var(--primary-blue)',
 				'primary-lila': 'var(--primary-lila)',
 				'secondary-blue': 'var(--secondary-blue)',
