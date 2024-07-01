@@ -124,8 +124,10 @@ export default function Product() {
                 }
             </div>
             <div className='flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
-                <div className='flex justify-end'>
-                    <PaymentMethod />
+                <div className='flex justify-end mobile:justify-center'>
+                    <PaymentMethod 
+                        isWideScreen={isWideScreen}
+                    />
                 </div>
             </div>
         </div>
