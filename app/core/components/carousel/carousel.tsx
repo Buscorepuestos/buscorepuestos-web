@@ -35,7 +35,13 @@ export const CarouselContainer = styled.div<{ containerStyles?: React.CSSPropert
 
     .mySwiper2 {
         width: 100%;
-        height: 26vw;
+        height: 28.5vw;
+    }
+
+    @media (max-width: 1300px) {
+        .mySwiper2 {
+            height: 35vw;
+        }
     }
 
     @media (max-width: 640px) {
@@ -61,8 +67,12 @@ export const CarouselContainer = styled.div<{ containerStyles?: React.CSSPropert
 
 export const CarouselImage = styled(Image)<{ imageStyles?: React.CSSProperties }>`
     ${(props) => props.imageStyles && css`${convertCssProperties(props.imageStyles)}`}
-    height: 25vw;
+    height: 27.5vw;
     border-radius: 1rem;
+
+    @media (max-width: 1300px) {
+        height: 33.5vw;
+    }
 
     @media (max-width: 640px) {
         height: 65vw;
@@ -73,6 +83,10 @@ export const ThumbImage = styled(Image)<{ thumbImageStyles?: React.CSSProperties
     ${(props) => props.thumbImageStyles && css`${convertCssProperties(props.thumbImageStyles)}`}
     height: 5.5vw;
     border-radius: 1rem;
+
+    @media (max-width: 1300px) {
+        height: 7vw;
+    }
 
     @media (max-width: 640px) {
         height: 10.5vw;
