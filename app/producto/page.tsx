@@ -83,7 +83,7 @@ export default function Product() {
                 </div>
                 {
                     isWideScreen && (
-                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-2" />
+                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
                     )
                 }
                 <div>
@@ -105,7 +105,7 @@ export default function Product() {
                             title="Valoración del proveedor" 
                         />
                     </div>
-                    <div className="w-full h-[2px] bg-secondary-blue mb-6 mt-10" />
+                    <div className="w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>
                         <ProductInfo 
                             vehicleVersion={vehicleVersion}
