@@ -95,3 +95,8 @@ body {
 	color: var(--foreground);
 	font-size: 1.6rem;
 }
+
+.font-poppins {
+	font-family: 'Poppins', sans-serif;
+	color: var(--dark-grey);
+}
