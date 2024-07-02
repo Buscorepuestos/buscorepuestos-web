@@ -14,6 +14,7 @@ export default function Store() {
 	const client = algoliasearch(appID, apiKey)
 	// Create a new index and add a record
 	const index = client.initIndex('dev_PRODUCTS')
+	let hits = [];
 
 	const search = async (query: string) => {
 		// Search for query in the index "products"
@@ -29,9 +30,12 @@ export default function Store() {
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
-				const response = await getProducts()
-				setProducts(response.data.data.selectedProducts as IProductMongoose[])
-				await index.replaceAllObjects(response.data.data.selectedProducts, {autoGenerateObjectIDIfNotExist: true}).wait();
+				index.browseObjects({
+					batch: batch => {
+						hits = hits.concat(batch)
+					},
+					attributesToRetrieve: ['title', 'mainReference', 'brand', 'articleModel', 'year', 'buscorepuestosPrice', 'images'],
+				}).then(() => setProducts(hits))
 			} catch (error) {
 				setError((error as Error).message)
 			} finally {
@@ -42,11 +46,11 @@ export default function Store() {
 		fetchProducts()
 	}, [])
 
-	if (loading) return <p>Loading...</p>
-	if (error) return <p>Error: {error}</p>
-
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
+	}
+	const parsePrice = (price: number) => {
+		return price.toFixed(2).replace('.', ',');
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -65,9 +69,11 @@ export default function Store() {
 					<CardPrice title={product.title}
 							   reference={product.mainReference}
 							   description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-							   price={product.buscorepuestosPrice.toString().replace('.', ',')}
+							   price={parsePrice(product.buscorepuestosPrice)}
 							   image={product.images[0]} />
 				))}
+				{loading && <p>Loading...</p>}
+				{error && <p>Error</p>}
 			</section>
 		</main>
 	)
