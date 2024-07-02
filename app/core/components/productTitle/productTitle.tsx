@@ -9,7 +9,7 @@ interface ProductTitleProps {
     isWideScreen?: boolean;
 }
 
-export default function ProductTitle({ title, refNumber, productName, imageSrc, isWideScreen } : ProductTitleProps) {
+const ProductTitle: React.FC<ProductTitleProps> = ({ title, refNumber, productName, imageSrc, isWideScreen } : ProductTitleProps) => {
     return (
         <div className='mobile:mb-10'>
             <div className="w-full h-[2px] bg-secondary-blue mb-[0.6vw] mobile:mb-2" />
@@ -63,3 +63,5 @@ export default function ProductTitle({ title, refNumber, productName, imageSrc, 
         </div>
     )
 }
+
+export default ProductTitle

@@ -45,6 +45,49 @@ const observations = `
     montes eros.
 `;
 
+const paymentOptions = [
+    {   
+        src: '/tarjeta.svg', 
+        alt: 'tarjeta', 
+        subtitle: 'Pago con tarjeta', 
+        width: 56, 
+        height: 56,
+        className:`xl:w-[3.4vw] lg:w-[4.5vw] md:w-[4.8vw] sm:w-[6vw] mobile:w-[12vw]`
+    },
+    { 
+        src: '/transferencia.svg', 
+        alt: 'transferencia', 
+        subtitle: 'Transferencia', 
+        width: 50, 
+        height: 50,
+        className:`xl:w-[3vw] lg:w-[4vw] md:w-[4.3vw] sm:w-[5.5vw] mobile:w-[11vw]` 
+    },
+    { 
+        src: '/contrareembolso.svg', 
+        alt: 'contrareembolso', 
+        subtitle: 'Contra reembolso', 
+        width: 50, 
+        height: 50,
+        className:`xl:w-[3.1vw] lg:w-[4vw] md:w-[4.6vw] sm:w-[5.5vw] mobile:w-[11vw]`
+    },
+    { 
+        src: '/bizum.svg', 
+        alt: 'bizum', 
+        subtitle: 'Paga con Bizum', 
+        width: 35, 
+        height: 35,
+        className:`xl:w-[2.3vw] lg:w-[3vw] md:w-[3.3vw] sm:w-[4vw] mobile:w-[8.5vw]` 
+    },
+    { 
+        src: '/plazos.svg', 
+        alt: 'plazos', 
+        subtitle: 'Pago a plazos', 
+        width: 45, 
+        height: 45,
+        className:`xl:w-[3vw] lg:w-[4vw] md:w-[4.4vw] sm:w-[5.5vw] mobile:w-[11vw]` 
+    },
+]
+
 export default function Product() {
 
     const [isWideScreen, setIsWideScreen] = useState(false);
@@ -127,6 +170,7 @@ export default function Product() {
                 <div className='flex justify-end mobile:justify-center'>
                     <PaymentMethod 
                         isWideScreen={isWideScreen}
+                        paymentOptions={paymentOptions}
                     />
                 </div>
             </div>
