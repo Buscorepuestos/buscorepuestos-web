@@ -19,7 +19,6 @@ const config: Config = {
 			xl: '4rem',
 			'8xl': '6rem',
 			'9xl': '8rem',
-
 		},
 		extend: {
 			screens: {
@@ -36,6 +35,7 @@ const config: Config = {
 				'custom-white': 'var(--custom-white)',
 				'custom-black': 'var(--custom-black)',
 				'primary-blue': 'var(--primary-blue)',
+				'primary-blue-2': 'var(--primary-blue-2)',
 				'primary-lila': 'var(--primary-lila)',
 				'secondary-blue': 'var(--secondary-blue)',
 				warning: 'var(--warning)',
