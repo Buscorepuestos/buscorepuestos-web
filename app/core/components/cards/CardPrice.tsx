@@ -10,8 +10,9 @@ export default function CardPrice(props: {
 	reference: string
 	description: string
 	price: number
-	image: string
+	image?: string
 }) {
+	const {image = '/card-preview.webp'} = props;
 	return (
 		<>
 			{/* Next images */}
@@ -22,12 +23,12 @@ export default function CardPrice(props: {
 					transition duration-300 ease-in-out"
 			>
 				<Image
-					src={props.image}
+					src={image}
 					alt="card image"
 					width={205}
 					height={140}
-					priority
 					className="rounded-t-[23px] w-[100%] h-[140px] mobile:h-[132px]"
+					loading={'lazy'}
 				/>
 				<div className="flex flex-col items-start px-[0.5vw] mobile:px-4 w-full">
 					<div className="w-full h-[112px] mobile:h-[120px]">
