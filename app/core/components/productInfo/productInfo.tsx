@@ -18,7 +18,7 @@ const Observations = styled.p`
     -webkit-line-clamp: 5;
 `;
 
-const productInfo = ({ vehicleVersion, engine, engineCode, oemReference, observations }: ProductInfoProps) => {
+const ProductInfo: React.FC<ProductInfoProps> = ({ vehicleVersion, engine, engineCode, oemReference, observations }: ProductInfoProps) => {
     return (
         <div className='flex flex-col font-tertiary-font text-[0.9vw] xl:text-[1vw] sm:text-[1.5vw] mobile:text-[2.8vw]'>
             <p className='font-semibold'>Versión del vehículo</p>
@@ -37,4 +37,4 @@ const productInfo = ({ vehicleVersion, engine, engineCode, oemReference, observa
     )
 }
 
-export default productInfo
+export default ProductInfo
