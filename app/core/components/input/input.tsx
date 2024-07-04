@@ -17,7 +17,7 @@ const Input: React.FC<InputProps> = ({name, placeholder, value, onChange}) => {
                     flex border-[1px] border-secondary-blue w-full rounded-xl text-gray-800 
                     p-2 font-tertiary-font focus:border-secondary-blue focus:outline-none
                     placeholder:text-custom-grey
-                    xl:text-[0.9vw] lg:text-[1vw] md:text-[1.1vw] sm:text-[1.5vw] mobile:text-[2.5vw
+                    xl:text-[0.9vw] lg:text-[1vw] md:text-[1.1vw] sm:text-[1.5vw] mobile:text-[2.8vw]
                 `}
                 placeholder={placeholder}
                 value={value}
