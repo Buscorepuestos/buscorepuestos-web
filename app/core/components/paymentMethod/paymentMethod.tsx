@@ -25,12 +25,12 @@ const PaymentMethods: React.FC<Props> = ({ isWideScreen, paymentOptions }) => {
 			<div
 				className="
                     flex mobile:flex-col justify-items-center 
-                    items-center mt-4 mb-4 gap-4 xl:text-[0.7vw] 
-                    lg:text-[1vw] md:text-[1.1vw] sm:text-[1.3vw] mobile:text-[3vw]
+                    items-center mt-4 mb-4 gap-4 xl:text-[0.8vw] 
+                    lg:text-[0.9vw] md:text-[1.1vw] sm:text-[1.3vw] mobile:text-[3vw]
                 "
 			>
                 <div className='flex'>
-                    <div className="flex flex-col items-center gap-3 pr-4 border-r-[2px] border-secondary-blue mobile:justify-center">
+                    <div className="flex flex-col items-center gap-3 pr-6 border-r-[2px] border-secondary-blue mobile:justify-center">
                         <Image
                             src={paymentOptions[0].src}
                             alt={paymentOptions[0].alt}
@@ -40,7 +40,7 @@ const PaymentMethods: React.FC<Props> = ({ isWideScreen, paymentOptions }) => {
                         />
                         <p>{paymentOptions[0].subtitle}</p>
                     </div>
-                    <div className="flex flex-col items-center gap-2 px-4 sm:border-r-[2px] sm:border-secondary-blue">
+                    <div className="flex flex-col items-center gap-2 px-6 sm:border-r-[2px] sm:border-secondary-blue">
                         <Image
                             src={paymentOptions[1].src}
                             alt={paymentOptions[1].alt}
@@ -57,7 +57,7 @@ const PaymentMethods: React.FC<Props> = ({ isWideScreen, paymentOptions }) => {
                     )
                 }
                 <div className='flex'>
-                    <div className="flex flex-col items-center gap-2 pr-4 mobile:pr-6 border-r-[2px] border-secondary-blue">
+                    <div className="flex flex-col items-center gap-2 pr-6 mobile:pr-6 border-r-[2px] border-secondary-blue">
                         <Image
                             src={paymentOptions[2].src}
                             alt={paymentOptions[2].alt}
@@ -67,7 +67,7 @@ const PaymentMethods: React.FC<Props> = ({ isWideScreen, paymentOptions }) => {
                         />
                         <p>{paymentOptions[2].subtitle}</p>
                     </div>
-                    <div className="flex flex-col items-center gap-2 px-4 sm:border-r-[2px] sm:border-secondary-blue">
+                    <div className="flex flex-col items-center gap-2 px-6 sm:border-r-[2px] sm:border-secondary-blue">
                         <Image
                             src={paymentOptions[3].src}
                             alt={paymentOptions[3].alt}
