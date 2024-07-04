@@ -85,14 +85,14 @@ describe('Componente Header', () => {
 		expect(getByTestId('secondary-menu')).toBeTruthy()
 	})
 
-	test('Aplica clase mt-[vw] cuando pathname comienza con /producto', () => {
-		usePathnameMock.mockReturnValue('/producto/123');
+	test('Aplica clase mt-[vw] cuando pathname comienza con /product', () => {
+		usePathnameMock.mockReturnValue('/product/123');
 		render(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
 		expect(sectionElement.className).toContain('mt-0');
 	});
 	
-	test('No aplica clase mt-[1vw] cuando pathname no comienza con /producto', () => {
+	test('No aplica clase mt-[1vw] cuando pathname no comienza con /product', () => {
 		usePathnameMock.mockReturnValue('/');
 		render(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
