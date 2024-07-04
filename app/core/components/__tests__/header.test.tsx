@@ -85,17 +85,26 @@ describe('Componente Header', () => {
 		expect(getByTestId('secondary-menu')).toBeTruthy()
 	})
 
-	test('Aplica clase mt-[vw] cuando pathname comienza con /product', () => {
+	test('Aplica clase mt-0 cuando pathname comienza con /product y no es pantalla ancha', () => {
 		usePathnameMock.mockReturnValue('/product/123');
+		resizeWindow(640, 858); // Simula una pantalla no ancha
 		render(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
 		expect(sectionElement.className).toContain('mt-0');
 	});
-	
-	test('No aplica clase mt-[1vw] cuando pathname no comienza con /product', () => {
+
+	test('Aplica clase mt-[1vw] cuando pathname comienza con /product y es pantalla ancha', () => {
+		usePathnameMock.mockReturnValue('/product/123');
+		resizeWindow(1280, 1024); // Simula una pantalla ancha
+		render(<Header />);
+		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
+		expect(sectionElement.className).toContain('mt-[1vw]');
+	});
+
+	test('Aplica clase absolute cuando pathname no comienza con /product', () => {
 		usePathnameMock.mockReturnValue('/');
 		render(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
-		expect(sectionElement.className).not.toContain('mt-[1vw]');
+		expect(sectionElement.className).toContain('absolute');
 	});
 })
