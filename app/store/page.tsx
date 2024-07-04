@@ -65,12 +65,12 @@ export default function Store() {
 			</div>
 			<section
 				className={'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'}>
-				{products.map((product: any) => (
-					<CardPrice title={product.title}
+				{products.map((product: any, index) => (
+					<CardPrice key={index} title={product.title}
 							   reference={product.mainReference}
 							   description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
 							   price={parsePrice(product.buscorepuestosPrice)}
-							   image={product.images[0]} />
+							   image={product.images[0] ? product.images[0] : '/nodisponible.png'} />
 				))}
 				{loading && <p>Loading...</p>}
 				{error && <p>Error</p>}
