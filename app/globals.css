@@ -11,6 +11,7 @@
 	--custom-grey: #5F5F5F;
 
 	--primary-blue: #0065ff;
+	--primary-blue-2: #1A61F1;
 	--primary-lila: #3A27B0;
 	--secondary-blue: #12b1bb;
 	--warning: #edd443;
@@ -95,4 +96,9 @@ body {
 	background: var(--background);
 	color: var(--foreground);
 	font-size: 1.6rem;
+}
+
+.font-poppins {
+	font-family: 'Poppins', sans-serif;
+	color: var(--dark-grey);
 }
