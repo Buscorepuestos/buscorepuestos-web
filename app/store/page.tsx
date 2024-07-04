@@ -40,7 +40,7 @@ export default function Store() {
 							   reference={product.mainReference}
 							   description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
 							   price={product.buscorepuestosPrice.toString().replace('.', ',')}
-							   image={product.images[0]} />
+							   image={product.images[0] ? product.images[0] : '/nodisponible.png'} />
 				))}
 			</section>
 		</main>
