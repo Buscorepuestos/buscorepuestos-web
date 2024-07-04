@@ -1,6 +1,13 @@
-import { expect, test, describe, afterEach } from 'vitest'
-import { cleanup, render, screen, within , fireEvent} from '@testing-library/react'
+import { expect, test, describe, beforeEach, afterEach, vi } from 'vitest'
+import { cleanup, render, screen, fireEvent } from '@testing-library/react'
 import { Header } from '../global/header'
+
+// Simulación de usePathname usando vi.fn()
+const usePathnameMock = vi.fn()
+
+vi.mock('next/navigation', () => ({
+	usePathname: () => usePathnameMock(),
+}))
 
 const principalMenuLinks = [
 	{ label: 'Tienda', href: '#' },
@@ -8,6 +15,7 @@ const principalMenuLinks = [
 	{ label: 'Ayuda', href: '#' },
 	{ label: 'Contacto', href: '#' },
 ]
+
 const secondaryMenuLinks = [
 	{ label: 'Marcas', href: '#' },
 	{ label: 'Categorías', href: '#' },
@@ -21,58 +29,73 @@ const secondaryMenuLinks = [
 ]
 
 const resizeWindow = (width: number, height: number) => {
-	window.innerWidth = width;
-	window.innerHeight = height;
-	window.dispatchEvent(new Event('resize'));
-};
+	window.innerWidth = width
+	window.innerHeight = height
+	window.dispatchEvent(new Event('resize'))
+}
 
-describe('Header component', () => {
+describe('Componente Header', () => {
 	afterEach(() => {
 		cleanup()
+		vi.clearAllMocks() // Limpia los mocks después de cada prueba
 	})
-	test('Slider content elements', () => {
+
+	beforeEach(() => {
+		usePathnameMock.mockReturnValue('/') // Valor por defecto de usePathname
+	})
+
+	test('Elementos del slider', () => {
 		render(<Header />)
-		// check if render img logo
+		// Verificar si se renderiza el logo img
 		expect(screen.getByAltText('Header')).toBeDefined()
-
 	})
-	test('All menu links', () => {
-		render(<Header />)
-		const allLinks = [...principalMenuLinks, ...secondaryMenuLinks]
 
-		allLinks.forEach(link => {
-			expect(screen.getByText(link.label)).toBeDefined()
+	test('Todos los enlaces del menú', () => {
+		render(<Header />)
+		const todosLosEnlaces = [...principalMenuLinks, ...secondaryMenuLinks]
+
+		todosLosEnlaces.forEach((enlace) => {
+			expect(screen.getByText(enlace.label)).toBeDefined()
 		})
 	})
-	test('toggles menu open and close', () => {
 
+	test('Alternar abrir y cerrar menú', () => {
 		resizeWindow(640, 858)
 
 		const { getByAltText, getByTestId } = render(<Header />)
+		const botonMenu = getByAltText('Hamburguesa')
 
-		const menuButton = getByAltText('Hamburguesa') 
-
-		fireEvent.click(menuButton)
+		fireEvent.click(botonMenu)
 
 		expect(getByTestId('Menu')).toBeTruthy()
-
 	})
-	test('toggles secondary menu open and close', () => {
 
+	test('Alternar abrir y cerrar menú secundario', () => {
 		resizeWindow(640, 858)
 
 		const { getByAltText, getByTestId } = render(<Header />)
+		const botonMenu = getByAltText('Hamburguesa')
 
-		const menuButton = getByAltText('Hamburguesa') 
+		fireEvent.click(botonMenu)
 
-		fireEvent.click(menuButton)
+		const botonMenuSecundario = getByTestId('secondary-toggle')
 
-		const menuButtonSecondary = getByTestId('secondary-toggle') 
-
-		fireEvent.click(menuButtonSecondary)
+		fireEvent.click(botonMenuSecundario)
 
 		expect(getByTestId('secondary-menu')).toBeTruthy()
-
 	})
 
+	test('Aplica clase mt-[1vw] cuando pathname comienza con /producto', () => {
+		usePathnameMock.mockReturnValue('/producto/123');
+		render(<Header />);
+		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
+		expect(sectionElement.className).toContain('mt-[1vw]');
+	});
+	
+	test('No aplica clase mt-[1vw] cuando pathname no comienza con /producto', () => {
+		usePathnameMock.mockReturnValue('/');
+		render(<Header />);
+		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
+		expect(sectionElement.className).not.toContain('mt-[1vw]');
+	});
 })
