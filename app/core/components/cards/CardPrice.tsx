@@ -10,7 +10,7 @@ export default function CardPrice(props: {
 	reference: string
 	description: string
 	price: number
-	image: string
+	image?: string
 }) {
 	const {image = '/card-preview.webp'} = props;
 	return (
