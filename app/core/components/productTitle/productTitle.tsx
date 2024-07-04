@@ -1,9 +1,16 @@
 import React from 'react'
 import Image from 'next/image'
 
-export default function ProductTitle({ title, refNumber, productName, imageSrc }) {
+interface ProductTitleProps {
+    title: string;
+    refNumber: string;
+    productName: string;
+    imageSrc: string;
+}
+
+export default function ProductTitle({ title, refNumber, productName, imageSrc } : ProductTitleProps) {
     return (
-        <div>
+        <div className='mobile:mb-10'>
             <div className="w-full h-[3px] bg-secondary-blue mb-6" />
             <div className='grid grid-cols-custom-layout items-center mb-4'>
                 <h1 className="lg:text-[1.8vw] md:text-[2vw] sm:text-[2.2vw] mobile:text-[3.5vw] font-tertiary-font font-semibold overflow-hidden truncate w-auto">
