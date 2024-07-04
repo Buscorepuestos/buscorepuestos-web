@@ -41,7 +41,7 @@ const footerLinks = [
 
 export function Footer() {
 	return (
-		<section className="flex bg-primary-blue text-white w-screen lg:h-[15vw] md:h-[19vw] ">
+		<section className="flex bg-primary-blue text-white w-full lg:h-[15vw] md:h-[19vw] ">
 			<div className="my-0 mx-auto w-full max-w-screen-desktop gap-[1vw] grid grid-cols-2 mobile:flex mobile:flex-col-reverse self-center items-center">
 				<article className="self-center lg:mt-[1vw] md:mt-[5vw] sm:mt-[6vw] mobile:mt-[10vw]">
 					<div className="mobile:flex mobile:flex-col-reverse mb-7 pl-[1.5vw] mobile:pl-0">
