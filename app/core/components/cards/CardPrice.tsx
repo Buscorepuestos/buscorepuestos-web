@@ -12,6 +12,7 @@ export default function CardPrice(props: {
 	price: number
 	image: string
 }) {
+	const {image = '/card-preview.webp'} = props;
 	return (
 		<>
 			{/* Next images */}
@@ -22,7 +23,7 @@ export default function CardPrice(props: {
 					transition duration-300 ease-in-out"
 			>
 				<Image
-					src={props.image}
+					src={image}
 					alt="card image"
 					width={205}
 					height={140}
