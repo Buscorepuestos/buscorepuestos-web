@@ -20,7 +20,7 @@ const Observations = styled.p`
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ vehicleVersion, engine, engineCode, oemReference, observations }: ProductInfoProps) => {
     return (
-        <div className='flex flex-col font-tertiary-font text-[0.9vw] xl:text-[1vw] sm:text-[1.5vw] mobile:text-[2.8vw]'>
+        <div className='flex flex-col font-tertiary-font text-[0.9vw] xl:text-[1vw] sm:text-[1.5vw] mobile:text-[2.8vw] px-10'>
             <p className='font-semibold'>Versión del vehículo</p>
             <p>{vehicleVersion}</p>
             <p className='font-semibold'>Motor</p>
