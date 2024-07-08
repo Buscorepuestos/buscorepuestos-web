@@ -130,7 +130,7 @@ export default function Product() {
                         <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
                     )
                 }
-                <div>
+                <div className='bg-neutro-grey'>
                     {
                         !isWideScreen && (
                             <ProductTitle 
