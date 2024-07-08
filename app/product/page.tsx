@@ -149,7 +149,7 @@ export default function Product() {
                             title="Valoración del proveedor" 
                         />
                     </div>
-                    <div className="w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
+                    <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>
                         <ProductInfo 
                             vehicleVersion={vehicleVersion}
