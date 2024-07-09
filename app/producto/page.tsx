@@ -153,7 +153,15 @@ export default function Product() {
                         />
                     </div>
                     <div className="mt-[1.5vw] ml-10 flex justify-center">
-                        <ProductPrice />
+                        <ProductPrice
+                            price='148,12'
+                            shippingInfo='Envío e IVA incluido'
+                            warningImgSrc='/info.svg'
+                            originalPrice='200,00'
+                            discount='-10%'
+                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta' }}
+                            button2Props={{ type: 'primary', labelName: 'Comprar' }}
+                        />
                     </div>
                     <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>

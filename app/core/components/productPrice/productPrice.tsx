@@ -1,19 +1,37 @@
-import React from 'react'
-import Image from 'next/image'
-import Button from '../Button'
+import React from 'react';
+import Image from 'next/image';
+import Button, { ButtonProps } from '../Button';
 
-const productPrice = () => {
+interface ProductPriceProps {
+    price: string;
+    shippingInfo: string;
+    warningImgSrc: string;
+    originalPrice: string;
+    discount: string;
+    button1Props: ButtonProps;
+    button2Props: ButtonProps;
+}
+
+const ProductPrice: React.FC<ProductPriceProps> = ({
+    price,
+    shippingInfo,
+    warningImgSrc,
+    originalPrice,
+    discount,
+    button1Props,
+    button2Props
+}) => {
     return (
         <div className='flex flex-col justify-center items-center font-tertiary-font'>
             <p className='text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold'>
-                148,12€
+                {price}€
             </p>
             <p className='font-semibold xl:text-[1vw] sm:text-[1.8vw]'>
-                Envío e IVA incluido
+                {shippingInfo}
             </p>
             <div className='text-custom-orange gap-3 flex items-center'>
                 <Image
-                    src='/info.svg'
+                    src={warningImgSrc}
                     alt='warning'
                     width={20}
                     height={20}
@@ -21,24 +39,18 @@ const productPrice = () => {
                 />
                 <p className='text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw]'>
                     Precio medio pieza original nueva:  
-                    <span className='font-semibold line-through'> 200,00 € </span>
+                    <span className='font-semibold line-through'> {originalPrice}€ </span>
                 </p>
                 <p className='text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] bg-custom-orange text-custom-white rounded-2xl px-1 flex items-center'>
-                    -10%
+                    {discount}
                 </p>
             </div>
             <div className='flex gap-7 mt-7'>
-                <Button
-                    type='secondary'
-                    labelName='Añadir a la cesta' 
-                />
-                <Button
-                    type='primary'
-                    labelName='Comprar'
-                />
+                <Button {...button1Props} />
+                <Button {...button2Props} />
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default productPrice
+export default ProductPrice;
