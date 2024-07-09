@@ -5,6 +5,7 @@ import ProductTitle from '../core/components/productTitle/productTitle'
 import SupplierRating from '../core/components/supplierRating/supplierRating'
 import ProductInfo from '../core/components/productInfo/productInfo'
 import PaymentMethod from '../core/components/paymentMethod/paymentMethod'
+import ProductPrice from '../core/components/productPrice/productPrice'
 import './product.css'
 
 const TestImages = [
@@ -142,12 +143,15 @@ export default function Product() {
                             />
                         )
                     }
-                    <div>
+                    <div className="mt-[1.5vw] ml-10">
                         <SupplierRating 
                             valoration={4} 
                             location="Huelva" 
                             title="Valoración del proveedor" 
                         />
+                    </div>
+                    <div className="mt-[1.5vw] ml-10 flex justify-center">
+                        <ProductPrice />
                     </div>
                     <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>

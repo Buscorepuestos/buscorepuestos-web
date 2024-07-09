@@ -12,7 +12,7 @@ type SupplierRatingProps = {
 
 const SupplierRating: React.FC<SupplierRatingProps> = ({ valoration, location, title }) => {
     return (
-        <div className="mt-[1.5vw] ml-10">
+        <div>
             <div className='xl:w-[17vw] lg:w-[21vw] md:w-[24vw] sm:w-[26vw] mobile:w-[49vw] pl-[1.2vw] mobile:pl-[3vw] pr-[1vw] flex flex-col bg-custom-white border-secondary-blue border-[2px] rounded-3xl'>
                 <p className="xl:text-[1.1vw] lg:text-[1.4vw] md:text-[1.5vw] sm:text-[1.7vw] mobile:text-[3.2vw] font-tertiary-font text-primary-blue font-semibold">{title}</p>
                 <div className="w-full flex gap-4 mobile:gap-3 items-center mb-3 mobile:mb-1 mobile:mt-0">
