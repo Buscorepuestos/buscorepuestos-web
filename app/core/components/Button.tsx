@@ -1,6 +1,6 @@
 export interface ButtonProps {
-	labelName: string;
-	type: 'primary' | 'secondary' | 'tertiary';
+	labelName?: string;
+	type?: 'primary' | 'secondary' | 'tertiary';
 	hoverBg?: string;
 	hoverText?: string;
 	bg?: string;
