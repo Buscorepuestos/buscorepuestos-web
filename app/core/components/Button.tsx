@@ -1,13 +1,15 @@
-export default function Button(props: {
-	labelName?: string
-	type?: 'primary' | 'secondary' | 'tertiary'
-	hoverBg?: string
-	hoverText?: string
-	bg?: string
-	color?: string
-	borderColor?: string
-	xpadding?: string
-}) {
+export interface ButtonProps {
+	labelName: string;
+	type: 'primary' | 'secondary' | 'tertiary';
+	hoverBg?: string;
+	hoverText?: string;
+	bg?: string;
+	color?: string;
+	borderColor?: string;
+	xpadding?: string;
+}
+
+export default function Button(props: ButtonProps) {
 
 	if (props.type === 'secondary') {
 
