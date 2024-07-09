@@ -30,9 +30,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ vehicleVersion, engine, engin
             <p className='font-semibold'>Referencia principal OEM</p>
             <p>{oemReference}</p>
             <p className='font-semibold'>Observaciones</p>
-            <Observations>
+            <p className='text-justify'>
                 {observations}
-            </Observations>
+            </p>
         </div>
     )
 }
