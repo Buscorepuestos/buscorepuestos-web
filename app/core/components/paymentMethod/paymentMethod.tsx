@@ -17,7 +17,7 @@ interface Props {
 
 const PaymentMethods: React.FC<Props> = ({ isWideScreen, paymentOptions }) => {
 	return (
-		<div className="font-tertiary-font text-custom-grey rounded-[20px] border-[2px] border-secondary-blue px-8 md:px-3 sm:px-3 mb-6">
+		<div className="font-tertiary-font text-custom-grey rounded-[20px] border-[2px] border-secondary-blue px-8 md:px-3 sm:px-3">
 			<div className="flex justify-center text-secondary-blue font-semibold xl:text-[0.9vw] md:text-[1.2vw] sm:text-[1.7vw] mobile:text-[3vw]">
 				<p>Paga con la mayor comodidad</p>
 			</div>

@@ -112,13 +112,15 @@ export default function Product() {
                 <div>
                     {
                         isWideScreen && (
-                            <ProductTitle 
-                                title="Parachoques delantero Mitsubishi Evo VIII 2004"
-                                refNumber="5FG8715S52SA"
-                                productName="MITSUBISHI EVO VIII 2004"
-                                imageSrc="/COMPARTIR.svg"
-                                isWideScreen={isWideScreen}
-                            />
+                            <div className='mobile:mb-10'>
+                                <ProductTitle 
+                                    title="Parachoques delantero Mitsubishi Evo VIII 2004"
+                                    refNumber="5FG8715S52SA"
+                                    productName="MITSUBISHI EVO VIII 2004"
+                                    imageSrc="/COMPARTIR.svg"
+                                    isWideScreen={isWideScreen}
+                                />
+                            </div>
                         )
                     }
                     <Carousel 
@@ -143,7 +145,7 @@ export default function Product() {
                             />
                         )
                     }
-                    <div className="mt-[1.5vw] ml-10">
+                    <div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
                         <SupplierRating 
                             valoration={4} 
                             location="Huelva" 
@@ -171,7 +173,7 @@ export default function Product() {
                 }
             </div>
             <div className='flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
-                <div className='flex justify-end mobile:justify-center'>
+                <div className='flex justify-end mobile:justify-center mb-6'>
                     <PaymentMethod 
                         isWideScreen={isWideScreen}
                         paymentOptions={paymentOptions}
