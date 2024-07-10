@@ -6,7 +6,7 @@ export const createPaymentIntent = async (data: PaymentIntentRequest): Promise<A
 	try {
 		return (await api.post(`/stripe/payment-intent`, data)).data;
 	} catch (error) {
-		console.error('Error fetching products:', error)
+		console.error('Error creating Payment Intent:', error)
 		throw error
 	}
 }
