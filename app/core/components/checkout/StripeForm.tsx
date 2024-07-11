@@ -5,7 +5,8 @@ import { createBill } from '../../../services/billing/billing.service'
 
 
 const StripeForm = (props: {
-	clientSecret: string
+	clientSecret: string,
+	label: 'Pagar ahora'
 }) => {
 	const stripe = useStripe()
 	const elements = useElements()
@@ -29,7 +30,7 @@ const StripeForm = (props: {
 					setMessage('Your payment is processing.')
 					break
 				case 'requires_payment_method':
-					// setMessage('Your payment was not successful, please try again.')
+					setMessage('')
 					break
 				default:
 					setMessage('Something went wrong.')
@@ -49,7 +50,7 @@ const StripeForm = (props: {
 		}
 
 		await createBill({
-			'Id Pago Stripe': payment?.id,
+			'Id Pago Stripe': payment?.id as string,
 			Compras: ['recV9AQVCb64NveMF'],
 			Usuarios:['recxNb1bKbkcrueq1'],
 			transfer: false,
@@ -79,10 +80,12 @@ const StripeForm = (props: {
 		// your `return_url`. For some payment methods like iDEAL, your customer will
 		// be redirected to an intermediate site first to authorize the payment, then
 		// redirected to the `return_url`.
-		if (error.type === 'card_error' || error.type === 'validation_error') {
-			setMessage(error.message as string)
-		} else {
-			setMessage('An unexpected error occurred.')
+		if (error) {
+			if (error.type === 'card_error' || error.type === 'validation_error') {
+				setMessage(error.message as string)
+			} else {
+				setMessage('An unexpected error occurred.')
+			}
 		}
 
 		setIsLoading(false)
@@ -99,11 +102,11 @@ const StripeForm = (props: {
 			<PaymentElement id="payment-element" options={paymentElementOptions} />
 			<button disabled={isLoading || !stripe || !elements} id="submit">
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : 'Pagar ahora'}
+          {isLoading ? <div className="spinner" id="spinner"></div> : props.label}
         </span>
 			</button>
 			{/* Show any error or success messages */}
-			{message && <div id="payment-message">{message}</div>}
+			{<div id="payment-message">{message}</div>}
 		</form>
 	)
 
