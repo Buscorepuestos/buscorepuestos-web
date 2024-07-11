@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
-import CheckoutForm from '../core/components/checkout/CheckoutForm'
+import PaymentForm from '../core/components/checkout/PaymentForm'
 import './stripe.css'
 
 export default function App() {
@@ -32,7 +32,7 @@ export default function App() {
 
 	return (
 		<div>
-			{clientSecret && <CheckoutForm clientSecret={clientSecret} />}
+			{clientSecret && <PaymentForm clientSecret={clientSecret} />}
 		</div>
 	)
 };
