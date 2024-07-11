@@ -6,7 +6,7 @@ interface ProductPriceProps {
     price: string;
     shippingInfo: string;
     warningImgSrc: string;
-    originalPrice: string;
+    originalPrice: number;
     discount: string;
     button1Props: ButtonProps;
     button2Props: ButtonProps;
