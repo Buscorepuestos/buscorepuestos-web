@@ -1,12 +1,15 @@
-export default function Button(props: {
-	labelName?: string
-	type?: 'primary' | 'secondary' | 'tertiary'
-	hoverBg?: string
-	hoverText?: string
-	bg?: string
-	color?: string
-	borderColor?: string
-}) {
+export interface ButtonProps {
+	labelName?: string;
+	type?: 'primary' | 'secondary' | 'tertiary';
+	hoverBg?: string;
+	hoverText?: string;
+	bg?: string;
+	color?: string;
+	borderColor?: string;
+	xpadding?: string;
+}
+
+export default function Button(props: ButtonProps) {
 
 	if (props.type === 'secondary') {
 
@@ -23,9 +26,9 @@ export default function Button(props: {
 				className={`
 						${bg} ${borderColor} border-[2px] box-border shadow-lg 
 						${hoverText} ${hoverBg} 
-						rounded-3xl text-custom-white 
-						transition duration-300 ease-in-out w-[170px] h-[42px]
-						font-tertiary-font text-[3vw] lg:text-[1vw] md:text-[2vw] 
+						rounded-3xl text-custom-white font-semibold
+						transition duration-300 ease-in-out p-2
+						font-tertiary-font text-[3vw] xl:text-[1.3vw] lg:text-[1.5vw] md:text-[1.6vw] sm:text-[1.5vw]
 					`}
 			>
 				{labelName}
@@ -46,9 +49,9 @@ export default function Button(props: {
 				className={`
 					${bg} ${borderColor} border-[2px] box-border shadow-lg 
 					${hoverText} ${hoverBg}
-					rounded-3xl text-custom-white 
-					transition duration-300 ease-in-out w-[170px] h-[35px]
-					font-tertiary-font text-[3vw] lg:text-[1vw] md:text-[2vw]
+					rounded-3xl text-custom-white font-semibold
+					transition duration-300 ease-in-out p-2
+					font-tertiary-font text-[3vw] xl:text-[1.3vw] lg:text-[1.5vw] md:text-[1.6vw] sm:text-[1.5vw]
 				`}
 			>
 				{labelName}
@@ -61,16 +64,16 @@ export default function Button(props: {
 		bg = 'bg-primary-blue',
 		hoverBg = 'hover:bg-primary-lila',
 		hoverText = 'hover:text-white',
+		xpadding = 'px-20' 
 	} = props
 
 	return (
 		<button
 			className={` 
 				${bg} border-[1px] box-border shadow-lg
-				${hoverText} ${hoverBg} rounded-3xl
-				text-custom-white transition duration-300 
-				ease-in-out w-[170px] h-[42px] font-semibold
-				font-tertiary-font text-[3vw] lg:text-[1vw] md:text-[2vw] mobile:text-[4vw]
+				${hoverText} ${hoverBg} ${xpadding} rounded-3xl font-semibold
+				text-custom-white transition duration-300 ease-in-out p-2
+				font-tertiary-font text-[3vw] xl:text-[1.3vw] lg:text-[1.5vw] md:text-[1.6vw] sm:text-[1.5vw]
 			`}
 		>
 			{labelName}

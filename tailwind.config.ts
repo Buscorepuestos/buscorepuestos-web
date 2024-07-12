@@ -43,6 +43,8 @@ const config: Config = {
 				'dark-grey': 'var(--dark-grey)',
 				'light-grey': 'var(--light-grey)',
 				'neutro-100': 'var(--neutro100)',
+				'neutro-grey': 'var(--neutro-grey)',
+				'custom-orange': 'var(--custom-orange)',
 			},
 			fontFamily: {
 				'primary-font': ['var(--font-work-sans)'],

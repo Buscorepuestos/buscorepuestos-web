@@ -9,6 +9,7 @@
 	--custom-white: #ffffff;
 	--custom-black: #000000;
 	--custom-grey: #5F5F5F;
+	--custom-orange: #F4743B;
 
 	--primary-blue: #0065ff;
 	--primary-blue-2: #1A61F1;
@@ -18,6 +19,7 @@
 	--dark-grey: #424242;
 	--light-grey: #d9d9d9;
 	--neutro300: #5F5F5F;
+	--neutro-grey: #F6F6F6;
 
 	--mobile-breakpoint: 640px;
 	--tablet-breakpoint: 768px;

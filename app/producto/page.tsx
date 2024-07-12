@@ -5,6 +5,7 @@ import ProductTitle from '../core/components/productTitle/productTitle'
 import SupplierRating from '../core/components/supplierRating/supplierRating'
 import ProductInfo from '../core/components/productInfo/productInfo'
 import PaymentMethod from '../core/components/paymentMethod/paymentMethod'
+import ProductPrice from '../core/components/productPrice/productPrice'
 import './product.css'
 
 const TestImages = [
@@ -111,13 +112,15 @@ export default function Product() {
                 <div>
                     {
                         isWideScreen && (
-                            <ProductTitle 
-                                title="Parachoques delantero Mitsubishi Evo VIII 2004"
-                                refNumber="5FG8715S52SA"
-                                productName="MITSUBISHI EVO VIII 2004"
-                                imageSrc="/COMPARTIR.svg"
-                                isWideScreen={isWideScreen}
-                            />
+                            <div className='mobile:mb-10'>
+                                <ProductTitle 
+                                    title="Parachoques delantero Mitsubishi Evo VIII 2004"
+                                    refNumber="5FG8715S52SA"
+                                    productName="MITSUBISHI EVO VIII 2004"
+                                    imageSrc="/COMPARTIR.svg"
+                                    isWideScreen={isWideScreen}
+                                />
+                            </div>
                         )
                     }
                     <Carousel 
@@ -130,7 +133,7 @@ export default function Product() {
                         <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
                     )
                 }
-                <div>
+                <div className='bg-neutro-grey'>
                     {
                         !isWideScreen && (
                             <ProductTitle 
@@ -142,14 +145,25 @@ export default function Product() {
                             />
                         )
                     }
-                    <div>
+                    <div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
                         <SupplierRating 
                             valoration={4} 
                             location="Huelva" 
                             title="Valoración del proveedor" 
                         />
                     </div>
-                    <div className="w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
+                    <div className="mt-[1.5vw] ml-10 flex justify-center">
+                        <ProductPrice
+                            price='148,12'
+                            shippingInfo='Envío e IVA incluido'
+                            warningImgSrc='/info.svg'
+                            originalPrice='200,00'
+                            discount='-10%'
+                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta' }}
+                            button2Props={{ type: 'primary', labelName: 'Comprar' }}
+                        />
+                    </div>
+                    <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>
                         <ProductInfo 
                             vehicleVersion={vehicleVersion}
@@ -167,7 +181,7 @@ export default function Product() {
                 }
             </div>
             <div className='flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
-                <div className='flex justify-end mobile:justify-center'>
+                <div className='flex justify-end mobile:justify-center mb-6'>
                     <PaymentMethod 
                         isWideScreen={isWideScreen}
                         paymentOptions={paymentOptions}

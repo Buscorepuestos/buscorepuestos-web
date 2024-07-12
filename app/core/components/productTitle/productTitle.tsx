@@ -11,11 +11,11 @@ interface ProductTitleProps {
 
 const ProductTitle: React.FC<ProductTitleProps> = ({ title, refNumber, productName, imageSrc, isWideScreen } : ProductTitleProps) => {
     return (
-        <div className='mobile:mb-10'>
+        <div>
             <div className="w-full h-[2px] bg-secondary-blue mb-[0.6vw] mobile:mb-2" />
-            <div className='mobile:grid mobile:grid-cols-custom-layout-mobile mobile:items-center'>
+            <div className='mobile:grid mobile:grid-cols-custom-layout-mobile mobile:items-center sm:px-10'>
                 <div>
-                    <div className='grid grid-cols-custom-layout mobile:flex items-center mb-0'>
+                    <div className='grid grid-cols-custom-layout mobile:flex items-center mb-0 md:gap-3 sm:gap-4'>
                         <h1 className="lg:text-[1.5vw] md:text-[2vw] sm:text-[2.2vw] mobile:text-[4vw] font-tertiary-font font-semibold overflow-hidden truncate w-auto">
                             {title}
                         </h1>
@@ -30,6 +30,7 @@ const ProductTitle: React.FC<ProductTitleProps> = ({ title, refNumber, productNa
                                         alt="compartir-desktop"
                                         width={34}
                                         height={34}
+                                        className='md:w-[30px] md:h-[30px]'
                                     />
                                 </>
                             )
