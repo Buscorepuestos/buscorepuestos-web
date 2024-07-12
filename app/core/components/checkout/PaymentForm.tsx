@@ -18,7 +18,7 @@ export default function PaymentForm(props: {
 
 	return (
 		<Elements stripe={stripePromise} options={options}>
-			<StripeForm clientSecret={props.clientSecret} />
+			<StripeForm clientSecret={props.clientSecret} label={'Pagar ahora'} />
 		</Elements>
 	);
 
