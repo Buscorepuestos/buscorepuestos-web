@@ -62,8 +62,14 @@ export default function Payment() {
 		},
 	]
 
-	const options = [
+	const shippingOptions = [
 		{ value: 'opcion1', label: 'Direcciones de envío guardadas' },
+		{ value: 'option2', label: 'Option 2' },
+		{ value: 'option3', label: 'Option 3' }
+	];
+
+	const billingOptions = [
+		{ value: 'opcion1', label: 'Direcciones de facturación guardadas' },
 		{ value: 'option2', label: 'Option 2' },
 		{ value: 'option3', label: 'Option 3' }
 	];
@@ -97,11 +103,12 @@ export default function Payment() {
 					<div className={'grid grid-cols-2 w-[60%] mt-4 gap-4'}>
 						<Input placeholder={'Número de teléfono'} name={'phone'} value={''} />
 					</div>
+
 					{/*Shipping Address Information*/}
 					<h1 className={'text-title-3 mb-4 mt-12 self-start'}>Dirección de envío</h1>
 					<div className={'grid grid-cols-3 w-[60%] gap-4'}>
 						<div className={'col-span-2'}>
-							<SelectDropdown name={'saved_address'} options={options}
+							<SelectDropdown name={'saved_shipping_address'} options={shippingOptions}
 											 placeholder={'Direcciones de envío guardadas'} />
 						</div>
 					</div>
@@ -121,6 +128,25 @@ export default function Payment() {
 					</div>
 					<div className={'grid grid-cols-1 w-[60%] mt-4 gap-4'}>
 						<Checkbox name={'same_address'} value={sameBillAddress} onChange={handleCheckboxChange} label={'Usar la misma dirección de facturación'} />
+					</div>
+
+					{/*Billing address*/}
+					<h1 className={'text-title-3 mb-4 mt-12 self-start'}>Dirección de facturación</h1>
+					<div className={'grid grid-cols-3 w-[60%] gap-4'}>
+						<div className={'col-span-2'}>
+							<SelectDropdown name={'saved_billing_address'} options={billingOptions}
+											placeholder={'Direcciones de facturación guardadas'} />
+						</div>
+					</div>
+					<div className={'grid grid-cols-1 w-[60%] mt-4 gap-4'}>
+						<Input placeholder={'Dirección'} name={'bill_address_name'} value={''} />
+					</div>
+					<div className={'grid grid-cols-1 w-[60%] mt-4 gap-4'}>
+						<Input placeholder={'Número, piso, puerta, portal'} name={'bill_address_extra'} value={''} />
+					</div>
+					<div className={'grid grid-cols-2 w-[60%] mt-4 gap-4'}>
+						<Input placeholder={'Código postal'} name={'bill_zip'} value={''}  />
+						<Input placeholder={'Provincia'} name={'bill_province'} value={''}  />
 					</div>
 				</form>
 			</article>
