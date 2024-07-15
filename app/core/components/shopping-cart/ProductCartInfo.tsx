@@ -65,7 +65,7 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 				className="rounded-[10px] h-max"
 			/>
 			<div className={'flex justify-between w-full'}>
-				<div className={'ml-16 tablet:ml-8 mobile:ml-4 w-[40vw] mobile:w-full'}>
+				<div className={'ml-16 tablet:ml-8 mobile:ml-4 mobile:w-full'}>
 					<h1 className={'text-title-3 tablet:text-title-4 mobile:text-base font-semibold font-poppins line-clamp-1 mobile:line-clamp-2'}>{props.title}</h1>
 					<h2 className={'text-sm tablet:text-xs mobile:text-xs font-poppins'}>{props.brand.toUpperCase()} {props.model.toUpperCase()}</h2>
 					<p className={'text-sm mobile:text-xs'}>Ref. {props.ref}</p>
