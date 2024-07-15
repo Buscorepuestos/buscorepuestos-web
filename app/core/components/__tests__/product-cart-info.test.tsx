@@ -11,6 +11,7 @@ describe('ProductCartInfo', () => {
 		ref: 'REF123',
 		price: 99.99,
 		isMobile: false,
+		isAvailable: true,
 	}
 
 	const renderComponent = (props = defaultProps) => {
@@ -43,7 +44,7 @@ describe('ProductCartInfo', () => {
 	})
 
 	test('renders the image with correct attributes', () => {
-		const image = screen.getByAltText(/Sample Product/i)
+		const image = screen.getByAltText(/Sample Product/i) as HTMLImageElement
 		expect(image).toBeDefined()
 		expect(image.src).toBeDefined()
 		expect(image.src, expect.stringContaining('/card-preview.webp'))
@@ -61,7 +62,7 @@ describe('ProductCartInfo', () => {
 	test('renders the image with correct width by device resolution', () => {
 		renderComponent({...defaultProps, isMobile: true, title: 'Paragolpes Delantero'});
 
-		const image = screen.getByAltText(/Paragolpes Delantero/i)
+		const image = screen.getByAltText(/Paragolpes Delantero/i) as HTMLImageElement
 		expect(image).toBeDefined()
 		expect(image.src).toBeDefined()
 		expect(image.src, expect.stringContaining('/card-preview.webp'))
@@ -71,4 +72,23 @@ describe('ProductCartInfo', () => {
 		expect(image.height).toBe(72)
 	})
 
+	it('should have default background color and opacity when product is available', () => {
+		const { container } = render(<ProductCartInfo {...defaultProps} />);
+	
+		const articleElement = container.querySelector('article');
+		const styles = articleElement ? getComputedStyle(articleElement) : null;
+	
+		expect(styles?.backgroundColor).toBe('rgba(0, 0, 0, 0)'); 
+		expect(styles?.opacity).toBe('1'); 
+	});
+	
+	it('should have different background color and opacity when product is not available', () => {
+		const { container } = render(<ProductCartInfo {...defaultProps} isAvailable={false} />);
+	
+		const articleElement = container.querySelector('article');
+		const styles = articleElement ? getComputedStyle(articleElement) : null;
+	
+		expect(styles?.backgroundColor).toBe('rgba(0, 0, 0, 0.1)');
+		expect(styles?.opacity).toBe('0.5'); 
+	});
 })

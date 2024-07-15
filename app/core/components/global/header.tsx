@@ -55,7 +55,7 @@ export function Header() {
 	}, []);
 
 	useEffect(() => {
-		setIsProductPage(pathname.startsWith('/producto'))
+		setIsProductPage(pathname.startsWith('/product'))
 	}, [pathname])
 	
 	return (
