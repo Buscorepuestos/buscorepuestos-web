@@ -6,7 +6,7 @@ import SupplierRating from '../../core/components/supplierRating/supplierRating'
 import ProductInfo from '../../core/components/productInfo/productInfo'
 import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
-import { useGetProductByIdQuery } from '../../redux/services/productService'
+import { useGetProductByIdQuery, useGetDistributorByIdQuery } from '../../redux/services/productService'
 import '../product.css'
 
 const paymentOptions = [
@@ -55,6 +55,9 @@ const paymentOptions = [
 export default function Product({ params } : { params: { id: string } }) {
 
     const { data, error, isLoading, isFetching } = useGetProductByIdQuery({ id: params.id });
+    const { data: distributorData } = useGetDistributorByIdQuery({ id: data?.distributor || '' });
+
+    const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
 
     const [isWideScreen, setIsWideScreen] = useState(false);
 
@@ -83,10 +86,8 @@ export default function Product({ params } : { params: { id: string } }) {
     }
 
     const discountRounded = Math.ceil(data?.discount || 0);
-
-    //buscoRepuestoPrice que solo acepte hasta dos decimales
     const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2);
-    console.log(data)
+
     return (
         <div>
             <div className='mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
@@ -128,8 +129,8 @@ export default function Product({ params } : { params: { id: string } }) {
                     }
                     <div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
                         <SupplierRating 
-                            valoration={4} 
-                            location="Huelva" 
+                            valoration={valoracion || 0} 
+                            location={Provincia || ''}
                             title="Valoración del proveedor" 
                         />
                     </div>
