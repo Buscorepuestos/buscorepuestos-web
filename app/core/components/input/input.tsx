@@ -5,11 +5,13 @@ interface InputProps {
     placeholder: string
     value?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    cssClass?: string
 }
 
-const Input: React.FC<InputProps> = ({name, placeholder, value, onChange}) => {
+const Input: React.FC<InputProps> = ({name, placeholder, value, onChange, cssClass}) => {
+    cssClass = cssClass ? cssClass : '';
     return (
-        <div >
+        <div className={cssClass}>
             <input
                 name={name}
                 type="text" 
@@ -18,7 +20,7 @@ const Input: React.FC<InputProps> = ({name, placeholder, value, onChange}) => {
                     p-2 font-tertiary-font focus:border-secondary-blue focus:outline-none
                     placeholder:text-custom-grey
                     xl:text-[0.9vw] lg:text-[1vw] md:text-[1.1vw] sm:text-[1.5vw] mobile:text-[2.8vw]
-                `}
+                 `}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
