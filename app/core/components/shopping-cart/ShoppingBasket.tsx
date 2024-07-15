@@ -19,17 +19,21 @@ interface ShoppingBasketProps {
 
 const BasketContainer = styled.div`
     max-height: 340px;
+    padding-right: 20px;
+    padding-left: 20px;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    scrollbar-width: thin; 
+    scrollbar-color: #888 #f0f0f0;
 `;
 
 const ShoppingBasket: React.FC<ShoppingBasketProps> = ({ products }) => {
     return (
         <div>
-            <h1 className='font-tertiary-font font-semibold mb-8 text-[18px]'>
+            <h1 className='font-tertiary-font font-semibold mb-8 text-[18px] pl-[20px]'>
                 Tu cesta
             </h1>
             <BasketContainer>
