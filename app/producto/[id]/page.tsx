@@ -90,7 +90,7 @@ export default function Product({ params } : { params: { id: string } }) {
 
     return (
         <div>
-            <div className='mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
+            <div className='w-full mobile:w-[100vw] mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div>
                     {
                         isWideScreen && data &&  (

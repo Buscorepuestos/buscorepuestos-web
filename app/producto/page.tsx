@@ -109,8 +109,8 @@ export default function Product({ params } : { params: { id: string } }) {
 		};
 	}, []);
 
-    if (isLoading || isFetching) return <div>Loading...</div>
-    if (error) return <div> <p>Error: {error.toString()} </p> </div>
+    // if (isLoading || isFetching) return <div>Loading...</div>
+    // if (error) return <div> <p>Error: {error.toString()} </p> </div>
 
     return (
         <div>
@@ -124,7 +124,7 @@ export default function Product({ params } : { params: { id: string } }) {
                 )
             }
             
-            {/* <div className='mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
+            <div className='w-full mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div>
                     {
                         isWideScreen && (
@@ -173,7 +173,7 @@ export default function Product({ params } : { params: { id: string } }) {
                             price='148,12'
                             shippingInfo='Envío e IVA incluido'
                             warningImgSrc='/info.svg'
-                            originalPrice='200,00'
+                            originalPrice={165.00}
                             discount='-10%'
                             button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta' }}
                             button2Props={{ type: 'primary', labelName: 'Comprar' }}
@@ -203,7 +203,7 @@ export default function Product({ params } : { params: { id: string } }) {
                         paymentOptions={paymentOptions}
                     />
                 </div>
-            </div> */}
+            </div>
         </div>
     )
 }
