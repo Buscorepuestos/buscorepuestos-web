@@ -19,5 +19,6 @@ export default defineConfig({
 			exclude: ['node_modules', 'test/**/*', 'app/**/*.test.*', 'app/**/page.tsx', 'app/**/layout.tsx' , 'app/core/components/svg', 'app/component-examples'],
 			reporter: ['text', 'html', 'json'],
 		},
+		setupFiles: './app/core/components/__tests__/redux/mocks/test.setup.ts',
 	},
 })
