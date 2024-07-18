@@ -1,5 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import { useAppDispatch } from '@/app/redux/hooks'
+import { addItemToCart } from '@/app/redux/features/shoppingCartSlice'
 import Carousel from '../../core/components/carousel/carousel'
 import ProductTitle from '../../core/components/productTitle/productTitle'
 import SupplierRating from '../../core/components/supplierRating/supplierRating'
@@ -54,12 +56,7 @@ const paymentOptions = [
 
 export default function Product({ params } : { params: { id: string } }) {
 
-    const { data, error, isLoading, isFetching } = useGetProductByIdQuery({ id: params.id });
-    const { data: distributorData } = useGetDistributorByIdQuery({ id: data?.distributor || '' });
-
-    const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
-
-    const [isWideScreen, setIsWideScreen] = useState(false);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
 		const handleResize = () => {
@@ -74,6 +71,11 @@ export default function Product({ params } : { params: { id: string } }) {
 		};
 	}, []);
 
+    const [isWideScreen, setIsWideScreen] = useState(false);
+
+    const { data, error, isLoading, isFetching } = useGetProductByIdQuery({ id: params.id });
+    const { data: distributorData } = useGetDistributorByIdQuery({ id: data?.distributor || '' });
+
     if (isLoading || isFetching) return <div>Loading...</div>
     if (error) return <div> <p>Error: {error.toString()} </p> </div>
 
@@ -83,10 +85,16 @@ export default function Product({ params } : { params: { id: string } }) {
             const rounder = Math.ceil(priceWithMarkup / 10) * 10; 
             return rounder;
         }
-    }
-
+    };
     const discountRounded = Math.ceil(data?.discount || 0);
     const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2);
+    const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
+
+    const handleAddToCart = () => {
+        if (data) {
+            dispatch(addItemToCart(data));
+        }
+    };
 
     return (
         <div>
@@ -141,7 +149,7 @@ export default function Product({ params } : { params: { id: string } }) {
                             warningImgSrc='/info.svg'
                             originalPrice={buscoRepuestoPriceNew() || 0}
                             discount={discountRounded ? `${discountRounded}%` : ''}
-                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta' }}
+                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta', onClick: handleAddToCart }}
                             button2Props={{ type: 'primary', labelName: 'Comprar' }}
                         />
                     </div>

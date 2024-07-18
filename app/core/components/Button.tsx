@@ -7,6 +7,7 @@ export interface ButtonProps {
 	color?: string;
 	borderColor?: string;
 	xpadding?: string;
+	onClick?: () => void;
 }
 
 export default function Button(props: ButtonProps) {
@@ -23,6 +24,7 @@ export default function Button(props: ButtonProps) {
 
 		return (
 			<button
+				onClick={props.onClick}
 				className={`
 						${bg} ${borderColor} border-[2px] box-border shadow-lg 
 						${hoverText} ${hoverBg} 
@@ -46,6 +48,7 @@ export default function Button(props: ButtonProps) {
 
 		return (
 			<button
+				onClick={props.onClick}
 				className={`
 					${bg} ${borderColor} border-[2px] box-border shadow-lg 
 					${hoverText} ${hoverBg}
@@ -69,6 +72,7 @@ export default function Button(props: ButtonProps) {
 
 	return (
 		<button
+			onClick={props.onClick}
 			className={` 
 				${bg} border-[1px] box-border shadow-lg
 				${hoverText} ${hoverBg} ${xpadding} rounded-3xl font-semibold

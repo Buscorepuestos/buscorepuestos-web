@@ -44,6 +44,9 @@ importers:
       react-redux:
         specifier: ^9.1.2
         version: 9.1.2(@types/react@18.3.3)(react@19.0.0-rc-f994737d14-20240522)(redux@5.0.1)
+      redux:
+        specifier: ^5.0.1
+        version: 5.0.1
       stripe:
         specifier: ^16.1.0
         version: 16.2.0
@@ -7778,7 +7781,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 20.12.12
+      '@types/node': 20.14.10
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
