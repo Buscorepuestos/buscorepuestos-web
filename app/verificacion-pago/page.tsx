@@ -13,21 +13,37 @@ export default function Payment() {
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [clientSecret, setClientSecret] = useState('')
 	const [error, setError] = useState('')
-	const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
+	const [isMobile, setIsMobile] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
+	const [fieldsValue, setFieldsValue] = useState({
+		name: '',
+		email: '',
+		companyId: '',
+		phoneNumber: '',
+		shippingAddress: '',
+		addressExtra: '',
+		zip: '',
+		city: '',
+		province: '',
+		country: '',
+		billingAddress: '',
+		billingAddressExtra: '',
+		billingZip: '',
+		billingProvince: '',
+	})
 
 	useEffect(() => {
 		const handleResize = () => {
-			setIsMobile(window.innerWidth < 640);
-		};
+			setIsMobile(window.innerWidth < 640)
+		}
 
-		handleResize();
-		window.addEventListener('resize', handleResize);
+		handleResize()
+		window.addEventListener('resize', handleResize)
 
 		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
+			window.removeEventListener('resize', handleResize)
+		}
+	}, [])
 
 	useEffect(() => {
 		const createIntent = () => {
@@ -172,7 +188,8 @@ export default function Payment() {
 					{/*Personal Information*/}
 					<h1 className={'text-title-4 font-tertiary-font mb-4 self-start'}>Información personal</h1>
 					<div className={'grid grid-cols-1 w-[60%] mobile:w-full gap-4'}>
-						<Input placeholder={'Nombre y apellidos'} name={'name'} value={''} />
+						<Input placeholder={'Nombre y apellidos'} name={'name'} value={fieldsValue.name}
+							   onChange={(e) => setFieldsValue({ ...fieldsValue, name: e.target.value })}/>
 					</div>
 					<div className={'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'}>
 						<Input placeholder={'Email'} name={'email'} value={''}
