@@ -1,4 +1,4 @@
-'use client'
+
 import React from 'react'
 import { useAppDispatch } from '@/app/redux/hooks'
 import { addItemToCart } from '@/app/redux/features/shoppingCartSlice'
@@ -10,6 +10,8 @@ import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
 import { useGetProductByIdQuery, useGetDistributorByIdQuery } from '../../redux/services/productService'
 import '../product.css'
+import axios from 'axios'
+import { ProductMongoInterface } from '../../redux/interfaces/product.interface'
 
 const paymentOptions = [
     {   
@@ -54,30 +56,22 @@ const paymentOptions = [
     },
 ]
 
-export default function Product({ params } : { params: { id: string } }) {
+const fetchProductData = async (id: string): Promise<ProductMongoInterface> => {
+    const response = await axios.get(`https://buscorepuestos-dev.herokuapp.com/api/products/product-mongo/${id}`);
+    return response.data.data;
+};
 
-    const dispatch = useAppDispatch();
+const fetchDistributorData = async (id: string) => {
+    const response = await axios.get(`https://buscorepuestos-dev.herokuapp.com/api/distributors/${id}?populate=true`);
+    return response.data;
+}
 
-    // useEffect(() => {
-	// 	const handleResize = () => {
-	// 		setIsWideScreen(window.innerWidth < 640);
-	// 	};
+export default async function Product({ params } : { params: { id: string } }) {
+    
+    const data = await fetchProductData(params.id);
+    const distributorData = await fetchDistributorData(data?.distributor);
 
-	// 	handleResize();
-	// 	window.addEventListener('resize', handleResize);
-
-	// 	return () => {
-	// 		window.removeEventListener('resize', handleResize);
-	// 	};
-	// }, []);
-
-    // const [isWideScreen, setIsWideScreen] = useState(false);
-
-    const { data, error, isLoading, isFetching } = useGetProductByIdQuery({ id: params.id });
-    const { data: distributorData } = useGetDistributorByIdQuery({ id: data?.distributor || '' });
-
-    if (isLoading || isFetching) return <div>Loading...</div>
-    if (error) return <div> <p>Error: {error.toString()} </p> </div>
+    console.log(distributorData);
 
     const buscoRepuestoPriceNew = () => {
         if (data?.buscorepuestosPrice) {
@@ -90,11 +84,11 @@ export default function Product({ params } : { params: { id: string } }) {
     const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2);
     const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
 
-    const handleAddToCart = () => {
-        if (data) {
-            dispatch(addItemToCart(data));
-        }
-    };
+    // const handleAddToCart = () => {
+    //     if (data) {
+    //         dispatch(addItemToCart(data));
+    //     }
+    // };
 
     return (
         <div>
@@ -132,8 +126,8 @@ export default function Product({ params } : { params: { id: string } }) {
                     }
                     <div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
                         <SupplierRating 
-                            valoration={valoracion || 0} 
-                            location={Provincia || ''}
+                            valoration={ valoracion || 0 }
+                            location={ Provincia || '' }
                             title="Valoración del proveedor" 
                         />
                     </div>
@@ -144,7 +138,7 @@ export default function Product({ params } : { params: { id: string } }) {
                             warningImgSrc='/info.svg'
                             originalPrice={buscoRepuestoPriceNew() || 0}
                             discount={discountRounded ? `${discountRounded}%` : ''}
-                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta', onClick: handleAddToCart }}
+                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta',  }}
                             button2Props={{ type: 'primary', labelName: 'Comprar' }}
                         />
                     </div>

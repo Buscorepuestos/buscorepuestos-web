@@ -10,3 +10,12 @@ export const getProducts = async (size: number = 16, sort: string = 'created', o
 		throw error
 	}
 }
+
+export const getProductById = async (id: string): Promise<AxiosResponse<T>> => {
+	try {
+		return await api.get(`/products/product-mongo/${id}`)
+	} catch (error) {
+		console.error('Error fetching product:', error)
+		throw error
+	}
+}
