@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 
 interface ProductInfoProps {
     vehicleVersion: string;
@@ -8,15 +7,6 @@ interface ProductInfoProps {
     oemReference: string;
     observations: string;
 }
-
-const Observations = styled.p`
-    text-align: justify;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
-`;
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ vehicleVersion, engine, engineCode, oemReference, observations }: ProductInfoProps) => {
     return (

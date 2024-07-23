@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useAppDispatch } from '@/app/redux/hooks'
 import { addItemToCart } from '@/app/redux/features/shoppingCartSlice'
 import Carousel from '../../core/components/carousel/carousel'
@@ -58,20 +58,20 @@ export default function Product({ params } : { params: { id: string } }) {
 
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-		const handleResize = () => {
-			setIsWideScreen(window.innerWidth < 640);
-		};
+    // useEffect(() => {
+	// 	const handleResize = () => {
+	// 		setIsWideScreen(window.innerWidth < 640);
+	// 	};
 
-		handleResize();
-		window.addEventListener('resize', handleResize);
+	// 	handleResize();
+	// 	window.addEventListener('resize', handleResize);
 
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
+	// 	return () => {
+	// 		window.removeEventListener('resize', handleResize);
+	// 	};
+	// }, []);
 
-    const [isWideScreen, setIsWideScreen] = useState(false);
+    // const [isWideScreen, setIsWideScreen] = useState(false);
 
     const { data, error, isLoading, isFetching } = useGetProductByIdQuery({ id: params.id });
     const { data: distributorData } = useGetDistributorByIdQuery({ id: data?.distributor || '' });
@@ -101,38 +101,33 @@ export default function Product({ params } : { params: { id: string } }) {
             <div className='w-full mobile:w-[100vw] mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div>
                     {
-                        isWideScreen && data &&  (
-                            <div className='mobile:mb-10'>
+                        data &&  (
+                            <div className='mobile:mb-10 hidden mobile:block'>
                                 <ProductTitle 
                                     title={data.title}
                                     refNumber={data.mainReference}
                                     productName={data.version}
                                     imageSrc="/COMPARTIR.svg"
-                                    isWideScreen={isWideScreen}
                                 />
                             </div>
                         )
                     }
                     <Carousel 
                         images={data?.images.map(image => ({ image })) || []}
-                        isWideScreen={isWideScreen}
                     />
                 </div>
-                {
-                    isWideScreen && (
-                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
-                    )
-                }
+                <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
                 <div className='bg-neutro-grey'>
                     {
-                        !isWideScreen && data && (
-                            <ProductTitle 
-                                title={data.title}
-                                refNumber={data.mainReference}
-                                productName={data.version}
-                                imageSrc="/COMPARTIR.svg"
-                                isWideScreen={isWideScreen}
-                            />
+                        data && (
+                            <div className='mobile:hidden'>
+                                <ProductTitle 
+                                    title={data.title}
+                                    refNumber={data.mainReference}
+                                    productName={data.version}
+                                    imageSrc="/COMPARTIR.svg"
+                                />
+                            </div>
                         )
                     }
                     <div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
@@ -168,16 +163,11 @@ export default function Product({ params } : { params: { id: string } }) {
                         }
                     </div>
                 </div>
-                {
-                    isWideScreen && (
-                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
-                    )
-                }
+                <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
             </div>
             <div className='flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div className='flex justify-end mobile:justify-center mb-6'>
                     <PaymentMethod 
-                        isWideScreen={isWideScreen}
                         paymentOptions={paymentOptions}
                     />
                 </div>

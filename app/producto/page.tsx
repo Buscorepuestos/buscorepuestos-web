@@ -134,14 +134,12 @@ export default function Product({ params } : { params: { id: string } }) {
                                     refNumber="5FG8715S52SA"
                                     productName="MITSUBISHI EVO VIII 2004"
                                     imageSrc="/COMPARTIR.svg"
-                                    isWideScreen={isWideScreen}
                                 />
                             </div>
                         )
                     }
                     <Carousel 
                         images={TestImages}
-                        isWideScreen={isWideScreen}
                     />
                 </div>
                 {
@@ -157,7 +155,6 @@ export default function Product({ params } : { params: { id: string } }) {
                                 refNumber="5FG8715S52SA"
                                 productName="MITSUBISHI EVO VIII 2004"
                                 imageSrc="/COMPARTIR.svg"
-                                isWideScreen={isWideScreen}
                             />
                         )
                     }
@@ -199,7 +196,6 @@ export default function Product({ params } : { params: { id: string } }) {
             <div className='flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div className='flex justify-end mobile:justify-center mb-6'>
                     <PaymentMethod 
-                        isWideScreen={isWideScreen}
                         paymentOptions={paymentOptions}
                     />
                 </div>
