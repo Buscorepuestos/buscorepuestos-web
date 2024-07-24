@@ -1,17 +1,14 @@
 
 import React from 'react'
-import { useAppDispatch } from '@/app/redux/hooks'
-import { addItemToCart } from '@/app/redux/features/shoppingCartSlice'
 import Carousel from '../../core/components/carousel/carousel'
 import ProductTitle from '../../core/components/productTitle/productTitle'
 import SupplierRating from '../../core/components/supplierRating/supplierRating'
 import ProductInfo from '../../core/components/productInfo/productInfo'
 import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
-import { useGetProductByIdQuery, useGetDistributorByIdQuery } from '../../redux/services/productService'
-import '../product.css'
-import axios from 'axios'
 import { ProductMongoInterface } from '../../redux/interfaces/product.interface'
+import axios from 'axios'
+import '../product.css'
 
 const paymentOptions = [
     {   
@@ -71,8 +68,6 @@ export default async function Product({ params } : { params: { id: string } }) {
     const data = await fetchProductData(params.id);
     const distributorData = await fetchDistributorData(data?.distributor);
 
-    console.log(distributorData);
-
     const buscoRepuestoPriceNew = () => {
         if (data?.buscorepuestosPrice) {
             const priceWithMarkup = data.buscorepuestosPrice * 1.3;
@@ -83,12 +78,6 @@ export default async function Product({ params } : { params: { id: string } }) {
     const discountRounded = Math.ceil(data?.discount || 0);
     const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2);
     const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
-
-    // const handleAddToCart = () => {
-    //     if (data) {
-    //         dispatch(addItemToCart(data));
-    //     }
-    // };
 
     return (
         <div>
@@ -140,6 +129,7 @@ export default async function Product({ params } : { params: { id: string } }) {
                             discount={discountRounded ? `${discountRounded}%` : ''}
                             button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta',  }}
                             button2Props={{ type: 'primary', labelName: 'Comprar' }}
+                            data={data}
                         />
                     </div>
                     <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />

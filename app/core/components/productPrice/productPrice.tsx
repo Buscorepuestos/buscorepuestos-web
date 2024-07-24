@@ -1,6 +1,10 @@
+'use client'
 import React from 'react';
 import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
+import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
+import { useAppDispatch } from '@/app/redux/hooks';
+import { addItemToCart } from '@/app/redux/features/shoppingCartSlice';
 
 interface ProductPriceProps {
     price: string;
@@ -10,6 +14,7 @@ interface ProductPriceProps {
     discount: string;
     button1Props: ButtonProps;
     button2Props: ButtonProps;
+    data: ProductMongoInterface;
 }
 
 const ProductPrice: React.FC<ProductPriceProps> = ({
@@ -19,8 +24,16 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     originalPrice,
     discount,
     button1Props,
-    button2Props
+    button2Props,
+    data
 }) => {
+
+    const dispatch = useAppDispatch();
+
+    const handleAddToCart = () => {
+        dispatch(addItemToCart(data));
+    };
+
     return (
         <div className='flex flex-col justify-center items-center font-tertiary-font'>
             <p className='text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold'>
@@ -46,7 +59,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
                 </p>
             </div>
             <div className='flex gap-7 mt-7'>
-                <Button {...button1Props} />
+                <Button {...button1Props} onClick={handleAddToCart} />
                 <Button {...button2Props} />
             </div>
         </div>
