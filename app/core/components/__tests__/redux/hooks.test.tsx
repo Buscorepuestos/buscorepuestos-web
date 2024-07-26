@@ -1,7 +1,7 @@
 import { describe, test, expect, afterEach } from 'vitest';
 import { cleanup, render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { store } from '../../../../redux/store';
+import { makeStore } from '../../../../redux/store';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import React from 'react';
 
@@ -23,7 +23,7 @@ const TestComponent = () => {
 describe('hooks', () => {
     test('useAppDispatch should return the dispatch function', () => {
         const { getByText } = render(
-            <Provider store={store}>
+            <Provider store={makeStore()}>
                 <TestComponent />
             </Provider>
         );
@@ -33,7 +33,7 @@ describe('hooks', () => {
 
     test('useAppSelector should return the state', () => {
         const { getByText } = render(
-            <Provider store={store}>
+            <Provider store={makeStore()}>
                 <TestComponent />
             </Provider>
         );

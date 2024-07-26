@@ -37,7 +37,7 @@ export default function Carousel(
                     <SwiperSlide key={index}>
                         <Image 
                             src={image.image}
-                            alt="Prueba Carousel"
+                            alt={`Main Carousel Image ${index}`}
                             width={800}
                             height={10}
                             className='carousel-image-p'
@@ -59,7 +59,7 @@ export default function Carousel(
                         <SwiperSlide key={index}>
                             <Image
                                 src={image.image}
-                                alt="Prueba Carousel"
+                                alt={`Thumbnail Carousel Image ${index}`}
                                 width={200}
                                 height={5}
                                 className='carousel-thumb-images'

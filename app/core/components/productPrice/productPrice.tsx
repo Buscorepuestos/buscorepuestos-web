@@ -3,8 +3,8 @@ import React from 'react';
 import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
-import { useAppDispatch } from '@/app/redux/hooks';
-import { addItemToCart } from '@/app/redux/features/shoppingCartSlice';
+import { useAppDispatch } from '../../../redux/hooks';
+import { addItemToCart } from '../../../redux/features/shoppingCartSlice';
 
 interface ProductPriceProps {
     price: string;
