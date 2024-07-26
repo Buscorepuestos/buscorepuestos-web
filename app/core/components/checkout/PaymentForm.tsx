@@ -9,7 +9,7 @@ export default function PaymentForm(props: {
 }) {
 
 	const appearance = {
-		theme: 'stripe',
+		theme: 'stripe' as 'stripe', 
 	}
 	const options = {
 		clientSecret: props.clientSecret,
@@ -23,3 +23,4 @@ export default function PaymentForm(props: {
 	);
 
 }
+
