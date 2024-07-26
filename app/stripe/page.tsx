@@ -6,33 +6,38 @@ import './stripe.css'
 
 export default function App() {
 
-	const [clientSecret, setClientSecret] = useState('')
-	const [error, setError] = useState('')
+	const [clientSecret, setClientSecret] = useState<string>('')
+	const [error, setError] = useState<string>('')
 
 	useEffect(() => {
-		const createIntent = () => {
+		const createIntent = async () => {
 			try {
 				// Mock data
-				createPaymentIntent({
+				const res = await createPaymentIntent({
 					amount: 200,
 					currency: 'eur',
 					cartIDs: ['recV9AQVCb64NveMF'],
 					automatic_payment_methods: { enabled: true },
-				}).then((res) =>
-					setClientSecret(res.data.client_secret),
-				)
+				});
+				setClientSecret(res.data.client_secret);
 			} catch (error) {
-				setError(error)
+				if (error instanceof Error) {
+					setError(error.message);
+				} else {
+					setError('An unexpected error occurred');
+				}
 			}
 		}
 
-		createIntent()
+		createIntent();
 	}, [])
 
 
 	return (
 		<div>
 			{clientSecret && <PaymentForm clientSecret={clientSecret} />}
+			{error && <p>Error: {error}</p>}
 		</div>
 	)
 };
+
