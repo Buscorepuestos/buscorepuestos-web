@@ -9,6 +9,7 @@ const mockProduct: ProductMongoInterface = {
     images: [],
     url: '',
     budgets: [],
+    productName: '',
     references: [],
     price: 0,
     color: '',

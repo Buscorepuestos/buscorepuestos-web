@@ -1,14 +1,13 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import { useAppDispatch } from '@/app/redux/hooks'
-import { addItemToCart } from '@/app/redux/features/shoppingCartSlice'
+
+import React from 'react'
 import Carousel from '../../core/components/carousel/carousel'
 import ProductTitle from '../../core/components/productTitle/productTitle'
 import SupplierRating from '../../core/components/supplierRating/supplierRating'
 import ProductInfo from '../../core/components/productInfo/productInfo'
 import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
-import { useGetProductByIdQuery, useGetDistributorByIdQuery } from '../../redux/services/productService'
+import { ProductMongoInterface } from '../../redux/interfaces/product.interface'
+import axios from 'axios'
 import '../product.css'
 
 const paymentOptions = [
@@ -54,30 +53,20 @@ const paymentOptions = [
     },
 ]
 
-export default function Product({ params } : { params: { id: string } }) {
+const fetchProductData = async (id: string): Promise<ProductMongoInterface> => {
+    const response = await axios.get(`https://buscorepuestos-dev.herokuapp.com/api/products/product-mongo/${id}`);
+    return response.data.data;
+};
 
-    const dispatch = useAppDispatch();
+const fetchDistributorData = async (id: string) => {
+    const response = await axios.get(`https://buscorepuestos-dev.herokuapp.com/api/distributors/${id}?populate=true`);
+    return response.data;
+}
 
-    useEffect(() => {
-		const handleResize = () => {
-			setIsWideScreen(window.innerWidth < 640);
-		};
-
-		handleResize();
-		window.addEventListener('resize', handleResize);
-
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
-
-    const [isWideScreen, setIsWideScreen] = useState(false);
-
-    const { data, error, isLoading, isFetching } = useGetProductByIdQuery({ id: params.id });
-    const { data: distributorData } = useGetDistributorByIdQuery({ id: data?.distributor || '' });
-
-    if (isLoading || isFetching) return <div>Loading...</div>
-    if (error) return <div> <p>Error: {error.toString()} </p> </div>
+export default async function Product({ params } : { params: { id: string } }) {
+    
+    const data = await fetchProductData(params.id);
+    const distributorData = await fetchDistributorData(data?.distributor);
 
     const buscoRepuestoPriceNew = () => {
         if (data?.buscorepuestosPrice) {
@@ -90,55 +79,44 @@ export default function Product({ params } : { params: { id: string } }) {
     const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2);
     const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
 
-    const handleAddToCart = () => {
-        if (data) {
-            dispatch(addItemToCart(data));
-        }
-    };
-
     return (
         <div>
             <div className='w-full mobile:w-[100vw] mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div>
                     {
-                        isWideScreen && data &&  (
-                            <div className='mobile:mb-10'>
+                        data &&  (
+                            <div className='mobile:mb-10 hidden mobile:block'>
                                 <ProductTitle 
                                     title={data.title}
                                     refNumber={data.mainReference}
                                     productName={data.version}
                                     imageSrc="/COMPARTIR.svg"
-                                    isWideScreen={isWideScreen}
                                 />
                             </div>
                         )
                     }
                     <Carousel 
                         images={data?.images.map(image => ({ image })) || []}
-                        isWideScreen={isWideScreen}
                     />
                 </div>
-                {
-                    isWideScreen && (
-                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
-                    )
-                }
+                <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
                 <div className='bg-neutro-grey'>
                     {
-                        !isWideScreen && data && (
-                            <ProductTitle 
-                                title={data.title}
-                                refNumber={data.mainReference}
-                                productName={data.version}
-                                imageSrc="/COMPARTIR.svg"
-                                isWideScreen={isWideScreen}
-                            />
+                        data && (
+                            <div className='mobile:hidden'>
+                                <ProductTitle 
+                                    title={data.title}
+                                    refNumber={data.mainReference}
+                                    productName={data.version}
+                                    imageSrc="/COMPARTIR.svg"
+                                />
+                            </div>
                         )
                     }
                     <div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
                         <SupplierRating 
-                            valoration={valoracion || 0} 
-                            location={Provincia || ''}
+                            valoration={ valoracion || 0 }
+                            location={ Provincia || '' }
                             title="Valoración del proveedor" 
                         />
                     </div>
@@ -149,8 +127,9 @@ export default function Product({ params } : { params: { id: string } }) {
                             warningImgSrc='/info.svg'
                             originalPrice={buscoRepuestoPriceNew() || 0}
                             discount={discountRounded ? `${discountRounded}%` : ''}
-                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta', onClick: handleAddToCart }}
+                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta',  }}
                             button2Props={{ type: 'primary', labelName: 'Comprar' }}
+                            data={data}
                         />
                     </div>
                     <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
@@ -168,16 +147,11 @@ export default function Product({ params } : { params: { id: string } }) {
                         }
                     </div>
                 </div>
-                {
-                    isWideScreen && (
-                        <div className="w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
-                    )
-                }
+                <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
             </div>
             <div className='flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div className='flex justify-end mobile:justify-center mb-6'>
                     <PaymentMethod 
-                        isWideScreen={isWideScreen}
                         paymentOptions={paymentOptions}
                     />
                 </div>

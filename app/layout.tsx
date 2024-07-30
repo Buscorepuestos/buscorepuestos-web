@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Providers } from '@/app/redux/provider'
+import StoreProvider from './redux/provider'
 import './globals.css'
 
 import { Header } from '@/app/core/components/global/header'
@@ -38,7 +38,7 @@ export default function RootLayout({
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center items-center min-h-screen`}
 			>
-				<Providers>
+				<StoreProvider>
 					<Analytics/>
 					<Header />
 					<main className="flex-1">
@@ -46,7 +46,7 @@ export default function RootLayout({
 					</main>
 					<Footer />
 					<SpeedInsights/>
-				</Providers>
+				</StoreProvider>
 			</body>
 		</html>
 	)

@@ -1,6 +1,6 @@
 import { describe, test, expect, afterEach } from 'vitest';
 import { cleanup, render } from '@testing-library/react';
-import { Providers } from '../../../../redux/provider';
+import Providers from '../../../../redux/provider';
 import React from 'react';
 
 afterEach(cleanup);

@@ -1,63 +1,72 @@
-import React from 'react';
-import { render, screen, cleanup } from '@testing-library/react';
-import { describe, it, expect, afterEach } from 'vitest';
-import PaymentMethods from '../paymentMethod/paymentMethod';
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import PaymentMethods from '../../components/paymentMethod/paymentMethod'
 
-describe('PaymentMethods component', () => {
-    afterEach(() => {
-        cleanup();
-    });
+const paymentOptions = [
+	{
+		src: '/path/to/image1.jpg',
+		alt: 'Alt text 1',
+		subtitle: 'Subtitle 1',
+		width: 100,
+		height: 100,
+	},
+	{
+		src: '/path/to/image2.jpg',
+		alt: 'Alt text 2',
+		subtitle: 'Subtitle 2',
+		width: 100,
+		height: 100,
+	},
+	{
+		src: '/path/to/image3.jpg',
+		alt: 'Alt text 3',
+		subtitle: 'Subtitle 3',
+		width: 100,
+		height: 100,
+	},
+	{
+		src: '/path/to/image4.jpg',
+		alt: 'Alt text 4',
+		subtitle: 'Subtitle 4',
+		width: 100,
+		height: 100,
+	},
+	{
+		src: '/path/to/image5.jpg',
+		alt: 'Alt text 5',
+		subtitle: 'Subtitle 5',
+		width: 100,
+		height: 100,
+	},
+]
 
-    const paymentOptions = [
-        { src: '/image1.png', alt: 'Image 1', subtitle: 'Option 1', width: 50, height: 50 },
-        { src: '/image2.png', alt: 'Image 2', subtitle: 'Option 2', width: 50, height: 50 },
-        { src: '/image3.png', alt: 'Image 3', subtitle: 'Option 3', width: 50, height: 50 },
-        { src: '/image4.png', alt: 'Image 4', subtitle: 'Option 4', width: 50, height: 50 },
-        { src: '/image5.png', alt: 'Image 5', subtitle: 'Option 5', width: 50, height: 50 }
-    ];
+describe('PaymentMethods Component', () => {
+	it('renders the component with payment options', () => {
+		render(<PaymentMethods paymentOptions={paymentOptions} />)
 
-    it('should render the component with payment options', () => {
-        render(<PaymentMethods isWideScreen={true} paymentOptions={paymentOptions} />);
+		// Check for the main text
+		expect(screen.getByText('Paga con la mayor comodidad')).toBeTruthy()
 
-        const option1 = screen.getByAltText('Image 1');
-        const option2 = screen.getByAltText('Image 2');
-        const option3 = screen.getByAltText('Image 3');
-        const option4 = screen.getByAltText('Image 4');
-        const option5 = screen.getByAltText('Image 5');
+		// Check for the subtitles
+		paymentOptions.forEach((option) => {
+			const elements = screen.getAllByText(option.subtitle)
+			expect(elements.length).toBeGreaterThan(0)
+		})
 
-        expect(option1).toBeDefined();
-        expect(option2).toBeDefined();
-        expect(option3).toBeDefined();
-        expect(option4).toBeDefined();
-        expect(option5).toBeDefined();
+		// Check for the alt text of images
+		paymentOptions.forEach((option) => {
+			const elements = screen.getAllByAltText(option.alt)
+			expect(elements.length).toBeGreaterThan(0)
+		})
 
-        const subtitle1 = screen.getByText('Option 1');
-        const subtitle2 = screen.getByText('Option 2');
-        const subtitle3 = screen.getByText('Option 3');
-        const subtitle4 = screen.getByText('Option 4');
-        const subtitle5 = screen.getByText('Option 5');
-
-        expect(subtitle1).toBeDefined();
-        expect(subtitle2).toBeDefined();
-        expect(subtitle3).toBeDefined();
-        expect(subtitle4).toBeDefined();
-        expect(subtitle5).toBeDefined();
-    });
-
-    it('should conditionally render elements based on isWideScreen prop', () => {
-        const { rerender, container } = render(<PaymentMethods isWideScreen={true} paymentOptions={paymentOptions} />);
-
-        // Verificamos si los separadores condicionales se renderizan
-        let separators = container.querySelectorAll('.separator');
-        expect(separators.length).toBe(3);
-
-        rerender(<PaymentMethods isWideScreen={false} paymentOptions={paymentOptions} />);
-
-        // Verificamos que los separadores no se renderizan en pantalla pequeña
-        separators = container.querySelectorAll('.separator');
-        expect(separators.length).toBe(1);
-
-        const mobileOption5 = screen.getByAltText('Image 5');
-        expect(mobileOption5).toBeDefined();
-    });
-});
+		// Check for the src attribute of images
+		paymentOptions.forEach((option) => {
+			const imgElements = screen.getAllByAltText(option.alt)
+			imgElements.forEach((img) => {
+				const imgSrc = (img as HTMLImageElement).src
+				expect(imgSrc).toContain(encodeURIComponent(option.src))
+			})
+		})
+	})
+})

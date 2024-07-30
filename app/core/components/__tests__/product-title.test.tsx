@@ -17,40 +17,33 @@ describe('ProductTitle', () => {
     it('renders the title correctly', () => {
         render(<ProductTitle {...props} />);
         const titleElement = screen.getByText(props.title);
-        expect(titleElement).toBeTruthy();
+        expect(titleElement).not.toBeNull();
     });
 
     it('renders the reference number correctly', () => {
         render(<ProductTitle {...props} />);
-        const refElement = screen.getByText(`${props.refNumber}`);
-        expect(refElement).toBeTruthy();
+        const refElements = screen.getAllByText(props.refNumber);
+        expect(refElements.length).toBeGreaterThan(0); // Verifica que hay al menos un elemento con el texto esperado
     });
 
     it('renders the product name correctly', () => {
         render(<ProductTitle {...props} />);
         const productNameElement = screen.getByText(props.productName);
-        expect(productNameElement).toBeTruthy();
+        expect(productNameElement).not.toBeNull();
     });
 
     it('renders the image correctly', () => {
         render(<ProductTitle {...props} />);
         const imageElement = screen.getByAltText('compartir-desktop');
-        expect(imageElement).toBeTruthy();
-        expect(imageElement.getAttribute('src')).toBe(props.imageSrc);
+        expect(imageElement).not.toBeNull();
+        expect((imageElement as HTMLImageElement).src).toContain(props.imageSrc);
     });
 
-    it('render the reference number and image mobile version when isWideScreen is true', () => {
-        render(<ProductTitle {...props} isWideScreen={true} />);
-        expect(screen.getAllByRole('ref-mobile')).toBeTruthy();
-        expect(screen.queryByAltText('compartir')).toBeTruthy();
-    });
-
-    it('renders the reference number and image when isWideScreen is false', () => {
-        render(<ProductTitle {...props} isWideScreen={false} />);
-        const refElement = screen.getByText(`${props.refNumber}`);
-        const imageElement = screen.getByAltText('compartir-desktop');
-
-        expect(refElement).toBeTruthy();
-        expect(imageElement).toBeTruthy();
+    it('renders the reference number and image in mobile version correctly', () => {
+        render(<ProductTitle {...props} />);
+        const refMobileElements = screen.getAllByRole('ref-mobile');
+        expect(refMobileElements.length).toBeGreaterThan(0);
+        const imageMobileElement = screen.getByAltText('compartir');
+        expect(imageMobileElement).not.toBeNull();
     });
 });
