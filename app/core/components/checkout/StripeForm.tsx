@@ -1,46 +1,43 @@
-import {  PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useEffect, useState } from 'react'
-import { PaymentIntent } from '@stripe/stripe-js'
+import { PaymentIntent, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { createBill } from '../../../services/billing/billing.service'
 
-
-const StripeForm = (props: {
-	clientSecret: string,
-	label: 'Pagar ahora'
-}) => {
+const StripeForm = (props: { clientSecret: string; label: 'Pagar ahora' }) => {
 	const stripe = useStripe()
 	const elements = useElements()
 
 	const [message, setMessage] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
-	const [payment, setPayment] = useState<PaymentIntent | undefined>(undefined);
+	const [payment, setPayment] = useState<PaymentIntent | undefined>(undefined)
 
 	useEffect(() => {
 		if (!stripe) {
 			return
 		}
 
-		stripe.retrievePaymentIntent(props.clientSecret).then(({ paymentIntent }) => {
-			setPayment(paymentIntent);
-			switch (paymentIntent.status) {
-				case 'succeeded':
-					setMessage('Payment succeeded!')
-					break
-				case 'processing':
-					setMessage('Your payment is processing.')
-					break
-				case 'requires_payment_method':
-					setMessage('')
-					break
-				default:
-					setMessage('Something went wrong.')
-					break
-			}
-		})
-	}, [stripe])
+		stripe
+			.retrievePaymentIntent(props.clientSecret)
+			.then(({ paymentIntent }) => {
+				setPayment(paymentIntent)
+				switch (paymentIntent?.status) {
+					case 'succeeded':
+						setMessage('Payment succeeded!')
+						break
+					case 'processing':
+						setMessage('Your payment is processing.')
+						break
+					case 'requires_payment_method':
+						setMessage('')
+						break
+					default:
+						setMessage('Something went wrong.')
+						break
+				}
+			})
+	}, [stripe, props.clientSecret])
 
-
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: { preventDefault: () => void }) => {
 		e.preventDefault()
 
 		if (!stripe || !elements) {
@@ -52,18 +49,18 @@ const StripeForm = (props: {
 		await createBill({
 			'Id Pago Stripe': payment?.id as string,
 			Compras: ['recV9AQVCb64NveMF'],
-			Usuarios:['recxNb1bKbkcrueq1'],
+			Usuarios: ['recxNb1bKbkcrueq1'],
 			transfer: false,
-			address:'Direccion de prueba',
-			country:'España',
-			location:'Las Palmas de Gran Canarias',
-			addressNumber:'14',
-			name:'Carlos',
-			cp:'3012',
-			nif:'3456fg',
+			address: 'Direccion de prueba',
+			country: 'España',
+			location: 'Las Palmas de Gran Canarias',
+			addressNumber: '14',
+			name: 'Carlos',
+			cp: '3012',
+			nif: '3456fg',
 			phone: 66666666,
-			province:'Las Palmas'
-		});
+			province: 'Las Palmas',
+		})
 
 		setIsLoading(true)
 
@@ -81,7 +78,10 @@ const StripeForm = (props: {
 		// be redirected to an intermediate site first to authorize the payment, then
 		// redirected to the `return_url`.
 		if (error) {
-			if (error.type === 'card_error' || error.type === 'validation_error') {
+			if (
+				error.type === 'card_error' ||
+				error.type === 'validation_error'
+			) {
 				setMessage(error.message as string)
 			} else {
 				setMessage('An unexpected error occurred.')
@@ -91,25 +91,31 @@ const StripeForm = (props: {
 		setIsLoading(false)
 	}
 
-	const paymentElementOptions = {
-		layout: 'tabs',
-	}
+	const paymentElementOptions: StripePaymentElementOptions = {
+		layout: {
+			type: 'tabs',
+		},
+	};
 
 	return (
-
 		<form id="payment-form" onSubmit={handleSubmit}>
-
-			<PaymentElement id="payment-element" options={paymentElementOptions} />
+			<PaymentElement
+				id="payment-element"
+				options={paymentElementOptions}
+			/>
 			<button disabled={isLoading || !stripe || !elements} id="submit">
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : props.label}
-        </span>
+				<span id="button-text">
+					{isLoading ? (
+						<div data-testid="spinner" className="spinner" id="spinner"></div>
+					) : (
+						props.label
+					)}
+				</span>
 			</button>
 			{/* Show any error or success messages */}
 			{<div id="payment-message">{message}</div>}
 		</form>
 	)
-
 }
 
 export default StripeForm
