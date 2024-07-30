@@ -1,51 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import Carousel from '../core/components/carousel/carousel'
-import ProductTitle from '../core/components/productTitle/productTitle'
-import SupplierRating from '../core/components/supplierRating/supplierRating'
-import ProductInfo from '../core/components/productInfo/productInfo'
-import PaymentMethod from '../core/components/paymentMethod/paymentMethod'
-import ProductPrice from '../core/components/productPrice/productPrice'
-import { useGetProductByIdQuery } from '../redux/services/productService'
-import './product.css'
-
-const TestImages = [
-    {
-        image: '/faro1.jpg',
-    },
-    {
-        image: '/faro2.jpg',
-    },
-    {
-        image: '/faro3.jpg',
-    },
-    {
-        image: '/faro4.jpg',
-    },
-    {
-        image: '/faro5.jpg',
-    },
-]
-
-const vehicleVersion = 'MINI MINI 5-TRG. (F55) 2015';
-const engine = 'Cooper 136CV / 100KW';
-const engineCode = 'B38A15A';
-const oemReference = 'BFO';
-const observations = `
-    Modelo especial Importado. Leo molestie per fermentum tempor porttitor, 
-    nisi facilisis sodales nullam, feugiat mollis at lobortis. Curae mollis 
-    vehicula facilisis non convallis leo tempor magnis nascetur eros, 
-    neque hac platea sociosqu purus dignissim habitant proin. 
-    Lacus vulputate inceptos facilisis vel varius tristique nascetur, 
-    malesuada curabitur nec fringilla mollis cum ut, habitasse parturient 
-    consequat donec montes eros. Modelo especial Importado. Leo molestie per 
-    fermentum tempor porttitor, nisi facilisis sodales nullam, feugiat mollis 
-    at lobortis. Curae mollis vehicula facilisis non convallis leo tempor magnis 
-    nascetur eros, neque hac platea sociosqu purus dignissim habitant proin. 
-    Lacus vulputate inceptos facilisis vel varius tristique nascetur, malesuada 
-    curabitur nec fringilla mollis cum ut, habitasse parturient consequat donec 
-    montes eros.
-`;
+import Carousel from '../../core/components/carousel/carousel'
+import ProductTitle from '../../core/components/productTitle/productTitle'
+import SupplierRating from '../../core/components/supplierRating/supplierRating'
+import ProductInfo from '../../core/components/productInfo/productInfo'
+import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
+import ProductPrice from '../../core/components/productPrice/productPrice'
+import { useGetProductByIdQuery, useGetDistributorByIdQuery } from '../../redux/services/productService'
+import '../product.css'
 
 const paymentOptions = [
     {   
@@ -93,6 +55,9 @@ const paymentOptions = [
 export default function Product({ params } : { params: { id: string } }) {
 
     const { data, error, isLoading, isFetching } = useGetProductByIdQuery({ id: params.id });
+    const { data: distributorData } = useGetDistributorByIdQuery({ id: data?.distributor || '' });
+
+    const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
 
     const [isWideScreen, setIsWideScreen] = useState(false);
 
@@ -109,30 +74,31 @@ export default function Product({ params } : { params: { id: string } }) {
 		};
 	}, []);
 
-    // if (isLoading || isFetching) return <div>Loading...</div>
-    // if (error) return <div> <p>Error: {error.toString()} </p> </div>
+    if (isLoading || isFetching) return <div>Loading...</div>
+    if (error) return <div> <p>Error: {error.toString()} </p> </div>
+
+    const buscoRepuestoPriceNew = () => {
+        if (data?.buscorepuestosPrice) {
+            const priceWithMarkup = data.buscorepuestosPrice * 1.3;
+            const rounder = Math.ceil(priceWithMarkup / 10) * 10; 
+            return rounder;
+        }
+    }
+
+    const discountRounded = Math.ceil(data?.discount || 0);
+    const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2);
 
     return (
         <div>
-            {
-                data && (
-                    <p>
-                        {
-                            data.title
-                        }
-                    </p>
-                )
-            }
-            
-            <div className='w-full mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
+            <div className='w-full mobile:w-[100vw] mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
                 <div>
                     {
-                        isWideScreen && (
+                        isWideScreen && data &&  (
                             <div className='mobile:mb-10'>
                                 <ProductTitle 
-                                    title="Parachoques delantero Mitsubishi Evo VIII 2004"
-                                    refNumber="5FG8715S52SA"
-                                    productName="MITSUBISHI EVO VIII 2004"
+                                    title={data.title}
+                                    refNumber={data.mainReference}
+                                    productName={data.version}
                                     imageSrc="/COMPARTIR.svg"
                                     isWideScreen={isWideScreen}
                                 />
@@ -140,7 +106,7 @@ export default function Product({ params } : { params: { id: string } }) {
                         )
                     }
                     <Carousel 
-                        images={TestImages}
+                        images={data?.images.map(image => ({ image })) || []}
                         isWideScreen={isWideScreen}
                     />
                 </div>
@@ -151,11 +117,11 @@ export default function Product({ params } : { params: { id: string } }) {
                 }
                 <div className='bg-neutro-grey'>
                     {
-                        !isWideScreen && (
+                        !isWideScreen && data && (
                             <ProductTitle 
-                                title="Parachoques delantero Mitsubishi Evo VIII 2004"
-                                refNumber="5FG8715S52SA"
-                                productName="MITSUBISHI EVO VIII 2004"
+                                title={data.title}
+                                refNumber={data.mainReference}
+                                productName={data.version}
                                 imageSrc="/COMPARTIR.svg"
                                 isWideScreen={isWideScreen}
                             />
@@ -163,31 +129,35 @@ export default function Product({ params } : { params: { id: string } }) {
                     }
                     <div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
                         <SupplierRating 
-                            valoration={4} 
-                            location="Huelva" 
+                            valoration={valoracion || 0} 
+                            location={Provincia || ''}
                             title="Valoración del proveedor" 
                         />
                     </div>
                     <div className="mt-[1.5vw] ml-10 flex justify-center">
                         <ProductPrice
-                            price='148,12'
+                            price={buscoRepuestoPrice}
                             shippingInfo='Envío e IVA incluido'
                             warningImgSrc='/info.svg'
-                            originalPrice={165.00}
-                            discount='-10%'
+                            originalPrice={buscoRepuestoPriceNew() || 0}
+                            discount={discountRounded ? `${discountRounded}%` : ''}
                             button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta' }}
                             button2Props={{ type: 'primary', labelName: 'Comprar' }}
                         />
                     </div>
                     <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>
-                        <ProductInfo 
-                            vehicleVersion={vehicleVersion}
-                            engine={engine}
-                            engineCode={engineCode}
-                            oemReference={oemReference}
-                            observations={observations}
-                        />
+                        {
+                            data && (
+                                <ProductInfo 
+                                    vehicleVersion={data.version}
+                                    engine={data.engine}
+                                    engineCode={data.engineCode}
+                                    oemReference={data.mainReference}
+                                    observations={data.observations}
+                                />
+                            )
+                        }
                     </div>
                 </div>
                 {

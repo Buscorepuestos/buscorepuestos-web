@@ -30,7 +30,7 @@ const SupplierRating: React.FC<SupplierRatingProps> = ({ valoration, location, t
                                 key={index} 
                                 isFilled={index < valoration}
                                 className='
-                                    xl:w-[1.2vw] xl:h-[1.2vw]
+                                    xl:w-[1vw] xl:h-[1vw]
                                     lg:w-[1.4vw] lg:h-[1.4vw]
                                     md:w-[1.4vw] md:h-[1.4vw]
                                     sm:w-[1.6vw] sm:h-[1.6vw]
