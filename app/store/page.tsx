@@ -22,7 +22,7 @@ export default function Store() {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
-	// TODO: refactorizar esto. Demasiada indentación
+
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
