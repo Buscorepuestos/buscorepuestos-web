@@ -21,6 +21,5 @@ export default function PaymentForm(props: {
 			<StripeForm clientSecret={props.clientSecret} label={'Pagar ahora'} />
 		</Elements>
 	);
-
 }
 
