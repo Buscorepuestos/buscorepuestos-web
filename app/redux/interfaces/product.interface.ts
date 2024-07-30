@@ -4,6 +4,7 @@ export interface ProductMongoInterface {
     budgets: string[];
     references: any[];
     _id?: string;
+    productName: string;
     isMetasync?: boolean;
     idEmpresa?: string;
     idVehicle?: string;
