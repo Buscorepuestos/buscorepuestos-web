@@ -296,7 +296,7 @@ export default function Home() {
 						piezas diferentes
 					</h2>
 				</div>
-				<div className='flex w-screen justify-center mx-auto'>
+				<div className='flex w-[99vw] justify-center mx-auto'>
 					<div className="grid grid-cols-2 md:grid-cols-4 gap-[85px] mobile:gap-[20px] mb-[85px]">
 						{cardInfoPropsArray.map((cardInfoProps, index) => (
 							<CardInfo
@@ -469,7 +469,7 @@ export default function Home() {
 			</Banner>
 
 			<section className="pt-[72px]">
-				<div className='w-full flex justify-start ml-36 mobile:ml-12'>
+				<div className='flex justify-start ml-36 mobile:ml-12'>
 					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey"> Podría interesarte</h2>
 				</div>
 				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>

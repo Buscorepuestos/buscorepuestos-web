@@ -29,7 +29,7 @@ export default function Banner(props: {
 		styles.backgroundImage = `url(${props.imgUrl})`;
 	return (
 		<section
-			className={`desktop:w-full mobile:w-[100vw] bg-no-repeat bg-cover bg-center flex ${props.position} z-0 ${props.extraCss}`}
+			className={`desktop:w-[99vw] mobile:w-[100vw] bg-no-repeat bg-cover bg-center flex ${props.position} z-0 ${props.extraCss}`}
 			style={styles}
 		>
 			{props.children}
