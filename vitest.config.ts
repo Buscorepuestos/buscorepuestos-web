@@ -16,8 +16,9 @@ export default defineConfig({
 			provider: 'v8',
 			ignoreEmptyLines: true,
 			include: ['app/**/*'],
-			exclude: ['node_modules', 'test/**/*', 'app/**/*.test.*', 'app/**/page.tsx', 'app/**/layout.tsx' , 'app/core/components/svg', 'app/component-examples'],
+			exclude: ['node_modules','test/**/*', 'app/**/*.test.*', 'app/**/page.tsx', 'app/**/layout.tsx' , 'app/core/components/svg', 'app/component-examples', 'app/core/components/__tests__/redux/mocks'],
 			reporter: ['text', 'html', 'json'],
 		},
+		setupFiles: './app/core/components/__tests__/redux/mocks/test.setup.ts',
 	},
 })
