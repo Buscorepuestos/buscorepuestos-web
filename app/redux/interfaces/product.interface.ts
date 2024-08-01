@@ -3,7 +3,7 @@ export interface ProductMongoInterface {
     url: string;
     budgets: string[];
     references: any[];
-    _id?: string;
+    _id: string;
     productName: string;
     isMetasync?: boolean;
     idEmpresa?: string;

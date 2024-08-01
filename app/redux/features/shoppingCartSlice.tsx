@@ -9,7 +9,7 @@ export interface CartItem {
 	brand: string
 	articleModel: string
 	images: string[]
-	_id: string | undefined
+	_id: string
 	quantity: number
 	stock: boolean
 }
@@ -48,7 +48,7 @@ export const cartSlice = createSlice({
 				(item) => item._id === action.payload._id
 			)
 			if (existingItem) {
-				existingItem.quantity += 1
+				return
 			} else {
 				const newItem = {
 					...selectProductProperties(action.payload),
