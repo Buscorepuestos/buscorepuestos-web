@@ -5,12 +5,13 @@ export interface CartItem {
 	productName: string
 	title: string
 	mainReference: string
-	buscorepuestosPrice: number | undefined
+	buscorepuestosPrice: number
 	brand: string
 	articleModel: string
 	images: string[]
 	_id: string | undefined
 	quantity: number
+	stock: boolean
 }
 
 export interface CartState {
@@ -79,4 +80,5 @@ export const selectProductProperties = (product: ProductMongoInterface) => ({
 	articleModel: product.articleModel,
 	images: product.images,
 	_id: product._id,
+	stock: product.stock,
 })

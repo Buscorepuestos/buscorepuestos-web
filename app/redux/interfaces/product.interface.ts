@@ -14,7 +14,7 @@ export interface ProductMongoInterface {
     airtableId?: string;
     title: string;
     price: number;
-    buscorepuestosPrice?: number;
+    buscorepuestosPrice: number;
     color: string;
     engine: string;
     engineCode: string;

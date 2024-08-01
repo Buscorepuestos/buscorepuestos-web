@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import Trash from '../svg/trash';
 
 interface ProductCartInfoProps {
-	image: string;
+	images: string[];
 	title: string;
 	brand: string;
-	model: string;
-	ref: string;
-	price: number;
-	isMobile: boolean;
-	isAvailable: boolean;
+	articleModel: string;
+	mainReference: string;
+	buscorepuestosPrice: number;
+	stock: boolean;
+	isMobile?: boolean;
 }
 
 const Article = styled.article<{ isAvailable: boolean }>`
@@ -47,17 +47,17 @@ const NotAvailableOverlay = styled.div`
 `;
 
 const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
-	const { isMobile = false, isAvailable } = props;
+	const { isMobile, stock } = props;
 
 	const parsePrice = (price: number) => {
 		return price.toString().replace('.', ',');
 	}
 
 	return (
-		<Article isAvailable={isAvailable} data-testid="product-cart-info">
-			{!isAvailable && <NotAvailableOverlay>No disponible</NotAvailableOverlay>}
+		<Article isAvailable={stock} data-testid="product-cart-info">
+			{!stock && <NotAvailableOverlay>No disponible</NotAvailableOverlay>}
 			<Image
-				src={props.image}
+				src={props.images[0]}
 				alt={props.title}
 				width={isMobile ? 84 : 96}
 				height={72}
@@ -67,12 +67,12 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 			<div className={'flex justify-between w-full'}>
 				<div className={'ml-16 tablet:ml-8 mobile:ml-4 mobile:w-full'}>
 					<h1 className={'text-title-3 tablet:text-title-4 mobile:text-base font-semibold font-poppins line-clamp-1 mobile:line-clamp-2'}>{props.title}</h1>
-					<h2 className={'text-sm tablet:text-xs mobile:text-xs font-poppins'}>{props.brand.toUpperCase()} {props.model.toUpperCase()}</h2>
-					<p className={'text-sm mobile:text-xs'}>Ref. {props.ref}</p>
+					<h2 className={'text-sm tablet:text-xs mobile:text-xs font-poppins'}>{props.brand.toUpperCase()} {props.articleModel}</h2>
+					<p className={'text-sm mobile:text-xs'}>Ref. {props.mainReference}</p>
 				</div>
 				<div className={'flex flex-col items-end tablet:justify-between mobile:justify-between'}>
 					<Trash isFilled={true} width={15} height={16} />
-					<p className={'text-lg tablet:text-title-3 mobile:text-title-4 font-semibold text-primary-blue-2'}>{parsePrice(props.price)}€</p>
+					<p className={'text-lg tablet:text-title-3 mobile:text-title-4 font-semibold text-primary-blue-2'}>{props.buscorepuestosPrice}€</p>
 				</div>
 			</div>
 		</Article>

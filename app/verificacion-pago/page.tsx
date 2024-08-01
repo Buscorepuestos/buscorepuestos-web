@@ -7,9 +7,12 @@ import Checkbox from '../core/components/checkbox/checkbox'
 import PaymentForm from '../core/components/checkout/PaymentForm'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
 import Image from 'next/image'
+import { useSelector } from 'react-redux'
 import './stripe.css'
+import { RootState } from '../redux/store'
 
 export default function Payment() {
+
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [clientSecret, setClientSecret] = useState('')
 	const [error, setError] = useState<string | null>(null)
@@ -165,6 +168,9 @@ export default function Payment() {
 		else setProductsToShow(products.slice(0, 2))
 	}, [isOpen, products])
 
+	const { items } = useSelector((state: RootState) => state.cart)
+	console.log(items)
+
 	return (
 		<section
 			className={
@@ -173,7 +179,7 @@ export default function Payment() {
 		>
 			{!isMobile && (
 				<article>
-					<ShoppingBasket products={products} />
+					<ShoppingBasket products={items} isMobile={isMobile}/>
 					<div className="w-full h-[2px] bg-secondary-blue mt-6" />
 					<div className={'flex justify-end items-center mr-8'}>
 						<p className={'mr-6 font-medium'}>Total:</p>
@@ -192,7 +198,7 @@ export default function Payment() {
 				</article>
 			)}
 
-			{isMobile && (
+			{/* {isMobile && (
 				<article>
 					<ShoppingBasket products={productsToShow} />
 					<div className="w-full h-[2px] bg-secondary-blue mt-6" />
@@ -211,7 +217,7 @@ export default function Payment() {
 					</div>
 					{localDropdown()}
 				</article>
-			)}
+			)} */}
 
 			<article className={'mobile:p-6'}>
 				<form className={'flex flex-col justify-center items-center'}>
