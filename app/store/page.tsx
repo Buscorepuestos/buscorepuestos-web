@@ -1,7 +1,6 @@
 'use client'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import CardPrice from '../core/components/cards/CardPrice'
-import { getProducts } from '../services/products/products.service'
 import { IProductMongoose } from '../types/product'
 import algoliasearch from 'algoliasearch'
 import SearchBar from '../core/components/SearchBar'
@@ -68,10 +67,10 @@ export default function Store() {
 				className={'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'}>
 				{products.map((product: any, index) => (
 					<CardPrice key={index} title={product.title}
-							   reference={product.mainReference}
-							   description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-							   price={(product?.buscorepuestosPrice || 0).toFixed(2)}
-							   image={product.images[0] ? product.images[0] : '/nodisponible.png'} />
+							reference={product.mainReference}
+							description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+							price={(product?.buscorepuestosPrice || 0).toFixed(2)}
+							image={product.images[0] ? product.images[0] : '/nodisponible.png'} />
 				))}
 				{loading && <p>Loading...</p>}
 				{error && <p>Error</p>}
