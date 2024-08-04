@@ -11,8 +11,20 @@ import { useSelector } from 'react-redux'
 import './stripe.css'
 import { RootState } from '../redux/store'
 
-export default function Payment() {
+function useCartItems() {
+	const items = useSelector((state: RootState) => state.cart.items)
+	const [isLoaded, setIsLoaded] = useState(false)
 
+	useEffect(() => {
+		if (items) {
+			setIsLoaded(true)
+		}
+	}, [items])
+
+	return { items, isLoaded }
+}
+
+export default function Payment() {
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [clientSecret, setClientSecret] = useState('')
 	const [error, setError] = useState<string | null>(null)
@@ -36,15 +48,17 @@ export default function Payment() {
 	})
 
 	useEffect(() => {
-		const handleResize = () => {
-			setIsMobile(window.innerWidth < 640)
-		}
+		if (typeof window !== 'undefined') {
+			const handleResize = () => {
+				setIsMobile(window.innerWidth < 640)
+			}
 
-		handleResize()
-		window.addEventListener('resize', handleResize)
+			handleResize()
+			window.addEventListener('resize', handleResize)
 
-		return () => {
-			window.removeEventListener('resize', handleResize)
+			return () => {
+				window.removeEventListener('resize', handleResize)
+			}
 		}
 	}, [])
 
@@ -71,59 +85,25 @@ export default function Payment() {
 		createIntent()
 	}, [])
 
-	const products = useMemo(() => [
-		{
-			image: '/card-preview.webp',
-			title: 'Capot Delantero',
-			brand: 'Nissan',
-			model: 'V4',
-			ref: '123123fsdf4v',
-			price: 156,
-			isMobile: false,
-			isAvailable: true,
-		},
-		{
-			image: '/card-preview.webp',
-			title: 'Capot Delantero',
-			brand: 'Nissan',
-			model: 'V4',
-			ref: '123123fsdf4v',
-			price: 156,
-			isMobile: false,
-			isAvailable: true,
-		},
-		{
-			image: '/card-preview.webp',
-			title: 'Capot Delantero',
-			brand: 'Nissan',
-			model: 'V4',
-			ref: '123123fsdf4v',
-			price: 156,
-			isMobile: false,
-			isAvailable: true,
-		},
-		{
-			image: '/card-preview.webp',
-			title: 'Capot Delantero',
-			brand: 'Nissan',
-			model: 'V4',
-			ref: '123123fsdf4v',
-			price: 156,
-			isMobile: false,
-			isAvailable: true,
-		},
-		{
-			image: '/card-preview.webp',
-			title: 'Capot Delantero',
-			brand: 'Nissan',
-			model: 'V4',
-			ref: '123123fsdf4v',
-			price: 156,
-			isMobile: false,
-			isAvailable: true,
-		},
-	], [])
-	
+	const products = useMemo(
+		() => [
+			{
+				images: [
+					'/card-preview.webp',
+					'/card-preview.webp',
+					'/card-preview.webp',
+				],
+				title: 'Capot Delantero',
+				brand: 'Nissan',
+				articleModel: 'V4',
+				mainReference: '123123fsdf4v',
+				buscorepuestosPrice: 156,
+				stock: true,
+			},
+		],
+		[]
+	)
+
 	const [productsToShow, setProductsToShow] = useState(products.slice(0, 2))
 
 	const shippingOptions = [
@@ -168,8 +148,11 @@ export default function Payment() {
 		else setProductsToShow(products.slice(0, 2))
 	}, [isOpen, products])
 
-	const { items } = useSelector((state: RootState) => state.cart)
-	console.log(items)
+	const { items, isLoaded } = useCartItems()
+
+	if (!isLoaded) {
+		return <div>Loading...</div>
+	}
 
 	return (
 		<section
@@ -179,7 +162,7 @@ export default function Payment() {
 		>
 			{!isMobile && (
 				<article>
-					<ShoppingBasket products={items} isMobile={isMobile}/>
+					<ShoppingBasket products={items} isMobile={isMobile} />
 					<div className="w-full h-[2px] bg-secondary-blue mt-6" />
 					<div className={'flex justify-end items-center mr-8'}>
 						<p className={'mr-6 font-medium'}>Total:</p>
@@ -189,18 +172,17 @@ export default function Payment() {
 							}
 						>
 							{products
-								.map((item) => item.price)
+								.map((item) => item.buscorepuestosPrice)
 								.reduce((acc, curr) => acc + curr, 0)}
-							€
 						</p>
 					</div>
 					<div className="w-full h-[2px] bg-secondary-blue mb-8" />
 				</article>
 			)}
 
-			{/* {isMobile && (
+			{isMobile && (
 				<article>
-					<ShoppingBasket products={productsToShow} />
+					<ShoppingBasket products={items} isMobile={isMobile} />
 					<div className="w-full h-[2px] bg-secondary-blue mt-6" />
 					<div className={'flex justify-end items-center mr-20'}>
 						<p className={'mr-6 font-medium'}>Total:</p>
@@ -210,14 +192,14 @@ export default function Payment() {
 							}
 						>
 							{products
-								.map((item) => item.price)
+								.map((item) => item.buscorepuestosPrice)
 								.reduce((acc, curr) => acc + curr, 0)}
 							€
 						</p>
 					</div>
 					{localDropdown()}
 				</article>
-			)} */}
+			)}
 
 			<article className={'mobile:p-6'}>
 				<form className={'flex flex-col justify-center items-center'}>

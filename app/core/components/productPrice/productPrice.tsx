@@ -1,12 +1,13 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
 import { useAppDispatch } from '../../../redux/hooks';
-import { addItemToCart, removeItemFromCart } from '../../../redux/features/shoppingCartSlice';
+import { addItemToCart, CartItem, removeItemFromCart } from '../../../redux/features/shoppingCartSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import { useRouter } from 'next/navigation';
 
 interface ProductPriceProps {
     price: string;
@@ -31,13 +32,25 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 }) => {
 
     const dispatch = useAppDispatch();
+    const router = useRouter();
 
+    const [existingItem, setExistingItem] = useState<CartItem | null>(null);
+    
     const handleAddToCart = () => {
         dispatch(addItemToCart(data));
     };
 
     const cart = useSelector((state: RootState) => state.cart.items);
-    const existingItem = cart.find((item) => item._id === data._id);
+
+    useEffect(() => {
+        const item = cart.find((item) => item._id === data._id);
+        setExistingItem(item!);
+    }, [cart, data._id]);
+
+    const buynow = () => {
+        dispatch(addItemToCart(data));
+        router.push('/verificacion-pago');
+    };
 
     return (
         <div className='flex flex-col justify-center items-center font-tertiary-font'>
@@ -93,7 +106,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
                                     <Button {...button1Props} onClick={handleAddToCart} />
                                 )
                             }
-                            <Button {...button2Props} />
+                            <Button {...button2Props} onClick={buynow}/>
                         </>
                     )
                 }
