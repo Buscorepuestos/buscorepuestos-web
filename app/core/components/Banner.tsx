@@ -6,13 +6,13 @@ function getAligned(aligned: 'center' | 'left' | 'right' | undefined) {
 
 interface BannerStyle {
 	backgroundImage?: string,
-	height: string,
+	height?: string,
 	justifyContent: string,
 	backgroundColor: string
 }
 
 export default function Banner(props: {
-	height: string
+	height?: string
 	color: string
 	imgUrl?: string
 	aligned?: 'center' | 'left' | 'right'
@@ -29,7 +29,7 @@ export default function Banner(props: {
 		styles.backgroundImage = `url(${props.imgUrl})`;
 	return (
 		<section
-			className={`desktop:w-[99vw] mobile:w-[100vw] bg-no-repeat bg-cover bg-center flex ${props.position} z-0 ${props.extraCss}`}
+			className={`w-full mobile:w-[100vw] bg-no-repeat bg-cover bg-center flex ${props.position} z-0 ${props.extraCss}`}
 			style={styles}
 		>
 			{props.children}

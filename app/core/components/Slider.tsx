@@ -33,7 +33,7 @@ export default function slider(props: SliderProps) {
 		isMobile,
 		slidePerView = 5,
 		spaceBetween = 100,
-		height = isMobile ? 840 : 420,
+		height = isMobile ? 450 : 420,
 		maxWidth = '95vw',
 		breakpoints,
 	} = props
