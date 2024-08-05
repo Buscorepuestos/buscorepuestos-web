@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { SwiperSlide } from 'swiper/react'
 import Banner from '@/app/core/components/Banner'
 import Button from '@/app/core/components/Button'
@@ -10,6 +10,7 @@ import CardPrice from '@/app/core/components/cards/CardPrice'
 import CardValoration from '@/app/core/components/cards/CardValoration'
 import TagBanner from './core/components/tags/TagBanner'
 import Dropdown from './core/components/Dropdown'
+import { useRouter } from 'next/navigation'
 
 const cardInfoPropsArray = [
 	{
@@ -245,6 +246,8 @@ const classCardCategories = "w-full h-auto object-cover";
 export default function Home() {
 
 	const [isMobile, setIsMobile] = useState(false)
+	const [searchTerm, setSearchTerm] = useState('');
+	const router = useRouter();
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -258,6 +261,16 @@ export default function Home() {
 			window.removeEventListener('resize', handleResize);
 		};
 	}, []);
+
+	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setSearchTerm(event.target.value);
+	};
+
+	const handleSearch = () => {
+		if (searchTerm) {
+			router.push(`/store/${searchTerm}`);
+		}
+	};
 
 	return (
 		<main>
@@ -276,7 +289,7 @@ export default function Home() {
 						<span className="text-warning"> reconstruidas</span> y
 						<span className="text-warning"> nuevas</span>.
 					</h1>
-					<SearchBar height={'52px'} width={'w-[496px] mobile:w-[80vw]'} borderColor={'#12B1BB'} borderWidth={'2px'}/>
+					<SearchBar onChange={handleInputChange} onEnterPress={handleSearch} height={'52px'} width={'w-[496px] mobile:w-[80vw]'} borderColor={'#12B1BB'} borderWidth={'2px'}/>
 				</div>
 			</Banner>
 			<Banner imgUrl=""
