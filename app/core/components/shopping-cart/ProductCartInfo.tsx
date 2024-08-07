@@ -18,11 +18,15 @@ const Article = styled.article<{ isAvailable: boolean }>`
 	width: 775px;
 
 	@media (max-width: 1024px) {
-		width: 500px;
+		width: 700px;
 	}
 
 	@media (max-width: 768px) {
-		width: 320px;
+		width: 550px;
+	}
+
+	@media (max-width: 640px) {
+		width: 85vw;
 	}
 
 	background-color: ${({ isAvailable }) => (isAvailable ? '' : 'rgba(0, 0, 0, 0.1)')};
@@ -72,7 +76,7 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 				</div>
 				<div className={'flex flex-col items-end tablet:justify-between mobile:justify-between'}>
 					<Trash isFilled={true} width={15} height={16} />
-					<p className={'text-lg tablet:text-title-3 mobile:text-title-4 font-semibold text-primary-blue-2'}>{props.buscorepuestosPrice}€</p>
+					<p className={'text-lg tablet:text-title-3 mobile:text-title-4 font-semibold text-primary-blue-2'}>{props.buscorepuestosPrice.toFixed(2)}€</p>
 				</div>
 			</div>
 		</Article>
