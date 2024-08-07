@@ -49,6 +49,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
     const buynow = () => {
         dispatch(addItemToCart(data));
+        console.log('buy now');
         router.push('/verificacion-pago');
     };
 

@@ -53,10 +53,6 @@ const NotAvailableOverlay = styled.div`
 const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 	const { isMobile, stock } = props;
 
-	const parsePrice = (price: number) => {
-		return price.toString().replace('.', ',');
-	}
-
 	return (
 		<Article isAvailable={stock} data-testid="product-cart-info">
 			{!stock && <NotAvailableOverlay>No disponible</NotAvailableOverlay>}

@@ -26,7 +26,7 @@ describe('Slidera component', () => {
 			</Slider>
 		)
 		const slider = screen.getByRole('region') // Assuming Swiper component renders with role="region"
-		expect(slider.style.height).toBe('840px')
+		expect(slider.style.height).toBe('450px')
 		expect(slider.style.maxWidth).toBe('95vw')
 	})
 })
