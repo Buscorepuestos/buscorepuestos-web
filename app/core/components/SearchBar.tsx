@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, KeyboardEvent } from 'react'
 
 export default function SearchBar(props: {
 	height?: string
@@ -7,7 +7,15 @@ export default function SearchBar(props: {
 	borderColor?: string
 	borderWidth?: string
 	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+	onEnterPress?: () => void;
 }) {
+
+	const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter' && props.onEnterPress) {
+            props.onEnterPress();
+        }
+    };
+
 	return (
 		<div
 			className={`${props.width} relative flex items-center bg-custom-white
@@ -34,6 +42,7 @@ export default function SearchBar(props: {
 				style={{
 					color: '#A9A9A9'
 				}}
+				onKeyDown={handleKeyDown}
 			/>
 		</div>
 	)

@@ -5,12 +5,13 @@ export interface CartItem {
 	productName: string
 	title: string
 	mainReference: string
-	buscorepuestosPrice: number | undefined
+	buscorepuestosPrice: number
 	brand: string
 	articleModel: string
 	images: string[]
-	_id: string | undefined
+	_id: string
 	quantity: number
+	stock: boolean
 }
 
 export interface CartState {
@@ -47,7 +48,7 @@ export const cartSlice = createSlice({
 				(item) => item._id === action.payload._id
 			)
 			if (existingItem) {
-				existingItem.quantity += 1
+				return
 			} else {
 				const newItem = {
 					...selectProductProperties(action.payload),
@@ -79,4 +80,5 @@ export const selectProductProperties = (product: ProductMongoInterface) => ({
 	articleModel: product.articleModel,
 	images: product.images,
 	_id: product._id,
+	stock: product.stock,
 })

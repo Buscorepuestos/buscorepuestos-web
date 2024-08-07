@@ -4,7 +4,7 @@ import Image from 'next/image'
 interface CheckboxProps {
     name: string;             
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void; 
-    value: string | number;   
+    value: boolean;  
     label: string;            
 }
 
@@ -16,7 +16,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ name, onChange, value, label }) => 
                     id={name} 
                     type="checkbox" 
                     name={name}
-                    value={value}
+                    // value={value}
                     onChange={onChange}
                     className="peer hidden"
                 />

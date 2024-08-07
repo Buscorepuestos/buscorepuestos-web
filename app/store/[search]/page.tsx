@@ -1,30 +1,42 @@
 'use client'
-import React, { ChangeEvent, useEffect, useState } from 'react'
-import CardPrice from '../core/components/cards/CardPrice'
-import { IProductMongoose } from '../types/product'
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import CardPrice from '../../core/components/cards/CardPrice'
+import { IProductMongoose } from '../../types/product'
 import algoliasearch from 'algoliasearch'
-import SearchBar from '../core/components/SearchBar'
+import SearchBar from '../../core/components/SearchBar'
 
 const appID = 'DSKGGHHS58'
 const apiKey = '6f49eeb288faef802bf5236c9fa6720d'
 
-export default function Store() {
+export default function Store({ params } : { params: { search: string } }) {
 
 	const client = algoliasearch(appID, apiKey)
 	// Create a new index and add a record
 	const index = client.initIndex('dev_PRODUCTS')
 	let hits: any = [];
 
-	const search = async (query: string) => {
+	const searchAlgolia = useCallback(async (query: string) => {
 		// Search for query in the index "products"
 		const result = await index.search(query);
 		setProducts(result.hits as unknown as IProductMongoose[]);
-	}
+	}, [index]);
 
 	const [products, setProducts] = useState<IProductMongoose[]>([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('');
+
+	useEffect(() => {
+		if (params.search && !inputValue) {
+			if (params.search.includes('%20')) {
+				const search = params.search.split('%20').join(' ');
+				searchAlgolia(search);
+			} else {
+				searchAlgolia(params.search);
+			}
+		}
+	}
+	, [params.search, searchAlgolia, inputValue]);
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -55,7 +67,7 @@ export default function Store() {
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setInputValue(event.target.value);
-		search(event.target.value);
+		searchAlgolia(event.target.value);
 	};
 
 	return (

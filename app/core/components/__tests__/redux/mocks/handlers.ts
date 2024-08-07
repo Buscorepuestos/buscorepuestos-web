@@ -34,7 +34,8 @@ const mockProduct: ProductMongoInterface = {
     articleModel: '',
     isNewProduct: false,
     addedToBudget: false,
-    inBudget: false
+    inBudget: false,
+    buscorepuestosPrice: 0
 };
 
 // Mock de distribuidores

@@ -3,7 +3,7 @@ export interface ProductMongoInterface {
     url: string;
     budgets: string[];
     references: any[];
-    _id?: string;
+    _id: string;
     productName: string;
     isMetasync?: boolean;
     idEmpresa?: string;
@@ -14,7 +14,7 @@ export interface ProductMongoInterface {
     airtableId?: string;
     title: string;
     price: number;
-    buscorepuestosPrice?: number;
+    buscorepuestosPrice: number;
     color: string;
     engine: string;
     engineCode: string;

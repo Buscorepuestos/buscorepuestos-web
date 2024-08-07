@@ -36,7 +36,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center items-center min-h-screen`}
+				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center min-h-screen`}
 			>
 				<StoreProvider>
 					<Analytics/>

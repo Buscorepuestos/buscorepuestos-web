@@ -103,7 +103,11 @@ const StripeForm = (props: { clientSecret: string; label: 'Pagar ahora' }) => {
 				id="payment-element"
 				options={paymentElementOptions}
 			/>
-			<button disabled={isLoading || !stripe || !elements} id="submit">
+			<button 
+				disabled={isLoading || !stripe || !elements} 
+				id="submit" 
+				type='submit'
+			>
 				<span id="button-text">
 					{isLoading ? (
 						<div data-testid="spinner" className="spinner" id="spinner"></div>

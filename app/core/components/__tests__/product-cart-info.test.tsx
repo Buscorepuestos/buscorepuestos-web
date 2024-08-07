@@ -4,18 +4,18 @@ import ProductCartInfo from '../shopping-cart/ProductCartInfo'
 
 describe('ProductCartInfo', () => {
 	const defaultProps = {
-		image: '/card-preview.webp',
+		image: ['/card-preview.webp'],
 		title: 'Sample Product',
 		brand: 'Sample Brand',
-		model: 'Model XYZ',
-		ref: 'REF123',
-		price: 99.99,
+		articleModel: 'Model XYZ',
+		mainReference: 'REF123',
+		buscorepuestosPrice: 99.99,
 		isMobile: false,
-		isAvailable: true,
+		stock: true,
 	}
 
 	const renderComponent = (props = defaultProps) => {
-		render(<ProductCartInfo {...props} />)
+		render(<ProductCartInfo images={["/card-preview.webp"]} {...props} />)
 	}
 
 	beforeAll(() => {
@@ -36,13 +36,16 @@ describe('ProductCartInfo', () => {
 
 	test('renders the product information correctly', () => {
 		renderComponent(defaultProps)
-
+	
 		expect(screen.getByText(/sample product/i)).toBeDefined()
-		expect(screen.getByText(/sample brand model xyz/i)).toBeDefined()
+		expect(screen.getByText(/sample brand/i)).toBeDefined()
+		expect(screen.getByText(/model xyz/i)).toBeDefined()
 		expect(screen.getByText(/ref\. ref123/i)).toBeDefined()
-		expect(screen.getByText(/99,99€/i)).toBeDefined()
+		expect(screen.getByText(/99.99€/i)).toBeDefined()
 	})
-
+	
+	
+	
 	test('renders the image with correct attributes', () => {
 		const image = screen.getByAltText(/Sample Product/i) as HTMLImageElement
 		expect(image).toBeDefined()
@@ -73,7 +76,7 @@ describe('ProductCartInfo', () => {
 	})
 
 	it('should have default background color and opacity when product is available', () => {
-		const { container } = render(<ProductCartInfo {...defaultProps} />);
+		const { container } = render(<ProductCartInfo images={["/card-preview.webp"]} {...defaultProps} />);
 	
 		const articleElement = container.querySelector('article');
 		const styles = articleElement ? getComputedStyle(articleElement) : null;
@@ -83,7 +86,7 @@ describe('ProductCartInfo', () => {
 	});
 	
 	it('should have different background color and opacity when product is not available', () => {
-		const { container } = render(<ProductCartInfo {...defaultProps} isAvailable={false} />);
+		const { container } = render(<ProductCartInfo images={["/card-preview.webp"]} {...defaultProps} stock={false} />);
 	
 		const articleElement = container.querySelector('article');
 		const styles = articleElement ? getComputedStyle(articleElement) : null;
