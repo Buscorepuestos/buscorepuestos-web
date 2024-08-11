@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
 import { useAppDispatch } from '../../../redux/hooks';
-import { addItemToCart, CartItem, removeItemFromCart, savePurchaseAsync } from '../../../redux/features/shoppingCartSlice';
+import { addItemToCart, CartItem, removeItemFromCart, savePurchaseAsync, removePurchaseAsync } from '../../../redux/features/shoppingCartSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useRouter } from 'next/navigation';
@@ -42,6 +42,11 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
         dispatch(addItemToCart(data));
         dispatch(savePurchaseAsync({ product: data, userId: userId ?? '' }));
     };
+
+    const handleRemoveFromCart = () => {
+        dispatch(removeItemFromCart(data._id));
+        dispatch(removePurchaseAsync({ productId: data._id, purchaseId: existingItem!.purchaseId! }));
+    }
 
     const cart = useSelector((state: RootState) => state.cart.items);
 
@@ -108,7 +113,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
                                         hoverBg='hover:bg-custom-white'
                                         hoverText='hover:text-secondary-blue'
                                         cursor='cursor-pointer'
-                                        onClick={() => dispatch(removeItemFromCart(data._id))}
+                                        onClick={handleRemoveFromCart}
                                     />
                                 ) : (
                                     <>

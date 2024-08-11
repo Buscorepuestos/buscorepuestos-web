@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ProductMongoInterface } from '../interfaces/product.interface';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { savePurchase } from '../../services/purchase/purchase';
+import { savePurchase, deletePurchase } from '../../services/purchase/purchase';
 
 interface SavePurchasePayload {
     product: ProductMongoInterface;
@@ -18,10 +18,18 @@ export const savePurchaseAsync = createAsyncThunk(
     async (payload: SavePurchasePayload) => {
         const { product, userId } = payload;
         const response = await savePurchase(product, userId);
-        return { productId: product._id, purchaseId: response.purchaseId }; // Devuelve ambos IDs
+        return { productId: product._id, purchaseId: response.purchaseId };
     }
 );
 
+export const removePurchaseAsync = createAsyncThunk(
+    'cart/removePurchaseAsync',
+    async (payload: RemovePurchasePayload) => {
+        const { purchaseId, productId } = payload;
+        await deletePurchase(purchaseId);
+        return productId
+    }
+);
 export interface CartItem {
     productName: string;
     title: string;
@@ -100,6 +108,9 @@ export const cartSlice = createSlice({
             })
             .addCase(savePurchaseAsync.rejected, (state, action) => {
                 console.error('Failed to save purchase');
+            })
+            .addCase(removePurchaseAsync.fulfilled, (state, action: PayloadAction<string>) => {
+                state.items = state.items.filter(item => item._id !== action.payload);
             });
     },
 });
