@@ -14,7 +14,7 @@ export const makeStore = () => {
         },
         middleware: (getDefaultMiddleware) => 
             getDefaultMiddleware()
-            // .concat(localStorageMiddleware)
+            .concat(localStorageMiddleware)
             .concat(authMiddleware),
     });
 };

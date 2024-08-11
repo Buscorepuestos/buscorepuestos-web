@@ -4,10 +4,11 @@ import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
 import { useAppDispatch } from '../../../redux/hooks';
-import { addItemToCart, CartItem, removeItemFromCart } from '../../../redux/features/shoppingCartSlice';
+import { addItemToCart, CartItem, removeItemFromCart, savePurchaseAsync } from '../../../redux/features/shoppingCartSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useRouter } from 'next/navigation';
+
 
 interface ProductPriceProps {
     price: string;
@@ -33,11 +34,13 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const userId = localStorage.getItem('airtableUserId');
 
     const [existingItem, setExistingItem] = useState<CartItem | null>(null);
     
     const handleAddToCart = () => {
         dispatch(addItemToCart(data));
+        dispatch(savePurchaseAsync({ product: data, userId: userId ?? '' }));
     };
 
     const cart = useSelector((state: RootState) => state.cart.items);
@@ -47,9 +50,13 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
         setExistingItem(item!);
     }, [cart, data._id]);
 
+    useEffect(() => {
+        dispatch({ type: "auth/checkUserStatus" });
+    }, [dispatch]);
+
     const buynow = () => {
         dispatch(addItemToCart(data));
-        console.log('buy now');
+        dispatch(savePurchaseAsync({ product: data, userId: userId ?? '' }));
         router.push('/verificacion-pago');
     };
 
@@ -104,10 +111,12 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
                                         onClick={() => dispatch(removeItemFromCart(data._id))}
                                     />
                                 ) : (
+                                    <>
                                     <Button {...button1Props} onClick={handleAddToCart} />
+                                    <Button {...button2Props} onClick={buynow}/>
+                                    </>
                                 )
                             }
-                            <Button {...button2Props} onClick={buynow}/>
                         </>
                     )
                 }

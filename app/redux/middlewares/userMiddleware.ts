@@ -50,7 +50,6 @@ export const authMiddleware: Middleware = ({ dispatch }) => next => async (actio
                     const newAirtableUser = {
                         uid: user.uid,
                         Rol: 'Anonimo',
-                        // Otras propiedades que quieras setear para un usuario anónimo
                     };
 
                     const createdUser = await userService.createAnonymousAirtableUser(newAirtableUser);
