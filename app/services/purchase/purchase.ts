@@ -38,3 +38,22 @@ export const deletePurchase = async (purchaseId: string): Promise<void> => {
         throw error;
     }
 };
+
+export const updatePurchase = async (purchaseId: string): Promise<void> => {
+
+    const purchase = {
+        id: purchaseId,
+        "Pago del Cliente": "Pago Confirmado",
+        "Estado": "Pendiente de Compra a Distribuidor",
+        "Metodo": "tarjeta"
+    };
+
+    try {
+        await api.patch(`/purchases/${purchaseId}`, {
+            data: purchase,
+        });
+    } catch (error) {
+        console.error('Error updating purchase:', error);
+        throw error;
+    }
+};
