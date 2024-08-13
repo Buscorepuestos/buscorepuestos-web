@@ -16,7 +16,7 @@ export default defineConfig({
 			provider: 'v8',
 			ignoreEmptyLines: true,
 			include: ['app/**/*'],
-			exclude: ['node_modules','test/**/*', 'app/**/*.test.*', 'app/**/page.tsx', 'app/**/layout.tsx' , 'app/core/components/svg', 'app/component-examples', 'app/core/components/__tests__/redux/mocks', 'app/types', 'app/core/components/__tests__/stripe-form.test.tsx'],
+			exclude: ['node_modules','test/**/*', 'app/**/*.test.*', 'app/**/page.tsx', 'app/**/layout.tsx' , 'app/core/components/svg', 'app/component-examples', 'app/core/components/__tests__/redux/mocks', 'app/types', 'app/core/components/checkout/StripeForm.tsx'],
 			reporter: ['text', 'html', 'json'],
 		},
 		setupFiles: [
