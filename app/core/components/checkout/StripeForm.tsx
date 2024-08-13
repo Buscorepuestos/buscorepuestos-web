@@ -2,12 +2,18 @@ import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useEffect, useState } from 'react'
 import { PaymentIntent, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { createBill } from '../../../services/billing/billing.service'
-import { clearCart } from '@/app/redux/features/shoppingCartSlice'
+import { clearCart } from '../../../redux/features/shoppingCartSlice'
 import { useDispatch } from 'react-redux'
-import { updatePurchase } from '@/app/services/purchase/purchase'
+import { updatePurchase } from '../../../services/purchase/purchase'
+import { FormsFields } from '../../../verificacion-pago/page'
 
 
-const StripeForm = (props: { clientSecret: string; label: 'Pagar ahora'; purchaseIds: string[] }) => {
+const StripeForm = (props: { 
+	clientSecret: string; 
+	label: 'Pagar ahora'; 
+	purchaseIds: string[];
+	fieldsValues: FormsFields;
+}) => {
 
 	const dispatch = useDispatch()
 	const stripe = useStripe()
@@ -64,15 +70,15 @@ const StripeForm = (props: { clientSecret: string; label: 'Pagar ahora'; purchas
 			Compras: props.purchaseIds,
 			Usuarios: [userId!],
 			transfer: false,
-			address: 'Direccion de prueba',
-			country: 'España',
-			location: 'Las Palmas de Gran Canarias',
-			addressNumber: '14',
-			name: 'Carlos',
-			cp: '3012',
-			nif: '3456fg',
-			phone: 66666666,
-			province: 'Las Palmas'
+			address: props.fieldsValues.shippingAddress,
+			country: props.fieldsValues.country,
+			location: props.fieldsValues.city,
+			addressNumber: props.fieldsValues.addressExtra,
+			name: props.fieldsValues.name,
+			cp: props.fieldsValues.zip,
+			nif: props.fieldsValues.nif,
+			phone: Number(props.fieldsValues.phoneNumber),
+			province: props.fieldsValues.province,
 		})
 
 		setIsLoading(true)

@@ -1,15 +1,32 @@
 'use client'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../redux/store'
 import ShoppingBasket from '../core/components/shopping-cart/ShoppingBasket'
-import React, { useEffect, useState, useMemo } from 'react'
-import Input from '../core/components/input/input'
 import SelectDropdown from '../core/components/selectDropdown/selectDropdown'
-import Checkbox from '../core/components/checkbox/checkbox'
 import PaymentForm from '../core/components/checkout/PaymentForm'
+import Checkbox from '../core/components/checkbox/checkbox'
+import Input from '../core/components/input/input'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
 import Image from 'next/image'
-import { useSelector, useDispatch } from 'react-redux'
 import './stripe.css'
-import { RootState } from '../redux/store'
+
+export interface FormsFields {
+	name: string
+	email: string
+	nif: string
+	phoneNumber: string
+	shippingAddress: string
+	addressExtra: string
+	zip: string
+	city: string
+	province: string
+	country: string
+	billingAddress: string
+	billingAddressExtra: string
+	billingZip: string
+	billingProvince: string
+}
 
 function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
@@ -36,10 +53,10 @@ export default function Payment() {
 	const [error, setError] = useState<string | null>(null)
 	const [isMobile, setIsMobile] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
-	const [fieldsValue, setFieldsValue] = useState({
+	const [fieldsValue, setFieldsValue] = useState<FormsFields>({
 		name: '',
 		email: '',
-		companyId: '',
+		nif: '',
 		phoneNumber: '',
 		shippingAddress: '',
 		addressExtra: '',
@@ -56,9 +73,8 @@ export default function Payment() {
 	const { items, isLoaded, purchaseIds, productsIds } = useCartItems()
 
 	const calculateTotal = () => {
-		//mapea todos los productos y si el stock del producto es true, suma el precio del producto
 		const stringPrice = items
-			.filter((product) => product.stock) // Filter out boolean values
+			.filter((product) => product.stock)
 			.map((product) => product.buscorepuestosPrice)
 			.reduce((acc, price) => acc + Number(price), 0)
 			.toFixed(2)
@@ -115,6 +131,31 @@ export default function Payment() {
 		dispatch({ type: 'auth/checkUserStatus' })
 	}, [dispatch])
 
+	useEffect(() => {
+		if (sameBillAddress) {
+			setFieldsValue((prevState) => ({
+				...prevState,
+				billingAddress: prevState.shippingAddress,
+				billingAddressExtra: prevState.addressExtra,
+				billingZip: prevState.zip,
+				billingCity: prevState.city,
+				billingProvince: prevState.province,
+				billingCountry: prevState.country,
+			}))
+		} else {
+			// Limpiar los campos de dirección de facturación si se deselecciona el checkbox
+			setFieldsValue((prevState) => ({
+				...prevState,
+				billingAddress: '',
+				billingAddressExtra: '',
+				billingZip: '',
+				billingCity: '',
+				billingProvince: '',
+				billingCountry: '',
+			}))
+		}
+	}, [sameBillAddress])
+
 	const shippingOptions = [
 		{ value: 'opcion1', label: 'Direcciones de envío guardadas' },
 		{ value: 'option2', label: 'Option 2' },
@@ -151,11 +192,6 @@ export default function Payment() {
 			</div>
 		)
 	}
-
-	// useEffect(() => {
-	// 	if (isOpen) setProductsToShow(products)
-	// 	else setProductsToShow(products.slice(0, 2))
-	// }, [isOpen, products])
 
 	if (!isLoaded) {
 		return <div>Loading...</div>
@@ -209,7 +245,7 @@ export default function Payment() {
 				)}
 
 				<article className={'mobile:p-6'}>
-					<form
+					<div
 						className={'flex flex-col justify-center items-center'}
 					>
 						{/*Personal Information*/}
@@ -259,11 +295,11 @@ export default function Payment() {
 							<Input
 								placeholder={'NIF / CIF'}
 								name={'company_id'}
-								value={fieldsValue.companyId}
+								value={fieldsValue.nif}
 								onChange={(e) =>
 									setFieldsValue({
 										...fieldsValue,
-										companyId: e.target.value,
+										nif: e.target.value,
 									})
 								}
 							/>
@@ -507,14 +543,15 @@ export default function Payment() {
 						>
 							Método de pago
 						</h1>
-					</form>
-					<div>
-						{clientSecret && (
-							<PaymentForm
-								clientSecret={clientSecret}
-								purchaseIds={purchaseIds}
-							/>
-						)}
+						<div>
+							{clientSecret && (
+								<PaymentForm
+									clientSecret={clientSecret}
+									purchaseIds={purchaseIds}
+									fieldsValues={fieldsValue}
+								/>
+							)}
+						</div>
 					</div>
 				</article>
 			</section>

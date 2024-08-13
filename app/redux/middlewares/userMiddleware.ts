@@ -1,8 +1,8 @@
 import { Middleware } from 'redux';
 import { signAnonymously } from '../../lib/auth'; // Configuración de Firebase
-import { setCurrentFirebaseUser } from '@/app/redux/features/firebaseUserSlice';
-import { setCurrentAirtableUser } from '@/app/redux/features/airtableUserSlice';
-import { userService } from '@/app/services/user/userService';
+import { setCurrentFirebaseUser } from '../../redux/features/firebaseUserSlice';
+import { setCurrentAirtableUser } from '../..//redux/features/airtableUserSlice';
+import { userService } from '../../services/user/userService';
 
 export const authMiddleware: Middleware = ({ dispatch }) => next => async (action: any) => {
 

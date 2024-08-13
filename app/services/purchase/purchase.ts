@@ -1,4 +1,4 @@
-import api from '@/app/api/api';
+import api from '../../api/api';
 import { ProductMongoInterface } from '@/app/redux/interfaces/product.interface';
 
 export const savePurchase = async (product: ProductMongoInterface, userId: string): Promise<{ purchaseId: string }> => {
