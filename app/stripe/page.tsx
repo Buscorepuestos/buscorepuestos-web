@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
 import PaymentForm from '../core/components/checkout/PaymentForm'
 import { FormsFields } from '../verificacion-pago/page'
-export default function App(fieldsValues:FormsFields, purchaseIds:string[]) {
+
+interface AppProps {
+	fieldsValues: FormsFields
+	purchaseIds: string[]
+}
+
+export default function App({ fieldsValues, purchaseIds }: AppProps) {
 
 	const [clientSecret, setClientSecret] = useState<string>('')
 	const [error, setError] = useState<string>('')
