@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
 import PaymentForm from '../core/components/checkout/PaymentForm'
-export default function App() {
+import { FormsFields } from '../verificacion-pago/page'
+export default function App(fieldsValues:FormsFields, purchaseIds:string[]) {
 
 	const [clientSecret, setClientSecret] = useState<string>('')
 	const [error, setError] = useState<string>('')
@@ -33,7 +34,7 @@ export default function App() {
 
 	return (
 		<div>
-			{clientSecret && <PaymentForm clientSecret={clientSecret} />}
+			{clientSecret && <PaymentForm fieldsValues={fieldsValues} purchaseIds={purchaseIds} clientSecret={clientSecret} />}
 			{error && <p>Error: {error}</p>}
 		</div>
 	)
