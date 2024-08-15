@@ -26,7 +26,7 @@
 }
 
 /* Buttons and links */
-button {
+.button-pay {
     background: #0065ff;
     font-family: Arial, sans-serif;
     color: #ffffff;
@@ -42,11 +42,11 @@ button {
     width: 100%;
 }
 
-button:hover {
+.button-pay:hover {
     filter: contrast(115%);
 }
 
-button:disabled {
+.button-pay:disabled {
     opacity: 0.5;
     cursor: default;
 }

@@ -1,8 +1,15 @@
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../../../redux/hooks';
+import { RootState } from '../../../redux/store';
+import { CartItem } from '../../../redux/features/shoppingCartSlice';
+import { removeItemFromCart, removePurchaseAsync } from '../../../redux/features/shoppingCartSlice';
 import Image from 'next/image';
 import styled from 'styled-components';
 import Trash from '../svg/trash';
 
 interface ProductCartInfoProps {
+	_id: string;
 	images: string[];
 	title: string;
 	brand: string;
@@ -51,7 +58,21 @@ const NotAvailableOverlay = styled.div`
 `;
 
 const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
-	const { isMobile, stock } = props;
+
+	const { isMobile, stock, _id } = props;
+	const dispatch = useAppDispatch()
+	const cart = useSelector((state: RootState) => state.cart.items);
+	const [existingItem, setExistingItem] = useState<CartItem | null>(null);
+
+    useEffect(() => {
+        const item = cart.find((item) => item._id === _id);
+        setExistingItem(item!);
+    }, [cart, _id]);
+
+	const handleRemoveFromCart = () => {
+        dispatch(removeItemFromCart(_id));
+        dispatch(removePurchaseAsync({ productId: _id, purchaseId: existingItem!.purchaseId! }));
+    }
 
 	return (
 		<Article isAvailable={stock} data-testid="product-cart-info">
@@ -71,7 +92,9 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 					<p className={'text-sm mobile:text-xs'}>Ref. {props.mainReference}</p>
 				</div>
 				<div className={'flex flex-col items-end tablet:justify-between mobile:justify-between'}>
-					<Trash isFilled={true} width={15} height={16} />
+					<button onClick={handleRemoveFromCart}>
+						<Trash isFilled={true} width={15} height={16} />
+					</button>
 					<p className={'text-lg tablet:text-title-3 mobile:text-title-4 font-semibold text-primary-blue-2'}>{props.buscorepuestosPrice.toFixed(2)}€</p>
 				</div>
 			</div>

@@ -11,6 +11,7 @@ export default function CardPrice(props: {
 	description: string
 	price: number
 	image?: string
+	handleBuy?: () => void
 }) {
 	const {image = '/card-preview.webp'} = props;
 	return (
@@ -45,7 +46,10 @@ export default function CardPrice(props: {
 						<PriceView price={props.price.toFixed(2).replace('.', ',')} />
 					</div>
 					<div className='flex justify-center w-[100%] mb-6'>
-						<Button labelName={'Comprar'}/>
+						<Button 
+							labelName={'Comprar'}
+							onClick={props.handleBuy}
+						/>
 					</div>
 				</div>
 			</div>

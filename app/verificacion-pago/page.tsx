@@ -32,17 +32,15 @@ function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
 	const [isLoaded, setIsLoaded] = useState(false)
 	const [purchaseIds, setPurchaseIds] = useState<string[]>([])
-	const [productsIds, setProductsIds] = useState<string[]>([])
 
 	useEffect(() => {
 		if (items) {
 			setIsLoaded(true)
 			setPurchaseIds(items.map((item) => item.purchaseId ?? ''))
-			setProductsIds(items.map((item) => item._id ?? ''))
 		}
 	}, [items])
 
-	return { items, isLoaded, purchaseIds, productsIds }
+	return { items, isLoaded, purchaseIds }
 }
 
 export default function Payment() {
@@ -70,7 +68,9 @@ export default function Payment() {
 		billingProvince: '',
 	})
 
-	const { items, isLoaded, purchaseIds, productsIds } = useCartItems()
+	const { items, isLoaded, purchaseIds } = useCartItems()
+
+	console.log(purchaseIds, purchaseIds.length)
 
 	const calculateTotal = () => {
 		const stringPrice = items
@@ -107,25 +107,27 @@ export default function Payment() {
 
 	useEffect(() => {
 		const createIntent = async () => {
-			try {
-				const res = await createPaymentIntent({
-					amount: numberPriceRounded,
-					currency: 'eur',
-					cartIDs: productsIds,
-					automatic_payment_methods: { enabled: true },
-				})
-				setClientSecret(res.data.client_secret)
-			} catch (error) {
-				if (error instanceof Error) {
-					setError(error.message)
-				} else {
-					setError('An unknown error occurred')
+			if (purchaseIds.length > 0 && numberPriceRounded > 0 ) {
+				try {
+					const res = await createPaymentIntent({
+						amount: numberPriceRounded,
+						currency: 'eur',
+						cartIDs: purchaseIds,
+						automatic_payment_methods: { enabled: true },
+					})
+					setClientSecret(res.data.client_secret)
+				} catch (error) {
+					if (error instanceof Error) {
+						setError(error.message)
+					} else {
+						setError('An unknown error occurred')
+					}
 				}
 			}
 		}
 
 		createIntent()
-	}, [numberPriceRounded, productsIds])
+	}, [numberPriceRounded, purchaseIds])
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })

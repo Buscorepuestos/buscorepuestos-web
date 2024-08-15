@@ -17,6 +17,7 @@ export const savePurchaseAsync = createAsyncThunk(
     'cart/savePurchaseAsync',
     async (payload: SavePurchasePayload) => {
         const { product, userId } = payload;
+        console.log('Saving purchase', product, userId);
         const response = await savePurchase(product, userId);
         return { productId: product._id, purchaseId: response.purchaseId };
     }
@@ -41,6 +42,7 @@ export interface CartItem {
     _id: string;
     quantity: number;
     stock: boolean;
+    airtableId: string;
     purchaseId?: string;
 }
 
@@ -80,9 +82,10 @@ export const cartSlice = createSlice({
             if (existingItem) {
                 return;
             } else {
-                const newItem = {
+                const newItem: CartItem = {
                     ...selectProductProperties(action.payload),
                     quantity: 1,
+                    airtableId: action.payload.airtableId || ''
                 };
                 state.items.push(newItem);
             }
@@ -128,5 +131,6 @@ export const selectProductProperties = (product: ProductMongoInterface) => ({
     images: product.images,
     _id: product._id,
     stock: product.stock,
+    airtableId: product.airtableId
 });
 

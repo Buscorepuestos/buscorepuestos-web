@@ -127,6 +127,7 @@ const StripeForm = (props: {
 				disabled={isLoading || !stripe || !elements} 
 				id="submit" 
 				type='submit'
+				className='button-pay'
 			>
 				<span id="button-text">
 					{isLoading ? (

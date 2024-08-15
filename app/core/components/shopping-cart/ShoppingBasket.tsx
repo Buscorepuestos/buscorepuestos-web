@@ -10,6 +10,7 @@ interface Product {
     mainReference: string;
     buscorepuestosPrice: number;
     stock: boolean;
+    _id: string;
 }
 
 interface ShoppingBasketProps {
@@ -48,6 +49,7 @@ const ShoppingBasket: React.FC<ShoppingBasketProps> = ({ products, isMobile }) =
                         buscorepuestosPrice={product.buscorepuestosPrice}
                         isMobile={isMobile}
                         stock={product.stock}
+                        _id={product._id}
                     />
                 ))}
             </BasketContainer>
