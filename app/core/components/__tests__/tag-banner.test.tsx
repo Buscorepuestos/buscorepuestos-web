@@ -20,59 +20,123 @@ describe('Tag Banner component', () => {
 		cleanup()
 	})
 	test('gray background color render', () => {
-		const { container } = render(<TagBanner title={mockTitle} flexDir={mockFlexDir} height={mockHeight}
-												width={mockWidth} color={mockColor} align={mockAlign}
-												padding={mockPadding} alignSelf={mockAlign} fontColor={mockFontColor}
-												alignItems={mockAlign} radius={mockRadius} position={mockPosition}
-												zIndex={mockIndex} axis={mockAxis}>
-			<p>Test</p>
-		</TagBanner>)
+		const { container } = render(
+			<TagBanner
+				title={mockTitle}
+				flexDir={mockFlexDir}
+				height={mockHeight}
+				width={mockWidth}
+				color={mockColor}
+				align={mockAlign}
+				padding={mockPadding}
+				alignSelf={mockAlign}
+				fontColor={mockFontColor}
+				alignItems={mockAlign}
+				radius={mockRadius}
+				position={mockPosition}
+				zIndex={mockIndex}
+				axis={mockAxis}
+			>
+				<p>Test</p>
+			</TagBanner>
+		)
 		const sectionElement = container.firstChild as HTMLElement
 		expect(sectionElement.style.backgroundColor).toBe(mockColor)
 	})
 	test('Passing justify to left', () => {
-		const { container } = render(<TagBanner title={mockTitle} flexDir={mockFlexDir} height={mockHeight}
-												width={mockWidth} color={mockColor} align={'left'}
-												padding={mockPadding} alignSelf={mockAlign} fontColor={mockFontColor}
-												alignItems={mockAlign} radius={mockRadius} position={mockPosition}
-												zIndex={mockIndex} axis={mockAxis}>
-			<p>Test</p>
-		</TagBanner>)
+		const { container } = render(
+			<TagBanner
+				title={mockTitle}
+				flexDir={mockFlexDir}
+				height={mockHeight}
+				width={mockWidth}
+				color={mockColor}
+				align={'left'}
+				padding={mockPadding}
+				alignSelf={mockAlign}
+				fontColor={mockFontColor}
+				alignItems={mockAlign}
+				radius={mockRadius}
+				position={mockPosition}
+				zIndex={mockIndex}
+				axis={mockAxis}
+			>
+				<p>Test</p>
+			</TagBanner>
+		)
 		const sectionElement = container.firstChild as HTMLElement
 		expect(sectionElement.style.justifyContent).toBe(`flex-start`)
 	})
 	test('Passing justify to right', () => {
-		const { container } = render(<TagBanner title={mockTitle} flexDir={mockFlexDir} height={mockHeight}
-												width={mockWidth} color={mockColor} align={'right'}
-												padding={mockPadding} alignSelf={mockAlign} fontColor={mockFontColor}
-												alignItems={mockAlign} radius={mockRadius} position={mockPosition}
-												zIndex={mockIndex} axis={mockAxis}>
-			<p>Test</p>
-		</TagBanner>)
+		const { container } = render(
+			<TagBanner
+				title={mockTitle}
+				flexDir={mockFlexDir}
+				height={mockHeight}
+				width={mockWidth}
+				color={mockColor}
+				align={'right'}
+				padding={mockPadding}
+				alignSelf={mockAlign}
+				fontColor={mockFontColor}
+				alignItems={mockAlign}
+				radius={mockRadius}
+				position={mockPosition}
+				zIndex={mockIndex}
+				axis={mockAxis}
+			>
+				<p>Test</p>
+			</TagBanner>
+		)
 		const sectionElement = container.firstChild as HTMLElement
 		expect(sectionElement.style.justifyContent).toBe(`flex-end`)
 	})
 	test('Passing align items to left', () => {
-		const { container } = render(<TagBanner title={mockTitle} flexDir={mockFlexDir} height={mockHeight}
-												width={mockWidth} color={mockColor} align={mockAlign}
-												padding={mockPadding} alignSelf={mockAlign} fontColor={mockFontColor}
-												alignItems={'left'} radius={mockRadius} position={mockPosition}
-												zIndex={mockIndex} axis={mockAxis}>
-			<p>Test</p>
-		</TagBanner>)
+		const { container } = render(
+			<TagBanner
+				title={mockTitle}
+				flexDir={mockFlexDir}
+				height={mockHeight}
+				width={mockWidth}
+				color={mockColor}
+				align={mockAlign}
+				padding={mockPadding}
+				alignSelf={mockAlign}
+				fontColor={mockFontColor}
+				alignItems={'left'}
+				radius={mockRadius}
+				position={mockPosition}
+				zIndex={mockIndex}
+				axis={mockAxis}
+			>
+				<p>Test</p>
+			</TagBanner>
+		)
 		const sectionElement = container.firstChild as HTMLElement
 		expect(sectionElement.style.alignItems).toBe(`flex-start`)
 	})
 	test('Passing align items to right', () => {
-		const { container } = render(<TagBanner title={mockTitle} flexDir={mockFlexDir} height={mockHeight}
-												width={mockWidth} color={mockColor} align={mockAlign}
-												padding={mockPadding} alignSelf={mockAlign} fontColor={mockFontColor}
-												alignItems={'right'} radius={mockRadius} position={mockPosition}
-												zIndex={mockIndex} axis={mockAxis}>
-			<p>Test</p>
-		</TagBanner>)
+		const { container } = render(
+			<TagBanner
+				title={mockTitle}
+				flexDir={mockFlexDir}
+				height={mockHeight}
+				width={mockWidth}
+				color={mockColor}
+				align={mockAlign}
+				padding={mockPadding}
+				alignSelf={mockAlign}
+				fontColor={mockFontColor}
+				alignItems={'right'}
+				radius={mockRadius}
+				position={mockPosition}
+				zIndex={mockIndex}
+				axis={mockAxis}
+			>
+				<p>Test</p>
+			</TagBanner>
+		)
 		const sectionElement = container.firstChild as HTMLElement
 		expect(sectionElement.style.alignItems).toBe(`flex-end`)
 	})
-
 })

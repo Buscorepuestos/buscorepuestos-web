@@ -1,10 +1,13 @@
-import { act, render, screen } from '@testing-library/react'
+import { render, RenderOptions, screen } from '@testing-library/react'
 import { describe, it, expect, beforeAll, vi, test } from 'vitest'
 import ProductCartInfo from '../shopping-cart/ProductCartInfo'
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import shoppingCartReducer from '../../../redux/features/shoppingCartSlice';
 
 describe('ProductCartInfo', () => {
 	const defaultProps = {
-		image: ['/card-preview.webp'],
+		images: ['/card-preview.webp'],
 		title: 'Sample Product',
 		brand: 'Sample Brand',
 		articleModel: 'Model XYZ',
@@ -12,11 +15,33 @@ describe('ProductCartInfo', () => {
 		buscorepuestosPrice: 99.99,
 		isMobile: false,
 		stock: true,
+		_id: 'productId1',
 	}
 
+	const renderWithProvider = (
+		ui: React.ReactElement,
+		{
+			store,
+			...renderOptions
+		}: {
+			store: ReturnType<typeof configureStore>;
+		} & Omit<RenderOptions, 'queries'> = {
+			store: configureStore({
+				reducer: { cart: shoppingCartReducer },
+				preloadedState: { cart: { items: [] } },
+			}),
+		}
+	) => {
+		const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+			<Provider store={store}>{children}</Provider>
+		);
+	
+		return render(ui, { wrapper: Wrapper, ...renderOptions });
+	};
+
 	const renderComponent = (props = defaultProps) => {
-		render(<ProductCartInfo images={["/card-preview.webp"]} {...props} />)
-	}
+        renderWithProvider(<ProductCartInfo {...props} />);
+    };
 
 	beforeAll(() => {
 		// Mock matchMedia for the isMobile check
@@ -76,7 +101,7 @@ describe('ProductCartInfo', () => {
 	})
 
 	it('should have default background color and opacity when product is available', () => {
-		const { container } = render(<ProductCartInfo images={["/card-preview.webp"]} {...defaultProps} />);
+		const { container } = renderWithProvider(<ProductCartInfo {...defaultProps} />);
 	
 		const articleElement = container.querySelector('article');
 		const styles = articleElement ? getComputedStyle(articleElement) : null;
@@ -86,7 +111,7 @@ describe('ProductCartInfo', () => {
 	});
 	
 	it('should have different background color and opacity when product is not available', () => {
-		const { container } = render(<ProductCartInfo images={["/card-preview.webp"]} {...defaultProps} stock={false} />);
+		const { container } = renderWithProvider(<ProductCartInfo {...defaultProps} stock={false} />);
 	
 		const articleElement = container.querySelector('article');
 		const styles = articleElement ? getComputedStyle(articleElement) : null;
@@ -95,3 +120,4 @@ describe('ProductCartInfo', () => {
 		expect(styles?.opacity).toBe('0.5'); 
 	});
 })
+
