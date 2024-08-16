@@ -16,6 +16,12 @@ const nextConfig = {
 				port: '',
 				pathname: '/**',
 			},
+			{
+				protocol: 'https',
+				hostname: 'dl.airtable.com',
+				port: '',
+				pathname: '/.attachments/**',
+			},
 		],
 	},
 }

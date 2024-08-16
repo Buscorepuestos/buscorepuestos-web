@@ -2,7 +2,10 @@
 	"name": "buscorepuestos-web",
 	"version": "0.1.0",
 	"scripts": {
-		"dev": "next dev -p 4000",
+		"dev": "shx cp ./app/environment/dev/environment.dev.ts ./app/environment/environment.ts",
+		"dev-environment": "shx cp ./app/environment/dev-environment/environment.dev-environment.ts ./app/environment/environment.ts",
+    	"release": "shx cp ./app/environment/release/environment.release.ts ./app/environment/environment.ts",
+		"start-dev": "next dev -p 4000",
 		"build": "next build",
 		"start": "next start -p 4000",
 		"lint": "next lint",
@@ -51,6 +54,7 @@
 		"next-router-mock": "^0.9.13",
 		"postcss": "^8",
 		"prettier": "^3.2.5",
+		"shx": "^0.3.4",
 		"tailwindcss": "^3.4.1",
 		"typescript": "^5",
 		"vitest": "^1.6.0"

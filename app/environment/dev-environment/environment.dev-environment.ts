@@ -13,6 +13,6 @@ export const environment = {
         appId: "1:114156529996:web:a09867e932d537ffa507e9",
     },
     api: {
-        url: "http://localhost:3000/api",
+        url: "https://buscorepuestos-dev.herokuapp.com/api",
     },
 };

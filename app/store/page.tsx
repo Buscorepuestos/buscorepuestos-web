@@ -7,16 +7,17 @@ import SearchBar from '../core/components/SearchBar'
 import { addItemToCart, savePurchaseAsync } from '../redux/features/shoppingCartSlice'
 import { useAppDispatch } from '../redux/hooks';
 import { useRouter } from 'next/navigation'
+import { environment } from '../environment/environment'
 
-const appID = 'DSKGGHHS58'
-const apiKey = '6f49eeb288faef802bf5236c9fa6720d'
+const appID = environment.algoliaAppID
+const apiKey = environment.algoliaAPIKey
 
 export default function Store() {
 
 	const dispatch = useAppDispatch()
 	const router = useRouter()
 	const client = algoliasearch(appID, apiKey)
-	const index = client.initIndex('dev_PRODUCTS')
+	const index = client.initIndex(environment.algoliaIndexName)
 
 	const [products, setProducts] = useState<IProductMongoose[]>([])
 	const [loading, setLoading] = useState(true)
@@ -79,8 +80,6 @@ export default function Store() {
 	if (typeof window !== 'undefined') {
 		userId = localStorage.getItem('airtableUserId')
 	}
-
-	console.log(userId)
 
 	const buynow = (product: any) => {
         dispatch(addItemToCart(product));

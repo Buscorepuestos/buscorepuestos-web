@@ -10,14 +10,20 @@ import CardPrice from '../../core/components/cards/CardPrice'
 import { IProductMongoose } from '../../types/product'
 import algoliasearch from 'algoliasearch'
 import SearchBar from '../../core/components/SearchBar'
+import { addItemToCart, savePurchaseAsync } from '../../redux/features/shoppingCartSlice'
+import { useAppDispatch } from '../../redux/hooks';
+import { useRouter } from 'next/navigation'
+import { environment } from '../../environment/environment'
 
-const appID = 'DSKGGHHS58'
-const apiKey = '6f49eeb288faef802bf5236c9fa6720d'
+const appID = environment.algoliaAppID
+const apiKey = environment.algoliaAPIKey
 
 export default function Store({ params }: { params: { search: string } }) {
+
+	const router = useRouter()
+	const dispatch = useAppDispatch()
 	const client = algoliasearch(appID, apiKey)
-	// Create a new index and add a record
-	const index = client.initIndex('dev_PRODUCTS')
+	const index = client.initIndex(environment.algoliaIndexName)
 	const hitsRef = useRef<any[]>([])
 
 	const [products, setProducts] = useState<IProductMongoose[]>([])
@@ -25,80 +31,45 @@ export default function Store({ params }: { params: { search: string } }) {
 	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
 
+	// Contador para ver cuántas veces se ejecuta searchAlgolia
+	const [searchCount, setSearchCount] = useState(0)
+
 	const searchAlgolia = useCallback(
 		async (query: string) => {
-			// Search for query in the index "products"
-			const result = await index.search(query)
-			setProducts(result.hits as unknown as IProductMongoose[])
+			setLoading(true)
+			setSearchCount((prevCount) => prevCount + 1) // Incrementa el contador
+			console.log(`searchAlgolia ejecutado ${searchCount + 1} veces`) // Mostrar en consola
+			try {
+				const result = await index.search(query, {
+					hitsPerPage: 50,
+					attributesToRetrieve: [
+						'title',
+						'mainReference',
+						'brand',
+						'articleModel',
+						'year',
+						'buscorepuestosPrice',
+						'images',
+					],
+				})
+				setProducts(result.hits as unknown as IProductMongoose[])
+			} catch (error) {
+				setError((error as Error).message)
+			} finally {
+				setLoading(false)
+			}
 		},
-		[index]
+		[index, searchCount]
 	)
 
 	useEffect(() => {
-		if (params.search && !inputValue) {
+		// Si hay un valor en params.search, realiza la búsqueda automáticamente
+		if (!inputValue) {
 			const searchQuery = decodeURIComponent(params.search)
 			searchAlgolia(searchQuery)
-		} else if (!params.search && !inputValue) {
-			// Carga inicial o búsqueda sin parámetros
-			const fetchProducts = async () => {
-				try {
-					await index
-						.browseObjects({
-							batch: (batch) => {
-								hitsRef.current = hitsRef.current.concat(batch)
-							},
-							attributesToRetrieve: [
-								'title',
-								'mainReference',
-								'brand',
-								'articleModel',
-								'year',
-								'buscorepuestosPrice',
-								'images',
-							],
-						})
-						.then(() => setProducts(hitsRef.current))
-				} catch (error) {
-					setError((error as Error).message)
-				} finally {
-					setLoading(false)
-				}
-			}
-			fetchProducts()
 		}
-	}, [params.search, inputValue, searchAlgolia, hitsRef, index])
-
-	// useEffect(() => {
-	// 	if (params.search && !inputValue) {
-	// 		if (params.search.includes('%20')) {
-	// 			const search = params.search.split('%20').join(' ');
-	// 			searchAlgolia(search);
-	// 		} else {
-	// 			searchAlgolia(params.search);
-	// 		}
-	// 	}
-	// }
-	// , [params.search, searchAlgolia, inputValue]);
-
-	// useEffect(() => {
-	// 	const fetchProducts = async () => {
-	// 		try {
-	// 			index.browseObjects({
-	// 				batch: batch => {
-	// 					// eslint-disable-next-line react-hooks/exhaustive-deps
-	// 					hits = hits.concat(batch)
-	// 				},
-	// 				attributesToRetrieve: ['title', 'mainReference', 'brand', 'articleModel', 'year', 'buscorepuestosPrice', 'images'],
-	// 			}).then(() => setProducts(hits))
-	// 		} catch (error) {
-	// 			setError((error as Error).message)
-	// 		} finally {
-	// 			setLoading(false)
-	// 		}
-	// 	}
-
-	// 	fetchProducts()
-	// }, [])
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [params.search, inputValue])
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
@@ -112,9 +83,20 @@ export default function Store({ params }: { params: { search: string } }) {
 		searchAlgolia(event.target.value)
 	}
 
+	let userId: string | null = null
+	if (typeof window !== 'undefined') {
+		userId = localStorage.getItem('airtableUserId')
+	}
+
+	const buynow = (product: any) => {
+        dispatch(addItemToCart(product));
+        dispatch(savePurchaseAsync({ product: product, userId: userId ?? '' }));
+        router.push('/verificacion-pago');
+    };
+
 	return (
-		<main>
-			<div className={'flex justify-end mr-6 mt-80'}>
+		<main className="flex flex-col items-center mt-80">
+			<div>
 				<SearchBar
 					onChange={handleInputChange}
 					height={'52px'}
@@ -132,7 +114,7 @@ export default function Store({ params }: { params: { search: string } }) {
 					<CardPrice
 						key={index}
 						title={product.title}
-						reference={product.mainReference}
+						reference={product.mainReference!}
 						description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
 						price={product?.buscorepuestosPrice || 0}
 						image={
@@ -140,6 +122,7 @@ export default function Store({ params }: { params: { search: string } }) {
 								? product.images[0]
 								: '/nodisponible.png'
 						}
+						handleBuy={() => buynow(product)}
 					/>
 				))}
 				{loading && <p>Loading...</p>}
