@@ -3,7 +3,7 @@ import api from '../../../../api/api'
 
 describe('API Instance', () => {
 	test('should have the correct baseURL', () => {
-		expect(api.defaults.baseURL).toBe('http://localhost:3000/api');
+		expect(api.defaults.baseURL).toBe('https://buscorepuestos.herokuapp.com/api');
 	});
 
 	test('should have the correct headers', () => {
