@@ -1,39 +1,62 @@
 'use client'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../redux/store'
 import ShoppingBasket from '../core/components/shopping-cart/ShoppingBasket'
-import React, { useEffect, useState, useMemo } from 'react'
-import Input from '../core/components/input/input'
 import SelectDropdown from '../core/components/selectDropdown/selectDropdown'
-import Checkbox from '../core/components/checkbox/checkbox'
 import PaymentForm from '../core/components/checkout/PaymentForm'
+import Checkbox from '../core/components/checkbox/checkbox'
+import Input from '../core/components/input/input'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
 import Image from 'next/image'
-import { useSelector } from 'react-redux'
 import './stripe.css'
-import { RootState } from '../redux/store'
+
+export interface FormsFields {
+	name: string
+	email: string
+	nif: string
+	phoneNumber: string
+	shippingAddress: string
+	addressExtra: string
+	zip: string
+	city: string
+	province: string
+	country: string
+	billingAddress: string
+	billingAddressExtra: string
+	billingZip: string
+	billingProvince: string
+}
 
 function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
 	const [isLoaded, setIsLoaded] = useState(false)
+	const [purchaseIds, setPurchaseIds] = useState<string[]>([])
+	const [productsIds, setProductsIds] = useState<string[]>([])
 
 	useEffect(() => {
 		if (items) {
 			setIsLoaded(true)
+			setPurchaseIds(items.map((item) => item.purchaseId ?? ''))
+			setProductsIds(items.map((item) => item._id ?? ''))
 		}
 	}, [items])
 
-	return { items, isLoaded }
+	return { items, isLoaded, purchaseIds, productsIds }
 }
 
 export default function Payment() {
+	
+	const dispatch = useDispatch()
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [clientSecret, setClientSecret] = useState('')
 	const [error, setError] = useState<string | null>(null)
 	const [isMobile, setIsMobile] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
-	const [fieldsValue, setFieldsValue] = useState({
+	const [fieldsValue, setFieldsValue] = useState<FormsFields>({
 		name: '',
 		email: '',
-		companyId: '',
+		nif: '',
 		phoneNumber: '',
 		shippingAddress: '',
 		addressExtra: '',
@@ -46,6 +69,26 @@ export default function Payment() {
 		billingZip: '',
 		billingProvince: '',
 	})
+
+	const { items, isLoaded, purchaseIds, productsIds } = useCartItems()
+
+	const calculateTotal = () => {
+		const stringPrice = items
+			.filter((product) => product.stock)
+			.map((product) => product.buscorepuestosPrice)
+			.reduce((acc, price) => acc + Number(price), 0)
+			.toFixed(2)
+
+		const numberPrice = parseFloat(stringPrice)
+		const numberPriceRounded = Math.round(numberPrice * 100)
+
+		return {
+			stringPrice,
+			numberPriceRounded
+		}
+	}
+
+	const { numberPriceRounded, stringPrice } = calculateTotal()
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -65,11 +108,10 @@ export default function Payment() {
 	useEffect(() => {
 		const createIntent = async () => {
 			try {
-				// Mock data
 				const res = await createPaymentIntent({
-					amount: 200,
+					amount: numberPriceRounded,
 					currency: 'eur',
-					cartIDs: ['recV9AQVCb64NveMF'],
+					cartIDs: productsIds,
 					automatic_payment_methods: { enabled: true },
 				})
 				setClientSecret(res.data.client_secret)
@@ -83,28 +125,36 @@ export default function Payment() {
 		}
 
 		createIntent()
-	}, [])
+	}, [numberPriceRounded, productsIds])
 
-	// const products = useMemo(
-	// 	() => [
-	// 		{
-	// 			images: [
-	// 				'/card-preview.webp',
-	// 				'/card-preview.webp',
-	// 				'/card-preview.webp',
-	// 			],
-	// 			title: 'Capot Delantero',
-	// 			brand: 'Nissan',
-	// 			articleModel: 'V4',
-	// 			mainReference: '123123fsdf4v',
-	// 			buscorepuestosPrice: 156,
-	// 			stock: true,
-	// 		},
-	// 	],
-	// 	[]
-	// )
+	useEffect(() => {
+		dispatch({ type: 'auth/checkUserStatus' })
+	}, [dispatch])
 
-	// const [productsToShow, setProductsToShow] = useState(products.slice(0, 2))
+	useEffect(() => {
+		if (sameBillAddress) {
+			setFieldsValue((prevState) => ({
+				...prevState,
+				billingAddress: prevState.shippingAddress,
+				billingAddressExtra: prevState.addressExtra,
+				billingZip: prevState.zip,
+				billingCity: prevState.city,
+				billingProvince: prevState.province,
+				billingCountry: prevState.country,
+			}))
+		} else {
+			// Limpiar los campos de dirección de facturación si se deselecciona el checkbox
+			setFieldsValue((prevState) => ({
+				...prevState,
+				billingAddress: '',
+				billingAddressExtra: '',
+				billingZip: '',
+				billingCity: '',
+				billingProvince: '',
+				billingCountry: '',
+			}))
+		}
+	}, [sameBillAddress])
 
 	const shippingOptions = [
 		{ value: 'opcion1', label: 'Direcciones de envío guardadas' },
@@ -143,28 +193,12 @@ export default function Payment() {
 		)
 	}
 
-	// useEffect(() => {
-	// 	if (isOpen) setProductsToShow(products)
-	// 	else setProductsToShow(products.slice(0, 2))
-	// }, [isOpen, products])
-
-	const { items, isLoaded } = useCartItems()
-
-	const calculateTotal = () => {
-		//mapea todos los productos y si el stock del producto es true, suma el precio del producto
-		return items
-			.filter((product) => product.stock) // Filter out boolean values
-			.map((product) => product.buscorepuestosPrice)
-			.reduce((acc, price) => acc + Number(price), 0)
-			.toFixed(2)
-	}
-
 	if (!isLoaded) {
 		return <div>Loading...</div>
 	}
 
 	return (
-		<div className='flex justify-center mobile:mt-[12vw] mt-[22rem] mb-[10rem]'>
+		<div className="flex justify-center mobile:mt-[12vw] mt-[22rem] mb-[10rem]">
 			<section
 				className={
 					'w-max-[750px] mobile:w-[100vw] bg-custom-white rounded-[10px] shadow-lg p-6 mobile:rounded-bl-[5rem] mobile:rounded-br-[5rem]'
@@ -182,9 +216,8 @@ export default function Payment() {
 								}
 							>
 								{
-									calculateTotal()
-								}
-								€
+									stringPrice
+								}€
 							</p>
 						</div>
 						<div className="w-full h-[2px] bg-secondary-blue mb-8" />
@@ -203,9 +236,8 @@ export default function Payment() {
 								}
 							>
 								{
-									calculateTotal()
-								}
-								€
+									stringPrice
+								}€
 							</p>
 						</div>
 						{localDropdown()}
@@ -213,7 +245,9 @@ export default function Payment() {
 				)}
 
 				<article className={'mobile:p-6'}>
-					<form className={'flex flex-col justify-center items-center'}>
+					<div
+						className={'flex flex-col justify-center items-center'}
+					>
 						{/*Personal Information*/}
 						<h1
 							className={
@@ -251,24 +285,22 @@ export default function Payment() {
 								cssClass={
 									'desktop:col-span-2 tablet:col-span-2 mobile:col-span-1'
 								}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											email: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										email: e.target.value,
+									})
 								}
 							/>
 							<Input
 								placeholder={'NIF / CIF'}
 								name={'company_id'}
-								value={fieldsValue.companyId}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											companyId: e.target.value,
-										})
+								value={fieldsValue.nif}
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										nif: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -281,12 +313,11 @@ export default function Payment() {
 								placeholder={'Número de teléfono'}
 								name={'phone'}
 								value={fieldsValue.phoneNumber}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											phoneNumber: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										phoneNumber: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -308,7 +339,9 @@ export default function Payment() {
 								<SelectDropdown
 									name={'saved_shipping_address'}
 									options={shippingOptions}
-									placeholder={'Direcciones de envío guardadas'}
+									placeholder={
+										'Direcciones de envío guardadas'
+									}
 								/>
 							</div>
 						</div>
@@ -321,12 +354,11 @@ export default function Payment() {
 								placeholder={'Dirección'}
 								name={'address_name'}
 								value={fieldsValue.shippingAddress}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											shippingAddress: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										shippingAddress: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -339,12 +371,11 @@ export default function Payment() {
 								placeholder={'Número, piso, puerta, portal'}
 								name={'address_extra'}
 								value={fieldsValue.addressExtra}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											addressExtra: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										addressExtra: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -357,24 +388,22 @@ export default function Payment() {
 								placeholder={'Código postal'}
 								name={'zip'}
 								value={fieldsValue.zip}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											zip: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										zip: e.target.value,
+									})
 								}
 							/>
 							<Input
 								placeholder={'Ciudad'}
 								name={'city'}
 								value={fieldsValue.city}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											city: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										city: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -387,12 +416,11 @@ export default function Payment() {
 								placeholder={'Provincia'}
 								name={'province'}
 								value={fieldsValue.province}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											province: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										province: e.target.value,
+									})
 								}
 							/>
 							<Input
@@ -400,12 +428,11 @@ export default function Payment() {
 								name={'country'}
 								value={fieldsValue.country}
 								cssClass={'mobile:w-[50%]'}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											country: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										country: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -454,12 +481,11 @@ export default function Payment() {
 								placeholder={'Dirección'}
 								name={'bill_address_name'}
 								value={fieldsValue.billingAddress}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											billingAddress: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										billingAddress: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -472,12 +498,11 @@ export default function Payment() {
 								placeholder={'Número, piso, puerta, portal'}
 								name={'bill_address_extra'}
 								value={fieldsValue.billingAddressExtra}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											billingAddressExtra: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										billingAddressExtra: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -490,24 +515,22 @@ export default function Payment() {
 								placeholder={'Código postal'}
 								name={'bill_zip'}
 								value={fieldsValue.billingZip}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											billingZip: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										billingZip: e.target.value,
+									})
 								}
 							/>
 							<Input
 								placeholder={'Provincia'}
 								name={'bill_province'}
 								value={fieldsValue.billingProvince}
-								onChange={
-									(e) =>
-										setFieldsValue({
-											...fieldsValue,
-											billingProvince: e.target.value,
-										})
+								onChange={(e) =>
+									setFieldsValue({
+										...fieldsValue,
+										billingProvince: e.target.value,
+									})
 								}
 							/>
 						</div>
@@ -520,13 +543,16 @@ export default function Payment() {
 						>
 							Método de pago
 						</h1>
-						
-					</form>
-					<div>
+						<div>
 							{clientSecret && (
-								<PaymentForm clientSecret={clientSecret} />
+								<PaymentForm
+									clientSecret={clientSecret}
+									purchaseIds={purchaseIds}
+									fieldsValues={fieldsValue}
+								/>
 							)}
 						</div>
+					</div>
 				</article>
 			</section>
 		</div>

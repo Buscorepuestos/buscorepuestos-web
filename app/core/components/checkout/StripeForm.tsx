@@ -2,14 +2,27 @@ import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useEffect, useState } from 'react'
 import { PaymentIntent, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { createBill } from '../../../services/billing/billing.service'
+import { clearCart } from '../../../redux/features/shoppingCartSlice'
+import { useDispatch } from 'react-redux'
+import { updatePurchase } from '../../../services/purchase/purchase'
+import { FormsFields } from '../../../verificacion-pago/page'
 
-const StripeForm = (props: { clientSecret: string; label: 'Pagar ahora' }) => {
+
+const StripeForm = (props: { 
+	clientSecret: string; 
+	label: 'Pagar ahora'; 
+	purchaseIds: string[];
+	fieldsValues: FormsFields;
+}) => {
+
+	const dispatch = useDispatch()
 	const stripe = useStripe()
 	const elements = useElements()
 
 	const [message, setMessage] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const [payment, setPayment] = useState<PaymentIntent | undefined>(undefined)
+	const userId = localStorage.getItem('airtableUserId')
 
 	useEffect(() => {
 		if (!stripe) {
@@ -37,6 +50,12 @@ const StripeForm = (props: { clientSecret: string; label: 'Pagar ahora' }) => {
 			})
 	}, [stripe, props.clientSecret])
 
+	const updatePurchases = async () => {
+		props.purchaseIds.forEach(async (purchaseId) => {
+			await updatePurchase(purchaseId)
+		})
+	}
+
 	const handleSubmit = async (e: { preventDefault: () => void }) => {
 		e.preventDefault()
 
@@ -48,22 +67,23 @@ const StripeForm = (props: { clientSecret: string; label: 'Pagar ahora' }) => {
 
 		await createBill({
 			'Id Pago Stripe': payment?.id as string,
-			Compras: ['recV9AQVCb64NveMF'],
-			Usuarios: ['recxNb1bKbkcrueq1'],
+			Compras: props.purchaseIds,
+			Usuarios: [userId!],
 			transfer: false,
-			address: 'Direccion de prueba',
-			country: 'España',
-			location: 'Las Palmas de Gran Canarias',
-			addressNumber: '14',
-			name: 'Carlos',
-			cp: '3012',
-			nif: '3456fg',
-			phone: 66666666,
-			province: 'Las Palmas',
+			address: props.fieldsValues.shippingAddress,
+			country: props.fieldsValues.country,
+			location: props.fieldsValues.city,
+			addressNumber: props.fieldsValues.addressExtra,
+			name: props.fieldsValues.name,
+			cp: props.fieldsValues.zip,
+			nif: props.fieldsValues.nif,
+			phone: Number(props.fieldsValues.phoneNumber),
+			province: props.fieldsValues.province,
 		})
 
 		setIsLoading(true)
-
+		await updatePurchases()
+		dispatch(clearCart())              
 		const { error } = await stripe.confirmPayment({
 			elements,
 			confirmParams: {

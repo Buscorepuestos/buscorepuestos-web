@@ -11,6 +11,8 @@ import CardValoration from '@/app/core/components/cards/CardValoration'
 import TagBanner from './core/components/tags/TagBanner'
 import Dropdown from './core/components/Dropdown'
 import { useRouter } from 'next/navigation'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from './redux/store'
 
 const cardInfoPropsArray = [
 	{
@@ -247,6 +249,7 @@ export default function Home() {
 	const [isMobile, setIsMobile] = useState(false)
 	const [searchTerm, setSearchTerm] = useState('')
 	const router = useRouter()
+	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -270,6 +273,10 @@ export default function Home() {
 			router.push(`/store/${searchTerm}`)
 		}
 	}
+
+	useEffect(() => {
+        dispatch({ type: "auth/checkUserStatus" });
+    }, [dispatch]);
 
 	return (
 		<main>
