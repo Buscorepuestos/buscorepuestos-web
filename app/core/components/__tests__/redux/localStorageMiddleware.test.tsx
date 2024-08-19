@@ -56,6 +56,7 @@ describe('localStorageMiddleware', () => {
 				images: ['image1.jpg'],
 				_id: '1',
 				quantity: 1,
+				airtableId: 'airtableId1',
 			},
 		}
 
@@ -74,6 +75,7 @@ describe('localStorageMiddleware', () => {
 				images: ['image1.jpg'],
 				_id: '1',
 				quantity: 1,
+				airtableId: 'airtableId1',
 			},
 		]
 

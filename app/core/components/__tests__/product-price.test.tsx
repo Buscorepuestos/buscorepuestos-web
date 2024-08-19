@@ -252,6 +252,7 @@ describe('ProductPrice', () => {
 			brand: "Test Brand",
 			articleModel: "Model 1",
 			images: ["image1.jpg"],
+			airtableId: "airtable1",
 			_id: "1",
 			quantity: 1,
 			stock: true,

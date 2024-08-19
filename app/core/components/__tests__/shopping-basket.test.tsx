@@ -1,6 +1,11 @@
-import { render, screen, cleanup, within } from '@testing-library/react'
-import { describe, it, expect, beforeEach, afterEach, afterAll} from 'vitest'
+import { render, screen, cleanup, within, RenderOptions } from '@testing-library/react'
+import { describe, it, expect, beforeEach, afterEach} from 'vitest'
 import ShoppingBasket from '../shopping-cart/ShoppingBasket'
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import shoppingCartReducer from '../../../redux/features/shoppingCartSlice';
+
+
 
 describe('ShoppingBasket Component', () => {
 
@@ -14,6 +19,7 @@ describe('ShoppingBasket Component', () => {
             buscorepuestosPrice: 100.01,
             isMobile: false,
             stock: true,
+            _id: 'productId1',
         },
         {
             images: ['/card-preview.webp'],
@@ -24,11 +30,37 @@ describe('ShoppingBasket Component', () => {
             buscorepuestosPrice: 200.00,
             isMobile: true,
             stock: true,
+            _id: 'productId2',
         }
     ];
+
+    const renderWithProvider = (
+        ui: React.ReactElement,
+        {
+            store,
+            ...renderOptions
+        }: {
+            store: ReturnType<typeof configureStore>;
+        } & Omit<RenderOptions, 'queries'> = {
+            store: configureStore({
+                reducer: { cart: shoppingCartReducer },
+                preloadedState: { cart: { items: [] } },
+            }),
+        }
+    ) => {
+        const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+        );
+    
+        return render(ui, { wrapper: Wrapper, ...renderOptions });
+    };
+    
+    const renderComponent = (props = mockProducts) => {
+        renderWithProvider(<ShoppingBasket products={props} isMobile />);
+    };
     
     beforeEach(() => {
-        render(<ShoppingBasket products={mockProducts} isMobile />);
+        renderComponent(mockProducts);
     });
 
     afterEach(() => {
