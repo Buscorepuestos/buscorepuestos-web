@@ -2,8 +2,6 @@
 import { useEffect, useState } from 'react'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
 import PaymentForm from '../core/components/checkout/PaymentForm'
-import './stripe.css'
-
 export default function App() {
 
 	const [clientSecret, setClientSecret] = useState<string>('')

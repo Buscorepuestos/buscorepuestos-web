@@ -3,47 +3,51 @@ import ProductCartInfo from './ProductCartInfo';
 import styled from 'styled-components';
 
 interface Product {
-    image: string;
+    images: string[];
     title: string;
     brand: string;
-    model: string;
-    ref: string;
-    price: number;
-    isMobile: boolean;
-    isAvailable: boolean;
+    articleModel: string;
+    mainReference: string;
+    buscorepuestosPrice: number;
+    stock: boolean;
 }
 
 interface ShoppingBasketProps {
     products: Product[];
+    isMobile: boolean;
 }
 
 const BasketContainer = styled.div`
     max-height: 340px;
+    padding-right: 20px;
+    padding-left: 20px;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    scrollbar-width: thin; 
+    scrollbar-color: #888 #f0f0f0;
 `;
 
-const ShoppingBasket: React.FC<ShoppingBasketProps> = ({ products }) => {
+const ShoppingBasket: React.FC<ShoppingBasketProps> = ({ products, isMobile }) => {
     return (
         <div>
-            <h1 className='font-tertiary-font font-semibold mb-8 text-[18px]'>
+            <h1 className='font-tertiary-font font-semibold mb-8 text-[18px] pl-[20px]'>
                 Tu cesta
             </h1>
             <BasketContainer>
                 {products.map((product, index) => (
                     <ProductCartInfo
                         key={index}
-                        image={product.image}
+                        images={product.images}
                         title={product.title}
                         brand={product.brand}
-                        model={product.model}
-                        ref={product.ref}
-                        price={product.price}
-                        isMobile={product.isMobile}
-                        isAvailable={product.isAvailable}
+                        articleModel={product.articleModel}
+                        mainReference={product.mainReference}
+                        buscorepuestosPrice={product.buscorepuestosPrice}
+                        isMobile={isMobile}
+                        stock={product.stock}
                     />
                 ))}
             </BasketContainer>

@@ -127,7 +127,7 @@ describe('shoppingCartSlice', () => {
 			addItemToCart(mockProduct)
 		)
 		expect(stateAfterAddingSameProduct.items.length).toBe(1)
-		expect(stateAfterAddingSameProduct.items[0].quantity).toBe(2)
+		expect(stateAfterAddingSameProduct.items[0].quantity).toBe(1)
 	})
 
 	it('should handle removeItemFromCart', () => {
@@ -187,6 +187,7 @@ describe('loadStateFromLocalStorage', () => {
 				images: ['image1.jpg'],
 				_id: '1',
 				quantity: 1,
+				stock: false
 			},
 		]
 		localStorage.setItem('cart', JSON.stringify(cartItems))

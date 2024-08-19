@@ -10,7 +10,7 @@ type SelectDropdownProps = {
     options: Option[];
     placeholder: string;
     name: string;
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
 const SelectDropdown: React.FC<SelectDropdownProps> = ({ options, placeholder, name, onChange }) => {

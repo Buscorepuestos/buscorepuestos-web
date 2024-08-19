@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Button from '../Button'
 
-function PriceView(props: { price: number }) {
+function PriceView(props: { price: string }) {
 	return <p className="text-title-3 font-bold text-primary-blue">{props.price}€</p>
 }
 
@@ -42,7 +42,7 @@ export default function CardPrice(props: {
 						<p className="text-sm">{props.description}</p>
 					</div>
 					<div className="flex justify-center w-[100%]">
-						<PriceView price={props.price} />
+						<PriceView price={props.price.toFixed(2).replace('.', ',')} />
 					</div>
 					<div className='flex justify-center w-[100%] mb-6'>
 						<Button labelName={'Comprar'}/>

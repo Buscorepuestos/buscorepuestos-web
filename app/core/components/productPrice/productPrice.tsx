@@ -1,10 +1,13 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
 import { useAppDispatch } from '../../../redux/hooks';
-import { addItemToCart } from '../../../redux/features/shoppingCartSlice';
+import { addItemToCart, CartItem, removeItemFromCart } from '../../../redux/features/shoppingCartSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { useRouter } from 'next/navigation';
 
 interface ProductPriceProps {
     price: string;
@@ -29,9 +32,25 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 }) => {
 
     const dispatch = useAppDispatch();
+    const router = useRouter();
 
+    const [existingItem, setExistingItem] = useState<CartItem | null>(null);
+    
     const handleAddToCart = () => {
         dispatch(addItemToCart(data));
+    };
+
+    const cart = useSelector((state: RootState) => state.cart.items);
+
+    useEffect(() => {
+        const item = cart.find((item) => item._id === data._id);
+        setExistingItem(item!);
+    }, [cart, data._id]);
+
+    const buynow = () => {
+        dispatch(addItemToCart(data));
+        console.log('buy now');
+        router.push('/verificacion-pago');
     };
 
     return (
@@ -59,8 +78,39 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
                 </p>
             </div>
             <div className='flex gap-7 mt-7'>
-                <Button {...button1Props} onClick={handleAddToCart} />
-                <Button {...button2Props} />
+                {
+                    data.stock === false ? (
+                        <Button 
+                            labelName='Producto no disponible' 
+                            type='secondary'
+                            bg='bg-alter-grey'
+                            borderColor='border-alter-grey'
+                            hoverBg='hover:bg-alter-grey'
+                            hoverText='white'
+                            cursor='cursor-not-allowed'
+                        />
+                    ) : (
+                        <>
+                            {
+                                existingItem ? (
+                                    <Button
+                                        labelName='Quitar de la cesta'
+                                        type='secondary'
+                                        bg='bg-secondary-blue'
+                                        borderColor='border-secondary-blue'
+                                        hoverBg='hover:bg-custom-white'
+                                        hoverText='hover:text-secondary-blue'
+                                        cursor='cursor-pointer'
+                                        onClick={() => dispatch(removeItemFromCart(data._id))}
+                                    />
+                                ) : (
+                                    <Button {...button1Props} onClick={handleAddToCart} />
+                                )
+                            }
+                            <Button {...button2Props} onClick={buynow}/>
+                        </>
+                    )
+                }
             </div>
         </div>
     );

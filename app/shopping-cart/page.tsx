@@ -20,7 +20,7 @@ export default function ShoppingCart() {
 
 	return (
 		<div>
-			<ShoppingBasket products={[]} />
+			
 		</div>
 	)
 }
