@@ -3,6 +3,7 @@ export const environment = {
     algoliaAppID: 'DSKGGHHS58',
     algoliaAPIKey: '6f49eeb288faef802bf5236c9fa6720d',
     algoliaIndexName: 'release_PRODUCTS',
+    stripe_publishable_key: 'pk_live_51P4jfZ01jERzk1YW4SuXiM5tYJSyrVCCcbS24j4rzwuq4tvnv4CYo3Sk0FkH4iXDnYRPTZbw8x6vtXFBE7mU0uZH003VvYWkw1',
     firebase: {
         apiKey: "AIzaSyAY7SlwNp5sTyddYpRAdKlFiqFWVybsKbo",
         authDomain: "web-buscorepuesto.firebaseapp.com",

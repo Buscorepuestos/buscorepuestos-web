@@ -34,7 +34,10 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const userId = localStorage.getItem('airtableUserId');
+    let userId: string | null = null
+	if (typeof window !== 'undefined') {
+		userId = localStorage.getItem('airtableUserId')
+	}
 
     const [existingItem, setExistingItem] = useState<CartItem | null>(null);
     
