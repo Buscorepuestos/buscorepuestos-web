@@ -1,0 +1,23 @@
+# Obtener el mensaje del commit desde el archivo temporal pasado por Husky
+commit_message_file=$1
+commit_message=$(cat "$commit_message_file")
+
+# Obtener la rama actual
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Verificar si la rama sigue el formato feature/br- seguido de un número
+if echo "$current_branch" | grep -Eq '^feature/br-[0-9]+'; then
+    branch_number=$(echo "$current_branch" | grep -oE 'br-[0-9]+' | grep -oE '[0-9]+')
+else
+    echo "Error: La rama actual no sigue el formato 'feature/br-[numero]'."
+    exit 1
+fi
+
+# Verificar que el commit sigue el formato convencional y contiene el número de la rama
+if echo "$commit_message" | grep -Eq "^(feat|fix|docs|style|refactor|perf|test|chore): \[BR- ?$branch_number\]"; then
+    echo "El commit cumple con las reglas establecidas."
+else
+    echo "Error: El mensaje del commit no sigue el formato convencional o no contiene el número de la rama."
+    echo "Error: Formato esperado: '(feat|fix|docs|style|refactor|perf|test|chore): [BR-<numero>] <mensaje>'."
+    exit 1
+fi

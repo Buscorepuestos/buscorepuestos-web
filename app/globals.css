@@ -3,19 +3,105 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+	--background: var(--light-grey);
+	--foreground: #171717;
+
+	--custom-white: #ffffff;
+	--custom-black: #000000;
+	--custom-grey: #5F5F5F;
+	--custom-orange: #F4743B;
+
+	--primary-blue: #0065ff;
+	--primary-blue-2: #1A61F1;
+	--primary-lila: #3A27B0;
+	--secondary-blue: #12b1bb;
+	--warning: #edd443;
+	--dark-grey: #424242;
+	--light-grey: #d9d9d9;
+	--neutro300: #5F5F5F;
+	--neutro-grey: #F6F6F6;
+	--alter-grey: #A9A9A9;
+
+	--mobile-breakpoint: 640px;
+	--tablet-breakpoint: 768px;
+	--desktop-breakpoint: 1440px;
+
+	--font-family-popins: 'Poppins', sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+} */
+
+html {
+	font-size: 62.5%;
+}
+
+h1,
+h2,
+h3 {
+	line-height: 1.2;
+}
+
+h1, h2, h3 {
+	/* 2xl */
+	font-family: var(--font-bebas-neue), sans-serif;
+}
+
+h2 {
+	/* xl */
+	font-weight: bold;
+	letter-spacing: -2%;
+}
+
+h3 {
+	/* lg */
+	font-weight: 700;
+	letter-spacing: -2%;
+}
+
+/* Subtitle */
+
+h4 {
+	/* lg */
+	font-weight: 400;
+}
+
+button {
+	/* lg */
+	font-size: 2.4rem;
+	font-weight: 400;
+}
+
+.debug {
+	border: 2px solid red;
+}
+
+/* 
+It is not defined on the figma.
+Needs to be clarified.
+
+a {
+	font-weight: bold;
+	text-decoration: underline;
+} */
+
+.swiper-pagination-bullet-active {
+	background: var(--light-grey)!important;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-synthesis: none;
+	/* md */
+	font-family: var(--font-work-sans), sans-serif;
+	background: var(--background);
+	color: var(--foreground);
+	font-size: 1.6rem;
+}
+
+.font-poppins {
+	font-family: 'Poppins', sans-serif;
+	color: var(--dark-grey);
 }
