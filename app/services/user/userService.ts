@@ -10,8 +10,8 @@ export const userService = {
         return res.data;
     },
 
-    async createAnonymousAirtableUser(user: AirtableUser): Promise<ResponseModel<AirtableUser>> {
-        const res = await api.post<ResponseModel<AirtableUser>>(`/users/create`, {
+    async createAnonymousAirtableUser(user: AirtableUser): Promise<ResponseModel<AirtableUserResponse>> {
+        const res = await api.post<ResponseModel<AirtableUserResponse>>(`/users/create`, {
             data: user,
         });
         return res.data;

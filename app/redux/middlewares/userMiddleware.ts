@@ -53,8 +53,10 @@ export const authMiddleware: Middleware = ({ dispatch }) => next => async (actio
                     };
 
                     const createdUser = await userService.createAnonymousAirtableUser(newAirtableUser);
-
-                    localStorage.setItem('airtableUserId', createdUser.data![0].id!);
+                    
+                    if (createdUser && createdUser.data && createdUser.data[0] && createdUser.data[0].fields) {
+                        localStorage.setItem('airtableUserId', createdUser.data[0].fields.id);
+                    }
 
                     // Setear el usuario recién creado en el estado de Redux
                     dispatch(setCurrentAirtableUser(createdUser));
