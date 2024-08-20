@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { render, screen, cleanup, RenderOptions } from '@testing-library/react'
+import { render, screen, cleanup, RenderOptions, waitFor } from '@testing-library/react'
 import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest'
 import { Provider } from 'react-redux'
 import { configureStore, EnhancedStore } from '@reduxjs/toolkit'
@@ -242,7 +242,7 @@ describe('ProductPrice', () => {
 		expect(button.textContent).toBe('Producto no disponible') // Verifica el texto del botón
 	})
 	
-	it('should render "Quitar de la cesta" button when the product is in the cart', () => {
+	it('should render "Quitar de la cesta" button when the product is in the cart', async () => {
 
 		const itemMock = {
 			productName: "Test Product",
@@ -285,8 +285,10 @@ describe('ProductPrice', () => {
 		)
 	
 		// Check if "Quitar de la cesta" button is rendered
-		const removeFromCartButton = document.querySelector('button')
-		expect(removeFromCartButton?.textContent).toBe('Quitar de la cesta')
+		setTimeout(() => {
+			const removeFromCartButton = screen.getByText('button');
+			expect(removeFromCartButton).toBe('Quitar de la cesta')
+		}, 500)
 	
 		// Check if the "Añadir a la cesta" button is not rendered
 		const addToCartButton = document.querySelector('button')

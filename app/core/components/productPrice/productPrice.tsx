@@ -8,6 +8,7 @@ import { addItemToCart, CartItem, removeItemFromCart, savePurchaseAsync, removeP
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 
 interface ProductPriceProps {
@@ -44,6 +45,13 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     const handleAddToCart = () => {
         dispatch(addItemToCart(data));
         dispatch(savePurchaseAsync({ product: data, userId: userId ?? '' }));
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Producto añadido al carrito",
+            showConfirmButton: false,
+            timer: 1500
+        });
     };
 
     const handleRemoveFromCart = () => {

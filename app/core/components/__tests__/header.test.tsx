@@ -1,6 +1,10 @@
 import { expect, test, describe, beforeEach, afterEach, vi } from 'vitest'
-import { cleanup, render, screen, fireEvent } from '@testing-library/react'
+import { cleanup, render, screen, fireEvent, RenderOptions } from '@testing-library/react'
 import { Header } from '../global/header'
+import { configureStore, EnhancedStore } from '@reduxjs/toolkit'
+import shoppingCartReducer from '../../../redux/features/shoppingCartSlice'
+import { ReactNode } from 'react'
+import { Provider } from 'react-redux'
 
 // Simulación de usePathname usando vi.fn()
 const usePathnameMock = vi.fn()
@@ -34,6 +38,28 @@ const resizeWindow = (width: number, height: number) => {
 	window.dispatchEvent(new Event('resize'))
 }
 
+const renderWithProvider = (
+	ui: React.ReactElement,
+	{
+		store,
+		...renderOptions
+	}: {
+		store: EnhancedStore
+	} & Omit<RenderOptions, 'queries'> = {
+		store: configureStore({
+			reducer: { cart: shoppingCartReducer },
+			preloadedState: { cart: { items: [] } }, // Ajusta el estado inicial aquí
+		}),
+	}
+) => {
+	const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => (
+		<Provider store={store}>{children}</Provider>
+	)
+
+	return render(ui, { wrapper: Wrapper, ...renderOptions })
+}
+
+
 describe('Componente Header', () => {
 	afterEach(() => {
 		cleanup()
@@ -45,13 +71,13 @@ describe('Componente Header', () => {
 	})
 
 	test('Elementos del slider', () => {
-		render(<Header />)
+		renderWithProvider(<Header />)
 		// Verificar si se renderiza el logo img
 		expect(screen.getByAltText('Header')).toBeDefined()
 	})
 
 	test('Todos los enlaces del menú', () => {
-		render(<Header />)
+		renderWithProvider(<Header />)
 		const todosLosEnlaces = [...principalMenuLinks, ...secondaryMenuLinks]
 
 		todosLosEnlaces.forEach((enlace) => {
@@ -62,7 +88,7 @@ describe('Componente Header', () => {
 	test('Alternar abrir y cerrar menú', () => {
 		resizeWindow(640, 858)
 
-		const { getByAltText, getByTestId } = render(<Header />)
+		const { getByAltText, getByTestId } = renderWithProvider(<Header />)
 		const botonMenu = getByAltText('Hamburguesa')
 
 		fireEvent.click(botonMenu)
@@ -73,7 +99,7 @@ describe('Componente Header', () => {
 	test('Alternar abrir y cerrar menú secundario', () => {
 		resizeWindow(640, 858)
 
-		const { getByAltText, getByTestId } = render(<Header />)
+		const { getByAltText, getByTestId } = renderWithProvider(<Header />)
 		const botonMenu = getByAltText('Hamburguesa')
 
 		fireEvent.click(botonMenu)
@@ -88,7 +114,7 @@ describe('Componente Header', () => {
 	test('Aplica clase mt-0 cuando pathname comienza con /product y no es pantalla ancha', () => {
 		usePathnameMock.mockReturnValue('/product/123');
 		resizeWindow(640, 858); // Simula una pantalla no ancha
-		render(<Header />);
+		renderWithProvider(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
 		expect(sectionElement.className).toContain('mt-0');
 	});
@@ -96,14 +122,14 @@ describe('Componente Header', () => {
 	test('Aplica clase mt-[1vw] cuando pathname comienza con /product y es pantalla ancha', () => {
 		usePathnameMock.mockReturnValue('/product/123');
 		resizeWindow(1280, 1024); // Simula una pantalla ancha
-		render(<Header />);
+		renderWithProvider(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
 		expect(sectionElement.className).toContain('mt-[1vw]');
 	});
 
 	test('Aplica clase absolute cuando pathname no comienza con /product', () => {
 		usePathnameMock.mockReturnValue('/');
-		render(<Header />);
+		renderWithProvider(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
 		expect(sectionElement.className).toContain('absolute');
 	});
