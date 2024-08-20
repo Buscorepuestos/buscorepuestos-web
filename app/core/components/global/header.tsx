@@ -66,12 +66,14 @@ export function Header() {
 		>
 			<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row justify-between items-center px-28 mobile:px-10 md:px-14 sm:px-12">
 				{isWideScreen ? (
-					<Image
-						src="/logo-br-desktop.svg"
-						alt="Header"
-						width={101}
-						height={71}
-					/>
+					<Link href="/">
+						<Image
+							src="/logo-br-desktop.svg"
+							alt="Header"
+							width={101}
+							height={71}
+						/>
+					</Link>
 				): (
 					<>
 						<Image
@@ -82,13 +84,15 @@ export function Header() {
 							onClick={toggleMenu}
 							className='mobile:w-[7.5vw] mobile:h-[7.5vw] cursor-pointer'
 						/>
-						<Image
-							src="/buscorepuestos.svg"
-							alt="IconoMobile"
-							width={63}
-							height={63}
-							className='mobile:w-[10vw] mobile:h-[10vw] cursor-pointer'
-						/>
+						<Link href="/">
+							<Image
+								src="/buscorepuestos.svg"
+								alt="IconoMobile"
+								width={63}
+								height={63}
+								className='mobile:w-[10vw] mobile:h-[10vw] cursor-pointer'
+							/>
+						</Link>
 					</>
 				)}
 				{isWideScreen && (
