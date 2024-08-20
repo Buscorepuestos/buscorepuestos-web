@@ -6,6 +6,7 @@ import { clearCart } from '../../../redux/features/shoppingCartSlice'
 import { useDispatch } from 'react-redux'
 import { updatePurchase } from '../../../services/purchase/purchase'
 import { FormsFields } from '../../../verificacion-pago/page'
+import { environment } from '../../../environment/environment'
 
 
 const StripeForm = (props: { 
@@ -22,7 +23,10 @@ const StripeForm = (props: {
 	const [message, setMessage] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const [payment, setPayment] = useState<PaymentIntent | undefined>(undefined)
-	const userId = localStorage.getItem('airtableUserId')
+	let userId: string | null = null
+	if (typeof window !== 'undefined') {
+		userId = localStorage.getItem('airtableUserId')
+	}
 
 	useEffect(() => {
 		if (!stripe) {
@@ -88,7 +92,7 @@ const StripeForm = (props: {
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: 'http://localhost:4000',
+				return_url: environment.api.url,
 			},
 		})
 

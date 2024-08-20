@@ -7,6 +7,7 @@ import ProductInfo from '../../core/components/productInfo/productInfo'
 import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
 import { ProductMongoInterface } from '../../redux/interfaces/product.interface'
+import { environment } from '../../environment/environment'
 import axios from 'axios'
 import '../product.css'
 
@@ -54,12 +55,12 @@ const paymentOptions = [
 ]
 
 const fetchProductData = async (id: string): Promise<ProductMongoInterface> => {
-    const response = await axios.get(`https://buscorepuestos-dev.herokuapp.com/api/products/product-mongo/${id}`);
+    const response = await axios.get(`${environment.api.url}/products/product-mongo/${id}`);
     return response.data.data;
 };
 
 const fetchDistributorData = async (id: string) => {
-    const response = await axios.get(`https://buscorepuestos-dev.herokuapp.com/api/distributors/${id}?populate=true`);
+    const response = await axios.get(`${environment.api.url}/distributors/${id}?populate=true`);
     return response.data;
 }
 
