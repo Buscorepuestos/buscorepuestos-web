@@ -116,6 +116,7 @@ export default function Store() {
 								: '/nodisponible.png'
 						}
 						handleBuy={() => buynow(product)}
+						id={product._id}
 					/>
 				))}
 				{loading && <p>Loading...</p>}

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 
 export function Header() {
 	const principalMenuLinks = [
-		{ label: 'Tienda', href: 'store' },
+		{ label: 'Tienda', href: 'tienda' },
 		{ label: 'Quiénes somos', href: '#' },
 		{ label: 'Ayuda', href: '#' },
 		{ label: 'Contacto', href: '#' },

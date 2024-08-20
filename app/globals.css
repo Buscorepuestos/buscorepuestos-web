@@ -96,7 +96,7 @@ a {
 body {
 	/* md */
 	font-family: var(--font-work-sans), sans-serif;
-	background: var(--background);
+	background: var(--background)!important;
 	color: var(--foreground);
 	font-size: 1.6rem;
 }
