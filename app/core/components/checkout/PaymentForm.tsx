@@ -2,8 +2,9 @@ import { loadStripe } from '@stripe/stripe-js'
 import StripeForm from './StripeForm'
 import { Elements } from '@stripe/react-stripe-js'
 import { FormsFields } from '@/app/verificacion-pago/page'
+import { environment } from '../../../environment/environment'
 
-const stripePromise = loadStripe('pk_test_51P4jfZ01jERzk1YWCaZjfadeUUdmvdOxkfR9wmyqiEHpK7u7rhhdHoGT9HnUKSnhUeq15oXjHVQcwKdJC4SymqwL00SZF1AZdq')
+const stripePromise = loadStripe(environment.stripe_publishable_key)
 
 export default function PaymentForm(props: {
 	clientSecret: string,

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 
 export function Header() {
 	const principalMenuLinks = [
-		{ label: 'Tienda', href: '#' },
+		{ label: 'Tienda', href: 'store' },
 		{ label: 'Quiénes somos', href: '#' },
 		{ label: 'Ayuda', href: '#' },
 		{ label: 'Contacto', href: '#' },
@@ -120,7 +120,7 @@ export function Header() {
 					</div>
 					)}
 					<div className="flex flex-col items-center">
-						<Link href="#">
+						<Link href="/verificacion-pago">
 							<Image
 								src="/CARRITO.svg"
 								alt="Cart"
