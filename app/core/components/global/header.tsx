@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect, use } from 'react'
 import { usePathname } from 'next/navigation'
-import { useAppSelector } from '@/app/redux/hooks'
+import { useAppSelector } from '../../../redux/hooks'
 
 export function Header() {
 	const principalMenuLinks = [
