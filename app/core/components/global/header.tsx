@@ -1,12 +1,13 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { usePathname } from 'next/navigation'
+import { useAppSelector } from '../../../redux/hooks'
 
 export function Header() {
 	const principalMenuLinks = [
-		{ label: 'Tienda', href: 'store' },
+		{ label: 'Tienda', href: 'tienda' },
 		{ label: 'Quiénes somos', href: '#' },
 		{ label: 'Ayuda', href: '#' },
 		{ label: 'Contacto', href: '#' },
@@ -57,6 +58,15 @@ export function Header() {
 	useEffect(() => {
 		setIsProductPage(pathname.startsWith('/product'))
 	}, [pathname])
+
+	const cart = useAppSelector((state) => state.cart.items);
+	const [cartCount, setCartCount] = useState(0);
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+		  setCartCount(cart.length);
+		}
+	  }, [cart]);
 	
 	return (
 		<section
@@ -66,12 +76,14 @@ export function Header() {
 		>
 			<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row justify-between items-center px-28 mobile:px-10 md:px-14 sm:px-12">
 				{isWideScreen ? (
-					<Image
-						src="/logo-br-desktop.svg"
-						alt="Header"
-						width={101}
-						height={71}
-					/>
+					<Link href="/">
+						<Image
+							src="/logo-br-desktop.svg"
+							alt="Header"
+							width={101}
+							height={71}
+						/>
+					</Link>
 				): (
 					<>
 						<Image
@@ -82,13 +94,15 @@ export function Header() {
 							onClick={toggleMenu}
 							className='mobile:w-[7.5vw] mobile:h-[7.5vw] cursor-pointer'
 						/>
-						<Image
-							src="/buscorepuestos.svg"
-							alt="IconoMobile"
-							width={63}
-							height={63}
-							className='mobile:w-[10vw] mobile:h-[10vw] cursor-pointer'
-						/>
+						<Link href="/">
+							<Image
+								src="/buscorepuestos.svg"
+								alt="IconoMobile"
+								width={63}
+								height={63}
+								className='mobile:w-[10vw] mobile:h-[10vw] cursor-pointer'
+							/>
+						</Link>
 					</>
 				)}
 				{isWideScreen && (
@@ -108,18 +122,18 @@ export function Header() {
 				<div className="flex flex-row gap-7">
 					{isWideScreen && (
 						<div className="flex flex-col items-center">
-						<Link href="#">
-							<Image
-								src="/USUARIO.svg"
-								alt="User"
-								width={30}
-								height={30}
-							/>
-						</Link>
-						<p className="text-[0.8vw] text-secondary-blue">Accede</p>
-					</div>
+							<Link href="#">
+								<Image
+									src="/USUARIO.svg"
+									alt="User"
+									width={30}
+									height={30}
+								/>
+							</Link>
+							<p className="text-[0.8vw] text-secondary-blue">Accede</p>
+						</div>
 					)}
-					<div className="flex flex-col items-center">
+					<div className="relative flex flex-col items-center">
 						<Link href="/verificacion-pago">
 							<Image
 								src="/CARRITO.svg"
@@ -128,6 +142,11 @@ export function Header() {
 								height={30}
 								className='mobile:w-[7.5vw] mobile:h-[7.5vw] cursor-pointer'
 							/>
+							{cartCount > 0 && (
+								<span className="absolute -top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+									{cartCount}
+								</span>
+							)}
 						</Link>
 						{isWideScreen && (
 							<p className="text-[0.8vw] text-secondary-blue">Carrito</p>

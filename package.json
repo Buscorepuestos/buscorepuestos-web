@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "shx cp ./app/environment/dev/environment.dev.ts ./app/environment/environment.ts",
 		"dev-environment": "shx cp ./app/environment/dev-environment/environment.dev-environment.ts ./app/environment/environment.ts",
-    	"release": "shx cp ./app/environment/release/environment.release.ts ./app/environment/environment.ts",
+		"release": "shx cp ./app/environment/release/environment.release.ts ./app/environment/environment.ts",
 		"start-dev": "next dev -p 4000",
 		"build": "next build",
 		"start": "next start -p 4000",
@@ -31,6 +31,7 @@
 		"redux": "^5.0.1",
 		"stripe": "^16.1.0",
 		"styled-components": "^6.1.11",
+		"sweetalert2": "^11.12.4",
 		"swiper": "^11.1.3"
 	},
 	"devDependencies": {

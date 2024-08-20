@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Button from '../Button'
+import Link from 'next/link'
 
 function PriceView(props: { price: string }) {
 	return <p className="text-title-3 font-bold text-primary-blue">{props.price}€</p>
@@ -11,7 +12,8 @@ export default function CardPrice(props: {
 	description: string
 	price: number
 	image?: string
-	handleBuy?: () => void
+	handleBuy?: () => void,
+	id?: string
 }) {
 	const {image = '/card-preview.webp'} = props;
 	return (
@@ -33,9 +35,11 @@ export default function CardPrice(props: {
 				/>
 				<div className="flex flex-col items-start px-[0.5vw] mobile:px-4 w-full">
 					<div className="w-full h-[112px] mobile:h-[120px]">
-						<h4 className="text-base text-dark-grey font-bold line-clamp-2">
-							{props.title}
-						</h4>
+						<Link href={`/producto/${props.id}`}>
+							<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline">
+								{props.title}
+							</h4>
+						</Link>
 						<p className="text-sm">
 							<span className="font-bold">Ref. </span>
 							{props.reference}
