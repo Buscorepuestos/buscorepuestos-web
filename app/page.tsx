@@ -270,7 +270,7 @@ export default function Home() {
 
 	const handleSearch = () => {
 		if (searchTerm) {
-			router.push(`/store/${searchTerm}`)
+			router.push(`/tienda/${searchTerm}`)
 		}
 	}
 
