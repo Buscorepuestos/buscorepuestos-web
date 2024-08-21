@@ -32,7 +32,7 @@ export default function SearchBar(props: {
 				width={30}
 				height={30}
 				priority
-				className="mr-[20px]"
+				className="mr-[20px] mobile:mr-[15px]"
 			/>
 			<input
 				className="text-title-4 flex-grow bg-transparent outline-none font-semibold"

@@ -2,7 +2,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { SwiperSlide } from 'swiper/react'
 import Banner from '@/app/core/components/Banner'
-import Button from '@/app/core/components/Button'
 import CardInfo from '@/app/core/components/cards/CardInfo'
 import SearchBar from '@/app/core/components/SearchBar'
 import Slider from '@/app/core/components/Slider'
@@ -191,7 +190,7 @@ const cardValorationPropsArray = [
 
 const breakPointsCardValoration = {
 	300: {
-		slidesPerView: 1.1,
+		slidesPerView: 1.2,
 		spaceBetween: 10,
 	},
 	550: {
@@ -217,9 +216,9 @@ const breakPointsCardValoration = {
 }
 
 const breakPointsCardPrices = {
-	300: {
+	375: {
 		slidesPerView: 2,
-		spaceBetween: 10,
+		spaceBetween: 5,
 	},
 	550: {
 		slidesPerView: 2.5,
@@ -299,7 +298,7 @@ export default function Home() {
 						onChange={handleInputChange}
 						onEnterPress={handleSearch}
 						height={'52px'}
-						width={'w-[496px] mobile:w-[80vw]'}
+						width={'w-[496px] mobile:w-[82vw]'}
 						borderColor={'#12B1BB'}
 						borderWidth={'2px'}
 					/>
@@ -313,7 +312,7 @@ export default function Home() {
 				position=""
 				extraCss="justify-center items-center m-auto"
 			>
-				<p className="font-semibold text-warning uppercase">
+				<p className="font-semibold text-warning uppercase mobile:text-[4vw]">
 					Dos años de garantía en todas las piezas
 				</p>
 			</Banner>
