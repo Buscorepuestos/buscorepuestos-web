@@ -70,7 +70,7 @@ export function Header() {
 	
 	return (
 		<section
-			className={`lg:w-[95%] md:w-[90%] sm:w-[90%] max-w-[1213px] mobile:w-[100%] h-[122px] mobile:h-[13vw] sm:rounded-[21px] bg-custom-white sm:border-[2px] mobile:border-b-[2px]
+			className={`lg:w-[95%] md:w-[90%] sm:w-[90%] max-w-[1213px] mobile:w-[100%] h-[122px] mobile:h-[14vw] sm:rounded-[21px] bg-custom-white sm:border-[2px] mobile:border-b-[2px]
 			border-secondary-blue ${ isProductPage && !isWideScreen ? 'mt-0' : isProductPage ? 'mt-[1vw]' : 'absolute'} top-[32px] mobile:p-[7px] mobile:top-0 left-0 right-0 z-10 m-auto shadow-md`}
 			role='region'
 		>
@@ -100,7 +100,7 @@ export function Header() {
 								alt="IconoMobile"
 								width={63}
 								height={63}
-								className='mobile:w-[10vw] mobile:h-[10vw] cursor-pointer'
+								className='mobile:w-[11vw] mobile:h-[11vw] cursor-pointer'
 							/>
 						</Link>
 					</>
@@ -140,7 +140,7 @@ export function Header() {
 								alt="Cart"
 								width={30}
 								height={30}
-								className='mobile:w-[7.5vw] mobile:h-[7.5vw] cursor-pointer'
+								className='mobile:w-[8vw] mobile:h-[8vw] cursor-pointer'
 							/>
 							{cartCount > 0 && (
 								<span className="absolute -top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">

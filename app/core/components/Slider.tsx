@@ -24,7 +24,7 @@ interface SliderProps {
 }
 
 const grid = {
-	rows: 2,
+	rows: 1,
 	fill: 'row' as const,
 };
 
