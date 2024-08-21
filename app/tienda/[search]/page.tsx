@@ -50,6 +50,7 @@ export default function Store({ params }: { params: { search: string } }) {
 						'year',
 						'buscorepuestosPrice',
 						'images',
+						'_id',
 					],
 				})
 				setProducts(result.hits as unknown as IProductMongoose[])
