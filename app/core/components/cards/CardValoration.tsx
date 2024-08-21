@@ -10,7 +10,7 @@ export default function CardValoration(props: {
 	return (
 		<>
 			<div
-				className="flex flex-col gap-3 w-[341px] h-[220px] rounded-[32px] bg-custom-white pt-[26px] 
+				className="flex flex-col gap-3 w-[341px] mobile:w-[300px] h-[220px] rounded-[32px] bg-custom-white pt-[26px] 
 			pb-[26px] pr-[27px] pl-[27px] font-tertiary-font"
 			>
 				<div className='flex gap-6'>

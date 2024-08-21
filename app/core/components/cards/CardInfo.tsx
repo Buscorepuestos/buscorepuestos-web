@@ -4,7 +4,7 @@ export default function CardInfo(props: { title: string, image: string, href?: s
 	return (
 		<>
 			<div
-				className="w-[178px] max-h-[350px]
+				className="w-[178px] max-h-[350px] mobile:w-[160px]
 					flex flex-col items-center shadow-inter rounded-[24px] pt-3 pb-3 box-border
 					hover:transition duration-300 ease-in-out bg-custom-white "
 			>

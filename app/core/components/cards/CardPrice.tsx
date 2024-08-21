@@ -46,13 +46,14 @@ export default function CardPrice(props: {
 						</p>
 						<p className="text-sm">{props.description}</p>
 					</div>
-					<div className="flex justify-center w-[100%]">
+					<div className="flex justify-center w-[100%] mobile:mt-4">
 						<PriceView price={props.price.toFixed(2).replace('.', ',')} />
 					</div>
-					<div className='flex justify-center w-[100%] mb-6'>
+					<div className='flex justify-center w-[100%] mb-6 mobile:mb-0'>
 						<Button 
 							labelName={'Comprar'}
 							onClick={props.handleBuy}
+							xpadding='px-16'
 						/>
 					</div>
 				</div>

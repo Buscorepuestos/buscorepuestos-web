@@ -37,6 +37,7 @@ export default function Store() {
 					'year',
 					'buscorepuestosPrice',
 					'images',
+					'_id',
 				],
 			})
 			setProducts(result.hits as unknown as IProductMongoose[])
