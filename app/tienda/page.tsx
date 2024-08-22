@@ -28,6 +28,7 @@ export default function Store() {
 		setLoading(true)
 		try {
 			const result = await index.search(query, {
+				filters: 'isMetasync: true',
 				hitsPerPage: 50,
 				attributesToRetrieve: [
 					'title',
@@ -38,10 +39,12 @@ export default function Store() {
 					'buscorepuestosPrice',
 					'images',
 					'_id',
+					'isMetasync',
 				],
 			})
 			setProducts(result.hits as unknown as IProductMongoose[])
 		} catch (err) {
+			console.log(err)
 			setError((err as Error).message)
 		} finally {
 			setLoading(false)
@@ -51,9 +54,24 @@ export default function Store() {
 	useEffect(() => {
 		const fetchInitialProducts = async () => {
 			try {
-				const { hits } = await index.search('', { hitsPerPage: 50 })
+				const { hits } = await index.search('', { 
+					filters: 'isMetasync: true',
+					hitsPerPage: 50,
+					attributesToRetrieve: [
+						'title',
+						'mainReference',
+						'brand',
+						'articleModel',
+						'year',
+						'buscorepuestosPrice',
+						'images',
+						'_id',
+						'isMetasync',
+					],
+				})
 				setProducts(hits as unknown as IProductMongoose[])
 			} catch (error) {
+				console.log(error)
 				setError((error as Error).message)
 			} finally {
 				setLoading(false)
@@ -67,6 +85,8 @@ export default function Store() {
 	useEffect(() => {
         dispatch({ type: "auth/checkUserStatus" });
     }, [dispatch]);
+
+	console.log('products', products)
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`

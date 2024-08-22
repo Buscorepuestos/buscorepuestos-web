@@ -42,6 +42,7 @@ export default function Store({ params }: { params: { search: string } }) {
 			try {
 				const result = await index.search(query, {
 					hitsPerPage: 50,
+					filters: 'isMetasync:true',
 					attributesToRetrieve: [
 						'title',
 						'mainReference',
@@ -51,8 +52,10 @@ export default function Store({ params }: { params: { search: string } }) {
 						'buscorepuestosPrice',
 						'images',
 						'_id',
+						'isMetasync',
 					],
 				})
+				console.log(result.hits)
 				setProducts(result.hits as unknown as IProductMongoose[])
 			} catch (error) {
 				setError((error as Error).message)
@@ -74,9 +77,6 @@ export default function Store({ params }: { params: { search: string } }) {
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
-	}
-	const parsePrice = (price: number) => {
-		return price.toFixed(2).replace('.', ',')
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -124,6 +124,7 @@ export default function Store({ params }: { params: { search: string } }) {
 								: '/nodisponible.png'
 						}
 						handleBuy={() => buynow(product)}
+						id={product._id}
 					/>
 				))}
 				{loading && <p>Loading...</p>}

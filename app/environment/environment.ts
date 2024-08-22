@@ -1,5 +1,6 @@
 export const environment = {
     production: true,
+    base_url: 'https://www.buscorepuestos.com',
     algoliaAppID: 'DSKGGHHS58',
     algoliaAPIKey: '6f49eeb288faef802bf5236c9fa6720d',
     algoliaIndexName: 'release_PRODUCTS',
