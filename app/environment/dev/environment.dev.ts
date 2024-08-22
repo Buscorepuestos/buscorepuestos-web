@@ -1,5 +1,6 @@
 export const environment = {
     production: false,
+    base_url: 'http://localhost:4000',
     algoliaAppID: 'DSKGGHHS58',
     algoliaAPIKey: '6f49eeb288faef802bf5236c9fa6720d',
     algoliaIndexName: 'dev_PRODUCTS',
