@@ -75,9 +75,6 @@ export default function Store({ params }: { params: { search: string } }) {
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
 	}
-	const parsePrice = (price: number) => {
-		return price.toFixed(2).replace('.', ',')
-	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setInputValue(event.target.value)
@@ -124,6 +121,7 @@ export default function Store({ params }: { params: { search: string } }) {
 								: '/nodisponible.png'
 						}
 						handleBuy={() => buynow(product)}
+						id={product._id}
 					/>
 				))}
 				{loading && <p>Loading...</p>}
