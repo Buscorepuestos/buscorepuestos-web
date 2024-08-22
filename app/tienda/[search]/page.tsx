@@ -42,6 +42,7 @@ export default function Store({ params }: { params: { search: string } }) {
 			try {
 				const result = await index.search(query, {
 					hitsPerPage: 50,
+					filters: 'isMetasync:true',
 					attributesToRetrieve: [
 						'title',
 						'mainReference',
@@ -51,8 +52,10 @@ export default function Store({ params }: { params: { search: string } }) {
 						'buscorepuestosPrice',
 						'images',
 						'_id',
+						'isMetasync',
 					],
 				})
+				console.log(result.hits)
 				setProducts(result.hits as unknown as IProductMongoose[])
 			} catch (error) {
 				setError((error as Error).message)
