@@ -1,13 +1,14 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useAppSelector } from '../../../redux/hooks'
+import { environment } from '../../../environment/environment'
 
 export function Header() {
 	const principalMenuLinks = [
-		{ label: 'Tienda', href: 'tienda' },
+		{ label: 'Tienda', href: '/tienda' },
 		{ label: 'Quiénes somos', href: '#' },
 		{ label: 'Ayuda', href: '#' },
 		{ label: 'Contacto', href: '#' },
