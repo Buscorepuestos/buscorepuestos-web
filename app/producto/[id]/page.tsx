@@ -60,8 +60,12 @@ const fetchProductData = async (id: string): Promise<ProductMongoInterface> => {
 };
 
 const fetchDistributorData = async (id: string) => {
-    const response = await axios.get(`${environment.api.url}/distributors/${id}?populate=true`);
-    return response.data;
+    try {
+        const response = await axios.get(`${environment.api.url}/distributors/${id}?populate=true`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching distributor data:', error);
+    }
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
