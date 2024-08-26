@@ -64,6 +64,20 @@ const fetchDistributorData = async (id: string) => {
     return response.data;
 }
 
+export async function generateMetadata({ params }: { params: { id: string } }) {
+    const data = await fetchProductData(params.id);
+
+    return {
+        title: `${data?.title}`,
+        description: `Compra ${data?.title} en Buscorepuestos.com. ${data?.version} - ${data?.engine}`,
+        openGraph: {
+            title: `${data?.title}`,
+            description: `Compra ${data?.title} en Buscorepuestos.com. ${data?.version} - ${data?.engine}`,
+            images: data?.images.map(image => ({ url: image })),
+        },
+    };
+}
+
 export default async function Product({ params } : { params: { id: string } }) {
     
     const data = await fetchProductData(params.id);
@@ -104,7 +118,7 @@ export default async function Product({ params } : { params: { id: string } }) {
                 <div className='bg-neutro-grey'>
                     {
                         data && (
-                            <div className='mobile:hidden'>
+                            <div className='block mobile:hidden'>
                                 <ProductTitle 
                                     title={data.title}
                                     refNumber={data.mainReference}
