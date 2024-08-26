@@ -70,8 +70,6 @@ export default function Payment() {
 
 	const { items, isLoaded, purchaseIds } = useCartItems()
 
-	console.log(purchaseIds, purchaseIds.length)
-
 	const calculateTotal = () => {
 		const stringPrice = items
 			.filter((product) => product.stock)
@@ -107,22 +105,22 @@ export default function Payment() {
 
 	useEffect(() => {
 		const createIntent = async () => {
-			if (purchaseIds.length > 0 && numberPriceRounded > 0 ) {
-				try {
-					const res = await createPaymentIntent({
-						amount: numberPriceRounded,
-						currency: 'eur',
-						cartIDs: purchaseIds,
-						automatic_payment_methods: { enabled: true },
-					})
-					setClientSecret(res.data.client_secret)
-				} catch (error) {
-					if (error instanceof Error) {
-						setError(error.message)
-					} else {
-						setError('An unknown error occurred')
-					}
+			try {
+				if (purchaseIds.length === 0 || purchaseIds.every(id => id.trim() === '')) {
+					console.error('No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.');
+					return;
 				}
+			
+				const res = await createPaymentIntent({
+					amount: numberPriceRounded,
+					currency: 'eur',
+					cartIDs: purchaseIds,
+					automatic_payment_methods: { enabled: true },
+				});
+				setClientSecret(res.data.client_secret);
+			} catch (error) {
+				setError('Error al crear el Payment Intent');
+				console.error('Error al crear el Payment Intent:', error);
 			}
 		}
 

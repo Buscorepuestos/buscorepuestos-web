@@ -92,7 +92,7 @@ const StripeForm = (props: {
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: environment.api.url,
+				return_url: environment.base_url,
 			},
 		})
 
