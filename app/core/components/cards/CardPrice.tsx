@@ -26,6 +26,7 @@ export default function CardPrice(props: {
 					transition duration-300 ease-in-out"
 			>
 				<Image
+					unoptimized={true}
 					src={image}
 					alt="card image"
 					width={205}
