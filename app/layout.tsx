@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import StoreProvider from './redux/provider'
+import WhatsAppIcon from './core/components/whatsapp/whatsapp'
 import './globals.css'
 
 import { Header } from '@/app/core/components/global/header'
@@ -44,6 +45,7 @@ export default function RootLayout({
 					<main className="flex-1">
 						{children}
 					</main>
+					<WhatsAppIcon />
 					<Footer />
 					<SpeedInsights/>
 				</StoreProvider>
