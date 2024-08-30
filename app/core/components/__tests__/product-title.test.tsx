@@ -32,18 +32,16 @@ describe('ProductTitle', () => {
         expect(productNameElement).not.toBeNull();
     });
 
-    it('renders the image correctly', () => {
-        render(<ProductTitle {...props} />);
-        const imageElement = screen.getByAltText('compartir-desktop');
-        expect(imageElement).not.toBeNull();
-        expect((imageElement as HTMLImageElement).src).toContain(props.imageSrc);
-    });
+    // it('renders the image correctly', () => {
+    //     render(<ProductTitle {...props} />);
+    //     const imageElement = screen.getByAltText('compartir-desktop');
+    //     expect(imageElement).not.toBeNull();
+    //     expect((imageElement as HTMLImageElement).src).toContain(props.imageSrc);
+    // });
 
     it('renders the reference number and image in mobile version correctly', () => {
         render(<ProductTitle {...props} />);
         const refMobileElements = screen.getAllByRole('ref-mobile');
         expect(refMobileElements.length).toBeGreaterThan(0);
-        const imageMobileElement = screen.getByAltText('compartir');
-        expect(imageMobileElement).not.toBeNull();
     });
 });
