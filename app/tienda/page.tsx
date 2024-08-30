@@ -93,13 +93,16 @@ export default function Store() {
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setInputValue(event.target.value)
-		search(event.target.value)
+		setInputValue(event.target.value);
 	}
 
-	let userId: string | null = null
+	const handleEnterPress = () => {
+		search(inputValue); // Realiza la búsqueda solo cuando se presiona Enter
+	};
+
+	let userId: string | null = null;
 	if (typeof window !== 'undefined') {
-		userId = localStorage.getItem('airtableUserId')
+		userId = localStorage.getItem('airtableUserId');
 	}
 
 	const buynow = (product: any) => {
@@ -113,6 +116,7 @@ export default function Store() {
 			<div>
 				<SearchBar
 					onChange={handleInputChange}
+					onEnterPress={handleEnterPress} // Pasa el nuevo método aquí
 					height={'52px'}
 					width={'w-[480px] mobile:w-[80vw]'}
 					borderColor={'#12B1BB'}

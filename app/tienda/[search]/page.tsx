@@ -31,14 +31,9 @@ export default function Store({ params }: { params: { search: string } }) {
 	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
 
-	// Contador para ver cuántas veces se ejecuta searchAlgolia
-	const [searchCount, setSearchCount] = useState(0)
-
 	const searchAlgolia = useCallback(
 		async (query: string) => {
 			setLoading(true)
-			setSearchCount((prevCount) => prevCount + 1) // Incrementa el contador
-			console.log(`searchAlgolia ejecutado ${searchCount + 1} veces`) // Mostrar en consola
 			try {
 				const result = await index.search(query, {
 					hitsPerPage: 50,
@@ -55,7 +50,6 @@ export default function Store({ params }: { params: { search: string } }) {
 						'isMetasync',
 					],
 				})
-				console.log(result.hits)
 				setProducts(result.hits as unknown as IProductMongoose[])
 			} catch (error) {
 				setError((error as Error).message)
@@ -63,7 +57,7 @@ export default function Store({ params }: { params: { search: string } }) {
 				setLoading(false)
 			}
 		},
-		[index, searchCount]
+		[index]
 	)
 
 	useEffect(() => {
@@ -81,7 +75,10 @@ export default function Store({ params }: { params: { search: string } }) {
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setInputValue(event.target.value)
-		searchAlgolia(event.target.value)
+	}
+
+	const handleEnterPress = () => {
+		searchAlgolia(inputValue); // Realiza la búsqueda solo cuando se presiona Enter
 	}
 
 	let userId: string | null = null
@@ -100,6 +97,7 @@ export default function Store({ params }: { params: { search: string } }) {
 			<div>
 				<SearchBar
 					onChange={handleInputChange}
+					onEnterPress={handleEnterPress} // Pasa el nuevo método aquí
 					height={'52px'}
 					width={'w-[480px] mobile:w-[80vw]'}
 					borderColor={'#12B1BB'}
