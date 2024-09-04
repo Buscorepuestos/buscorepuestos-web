@@ -37,7 +37,7 @@ export default function Store({ params }: { params: { search: string } }) {
 			try {
 				const result = await index.search(query, {
 					hitsPerPage: 50,
-					filters: 'isMetasync:true',
+					facetFilters: ['isMetasync:true', 'stock:true'],
 					attributesToRetrieve: [
 						'title',
 						'mainReference',
@@ -48,6 +48,7 @@ export default function Store({ params }: { params: { search: string } }) {
 						'images',
 						'_id',
 						'isMetasync',
+						'stock',
 					],
 				})
 				setProducts(result.hits as unknown as IProductMongoose[])
