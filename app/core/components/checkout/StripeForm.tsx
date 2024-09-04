@@ -8,14 +8,12 @@ import { updatePurchase } from '../../../services/purchase/purchase'
 import { FormsFields } from '../../../verificacion-pago/page'
 import { environment } from '../../../environment/environment'
 
-
 const StripeForm = (props: { 
 	clientSecret: string; 
 	label: 'Pagar ahora'; 
 	purchaseIds: string[];
 	fieldsValues: FormsFields;
 }) => {
-
 	const dispatch = useDispatch()
 	const stripe = useStripe()
 	const elements = useElements()
@@ -23,6 +21,8 @@ const StripeForm = (props: {
 	const [message, setMessage] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const [payment, setPayment] = useState<PaymentIntent | undefined>(undefined)
+	const [isFormValid, setIsFormValid] = useState(false)
+	const [isPaymentElementComplete, setIsPaymentElementComplete] = useState(false)
 	let userId: string | null = null
 	if (typeof window !== 'undefined') {
 		userId = localStorage.getItem('airtableUserId')
@@ -54,6 +54,23 @@ const StripeForm = (props: {
 			})
 	}, [stripe, props.clientSecret])
 
+	// Function to check if all required fields are filled
+	useEffect(() => {
+		const fields = props.fieldsValues
+		const isFieldsComplete =
+			fields.shippingAddress &&
+			fields.country &&
+			fields.city &&
+			fields.addressExtra &&
+			fields.name &&
+			fields.zip &&
+			fields.nif &&
+			fields.phoneNumber &&
+			fields.province
+
+		setIsFormValid((isFieldsComplete && isPaymentElementComplete) || false)
+	}, [props.fieldsValues, isPaymentElementComplete])
+
 	const updatePurchases = async () => {
 		props.purchaseIds.forEach(async (purchaseId) => {
 			await updatePurchase(purchaseId)
@@ -64,8 +81,6 @@ const StripeForm = (props: {
 		e.preventDefault()
 
 		if (!stripe || !elements) {
-			// Stripe.js hasn't yet loaded.
-			// Make sure to disable form submission until Stripe.js has loaded.
 			return
 		}
 
@@ -91,21 +106,12 @@ const StripeForm = (props: {
 		const { error } = await stripe.confirmPayment({
 			elements,
 			confirmParams: {
-				// Make sure to change this to your payment completion page
 				return_url: environment.base_url,
 			},
 		})
 
-		// This point will only be reached if there is an immediate error when
-		// confirming the payment. Otherwise, your customer will be redirected to
-		// your `return_url`. For some payment methods like iDEAL, your customer will
-		// be redirected to an intermediate site first to authorize the payment, then
-		// redirected to the `return_url`.
 		if (error) {
-			if (
-				error.type === 'card_error' ||
-				error.type === 'validation_error'
-			) {
+			if (error.type === 'card_error' || error.type === 'validation_error') {
 				setMessage(error.message as string)
 			} else {
 				setMessage('An unexpected error occurred.')
@@ -115,20 +121,25 @@ const StripeForm = (props: {
 		setIsLoading(false)
 	}
 
+	const handleChange = (event: any) => {
+		setIsPaymentElementComplete(event.complete)
+	}
+
 	const paymentElementOptions: StripePaymentElementOptions = {
 		layout: {
 			type: 'tabs',
 		},
-	};
+	}
 
 	return (
 		<form id="payment-form" onSubmit={handleSubmit}>
 			<PaymentElement
 				id="payment-element"
 				options={paymentElementOptions}
+				onChange={handleChange}
 			/>
 			<button 
-				disabled={isLoading || !stripe || !elements} 
+				disabled={isLoading || !stripe || !elements || !isFormValid} 
 				id="submit" 
 				type='submit'
 				className='button-pay'
@@ -141,7 +152,6 @@ const StripeForm = (props: {
 					)}
 				</span>
 			</button>
-			{/* Show any error or success messages */}
 			{<div id="payment-message">{message}</div>}
 		</form>
 	)
