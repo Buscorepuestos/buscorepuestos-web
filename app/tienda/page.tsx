@@ -28,7 +28,7 @@ export default function Store() {
 		setLoading(true)
 		try {
 			const result = await index.search(query, {
-				filters: 'isMetasync: true',
+				facetFilters: ['isMetasync:true', 'stock:true'],
 				hitsPerPage: 50,
 				attributesToRetrieve: [
 					'title',
@@ -40,6 +40,7 @@ export default function Store() {
 					'images',
 					'_id',
 					'isMetasync',
+					'stock',
 				],
 			})
 			setProducts(result.hits as unknown as IProductMongoose[])
@@ -55,7 +56,7 @@ export default function Store() {
 		const fetchInitialProducts = async () => {
 			try {
 				const { hits } = await index.search('', { 
-					filters: 'isMetasync: true',
+					facetFilters: ['isMetasync:true', 'stock:true'],
 					hitsPerPage: 50,
 					attributesToRetrieve: [
 						'title',
@@ -67,6 +68,7 @@ export default function Store() {
 						'images',
 						'_id',
 						'isMetasync',
+						'stock',
 					],
 				})
 				setProducts(hits as unknown as IProductMongoose[])
@@ -129,6 +131,7 @@ export default function Store() {
 				}
 			>
 				{products.map((product: any, index) => (
+					console.log('product', product),
 					<CardPrice
 						key={index}
 						title={product.title}
