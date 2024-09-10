@@ -84,24 +84,8 @@ const StripeForm = (props: {
 			return
 		}
 
-		await createBill({
-			'Id Pago Stripe': payment?.id as string,
-			Compras: props.purchaseIds,
-			Usuarios: [userId!],
-			transfer: false,
-			address: props.fieldsValues.shippingAddress,
-			country: props.fieldsValues.country,
-			location: props.fieldsValues.city,
-			addressNumber: props.fieldsValues.addressExtra,
-			name: props.fieldsValues.name,
-			cp: props.fieldsValues.zip,
-			nif: props.fieldsValues.nif,
-			phone: Number(props.fieldsValues.phoneNumber),
-			province: props.fieldsValues.province,
-		})
-
 		setIsLoading(true)
-		await updatePurchases()
+		
 		dispatch(clearCart())              
 		const { error } = await stripe.confirmPayment({
 			elements,
@@ -116,6 +100,23 @@ const StripeForm = (props: {
 			} else {
 				setMessage('An unexpected error occurred.')
 			}
+		} else {
+			await createBill({
+				'Id Pago Stripe': payment?.id as string,
+				Compras: props.purchaseIds,
+				Usuarios: [userId!],
+				transfer: false,
+				address: props.fieldsValues.shippingAddress,
+				country: props.fieldsValues.country,
+				location: props.fieldsValues.city,
+				addressNumber: props.fieldsValues.addressExtra,
+				name: props.fieldsValues.name,
+				cp: props.fieldsValues.zip,
+				nif: props.fieldsValues.nif,
+				phone: Number(props.fieldsValues.phoneNumber),
+				province: props.fieldsValues.province,
+			})
+			await updatePurchases()
 		}
 
 		setIsLoading(false)
