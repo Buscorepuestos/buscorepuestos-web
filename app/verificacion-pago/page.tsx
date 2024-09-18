@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/store'
 import ShoppingBasket from '../core/components/shopping-cart/ShoppingBasket'
 import SelectDropdown from '../core/components/selectDropdown/selectDropdown'
-import PaymentForm from '../core/components/checkout/PaymentForm'
+import PaymentSelection from '../core/components/paymentSelection/PaymentSelection'
 import Checkbox from '../core/components/checkbox/checkbox'
 import Input from '../core/components/input/input'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
@@ -82,11 +82,12 @@ export default function Payment() {
 
 		return {
 			stringPrice,
-			numberPriceRounded
+			numberPriceRounded,
+			numberPrice
 		}
 	}
 
-	const { numberPriceRounded, stringPrice } = calculateTotal()
+	const { numberPriceRounded, stringPrice, numberPrice } = calculateTotal()
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -541,16 +542,15 @@ export default function Payment() {
 								'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
 							}
 						>
-							Método de pago
+							Seleccionar Método de pago
 						</h1>
-						<div>
-							{clientSecret && (
-								<PaymentForm
-									clientSecret={clientSecret}
-									purchaseIds={purchaseIds}
-									fieldsValues={fieldsValue}
-								/>
-							)}
+						<div className='w-full px-24 mobile:px-0'>
+							<PaymentSelection
+								clientSecret={clientSecret}
+								purchaseIds={purchaseIds}
+								fieldsValue={fieldsValue}
+								numberPriceRounded={numberPrice}
+							/>
 						</div>
 					</div>
 				</article>

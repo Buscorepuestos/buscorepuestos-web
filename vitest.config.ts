@@ -5,7 +5,8 @@ export default defineConfig({
 	plugins: [react()],
 	test: {
 		environment: 'jsdom',
-		reporters: process.env.CI === 'yes' ? ['dot', 'github-actions'] : ['verbose'],
+		reporters:
+			process.env.CI === 'yes' ? ['dot', 'github-actions'] : ['verbose'],
 		coverage: {
 			thresholds: {
 				statements: 90,
@@ -16,7 +17,22 @@ export default defineConfig({
 			provider: 'v8',
 			ignoreEmptyLines: true,
 			include: ['app/**/*'],
-			exclude: ['node_modules','test/**/*', 'app/**/*.test.*', 'app/**/page.tsx', 'app/**/layout.tsx' , 'app/core/components/svg', 'app/component-examples', 'app/core/components/__tests__/redux/mocks', 'app/types', 'app/core/components/checkout/StripeForm.tsx', 'app/environment'],
+			exclude: [
+				'node_modules',
+				'test/**/*',
+				'app/**/*.test.*',
+				'app/**/page.tsx',
+				'app/**/layout.tsx',
+				'app/core/components/svg',
+				'app/component-examples',
+				'app/core/components/__tests__/redux/mocks',
+				'app/types',
+				'app/core/components/checkout/StripeForm.tsx',
+				'app/environment',
+				'app/services/sumup/sumupWidget.tsx',
+				'app/core/components/sumupPayment/sumupPayment.tsx',
+				'app/core/components/paymentSelection/PaymentSelection.tsx',
+			],
 			reporter: ['text', 'html', 'json'],
 		},
 		setupFiles: [
