@@ -88,8 +88,6 @@ export default function Store() {
         dispatch({ type: "auth/checkUserStatus" });
     }, [dispatch]);
 
-	console.log('products', products)
-
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
 	}
@@ -131,7 +129,6 @@ export default function Store() {
 				}
 			>
 				{products.map((product: any, index) => (
-					console.log('product', product),
 					<CardPrice
 						key={index}
 						title={product.title}
