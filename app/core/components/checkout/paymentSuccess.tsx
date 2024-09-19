@@ -7,6 +7,15 @@ import { useStripe } from '@stripe/react-stripe-js'
 import { useSearchParams } from 'next/navigation'
 import { createBill } from '../../../services/billing/billing.service'
 import Swal from 'sweetalert2'
+import { Suspense } from 'react'
+
+const PaymentSuccessContent = () => {
+    return (
+      <Suspense fallback={<div>Cargando...</div>}>
+        <PaymentSuccess />
+      </Suspense>
+    );
+  };
 
 const PaymentSuccess = () => {
 
@@ -90,7 +99,7 @@ const PaymentSuccess = () => {
 		verifyPayment()
 	}, [dispatch, router, searchParams, stripe])
 
-	return <></>
+	return <div> <h1>Procesando pago...</h1> </div>
 }
 
-export default PaymentSuccess
+export default PaymentSuccessContent
