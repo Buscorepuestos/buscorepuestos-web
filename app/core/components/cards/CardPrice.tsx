@@ -15,11 +15,9 @@ export default function CardPrice(props: {
 	handleBuy?: () => void,
 	id?: string
 }) {
-	const {image = '/card-preview.webp'} = props;
+	const { image } = props;
 	return (
 		<>
-			{/* Next images */}
-
 			<div
 				className="max-w-[207px] max-h-[366px] mobile:max-h-[345px]
 					flex flex-col justify-between pb-[23px] m-6 gap-4 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl
@@ -27,7 +25,7 @@ export default function CardPrice(props: {
 			>
 				<Image
 					unoptimized={true}
-					src={image}
+					src={image ? image : '/card-preview.webp'}
 					alt="card image"
 					width={205}
 					height={140}
@@ -35,7 +33,7 @@ export default function CardPrice(props: {
 					loading={'lazy'}
 				/>
 				<div className="flex flex-col items-start px-[0.5vw] mobile:px-4 w-full">
-					<div className="w-full h-[112px] mobile:h-[120px]">
+					<div className="w-full h-auto mobile:h-auto">
 						<Link href={`/producto/${props.id}`}>
 							<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline">
 								{props.title}
@@ -45,9 +43,9 @@ export default function CardPrice(props: {
 							<span className="font-bold">Ref. </span>
 							{props.reference}
 						</p>
-						<p className="text-sm">{props.description}</p>
+						<p className="text-sm mobile:text-[1.2rem]">{props.description}</p>
 					</div>
-					<div className="flex justify-center w-[100%] mobile:mt-4">
+					<div className="flex justify-center w-[100%] ">
 						<PriceView price={props.price.toFixed(2).replace('.', ',')} />
 					</div>
 					<div className='flex justify-center w-[100%] mb-6 mobile:mb-0'>

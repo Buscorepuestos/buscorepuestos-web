@@ -80,6 +80,7 @@ export default function Button(props: ButtonProps) {
 				${hoverText} ${hoverBg} ${xpadding} rounded-3xl font-semibold 
 				text-custom-white transition duration-300 ease-in-out p-2
 				font-tertiary-font text-[3vw] xl:text-[1.1vw] lg:text-[1.5vw] md:text-[1.6vw] sm:text-[1.5vw]
+				flex justify-center items-center sm:w-[15vw]
 			`}
 		>
 			{labelName}
