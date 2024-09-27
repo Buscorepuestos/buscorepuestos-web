@@ -54,7 +54,8 @@ const config: Config = {
 			},
 			gridTemplateColumns: {
 				'custom-layout': '60% 30% 10%',
-				'custom-layout-mobile': '80% 20%'
+				'custom-layout-mobile': '80% 20%',
+				'custom-filters': '20% 80%',
 			}
 		},
 	},

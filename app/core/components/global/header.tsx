@@ -173,7 +173,7 @@ export function Header() {
 				</>
 			)}
 			{!isWideScreen && isMenuOpen && (
-				<div data-testid='Menu' className="absolute top-[12.8vw] left-0 right-0 bg-custom-white shadow-md z-20">
+				<div data-testid='Menu' className="absolute top-[12.8vw] left-0 right-0 bg-custom-white shadow-md ">
 					<div className="flex flex-col items-start border-t border-secondary-blue">
 						<div className='w-full flex items-center gap-5 text-[4vw] py-5 text-secondary-blue font-semibold hover:bg-gray-100 h-[12vw] border-secondary-blue border-b-[1px] pl-14'>
 							<Image
