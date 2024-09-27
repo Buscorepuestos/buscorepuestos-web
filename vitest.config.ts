@@ -29,6 +29,7 @@ export default defineConfig({
 				'app/types',
 				'app/core/components/checkout/StripeForm.tsx',
 				'app/environment',
+				'app/core/components/filters',
 				'app/services/sumup/sumupWidget.tsx',
 				'app/core/components/sumupPayment/sumupPayment.tsx',
 				'app/core/components/paymentSelection/PaymentSelection.tsx',
