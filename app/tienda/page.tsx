@@ -105,8 +105,6 @@ export default function Store() {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSubcategory])
 
-	console.log('products', products)
-
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
 	}

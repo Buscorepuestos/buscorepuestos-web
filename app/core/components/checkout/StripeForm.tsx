@@ -2,9 +2,7 @@ import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useEffect, useState } from 'react'
 import { PaymentIntent, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { createBill } from '../../../services/billing/billing.service'
-import { clearCart } from '../../../redux/features/shoppingCartSlice'
 import { useDispatch } from 'react-redux'
-import { updatePurchase } from '../../../services/purchase/purchase'
 import { FormsFields } from '../../../verificacion-pago/page'
 import { environment } from '../../../environment/environment'
 
@@ -23,6 +21,8 @@ const StripeForm = (props: {
 	const [payment, setPayment] = useState<PaymentIntent | undefined>(undefined)
 	const [isFormValid, setIsFormValid] = useState(false)
 	const [isPaymentElementComplete, setIsPaymentElementComplete] = useState(false)
+	const [missingFieldMessage, setMissingFieldMessage] = useState('')
+
 	let userId: string | null = null
 	if (typeof window !== 'undefined') {
 		userId = localStorage.getItem('airtableUserId')
@@ -54,45 +54,65 @@ const StripeForm = (props: {
 			})
 	}, [stripe, props.clientSecret])
 
-	// Function to check if all required fields are filled
 	useEffect(() => {
 		const fields = props.fieldsValues
-		const isFieldsComplete =
-			fields.shippingAddress &&
-			fields.country &&
-			fields.city &&
-			fields.addressExtra &&
-			fields.name &&
-			fields.zip &&
-			fields.nif &&
-			fields.phoneNumber &&
-			fields.province
-
-		setIsFormValid((isFieldsComplete && isPaymentElementComplete) || false)
+		let missingField = ''
+		if (!fields.name) missingField = 'Por favor, ingresa tu nombre completo.'
+		else if (!fields.email) missingField = 'Por favor, ingresa tu correo electrónico.'
+		else if (!fields.nif) missingField = 'Por favor, ingresa tu NIF o identificación fiscal.'
+		else if (!fields.phoneNumber) missingField = 'Por favor, ingresa tu número de teléfono.'
+		else if (!fields.shippingAddress) missingField = 'Por favor, ingresa tu dirección.'
+		else if (!fields.addressExtra) missingField = 'Por favor, ingresa el número de tu dirección.'
+		else if (!fields.zip) missingField = 'Por favor, ingresa tu código postal.'
+		else if (!fields.city) missingField = 'Por favor, ingresa tu ciudad.'
+		else if (!fields.province) missingField = 'Por favor, ingresa tu provincia.'
+		else if (!fields.country) missingField = 'Por favor, ingresa tu país.'
+		
+		setMissingFieldMessage(missingField)
+		setIsFormValid((!missingField && isPaymentElementComplete) || false)
 	}, [props.fieldsValues, isPaymentElementComplete])
 
-	const updatePurchases = async () => {
-		props.purchaseIds.forEach(async (purchaseId) => {
-			await updatePurchase(purchaseId)
-		})
+	const createbilling = async () => {
+		const billingData = {
+			'Id Pago Stripe': payment?.id as string,
+			Compras: props.purchaseIds,
+			Usuarios: [userId!],
+			transfer: false,
+			address: props.fieldsValues.shippingAddress,
+			country: props.fieldsValues.country,
+			location: props.fieldsValues.city,
+			addressNumber: props.fieldsValues.addressExtra,
+			name: props.fieldsValues.name,
+			cp: props.fieldsValues.zip,
+			nif: props.fieldsValues.nif,
+			phone: Number(props.fieldsValues.phoneNumber),
+			province: props.fieldsValues.province,
+		}
+	
+		try {
+			localStorage.setItem('billingData', JSON.stringify(billingData))
+		} catch (error) {
+			console.error('Error saving billing data to localStorage:', error)
+		}
 	}
 
 	const handleSubmit = async (e: { preventDefault: () => void }) => {
 		e.preventDefault()
 
+		await createbilling()
+
 		if (!stripe || !elements) {
 			return
 		}
 
-		setIsLoading(true)
-		
-		dispatch(clearCart())              
+		setIsLoading(true)             
 		const { error } = await stripe.confirmPayment({
 			elements,
 			confirmParams: {
-				return_url: environment.base_url,
+				return_url: `${environment.base_url}/pago-exitoso`,
 			},
 		})
+		
 
 		if (error) {
 			if (error.type === 'card_error' || error.type === 'validation_error') {
@@ -100,25 +120,8 @@ const StripeForm = (props: {
 			} else {
 				setMessage('An unexpected error occurred.')
 			}
-		} else {
-			await createBill({
-				'Id Pago Stripe': payment?.id as string,
-				Compras: props.purchaseIds,
-				Usuarios: [userId!],
-				transfer: false,
-				address: props.fieldsValues.shippingAddress,
-				country: props.fieldsValues.country,
-				location: props.fieldsValues.city,
-				addressNumber: props.fieldsValues.addressExtra,
-				name: props.fieldsValues.name,
-				cp: props.fieldsValues.zip,
-				nif: props.fieldsValues.nif,
-				phone: Number(props.fieldsValues.phoneNumber),
-				province: props.fieldsValues.province,
-			})
-			await updatePurchases()
 		}
-
+		
 		setIsLoading(false)
 	}
 
@@ -153,7 +156,14 @@ const StripeForm = (props: {
 					)}
 				</span>
 			</button>
-			{<div id="payment-message">{message}</div>}
+
+			{message && <div id="payment-message">{message}</div>}
+
+			{!isFormValid && missingFieldMessage && (
+				<p style={{ color: 'red', marginTop: '10px' }}>
+					{missingFieldMessage}
+				</p>
+			)}
 		</form>
 	)
 }
