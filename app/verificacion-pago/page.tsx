@@ -31,14 +31,16 @@ export interface FormsFields {
 function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
 	const [isLoaded, setIsLoaded] = useState(false)
-	const [purchaseIds, setPurchaseIds] = useState<string[]>([])
+	// const [purchaseIds, setPurchaseIds] = useState<string[]>([])
+	const purchaseIds = items.map((item) => item.purchaseId ?? '')
 
 	useEffect(() => {
 		if (items) {
 			setIsLoaded(true)
-			setPurchaseIds(items.map((item) => item.purchaseId ?? ''))
+			// setPurchaseIds(items.map((item) => item.purchaseId ?? ''))
 		}
 	}, [items])
+
 
 	return { items, isLoaded, purchaseIds }
 }
@@ -111,7 +113,7 @@ export default function Payment() {
 					console.error('No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.');
 					return;
 				}
-			
+				
 				const res = await createPaymentIntent({
 					amount: numberPriceRounded,
 					currency: 'eur',
@@ -126,7 +128,8 @@ export default function Payment() {
 		}
 
 		createIntent()
-	}, [numberPriceRounded, purchaseIds])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
@@ -139,9 +142,7 @@ export default function Payment() {
 				billingAddress: prevState.shippingAddress,
 				billingAddressExtra: prevState.addressExtra,
 				billingZip: prevState.zip,
-				billingCity: prevState.city,
 				billingProvince: prevState.province,
-				billingCountry: prevState.country,
 			}))
 		} else {
 			// Limpiar los campos de dirección de facturación si se deselecciona el checkbox
@@ -150,9 +151,7 @@ export default function Payment() {
 				billingAddress: '',
 				billingAddressExtra: '',
 				billingZip: '',
-				billingCity: '',
 				billingProvince: '',
-				billingCountry: '',
 			}))
 		}
 	}, [sameBillAddress])
