@@ -12,7 +12,6 @@ const StripeForm = (props: {
 	purchaseIds: string[];
 	fieldsValues: FormsFields;
 }) => {
-	const dispatch = useDispatch()
 	const stripe = useStripe()
 	const elements = useElements()
 
