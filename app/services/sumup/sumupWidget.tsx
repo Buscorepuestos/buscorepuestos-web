@@ -157,6 +157,7 @@ declare global {
 }
 
 const PaymentWidget: React.FC<PaymentWidgetProps> = ({ checkoutId, purchaseIds, fieldsValue }) => {
+
   const router = useRouter();
   const dispatch = useDispatch();
   const [isFormValid, setIsFormValid] = useState(false);
@@ -226,6 +227,56 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({ checkoutId, purchaseIds, 
                 purchaseIds.forEach(async (purchaseId) => {
                   await updatePurchase(purchaseId);
                 });
+                const createbilling = async () => {
+                  const billingData = {
+                    'Id Pago Stripe': payment?.id as string,
+                    Compras: props.purchaseIds,
+                    Usuarios: [userId!],
+                    transfer: false,
+                    address: props.fieldsValues.shippingAddress,
+                    country: props.fieldsValues.country,
+                    location: props.fieldsValues.city,
+                    addressNumber: props.fieldsValues.addressExtra,
+                    name: props.fieldsValues.name,
+                    cp: props.fieldsValues.zip,
+                    nif: props.fieldsValues.nif,
+                    phone: Number(props.fieldsValues.phoneNumber),
+                    province: props.fieldsValues.province,
+                  }
+              
+                  const extraData = {
+                    email: props.fieldsValues.email,
+                    billingAddress: props.fieldsValues.billingAddress,
+                    billingAddressExtra: props.fieldsValues.billingAddressExtra,
+                    billingProvince: props.fieldsValues.billingProvince,
+                    billingZip: props.fieldsValues.billingZip,
+              
+                  }
+                
+                  try {
+                    const storedBillingData = localStorage.getItem('billingData')
+                    const storedEmailData = localStorage.getItem('extraData')
+                    const cart = localStorage.getItem('cart')
+                    if (cart) {
+                      const copyCartExist = localStorage.getItem('copyCart')
+                      if (copyCartExist) {
+                        localStorage.removeItem('copyCart')
+                      }
+                      const copyCart = JSON.parse(cart)
+                      localStorage.setItem('copyCart', JSON.stringify(copyCart))
+                    }
+                    if (storedBillingData) {
+                      localStorage.removeItem('billingData')
+                    }
+                    if (storedEmailData) {
+                      localStorage.removeItem('extraData')
+                    }
+                    localStorage.setItem('billingData', JSON.stringify(billingData))
+                    localStorage.setItem('extraData', JSON.stringify(extraData))
+                  } catch (error) {
+                    console.error('Error saving billing data to localStorage:', error)
+                  }
+                }
                 dispatch(clearCart());
                 Swal.fire({
                   title: 'Pago exitoso',
