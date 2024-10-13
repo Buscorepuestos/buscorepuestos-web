@@ -44,5 +44,12 @@ export const userService = {
     async getUserByUid(uid: string): Promise<ResponseModel<AirtableUserResponse>> {
         const res = await api.get<ResponseModel<AirtableUserResponse>>(`/users/?uid_like=${uid}`);
         return res.data;
+    },
+
+    async createUserAddresses(entity: any): Promise<ResponseModel<any>> {
+        const res = await api.post<ResponseModel<any>>(`/user-addresses`, {
+            data: entity,
+        });
+        return res.data;
     }
 };

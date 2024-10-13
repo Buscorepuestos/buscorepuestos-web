@@ -97,11 +97,27 @@ const StripeForm = (props: {
 			billingZip: props.fieldsValues.billingZip,
 
 		}
+
+		const userAddressData = {
+				user: [userId!],
+				name: props.fieldsValues.name,
+				nif: props.fieldsValues.nif,
+				address: props.fieldsValues.shippingAddress,
+				country: props.fieldsValues.country,
+				location: props.fieldsValues.city,
+				addressNumber: props.fieldsValues.addressExtra,
+				phone: Number(props.fieldsValues.phoneNumber),
+				province: props.fieldsValues.province,
+				cp: props.fieldsValues.zip,
+				["Correo electrónico"]: props.fieldsValues.email
+			}
 	
 		try {
 			const storedBillingData = localStorage.getItem('billingData')
 			const storedEmailData = localStorage.getItem('extraData')
 			const cart = localStorage.getItem('cart')
+			const executedBill = localStorage.getItem('billingExecuted')
+			const userAddress = localStorage.getItem('userAddress')
 			if (cart) {
 				const copyCartExist = localStorage.getItem('copyCart')
 				if (copyCartExist) {
@@ -110,12 +126,19 @@ const StripeForm = (props: {
 				const copyCart = JSON.parse(cart)
 				localStorage.setItem('copyCart', JSON.stringify(copyCart))
 			}
+			if (executedBill) {
+				localStorage.removeItem('billingExecuted')
+			}
 			if (storedBillingData) {
 				localStorage.removeItem('billingData')
 			}
 			if (storedEmailData) {
 				localStorage.removeItem('extraData')
 			}
+			if (userAddress) {
+				localStorage.removeItem('userAddress')
+			}
+			localStorage.setItem('userAddress', JSON.stringify(userAddressData))
 			localStorage.setItem('billingData', JSON.stringify(billingData))
 			localStorage.setItem('extraData', JSON.stringify(extraData))
 		} catch (error) {

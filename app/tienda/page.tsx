@@ -208,7 +208,6 @@ export default function Store() {
 					>
 						{products.map(
 							(product: any, index) => (
-								console.log('product', product),
 								(
 									<CardPrice
 										key={index}
