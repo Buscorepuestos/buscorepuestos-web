@@ -33,6 +33,7 @@ export default defineConfig({
 				'app/services/sumup/sumupWidget.tsx',
 				'app/core/components/sumupPayment/sumupPayment.tsx',
 				'app/core/components/paymentSelection/PaymentSelection.tsx',
+				'app/core/components/checkout/paymentSuccess.tsx',
 			],
 			reporter: ['text', 'html', 'json'],
 		},
