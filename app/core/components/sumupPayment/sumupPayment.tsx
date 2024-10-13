@@ -33,7 +33,8 @@ export default function SumupPayment({
 		}
 
 		fetchCheckoutId()
-	}, [numberPriceRounded])
+		// eslint-disable-next-line
+	}, [])
 
 	return (
 		<div>
