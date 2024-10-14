@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { updateMetasyncProduct } from '@/app/services/products/products.service';
 
 
 interface ProductPriceProps {
@@ -20,6 +21,7 @@ interface ProductPriceProps {
     button1Props: ButtonProps;
     button2Props: ButtonProps;
     data: ProductMongoInterface;
+    stock: number;
 }
 
 const ProductPrice: React.FC<ProductPriceProps> = ({
@@ -30,7 +32,8 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     discount,
     button1Props,
     button2Props,
-    data
+    data,
+    stock
 }) => {
 
     const dispatch = useAppDispatch();
@@ -70,6 +73,14 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
         dispatch({ type: "auth/checkUserStatus" });
     }, [dispatch]);
 
+    useEffect(() => {
+        if (stock > 0) {
+            (async () => {
+                await updateMetasyncProduct(data._id, { stock: false });
+            })();
+        }
+    }, [stock, data._id, dispatch]);
+
     const buynow = () => {
         dispatch(addItemToCart(data));
         dispatch(savePurchaseAsync({ product: data, userId: userId ?? '' }));
@@ -102,7 +113,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
             </div>
             <div className='flex gap-7 mt-7'>
                 {
-                    data.stock === false ? (
+                    data.stock === false || stock > 0 ? (
                         <Button 
                             labelName='Producto no disponible' 
                             type='secondary'

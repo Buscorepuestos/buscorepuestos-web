@@ -8,6 +8,8 @@ import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
 import { ProductMongoInterface } from '../../redux/interfaces/product.interface'
 import { environment } from '../../environment/environment'
+import { PartInterface } from '@/app/types/metasync/product'
+import { AxiosResponse } from 'axios'
 import axios from 'axios'
 import '../product.css'
 
@@ -82,10 +84,25 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     };
 }
 
+export async function validateMetasyncProduct(refLocal: string, idCompany: string): Promise<AxiosResponse<PartInterface>> {
+    try {
+        const response = await axios.get(`${environment.api.url}/metasync/inventory/product/${refLocal}/${idCompany}`);
+        return response;
+    } catch (error) {
+        console.error('Error fetching metasync product:', error);
+        throw error;
+    }
+}
+
 export default async function Product({ params } : { params: { id: string } }) {
     
     const data = await fetchProductData(params.id);
     const distributorData = await fetchDistributorData(data?.distributor);
+    let metasyncProduct: AxiosResponse<PartInterface> | null = null;
+
+    if(data.isMetasync) {
+        metasyncProduct = await validateMetasyncProduct(data.refLocal!, data.idEmpresa!);
+    }
 
     const buscoRepuestoPriceNew = () => {
         if (data?.buscorepuestosPrice) {
@@ -140,16 +157,19 @@ export default async function Product({ params } : { params: { id: string } }) {
                         />
                     </div>
                     <div className="mt-[1.5vw] ml-10 flex justify-center">
-                        <ProductPrice
-                            price={buscoRepuestoPrice}
-                            shippingInfo='Envío e IVA incluido'
-                            warningImgSrc='/info.svg'
-                            originalPrice={buscoRepuestoPriceNew() || 0}
-                            discount={discountRounded ? `${discountRounded}%` : ''}
-                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta',  }}
-                            button2Props={{ type: 'primary', labelName: 'Comprar' }}
-                            data={data}
-                        />
+                        {metasyncProduct && (
+                            <ProductPrice
+                                price={buscoRepuestoPrice}
+                                shippingInfo='Envío e IVA incluido'
+                                warningImgSrc='/info.svg'
+                                originalPrice={buscoRepuestoPriceNew() || 0}
+                                discount={discountRounded ? `${discountRounded}%` : ''}
+                                button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta',  }}
+                                button2Props={{ type: 'primary', labelName: 'Comprar' }}
+                                data={data}
+                                stock={metasyncProduct.data.reserva}
+                            />
+                        )}
                     </div>
                     <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>
