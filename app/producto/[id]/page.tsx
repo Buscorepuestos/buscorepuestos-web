@@ -84,7 +84,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     };
 }
 
-export async function validateMetasyncProduct(refLocal: string, idCompany: string): Promise<AxiosResponse<PartInterface>> {
+const validateMetasyncProduct = async (refLocal: string, idCompany: string): Promise<AxiosResponse<PartInterface>> => {
     try {
         const response = await axios.get(`${environment.api.url}/metasync/inventory/product/${refLocal}/${idCompany}`);
         return response;

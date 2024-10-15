@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from '../../../redux/hooks'
 import { RootState } from '../../../redux/store'
@@ -92,15 +92,15 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 	const dispatch = useAppDispatch()
 	const cart = useSelector((state: RootState) => state.cart.items)
 	const [existingItem, setExistingItem] = useState<CartItem | null>(null)
-	let metasyncProduct: AxiosResponse<PartInterface> | null = null;
+	const metasyncProduct = useRef<AxiosResponse<PartInterface> | null>(null);
 	let [globalStock, setGlobalStock] = useState<boolean>(true);
 
 	useEffect(() => {
 		if (isMetasync) {
 			(async () => {
-				metasyncProduct = await validateMetasyncProduct(refLocal!, idEmpresa!);
+				metasyncProduct.current = await validateMetasyncProduct(refLocal!, idEmpresa!);
 				if (stock) {
-					if (metasyncProduct && metasyncProduct.data.reserva > 0) {
+					if (metasyncProduct.current && metasyncProduct.current.data.reserva > 0) {
 						setGlobalStock(false);
 						(async () => {
 							await updateMetasyncProduct(_id, { stock: false });
@@ -110,6 +110,7 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 				}
 			})();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [globalStock, stock]);
 
 	useEffect(() => {
