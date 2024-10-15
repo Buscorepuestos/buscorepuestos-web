@@ -120,6 +120,7 @@ const PaymentSuccess = () => {
 		}
 
 		verifySummupPayment()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		dispatch,
 		router,
@@ -160,6 +161,7 @@ const PaymentSuccess = () => {
 			}
 		}
 		billingExecuted()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (

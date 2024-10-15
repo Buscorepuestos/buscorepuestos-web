@@ -52,6 +52,8 @@ export default function Store() {
 					'_id',
 					'isMetasync',
 					'stock',
+					'refLocal',
+					'idEmpresa',
 				],
 			})
 			setProducts(result.hits as unknown as IProductMongoose[])
@@ -62,39 +64,6 @@ export default function Store() {
 			setLoading(false)
 		}
 	}
-
-	useEffect(() => {
-		const fetchInitialProducts = async () => {
-			try {
-				const { hits } = await index.search('', {
-					facetFilters: ['isMetasync:true', 'stock:true'],
-					hitsPerPage: 100,
-					attributesToRetrieve: [
-						'title',
-						'mainReference',
-						'brand',
-						'articleModel',
-						'year',
-						'buscorepuestosPrice',
-						'images',
-						'_id',
-						'isMetasync',
-						'stock',
-					],
-				})
-				setProducts(hits as unknown as IProductMongoose[])
-			} catch (error) {
-				console.log(error)
-				setError((error as Error).message)
-			} finally {
-				setLoading(false)
-			}
-		}
-
-		fetchInitialProducts()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-	// 'productName: BRAZO SUSPENSION DELANTERO IZQUIERDO'
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })

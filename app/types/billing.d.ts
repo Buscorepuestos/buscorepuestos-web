@@ -30,4 +30,5 @@ export interface BillingModel {
 	"Id Orden Redsys"?: string;
 	"Total factura"?: number;
 	"Id Pago Stripe"?: string;
+	"Id Pago Summup"?: string;
 }
