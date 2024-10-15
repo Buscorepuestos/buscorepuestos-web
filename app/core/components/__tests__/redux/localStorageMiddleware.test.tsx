@@ -57,6 +57,9 @@ describe('localStorageMiddleware', () => {
 				_id: '1',
 				quantity: 1,
 				airtableId: 'airtableId1',
+				refLocal: 'refLocal1',
+				idEmpresa: 'idEmpresa1',
+				isMetasync: true,
 			},
 		}
 
@@ -76,6 +79,9 @@ describe('localStorageMiddleware', () => {
 				_id: '1',
 				quantity: 1,
 				airtableId: 'airtableId1',
+				refLocal: 'refLocal1',
+				idEmpresa: 'idEmpresa1',
+				isMetasync: true,
 			},
 		]
 

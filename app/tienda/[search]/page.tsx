@@ -49,6 +49,8 @@ export default function Store({ params }: { params: { search: string } }) {
 						'_id',
 						'isMetasync',
 						'stock',
+						'refLocal',
+						'idEmpresa',
 					],
 				})
 				setProducts(result.hits as unknown as IProductMongoose[])

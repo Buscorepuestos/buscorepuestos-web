@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button, { ButtonProps } from '../Button';
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface';
@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { updateMetasyncProduct } from '../../../services/products/products.service';
+import { updateAlgoliaProductStock } from '../../../services/algolia/updateStock.service';
 
 
 interface ProductPriceProps {
@@ -20,6 +22,7 @@ interface ProductPriceProps {
     button1Props: ButtonProps;
     button2Props: ButtonProps;
     data: ProductMongoInterface;
+    stock?: number | undefined;
 }
 
 const ProductPrice: React.FC<ProductPriceProps> = ({
@@ -30,7 +33,8 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     discount,
     button1Props,
     button2Props,
-    data
+    data,
+    stock
 }) => {
 
     const dispatch = useAppDispatch();
@@ -39,6 +43,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	if (typeof window !== 'undefined') {
 		userId = localStorage.getItem('airtableUserId')
 	}
+    let [globalStock, setGlobalStock] = useState<boolean>(true);
 
     const [existingItem, setExistingItem] = useState<CartItem | null>(null);
     
@@ -69,6 +74,18 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     useEffect(() => {
         dispatch({ type: "auth/checkUserStatus" });
     }, [dispatch]);
+
+    useEffect(() => {
+        if (stock !== undefined) {
+            if (stock > 0) {
+                setGlobalStock(false);
+                (async () => {
+                    await updateMetasyncProduct(data._id, { stock: false });
+                    await updateAlgoliaProductStock(data._id, false);
+                })();
+            }
+        }
+    }, [globalStock, stock, data._id, dispatch]);
 
     const buynow = () => {
         dispatch(addItemToCart(data));
@@ -102,7 +119,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
             </div>
             <div className='flex gap-7 mt-7'>
                 {
-                    data.stock === false ? (
+                    data.stock === false || globalStock === false ? (
                         <Button 
                             labelName='Producto no disponible' 
                             type='secondary'

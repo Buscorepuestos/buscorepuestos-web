@@ -44,6 +44,9 @@ export interface CartItem {
     stock: boolean;
     airtableId: string;
     purchaseId?: string;
+    refLocal?: string;
+    idEmpresa?: string;
+    isMetasync?: boolean;
 }
 
 export interface CartState {
@@ -85,7 +88,10 @@ export const cartSlice = createSlice({
                 const newItem: CartItem = {
                     ...selectProductProperties(action.payload),
                     quantity: 1,
-                    airtableId: action.payload.airtableId || ''
+                    airtableId: action.payload.airtableId || '',
+                    refLocal: action.payload.refLocal || '',
+                    idEmpresa: action.payload.idEmpresa || '',
+                    isMetasync: action.payload.isMetasync || false,
                 };
                 state.items.push(newItem);
             }
@@ -131,6 +137,9 @@ export const selectProductProperties = (product: ProductMongoInterface) => ({
     images: product.images,
     _id: product._id,
     stock: product.stock,
-    airtableId: product.airtableId
+    airtableId: product.airtableId,
+    refLocal: product.refLocal,
+    idEmpresa: product.idEmpresa,
+    isMetasync: product.isMetasync,
 });
 

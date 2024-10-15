@@ -165,7 +165,7 @@ describe('ProductPrice', () => {
 		setTimeout(() => {
 			expect(pushMock).toHaveBeenCalled()
 			expect(pushMock).toHaveBeenCalledWith('/verificacion-pago')
-		}, 500)
+		}, 1000)
 	})
 
 	it('should render "Producto no disponible" button when the product is out of stock', () => {
