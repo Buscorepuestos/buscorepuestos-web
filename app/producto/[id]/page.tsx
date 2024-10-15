@@ -8,7 +8,7 @@ import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
 import { ProductMongoInterface } from '../../redux/interfaces/product.interface'
 import { environment } from '../../environment/environment'
-import { PartInterface } from '@/app/types/metasync/product'
+import { PartInterface } from '../../types/metasync/product'
 import { AxiosResponse } from 'axios'
 import axios from 'axios'
 import '../product.css'
@@ -115,6 +115,7 @@ export default async function Product({ params } : { params: { id: string } }) {
     const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2);
     const { "Media de valoración": valoracion, Provincia } = distributorData?.data?.fields || {};
 
+    
     return (
         <div>
             <div className='w-full mobile:w-[100vw] mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]'>
@@ -157,19 +158,17 @@ export default async function Product({ params } : { params: { id: string } }) {
                         />
                     </div>
                     <div className="mt-[1.5vw] ml-10 flex justify-center">
-                        {metasyncProduct && (
-                            <ProductPrice
-                                price={buscoRepuestoPrice}
-                                shippingInfo='Envío e IVA incluido'
-                                warningImgSrc='/info.svg'
-                                originalPrice={buscoRepuestoPriceNew() || 0}
-                                discount={discountRounded ? `${discountRounded}%` : ''}
-                                button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta',  }}
-                                button2Props={{ type: 'primary', labelName: 'Comprar' }}
-                                data={data}
-                                stock={metasyncProduct.data.reserva}
-                            />
-                        )}
+                        <ProductPrice
+                            price={buscoRepuestoPrice}
+                            shippingInfo='Envío e IVA incluido'
+                            warningImgSrc='/info.svg'
+                            originalPrice={buscoRepuestoPriceNew() || 0}
+                            discount={discountRounded ? `${discountRounded}%` : ''}
+                            button1Props={{ type: 'secondary', labelName: 'Añadir a la cesta',  }}
+                            button2Props={{ type: 'primary', labelName: 'Comprar' }}
+                            data={data}
+                            stock={metasyncProduct === null ? undefined : metasyncProduct.data.reserva}
+                        />
                     </div>
                     <div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
                     <div>

@@ -9,7 +9,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-import { updateMetasyncProduct } from '@/app/services/products/products.service';
+import { updateMetasyncProduct } from '../../../services/products/products.service';
+import { updateAlgoliaProductStock } from '../../../services/algolia/updateStock.service';
 
 
 interface ProductPriceProps {
@@ -21,7 +22,7 @@ interface ProductPriceProps {
     button1Props: ButtonProps;
     button2Props: ButtonProps;
     data: ProductMongoInterface;
-    stock: number;
+    stock?: number | undefined;
 }
 
 const ProductPrice: React.FC<ProductPriceProps> = ({
@@ -42,6 +43,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	if (typeof window !== 'undefined') {
 		userId = localStorage.getItem('airtableUserId')
 	}
+    let [globalStock, setGlobalStock] = useState<boolean>(true);
 
     const [existingItem, setExistingItem] = useState<CartItem | null>(null);
     
@@ -74,12 +76,16 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     }, [dispatch]);
 
     useEffect(() => {
-        if (stock > 0) {
-            (async () => {
-                await updateMetasyncProduct(data._id, { stock: false });
-            })();
+        if (stock !== undefined) {
+            if (stock > 0) {
+                setGlobalStock(false);
+                (async () => {
+                    await updateMetasyncProduct(data._id, { stock: false });
+                    await updateAlgoliaProductStock(data._id, false);
+                })();
+            }
         }
-    }, [stock, data._id, dispatch]);
+    }, [globalStock, stock, data._id, dispatch]);
 
     const buynow = () => {
         dispatch(addItemToCart(data));
@@ -113,7 +119,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
             </div>
             <div className='flex gap-7 mt-7'>
                 {
-                    data.stock === false || stock > 0 ? (
+                    data.stock === false || globalStock === false ? (
                         <Button 
                             labelName='Producto no disponible' 
                             type='secondary'

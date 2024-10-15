@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from '../../../redux/hooks'
@@ -10,6 +11,11 @@ import {
 import Image from 'next/image'
 import styled from 'styled-components'
 import Trash from '../svg/trash'
+import axios, { AxiosResponse } from 'axios'
+import { PartInterface } from '../../../types/metasync/product'
+import { environment } from '../../../environment/environment'
+import { updateMetasyncProduct } from '../../../services/products/products.service'
+import { updateAlgoliaProductStock } from '../../../services/algolia/updateStock.service'
 
 interface ProductCartInfoProps {
 	_id: string
@@ -21,6 +27,9 @@ interface ProductCartInfoProps {
 	buscorepuestosPrice: number
 	stock: boolean
 	isMobile?: boolean
+	refLocal?: string
+	idEmpresa?: string
+	isMetasync?: boolean
 }
 
 const Article = styled.article<{ isAvailable: boolean }>`
@@ -62,11 +71,46 @@ const NotAvailableOverlay = styled.div`
 	gap: 10px;
 `
 
+const validateMetasyncProduct = async (
+	refLocal: string,
+	idCompany: string
+): Promise<AxiosResponse<PartInterface>> => {
+	try {
+		const response = await axios.get(
+			`${environment.api.url}/metasync/inventory/product/${refLocal}/${idCompany}`
+		)
+		return response
+	} catch (error) {
+		console.error('Error fetching metasync product:', error)
+		throw error
+	}
+}
+
 const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
-	const { isMobile, stock, _id } = props
+	
+	const { isMobile, stock, _id, refLocal, idEmpresa, isMetasync } = props
 	const dispatch = useAppDispatch()
 	const cart = useSelector((state: RootState) => state.cart.items)
 	const [existingItem, setExistingItem] = useState<CartItem | null>(null)
+	let metasyncProduct: AxiosResponse<PartInterface> | null = null;
+	let [globalStock, setGlobalStock] = useState<boolean>(true);
+
+	useEffect(() => {
+		if (isMetasync) {
+			(async () => {
+				metasyncProduct = await validateMetasyncProduct(refLocal!, idEmpresa!);
+				if (stock) {
+					if (metasyncProduct && metasyncProduct.data.reserva > 0) {
+						setGlobalStock(false);
+						(async () => {
+							await updateMetasyncProduct(_id, { stock: false });
+							await updateAlgoliaProductStock(_id, false);
+						})();
+					}
+				}
+			})();
+		}
+	}, [globalStock, stock]);
 
 	useEffect(() => {
 		const item = cart.find((item) => item._id === _id)
@@ -85,7 +129,7 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 
 	return (
 		<Article isAvailable={stock} data-testid="product-cart-info">
-			{!stock && (
+			{!stock || !globalStock && (
 				<NotAvailableOverlay>
 					No disponible
 					<button onClick={handleRemoveFromCart}>
