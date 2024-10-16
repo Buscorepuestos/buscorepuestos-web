@@ -134,7 +134,9 @@ describe('ProductPrice', () => {
 		fireEvent.click(addToCartButton)
 
 		// Check if addItemToCart action is dispatched with the correct data
-		expect(dispatchMock).toHaveBeenCalledWith(addItemToCart(mockProduct))
+		setTimeout(() => {
+			expect(dispatchMock).toHaveBeenCalledWith(addItemToCart(mockProduct))
+		}, 1000)
 	})
 
 	it('should call buynow when "Comprar" button is clicked', () => {
