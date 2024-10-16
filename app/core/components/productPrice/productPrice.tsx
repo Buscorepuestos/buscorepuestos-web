@@ -39,24 +39,24 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
     const dispatch = useAppDispatch();
     const router = useRouter();
-    let userId: string | null = null
-	if (typeof window !== 'undefined') {
-		userId = localStorage.getItem('airtableUserId')
-	}
+
     let [globalStock, setGlobalStock] = useState<boolean>(true);
 
     const [existingItem, setExistingItem] = useState<CartItem | null>(null);
     
     const handleAddToCart = () => {
-        dispatch(addItemToCart(data));
-        dispatch(savePurchaseAsync({ product: data, userId: userId ?? '' }));
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Producto añadido al carrito",
-            showConfirmButton: false,
-            timer: 1500
-        });
+        dispatch({ type: 'auth/checkUserStatus' });
+        setTimeout(() => {
+            dispatch(addItemToCart(data));
+            dispatch(savePurchaseAsync({ product: data, userId: localStorage.getItem('airtableUserId') ?? '' }));
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Producto añadido al carrito",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }, 1500);
     };
 
     const handleRemoveFromCart = () => {
@@ -72,7 +72,11 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     }, [cart, data._id]);
 
     useEffect(() => {
-        dispatch({ type: "auth/checkUserStatus" });
+        if (typeof window !== 'undefined') {
+            // Verificamos si localStorage está disponible antes de despachar la acción
+            dispatch({ type: 'auth/checkUserStatus' });
+        }
+
     }, [dispatch]);
 
     useEffect(() => {
@@ -89,7 +93,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
     const buynow = () => {
         dispatch(addItemToCart(data));
-        dispatch(savePurchaseAsync({ product: data, userId: userId ?? '' }));
+        dispatch(savePurchaseAsync({ product: data, userId: localStorage.getItem('airtableUserId') ?? '' }));
         router.push('/verificacion-pago');
     };
 
