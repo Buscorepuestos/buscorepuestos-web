@@ -13,7 +13,7 @@ export const getProducts = async (size: number = 16, sort: string = 'created', o
 
 export const updateMetasyncProduct = async (id: string, data: any): Promise<AxiosResponse<T>> => {
 	try {
-		return await api.put(`/metasyncStock/${id}`, data)
+		return await api.patch(`/products/metasyncStock/${id}`, data)
 	} catch (error) {
 		console.error('Error updating metasync product:', error)
 		throw error

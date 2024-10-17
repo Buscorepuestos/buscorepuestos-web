@@ -31,13 +31,11 @@ export interface FormsFields {
 function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
 	const [isLoaded, setIsLoaded] = useState(false)
-	// const [purchaseIds, setPurchaseIds] = useState<string[]>([])
 	const purchaseIds = items.map((item) => item.purchaseId ?? '')
 
 	useEffect(() => {
 		if (items) {
 			setIsLoaded(true)
-			// setPurchaseIds(items.map((item) => item.purchaseId ?? ''))
 		}
 	}, [items])
 
@@ -106,30 +104,30 @@ export default function Payment() {
 		}
 	}, [])
 
-	useEffect(() => {
-		const createIntent = async () => {
-			try {
-				if (purchaseIds.length === 0 || purchaseIds.every(id => id.trim() === '')) {
-					console.error('No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.');
-					return;
-				}
+	// useEffect(() => {
+	// 	const createIntent = async () => {
+	// 		try {
+	// 			if (purchaseIds.length === 0 || purchaseIds.every(id => id.trim() === '')) {
+	// 				console.error('No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.');
+	// 				return;
+	// 			}
 				
-				const res = await createPaymentIntent({
-					amount: numberPriceRounded,
-					currency: 'eur',
-					cartIDs: purchaseIds,
-					automatic_payment_methods: { enabled: true },
-				});
-				setClientSecret(res.data.client_secret);
-			} catch (error) {
-				setError('Error al crear el Payment Intent');
-				console.error('Error al crear el Payment Intent:', error);
-			}
-		}
+	// 			const res = await createPaymentIntent({
+	// 				amount: numberPriceRounded,
+	// 				currency: 'eur',
+	// 				cartIDs: purchaseIds,
+	// 				automatic_payment_methods: { enabled: true },
+	// 			});
+	// 			setClientSecret(res.data.client_secret);
+	// 		} catch (error) {
+	// 			setError('Error al crear el Payment Intent');
+	// 			console.error('Error al crear el Payment Intent:', error);
+	// 		}
+	// 	}
 
-		createIntent()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	// 	createIntent()
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [])
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })

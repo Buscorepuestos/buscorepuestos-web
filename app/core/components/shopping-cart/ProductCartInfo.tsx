@@ -103,7 +103,12 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 					if (metasyncProduct.current && metasyncProduct.current.data.reserva > 0) {
 						setGlobalStock(false);
 						(async () => {
-							await updateMetasyncProduct(_id, { stock: false });
+							await updateMetasyncProduct(_id, { 
+								"id": _id,
+								"data": {
+									"stock": false
+								}
+							});
 							await updateAlgoliaProductStock(_id, false);
 						})();
 					}
@@ -130,7 +135,7 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 
 	return (
 		<Article isAvailable={stock} data-testid="product-cart-info">
-			{!stock || !globalStock && (
+			{(!stock || !globalStock) && (
 				<NotAvailableOverlay>
 					No disponible
 					<button onClick={handleRemoveFromCart}>
