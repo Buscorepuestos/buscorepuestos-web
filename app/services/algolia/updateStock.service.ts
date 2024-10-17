@@ -26,7 +26,6 @@ export const updateAlgoliaProductStock = async (
 			},
 			{ createIfNotExists: true }
 		) // Esta opción crea el objeto si no existe
-		console.log(`Producto con ID ${productId} actualizado en Algolia`)
 	} catch (error) {
 		console.error(
 			'Error actualizando el stock del producto en Algolia:',

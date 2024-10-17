@@ -84,7 +84,12 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
             if (stock > 0) {
                 setGlobalStock(false);
                 (async () => {
-                    await updateMetasyncProduct(data._id, { stock: false });
+                    await updateMetasyncProduct(data._id, { 
+                        "id": data._id,
+                        "data": {
+                            "stock": false
+                        }
+                    });
                     await updateAlgoliaProductStock(data._id, false);
                 })();
             }
