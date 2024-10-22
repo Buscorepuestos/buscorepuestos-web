@@ -84,16 +84,14 @@ export default function Store({ params }: { params: { search: string } }) {
 		searchAlgolia(inputValue); // Realiza la búsqueda solo cuando se presiona Enter
 	}
 
-	let userId: string | null = null
-	if (typeof window !== 'undefined') {
-		userId = localStorage.getItem('airtableUserId')
-	}
-
 	const buynow = (product: any) => {
-        dispatch(addItemToCart(product));
-        dispatch(savePurchaseAsync({ product: product, userId: userId ?? '' }));
-        router.push('/verificacion-pago');
-    };
+		dispatch({ type: 'auth/checkUserStatus' });
+        setTimeout(() => {
+            dispatch(addItemToCart(product))
+            dispatch(savePurchaseAsync({ product: product, userId: localStorage.getItem('airtableUserId') ?? '' }));
+			router.push('/verificacion-pago')
+        }, 1500);
+	}
 
 	return (
 		<main className="flex flex-col items-center mt-80">

@@ -97,9 +97,12 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     }, [globalStock, stock, data._id, dispatch]);
 
     const buynow = () => {
-        dispatch(addItemToCart(data));
-        dispatch(savePurchaseAsync({ product: data, userId: localStorage.getItem('airtableUserId') ?? '' }));
-        router.push('/verificacion-pago');
+        dispatch({ type: 'auth/checkUserStatus' });
+        setTimeout(() => {
+            dispatch(addItemToCart(data));
+            dispatch(savePurchaseAsync({ product: data, userId: localStorage.getItem('airtableUserId') ?? '' }));
+            router.push('/verificacion-pago');
+        }, 1500);
     };
 
     return (

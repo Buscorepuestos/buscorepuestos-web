@@ -163,11 +163,12 @@ describe('ProductPrice', () => {
 		const buyNowButton = screen.getByText('Comprar')
 		fireEvent.click(buyNowButton)
 
-		expect(dispatchMock).toHaveBeenCalledWith(addItemToCart(mockProduct))
+		expect(dispatchMock).toHaveBeenCalledWith({ type: 'auth/checkUserStatus' })
 		setTimeout(() => {
+			expect(dispatchMock).toHaveBeenCalledWith(addItemToCart(mockProduct))
 			expect(pushMock).toHaveBeenCalled()
 			expect(pushMock).toHaveBeenCalledWith('/verificacion-pago')
-		}, 1000)
+		}, 2000)
 	})
 
 	it('should render "Producto no disponible" button when the product is out of stock', () => {
