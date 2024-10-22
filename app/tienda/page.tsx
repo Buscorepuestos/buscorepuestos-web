@@ -42,13 +42,17 @@ export default function Store() {
 		model: string | null = null
 	) => {
 		setLoading(true)
+		let searchQuery = query
 		try {
 			const filters: string[] = ['isMetasync:true', 'stock:true']
-			if (subcategory) filters.push(`productName:${subcategory}`)
+			if (subcategory) {
+				searchQuery = ''
+				filters.push(`productName:${subcategory}`)
+			}
 			if (brand) filters.push(`brand:${brand}`)
 			if (model) filters.push(`articleModel:${model}`)
 
-			const result = await index.search(query, {
+			const result = await index.search(searchQuery, {
 				facetFilters: filters,
 				hitsPerPage: 100,
 				attributesToRetrieve: [
@@ -67,6 +71,9 @@ export default function Store() {
 				],
 			})
 			setProducts(result.hits as unknown as IProductMongoose[])
+			console.log(query, "THIS IS THE QUERY")
+			console.log(filters, "THESE ARE THE FILTERS")
+			console.log(result.hits)
 		} catch (err) {
 			console.log(err)
 			setError((err as Error).message)
@@ -93,7 +100,12 @@ export default function Store() {
 	}
 
 	const handleEnterPress = () => {
-		search(inputValue, selectedSubcategory, selectedBrand, selectedModel) // Realiza la búsqueda solo cuando se presiona Enter
+		// Reinicia los filtros antes de realizar una nueva búsqueda desde la barra de búsqueda
+		setSelectedSubcategory(null);
+		setSelectedBrand(null);
+		setSelectedModel(null);
+		
+		search(inputValue); // Realiza la búsqueda solo cuando se presiona Enter
 	}
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
