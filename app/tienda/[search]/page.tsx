@@ -148,42 +148,6 @@ export default function Store({ params }: { params: { search: string } }) {
 	}
 
 	return (
-		// <main className="flex flex-col items-center mt-80">
-		// 	<div>
-		// 		<SearchBar
-		// 			onChange={handleInputChange}
-		// 			onEnterPress={handleEnterPress} // Pasa el nuevo método aquí
-		// 			height={'52px'}
-		// 			width={'w-[480px] mobile:w-[80vw]'}
-		// 			borderColor={'#12B1BB'}
-		// 			borderWidth={'2px'}
-		// 		/>
-		// 	</div>
-		// 	<section
-		// 		className={
-		// 			'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'
-		// 		}
-		// 	>
-		// 		{products.map((product: any, index) => (
-		// 			<CardPrice
-		// 				key={index}
-		// 				title={product.title}
-		// 				reference={product.mainReference!}
-		// 				description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-		// 				price={product?.buscorepuestosPrice || 0}
-		// 				image={
-		// 					product.images[0]
-		// 						? product.images[0]
-		// 						: '/nodisponible.png'
-		// 				}
-		// 				handleBuy={() => buynow(product)}
-		// 				id={product._id}
-		// 			/>
-		// 		))}
-		// 		{loading && <p>Loading...</p>}
-		// 		{error && <p>Error</p>}
-		// 	</section>
-		// </main>
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
