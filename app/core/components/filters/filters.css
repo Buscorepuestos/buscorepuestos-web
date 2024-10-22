@@ -1,0 +1,28 @@
+/* Estilo para la barra de desplazamiento en navegadores webkit (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 8px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color de fondo del track */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #007bff; /* Color del thumb (barra de desplazamiento) */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Para ocultar las flechas en la barra de desplazamiento */
+::-webkit-scrollbar-thumb:vertical {
+    background-clip: padding-box; /* Para que el fondo se ajuste al thumb */
+}
+
+/* filters.css */
+select {
+    -webkit-appearance: none; /* Eliminar el estilo predeterminado de Safari */
+    -moz-appearance: none;    /* Eliminar el estilo predeterminado de Firefox */
+    appearance: none;         /* Eliminar el estilo predeterminado en navegadores modernos */
+    background: none;         /* Quitar el fondo del select */
+    padding-right: 2.5rem;    /* Espacio para el icono personalizado */
+}
