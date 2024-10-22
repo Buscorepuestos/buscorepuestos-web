@@ -35,6 +35,7 @@ const config: Config = {
 				'custom-white': 'var(--custom-white)',
 				'custom-black': 'var(--custom-black)',
 				'custom-grey': 'var(--custom-grey)',
+				'checkbox-grey': 'var(--checkbox-grey)',
 				'primary-blue': 'var(--primary-blue)',
 				'primary-blue-2': 'var(--primary-blue-2)',
 				'primary-lila': 'var(--primary-lila)',

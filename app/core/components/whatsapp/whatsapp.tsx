@@ -18,7 +18,7 @@ const WhatsAppIcon: React.FC = () => {
 				position: 'fixed',
 				bottom: '20px',
 				right: '20px',
-				zIndex: 1000,
+				zIndex: 5,
 			}}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
