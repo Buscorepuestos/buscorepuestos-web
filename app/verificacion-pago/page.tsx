@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/store'
 import ShoppingBasket from '../core/components/shopping-cart/ShoppingBasket'
@@ -51,6 +51,18 @@ export default function Payment() {
 	const [error, setError] = useState<string | null>(null)
 	const [isMobile, setIsMobile] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
+	const [isScrolledInputs, setIsScrolledInputs] = useState({
+		name: false,
+		email: false,
+		nif: false,
+		phoneNumber: false,
+		shippingAddress: false,
+		addressExtra: false,
+		zip: false,
+		city: false,
+		province: false,
+		country: false,
+	})
 	const [fieldsValue, setFieldsValue] = useState<FormsFields>({
 		name: '',
 		email: '',
@@ -104,30 +116,30 @@ export default function Payment() {
 		}
 	}, [])
 
-	// useEffect(() => {
-	// 	const createIntent = async () => {
-	// 		try {
-	// 			if (purchaseIds.length === 0 || purchaseIds.every(id => id.trim() === '')) {
-	// 				console.error('No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.');
-	// 				return;
-	// 			}
+	useEffect(() => {
+		const createIntent = async () => {
+			try {
+				if (purchaseIds.length === 0 || purchaseIds.every(id => id.trim() === '')) {
+					console.error('No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.');
+					return;
+				}
 				
-	// 			const res = await createPaymentIntent({
-	// 				amount: numberPriceRounded,
-	// 				currency: 'eur',
-	// 				cartIDs: purchaseIds,
-	// 				automatic_payment_methods: { enabled: true },
-	// 			});
-	// 			setClientSecret(res.data.client_secret);
-	// 		} catch (error) {
-	// 			setError('Error al crear el Payment Intent');
-	// 			console.error('Error al crear el Payment Intent:', error);
-	// 		}
-	// 	}
+				const res = await createPaymentIntent({
+					amount: numberPriceRounded,
+					currency: 'eur',
+					cartIDs: purchaseIds,
+					automatic_payment_methods: { enabled: true },
+				});
+				setClientSecret(res.data.client_secret);
+			} catch (error) {
+				setError('Error al crear el Payment Intent');
+				console.error('Error al crear el Payment Intent:', error);
+			}
+		}
 
-	// 	createIntent()
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [])
+		createIntent()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
@@ -190,6 +202,17 @@ export default function Payment() {
 			</div>
 		)
 	}
+
+	const nameRef = useRef<HTMLInputElement>(null);
+	const emailRef = useRef<HTMLInputElement>(null);
+	const nifRef = useRef<HTMLInputElement>(null);
+	const phoneNumberRef = useRef<HTMLInputElement>(null);
+	const shippingAddressRef = useRef<HTMLInputElement>(null);
+	const addressExtraRef = useRef<HTMLInputElement>(null);
+	const zipRef = useRef<HTMLInputElement>(null);
+	const cityRef = useRef<HTMLInputElement>(null);
+	const provinceRef = useRef<HTMLInputElement>(null);
+	const countryRef = useRef<HTMLInputElement>(null);
 
 	if (!isLoaded) {
 		return <div>Loading...</div>
@@ -269,6 +292,8 @@ export default function Payment() {
 										name: e.target.value,
 									})
 								}
+								ref={nameRef}
+								isScrolled={isScrolledInputs.name}
 							/>
 						</div>
 						<div
@@ -289,6 +314,8 @@ export default function Payment() {
 										email: e.target.value,
 									})
 								}
+								ref={emailRef}
+								isScrolled={isScrolledInputs.email}
 							/>
 							<Input
 								placeholder={'NIF / CIF'}
@@ -300,6 +327,8 @@ export default function Payment() {
 										nif: e.target.value,
 									})
 								}
+								ref={nifRef}
+								isScrolled={isScrolledInputs.nif}
 							/>
 						</div>
 						<div
@@ -317,6 +346,8 @@ export default function Payment() {
 										phoneNumber: e.target.value,
 									})
 								}
+								ref={phoneNumberRef}
+								isScrolled={isScrolledInputs.phoneNumber}
 							/>
 						</div>
 
@@ -358,6 +389,8 @@ export default function Payment() {
 										shippingAddress: e.target.value,
 									})
 								}
+								ref={shippingAddressRef}
+								isScrolled={isScrolledInputs.shippingAddress}
 							/>
 						</div>
 						<div
@@ -375,6 +408,8 @@ export default function Payment() {
 										addressExtra: e.target.value,
 									})
 								}
+								ref={addressExtraRef}
+								isScrolled={isScrolledInputs.addressExtra}
 							/>
 						</div>
 						<div
@@ -392,6 +427,8 @@ export default function Payment() {
 										zip: e.target.value,
 									})
 								}
+								ref={zipRef}
+								isScrolled={isScrolledInputs.zip}
 							/>
 							<Input
 								placeholder={'Ciudad'}
@@ -403,6 +440,8 @@ export default function Payment() {
 										city: e.target.value,
 									})
 								}
+								ref={cityRef}
+								isScrolled={isScrolledInputs.city}
 							/>
 						</div>
 						<div
@@ -420,6 +459,8 @@ export default function Payment() {
 										province: e.target.value,
 									})
 								}
+								ref={provinceRef}
+								isScrolled={isScrolledInputs.province}
 							/>
 							<Input
 								placeholder={'País'}
@@ -432,6 +473,8 @@ export default function Payment() {
 										country: e.target.value,
 									})
 								}
+								ref={countryRef}
+								isScrolled={isScrolledInputs.country}
 							/>
 						</div>
 						<div
@@ -547,6 +590,18 @@ export default function Payment() {
 								purchaseIds={purchaseIds}
 								fieldsValue={fieldsValue}
 								numberPriceRounded={numberPrice}
+								nameRef={nameRef}
+								emailRef={emailRef}
+								nifRef={nifRef}
+								phoneNumberRef={phoneNumberRef}
+								shippingAddressRef={shippingAddressRef}
+								addressExtraRef={addressExtraRef}
+								zipRef={zipRef}
+								cityRef={cityRef}
+								provinceRef={provinceRef}
+								countryRef={countryRef}
+								setIsScrolledInputs={setIsScrolledInputs}
+								isScrolledInputs={isScrolledInputs}
 							/>
 						</div>
 					</div>
