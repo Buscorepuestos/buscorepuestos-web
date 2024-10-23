@@ -1,5 +1,5 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { PaymentIntent, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { createBill } from '../../../services/billing/billing.service'
 import { useDispatch } from 'react-redux'
@@ -56,7 +56,7 @@ const StripeForm = (props: {
 	useEffect(() => {
 		const fields = props.fieldsValues
 		let missingField = ''
-		if (!fields.name) missingField = 'Por favor, ingresa tu nombre completo.'
+		if (!fields.name) missingField = 'Por favor, ingresa tu nombre completo.';
 		else if (!fields.email) missingField = 'Por favor, ingresa tu correo electrónico.'
 		else if (!fields.nif) missingField = 'Por favor, ingresa tu NIF o identificación fiscal.'
 		else if (!fields.phoneNumber) missingField = 'Por favor, ingresa tu número de teléfono.'
