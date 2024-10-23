@@ -9,11 +9,57 @@ const PaymentSelection = ({
 	purchaseIds,
 	fieldsValue,
 	numberPriceRounded,
+	nameRef,
+	emailRef,
+	nifRef,
+	phoneNumberRef,
+	shippingAddressRef,
+	addressExtraRef,
+	zipRef,
+	cityRef,
+	provinceRef,
+	countryRef,
+	setIsScrolledInputs,
+	isScrolledInputs,
 }: {
 	clientSecret: string
 	purchaseIds: string[]
 	fieldsValue: FormsFields
 	numberPriceRounded: number
+	nameRef: React.RefObject<HTMLInputElement>
+	emailRef: React.RefObject<HTMLInputElement>
+	nifRef: React.RefObject<HTMLInputElement>
+	phoneNumberRef: React.RefObject<HTMLInputElement>
+	shippingAddressRef: React.RefObject<HTMLInputElement>
+	addressExtraRef: React.RefObject<HTMLInputElement>
+	zipRef: React.RefObject<HTMLInputElement>
+	cityRef: React.RefObject<HTMLInputElement>
+	provinceRef: React.RefObject<HTMLInputElement>
+	countryRef: React.RefObject<HTMLInputElement>
+	setIsScrolledInputs: React.Dispatch<React.SetStateAction<{
+		name: boolean;
+		email: boolean;
+		nif: boolean;
+		phoneNumber: boolean;
+		shippingAddress: boolean;
+		addressExtra: boolean;
+		zip: boolean;
+		city: boolean;
+		province: boolean;
+		country: boolean;
+	}>>
+	isScrolledInputs: { 
+		name: boolean;
+		email: boolean;
+		nif: boolean;
+		phoneNumber: boolean;
+		shippingAddress: boolean;
+		addressExtra: boolean;
+		zip: boolean;
+		city: boolean;
+		province: boolean;
+		country: boolean;
+	}
 }) => {
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
 		'stripe' | 'sumup' | null
@@ -32,6 +78,7 @@ const PaymentSelection = ({
 			fieldsValue.city &&
 			fieldsValue.addressExtra &&
 			fieldsValue.name &&
+			fieldsValue.email &&
 			fieldsValue.zip &&
 			fieldsValue.nif &&
 			fieldsValue.phoneNumber &&
@@ -40,11 +87,108 @@ const PaymentSelection = ({
 		setIsFormValid(!!isFieldsComplete)
 	}, [fieldsValue])
 
+	useEffect(() => {
+		if (isFormValid) {
+			setIsScrolledInputs({
+				name: false,
+				email: false,
+				nif: false,
+				phoneNumber: false,
+				shippingAddress: false,
+				addressExtra: false,
+				zip: false,
+				city: false,
+				province: false,
+				country: false,
+			})
+		}
+	}, [isFormValid, setIsScrolledInputs])
+
+	const backToInputRefWhenError = () => {
+		if (!isFormValid) {
+			if (!nameRef.current?.value) {
+				nameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					name: true,
+				})
+			}
+			if (!emailRef.current?.value) {
+				emailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					email: true,
+				})
+			}
+			if (!nifRef.current?.value) {
+				nifRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					nif: true,
+				})
+			}
+			if (!phoneNumberRef.current?.value) {
+				phoneNumberRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					phoneNumber: true,
+				})
+			}
+			if (!shippingAddressRef.current?.value) {
+				shippingAddressRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					shippingAddress: true,
+				})
+			}
+			if (!addressExtraRef.current?.value) {
+				addressExtraRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					addressExtra: true,
+				})
+			}
+			if (!zipRef.current?.value) {
+				zipRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					zip: true,
+				})
+			}
+			if (!cityRef.current?.value) {
+				cityRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					city: true,
+				})
+			}
+			if (!provinceRef.current?.value) {
+				provinceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					province: true,
+				})
+			}
+			if (!countryRef.current?.value) {
+				countryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					country: true,
+				})
+			}
+		}
+	}
+
 	return (
 		<div className="w-full mx-auto p-4 bg-white shadow-lg rounded-lg">
 			<div className="flex justify-between mb-6 gap-4">
 				<button
-					onClick={() => handlePaymentSelection('sumup')}
+					onClick={() => {
+						handlePaymentSelection('sumup')
+						setTimeout(() => {
+							backToInputRefWhenError()
+						}, 200)
+					}}
 					className={`w-full flex gap-3 items-center justify-center px-6 py-2 ml-2 border-[1px] rounded-lg transition-all duration-300 
             ${
 				selectedPaymentMethod === 'sumup'
@@ -72,7 +216,12 @@ const PaymentSelection = ({
 					Pago con tarjeta
 				</button>
 				<button
-					onClick={() => handlePaymentSelection('stripe')}
+					onClick={() => {
+						handlePaymentSelection('stripe')
+						setTimeout(() => {
+							backToInputRefWhenError()
+						}, 200)
+					}}
 					className={`w-full flex gap-3 items-center justify-center px-6 py-2 mr-2 border-[1px] rounded-lg transition-all duration-300 
             ${
 				selectedPaymentMethod === 'stripe'
