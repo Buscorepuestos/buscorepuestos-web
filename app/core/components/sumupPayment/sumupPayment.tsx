@@ -8,10 +8,12 @@ export default function SumupPayment({
 	purchaseIds,
 	fieldsValue,
 	numberPriceRounded,
+	items,
 }: {
 	purchaseIds: string[]
 	fieldsValue: FormsFields,
 	numberPriceRounded: number
+	items: any[]
 }) {
 	const [checkoutId, setCheckoutId] = useState(null)
 
@@ -38,7 +40,7 @@ export default function SumupPayment({
 
 	return (
 		<div>
-			{checkoutId ? (
+			{checkoutId && items.length === 1 ? (
 				<PaymentWidget 
 					checkoutId={checkoutId} 
 					purchaseIds={purchaseIds}
