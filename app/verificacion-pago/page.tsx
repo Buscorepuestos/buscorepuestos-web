@@ -39,12 +39,10 @@ function useCartItems() {
 		}
 	}, [items])
 
-
 	return { items, isLoaded, purchaseIds }
 }
 
 export default function Payment() {
-	
 	const dispatch = useDispatch()
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [clientSecret, setClientSecret] = useState('')
@@ -95,7 +93,7 @@ export default function Payment() {
 		return {
 			stringPrice,
 			numberPriceRounded,
-			numberPrice
+			numberPrice,
 		}
 	}
 
@@ -116,30 +114,44 @@ export default function Payment() {
 		}
 	}, [])
 
+	const prevPurchaseIdsRef = useRef<string[]>([])
+
 	useEffect(() => {
 		const createIntent = async () => {
 			try {
-				if (purchaseIds.length === 0 || purchaseIds.every(id => id.trim() === '')) {
-					console.error('No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.');
-					return;
+				if (
+					purchaseIds.length === 0 ||
+					purchaseIds.every((id) => id.trim() === '')
+				) {
+					console.error(
+						'No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.'
+					)
+					return
 				}
-				
+
 				const res = await createPaymentIntent({
 					amount: numberPriceRounded,
 					currency: 'eur',
 					cartIDs: purchaseIds,
 					automatic_payment_methods: { enabled: true },
-				});
-				setClientSecret(res.data.client_secret);
+				})
+				setClientSecret(res.data.client_secret)
 			} catch (error) {
-				setError('Error al crear el Payment Intent');
-				console.error('Error al crear el Payment Intent:', error);
+				setError('Error al crear el Payment Intent')
+				console.error('Error al crear el Payment Intent:', error)
 			}
 		}
 
-		createIntent()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+		// Compara el valor actual de purchaseIds con el anterior
+		if (
+			JSON.stringify(prevPurchaseIdsRef.current) !==
+			JSON.stringify(purchaseIds)
+		) {
+			createIntent()
+			// Actualiza el valor anterior
+			prevPurchaseIdsRef.current = purchaseIds
+		}
+	}, [purchaseIds, numberPriceRounded])
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
@@ -203,16 +215,16 @@ export default function Payment() {
 		)
 	}
 
-	const nameRef = useRef<HTMLInputElement>(null);
-	const emailRef = useRef<HTMLInputElement>(null);
-	const nifRef = useRef<HTMLInputElement>(null);
-	const phoneNumberRef = useRef<HTMLInputElement>(null);
-	const shippingAddressRef = useRef<HTMLInputElement>(null);
-	const addressExtraRef = useRef<HTMLInputElement>(null);
-	const zipRef = useRef<HTMLInputElement>(null);
-	const cityRef = useRef<HTMLInputElement>(null);
-	const provinceRef = useRef<HTMLInputElement>(null);
-	const countryRef = useRef<HTMLInputElement>(null);
+	const nameRef = useRef<HTMLInputElement>(null)
+	const emailRef = useRef<HTMLInputElement>(null)
+	const nifRef = useRef<HTMLInputElement>(null)
+	const phoneNumberRef = useRef<HTMLInputElement>(null)
+	const shippingAddressRef = useRef<HTMLInputElement>(null)
+	const addressExtraRef = useRef<HTMLInputElement>(null)
+	const zipRef = useRef<HTMLInputElement>(null)
+	const cityRef = useRef<HTMLInputElement>(null)
+	const provinceRef = useRef<HTMLInputElement>(null)
+	const countryRef = useRef<HTMLInputElement>(null)
 
 	if (!isLoaded) {
 		return <div>Loading...</div>
@@ -236,9 +248,7 @@ export default function Payment() {
 									'text-title-3 text-primary-blue-2 font-semibold'
 								}
 							>
-								{
-									stringPrice
-								}€
+								{stringPrice}€
 							</p>
 						</div>
 						<div className="w-full h-[2px] bg-secondary-blue mb-8" />
@@ -256,9 +266,7 @@ export default function Payment() {
 									'text-title-3 text-primary-blue-2 font-semibold'
 								}
 							>
-								{
-									stringPrice
-								}€
+								{stringPrice}€
 							</p>
 						</div>
 						{localDropdown()}
@@ -602,6 +610,7 @@ export default function Payment() {
 								countryRef={countryRef}
 								setIsScrolledInputs={setIsScrolledInputs}
 								isScrolledInputs={isScrolledInputs}
+								items={items}
 							/>
 						</div>
 					</div>

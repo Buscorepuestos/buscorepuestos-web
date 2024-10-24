@@ -21,6 +21,7 @@ const PaymentSelection = ({
 	countryRef,
 	setIsScrolledInputs,
 	isScrolledInputs,
+	items,
 }: {
 	clientSecret: string
 	purchaseIds: string[]
@@ -59,7 +60,8 @@ const PaymentSelection = ({
 		city: boolean;
 		province: boolean;
 		country: boolean;
-	}
+	},
+	items: any[]
 }) => {
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
 		'stripe' | 'sumup' | null
@@ -254,6 +256,7 @@ const PaymentSelection = ({
 							purchaseIds={purchaseIds}
 							fieldsValue={fieldsValue}
 							numberPriceRounded={numberPriceRounded}
+							items={items}
 						/>
 					</div>
 				)}
@@ -264,6 +267,7 @@ const PaymentSelection = ({
 								clientSecret={clientSecret}
 								purchaseIds={purchaseIds}
 								fieldsValues={fieldsValue}
+								items={items}
 							/>
 						)}
 					</div>
@@ -275,6 +279,13 @@ const PaymentSelection = ({
 					estar completos.
 				</p>
 			) : null}
+			{
+				items.length === 0 ? (
+					<p className="text-center text-sm text-red-500">
+						*No hay productos en el carrito.
+					</p>
+				) : null
+			}
 		</div>
 	)
 }

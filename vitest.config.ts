@@ -34,6 +34,7 @@ export default defineConfig({
 				'app/core/components/sumupPayment/sumupPayment.tsx',
 				'app/core/components/paymentSelection/PaymentSelection.tsx',
 				'app/core/components/checkout/paymentSuccess.tsx',
+				'app/core/components/checkout/PaymentForm.tsx',
 				'app/redux/features',
 				'app/services'
 			],

@@ -7,13 +7,13 @@ import { environment } from '../../../environment/environment'
 const stripePromise = loadStripe(environment.stripe_publishable_key)
 
 export default function PaymentForm(props: {
-	clientSecret: string,
-	purchaseIds: string[],
-	fieldsValues: FormsFields,
+	clientSecret: string
+	purchaseIds: string[]
+	fieldsValues: FormsFields
+	items: any[]
 }) {
-
 	const appearance = {
-		theme: 'stripe' as 'stripe', 
+		theme: 'stripe' as 'stripe',
 	}
 	const options = {
 		clientSecret: props.clientSecret,
@@ -21,14 +21,19 @@ export default function PaymentForm(props: {
 	}
 
 	return (
-		<Elements stripe={stripePromise} options={options}>
-			<StripeForm 
-				clientSecret={props.clientSecret} 
-				label={'Pagar ahora'} 
-				purchaseIds={props.purchaseIds}
-				fieldsValues={props.fieldsValues}
-			/>
-		</Elements>
-	);
+		<div>
+			{props.items.length > 0 ? (
+				<Elements stripe={stripePromise} options={options}>
+					<StripeForm
+						clientSecret={props.clientSecret}
+						label={'Pagar ahora'}
+						purchaseIds={props.purchaseIds}
+						fieldsValues={props.fieldsValues}
+					/>
+				</Elements>
+			) : (
+				<p>Cargando pago por stripe..</p>
+			)}
+		</div>
+	)
 }
-

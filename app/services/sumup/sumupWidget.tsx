@@ -150,7 +150,7 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 							if (type === 'success') {
 								await createbilling()
 								await createBill({
-									"Id Pago Summup": checkoutId,
+									"Id Pago Summup": body.transaction_code,
 									Compras: purchaseIds,
 									Usuarios: [userId!],
 									transfer: false,
