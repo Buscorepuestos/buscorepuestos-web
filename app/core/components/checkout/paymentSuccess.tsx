@@ -29,50 +29,194 @@ const PaymentSuccess = () => {
 	const searchParams = useSearchParams()
 	const pagoSummup = searchParams.get('pagoSumup')
 
+	// useEffect(() => {
+	// 	const payment_intent_id = searchParams.get('payment_intent')
+	// 	const client_secret = searchParams.get('payment_intent_client_secret')
+
+	// 	const createBilling = async () => {
+	// 		const storedBillingData = localStorage.getItem('billingData')
+	// 		let parsedEmailData: any
+
+	// 		if (storedBillingData) {
+	// 			try {
+	// 				const parsedBillingData = JSON.parse(storedBillingData)
+	// 				setBillingData(parsedBillingData)
+
+	// 				const storedExtraData = localStorage.getItem('extraData')
+
+	// 				if (storedExtraData) {
+	// 					parsedEmailData = JSON.parse(storedExtraData)
+	// 					setExtraData(parsedEmailData)
+	// 				}
+
+	// 				const cart = localStorage.getItem('copyCart')
+
+	// 				if (cart) {
+	// 					const parsedCart = JSON.parse(cart)
+	// 					setCart(parsedCart)
+	// 				}
+
+	// 				dispatch(clearCart())
+
+	// 			} catch (error) {
+	// 				console.error(
+	// 					'Error parsing or processing billing data:',
+	// 					error
+	// 				)
+	// 			}
+	// 		} else {
+	// 			console.error('No billing data found in localStorage')
+	// 		}
+	// 	}
+
+	// 	const getPaymentIntent = async (paymentIntentId: string) => {
+	// 		if (!stripe || !paymentIntentId) {
+	// 			return null
+	// 		}
+
+	// 		try {
+	// 			const { paymentIntent } =
+	// 				await stripe.retrievePaymentIntent(paymentIntentId)
+	// 			return paymentIntent
+	// 		} catch (error) {
+	// 			console.error('Error retrieving payment intent:', error)
+	// 			return null
+	// 		}
+	// 	}
+
+	// 	const verifyPayment = async () => {
+	// 		if (!payment_intent_id) {
+	// 			return
+	// 		}
+
+	// 		const paymentIntent = client_secret
+	// 			? await getPaymentIntent(client_secret)
+	// 			: null
+
+	// 		if (paymentIntent) {
+	// 			if (paymentIntent?.status === 'succeeded') {
+	// 				await createBilling()
+	// 			} else {
+	// 				Swal.fire({
+	// 					title: 'Error en el pago',
+	// 					text: 'Ha ocurrido un error al procesar tu pago',
+	// 					icon: 'error',
+	// 					confirmButtonText: 'Aceptar',
+	// 				}).then((result) => {
+	// 					if (result.isConfirmed) {
+	// 						router.push('/')
+	// 					}
+	// 				})
+	// 			}
+	// 		}
+	// 	}
+
+	// 	verifyPayment()
+
+	// 	const verifySummupPayment = async () => {
+	// 		if (pagoSummup === 'true') {
+	// 			console.log('Pago Summup')
+	// 			await createBilling()
+	// 		}
+	// 	}
+
+	// 	verifySummupPayment()
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [
+	// 	dispatch,
+	// 	router,
+	// 	searchParams,
+	// 	stripe,
+	// ])
+
+	// useEffect(() => {
+	// 	const storedBillingData = localStorage.getItem('billingData')
+	// 	const storedExtraData = localStorage.getItem('extraData')
+	// 	const userAddress = localStorage.getItem('userAddress')
+	// 	let parsedBillingData: any
+	// 	let parsedEmailData: any
+	// 	let userAddressData: any
+	// 	if (storedBillingData) {
+	// 		parsedBillingData = JSON.parse(storedBillingData)
+	// 	}
+	// 	if (storedExtraData) {
+	// 		parsedEmailData = JSON.parse(storedExtraData)
+	// 	}
+	// 	if (userAddress) {
+	// 		userAddressData = JSON.parse(userAddress)
+	// 	}
+	// 	const billingExecuted = async () => {
+	// 			const billingExecuted =
+	// 			localStorage.getItem('billingExecuted')
+	// 		if (!billingExecuted) {
+	// 			if (!pagoSummup) {
+	// 				await createBill(parsedBillingData)
+	// 				await userService.createUserAddresses(userAddressData)
+	// 			}
+	// 			await userService.updateUser({
+	// 				id: parsedBillingData.Usuarios[0],
+	// 				['correo electronico']: parsedEmailData.email,
+	// 			})
+	// 			// Marcar que las funciones ya se han ejecutado
+	// 			localStorage.setItem('billingExecuted', 'true')
+	// 		}
+	// 	}
+	// 	billingExecuted()
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [])
+
 	useEffect(() => {
 		const payment_intent_id = searchParams.get('payment_intent')
 		const client_secret = searchParams.get('payment_intent_client_secret')
+		const pagoSummup = searchParams.get('pagoSumup')
 
 		const createBilling = async () => {
-			const storedBillingData = localStorage.getItem('billingData')
-			let parsedEmailData: any
+			try {
+				const storedBillingData = localStorage.getItem('billingData')
+				const storedExtraData = localStorage.getItem('extraData')
+				const cart = localStorage.getItem('copyCart')
+				const userAddress = localStorage.getItem('userAddress')
 
-			if (storedBillingData) {
-				try {
+				if (storedBillingData && cart) {
 					const parsedBillingData = JSON.parse(storedBillingData)
+					const parsedCart = JSON.parse(cart)
+					const parsedEmailData = storedExtraData
+						? JSON.parse(storedExtraData)
+						: null
+					const parsedAddressData = userAddress
+						? JSON.parse(userAddress)
+						: null
+
 					setBillingData(parsedBillingData)
-
-					const storedExtraData = localStorage.getItem('extraData')
-
-					if (storedExtraData) {
-						parsedEmailData = JSON.parse(storedExtraData)
-						setExtraData(parsedEmailData)
-					}
-
-					const cart = localStorage.getItem('copyCart')
-
-					if (cart) {
-						const parsedCart = JSON.parse(cart)
-						setCart(parsedCart)
-					}
-
+					setExtraData(parsedEmailData)
+					setCart(parsedCart)
 					dispatch(clearCart())
 
-				} catch (error) {
-					console.error(
-						'Error parsing or processing billing data:',
-						error
-					)
+					const billingExecuted =
+						localStorage.getItem('billingExecuted')
+					if (!billingExecuted) {
+						if (!pagoSummup) {
+							await createBill(parsedBillingData)
+							await userService.createUserAddresses(
+								parsedAddressData
+							)
+						}
+						await userService.updateUser({
+							id: parsedBillingData.Usuarios[0],
+							['correo electronico']: parsedEmailData?.email,
+						})
+						localStorage.setItem('billingExecuted', 'true')
+					}
+				} else {
+					console.error('No billing data or cart found')
 				}
-			} else {
-				console.error('No billing data found in localStorage')
+			} catch (error) {
+				console.error('Error creating billing:', error)
 			}
 		}
 
 		const getPaymentIntent = async (paymentIntentId: string) => {
-			if (!stripe || !paymentIntentId) {
-				return null
-			}
+			if (!stripe || !paymentIntentId) return null
 
 			try {
 				const { paymentIntent } =
@@ -85,84 +229,31 @@ const PaymentSuccess = () => {
 		}
 
 		const verifyPayment = async () => {
-			if (!payment_intent_id) {
-				return
-			}
-
-			const paymentIntent = client_secret
-				? await getPaymentIntent(client_secret)
-				: null
-
-			if (paymentIntent) {
-				if (paymentIntent?.status === 'succeeded') {
-					await createBilling()
-				} else {
-					Swal.fire({
-						title: 'Error en el pago',
-						text: 'Ha ocurrido un error al procesar tu pago',
-						icon: 'error',
-						confirmButtonText: 'Aceptar',
-					}).then((result) => {
-						if (result.isConfirmed) {
-							router.push('/')
-						}
-					})
+			if (payment_intent_id) {
+				const paymentIntent = client_secret
+					? await getPaymentIntent(client_secret)
+					: null
+				if (paymentIntent) {
+					if (paymentIntent.status === 'succeeded') {
+						await createBilling()
+					} else {
+						Swal.fire({
+							title: 'Error en el pago',
+							text: 'Ha ocurrido un error al procesar tu pago',
+							icon: 'error',
+							confirmButtonText: 'Aceptar',
+						}).then(() => router.push('/'))
+					}
 				}
 			}
 		}
 
 		verifyPayment()
 
-		const verifySummupPayment = async () => {
-			if (pagoSummup === 'true') {
-				await createBilling()
-			}
+		if (pagoSummup === 'true') {
+			createBilling()
 		}
-
-		verifySummupPayment()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [
-		dispatch,
-		router,
-		searchParams,
-		stripe,
-	])
-
-	useEffect(() => {
-		const storedBillingData = localStorage.getItem('billingData')
-		const storedExtraData = localStorage.getItem('extraData')
-		const userAddress = localStorage.getItem('userAddress')
-		let parsedBillingData: any
-		let parsedEmailData: any
-		let userAddressData: any
-		if (storedBillingData) {
-			parsedBillingData = JSON.parse(storedBillingData)
-		}
-		if (storedExtraData) {
-			parsedEmailData = JSON.parse(storedExtraData)
-		}
-		if (userAddress) {
-			userAddressData = JSON.parse(userAddress)
-		}
-		const billingExecuted = async () => {
-				const billingExecuted =
-				localStorage.getItem('billingExecuted')
-			if (!billingExecuted) {
-				if (!pagoSummup) {
-					await createBill(parsedBillingData)
-					await userService.createUserAddresses(userAddressData)
-				}
-				await userService.updateUser({
-					id: parsedBillingData.Usuarios[0],
-					['correo electronico']: parsedEmailData.email,
-				})
-				// Marcar que las funciones ya se han ejecutado
-				localStorage.setItem('billingExecuted', 'true')
-			}
-		}
-		billingExecuted()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [dispatch, router, searchParams, stripe])
 
 	return (
 		<div className="flex items-center justify-center min-h-screen font-tertiary-font mt-[20rem] mb-[5rem] mobile:mt-[15rem]">

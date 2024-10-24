@@ -71,9 +71,6 @@ export default function Store() {
 				],
 			})
 			setProducts(result.hits as unknown as IProductMongoose[])
-			console.log(query, "THIS IS THE QUERY")
-			console.log(filters, "THESE ARE THE FILTERS")
-			console.log(result.hits)
 		} catch (err) {
 			console.log(err)
 			setError((err as Error).message)
