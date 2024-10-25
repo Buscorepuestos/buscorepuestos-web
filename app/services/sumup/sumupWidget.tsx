@@ -50,25 +50,16 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 		const fields = fieldsValue
 		let missingField = ''
 
-		if (!fields.shippingAddress)
-			missingField = 'Por favor, ingresa tu dirección.'
-		else if (!fields.country)
-			missingField = 'Por favor, selecciona tu país.'
+		if (!fields.name) missingField = 'Por favor, ingresa tu nombre completo.'
+		else if (!fields.email) missingField = 'Por favor, ingresa tu correo electrónico.'
+		else if (!fields.nif) missingField = 'Por favor, ingresa tu NIF o identificación fiscal.'
+		else if (!fields.phoneNumber) missingField = 'Por favor, ingresa tu número de teléfono.'
+		else if (!fields.shippingAddress) missingField = 'Por favor, ingresa tu dirección.'
+		else if (!fields.addressExtra) missingField = 'Por favor, ingresa el número de tu dirección.'
+		else if (!fields.zip) missingField = 'Por favor, ingresa tu código postal.'
 		else if (!fields.city) missingField = 'Por favor, ingresa tu ciudad.'
-		else if (!fields.addressExtra)
-			missingField = 'Por favor, ingresa el número de tu dirección.'
-		else if (!fields.name)
-			missingField = 'Por favor, ingresa tu nombre completo.'
-		else if (!fields.zip)
-			missingField = 'Por favor, ingresa tu código postal.'
-		else if (!fields.nif)
-			missingField = 'Por favor, ingresa tu NIF o identificación fiscal.'
-		else if (!fields.phoneNumber)
-			missingField = 'Por favor, ingresa tu número de teléfono.'
-		else if (!fields.province)
-			missingField = 'Por favor, selecciona tu provincia.'
-		else if (!fields.email)
-			missingField = 'Por favor, ingresa tu correo electrónico.'
+		else if (!fields.province) missingField = 'Por favor, selecciona tu provincia.'
+		else if (!fields.country) missingField = 'Por favor, selecciona tu país.'
 
 		setMissingFieldMessage(missingField)
 		setIsFormValid(!missingField)
