@@ -37,30 +37,32 @@ const PaymentSelection = ({
 	cityRef: React.RefObject<HTMLInputElement>
 	provinceRef: React.RefObject<HTMLInputElement>
 	countryRef: React.RefObject<HTMLInputElement>
-	setIsScrolledInputs: React.Dispatch<React.SetStateAction<{
-		name: boolean;
-		email: boolean;
-		nif: boolean;
-		phoneNumber: boolean;
-		shippingAddress: boolean;
-		addressExtra: boolean;
-		zip: boolean;
-		city: boolean;
-		province: boolean;
-		country: boolean;
-	}>>
-	isScrolledInputs: { 
-		name: boolean;
-		email: boolean;
-		nif: boolean;
-		phoneNumber: boolean;
-		shippingAddress: boolean;
-		addressExtra: boolean;
-		zip: boolean;
-		city: boolean;
-		province: boolean;
-		country: boolean;
-	},
+	setIsScrolledInputs: React.Dispatch<
+		React.SetStateAction<{
+			name: boolean
+			email: boolean
+			nif: boolean
+			phoneNumber: boolean
+			shippingAddress: boolean
+			addressExtra: boolean
+			zip: boolean
+			city: boolean
+			province: boolean
+			country: boolean
+		}>
+	>
+	isScrolledInputs: {
+		name: boolean
+		email: boolean
+		nif: boolean
+		phoneNumber: boolean
+		shippingAddress: boolean
+		addressExtra: boolean
+		zip: boolean
+		city: boolean
+		province: boolean
+		country: boolean
+	}
 	items: any[]
 }) => {
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
@@ -108,74 +110,104 @@ const PaymentSelection = ({
 
 	const backToInputRefWhenError = () => {
 		if (!isFormValid) {
-			if (!nameRef.current?.value) {
-				nameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				setIsScrolledInputs({
-					...isScrolledInputs,
-					name: true,
+			if (!countryRef.current?.value) {
+				countryRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
 				})
-			}
-			if (!emailRef.current?.value) {
-				emailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 				setIsScrolledInputs({
 					...isScrolledInputs,
-					email: true,
-				})
-			}
-			if (!nifRef.current?.value) {
-				nifRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				setIsScrolledInputs({
-					...isScrolledInputs,
-					nif: true,
-				})
-			}
-			if (!phoneNumberRef.current?.value) {
-				phoneNumberRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				setIsScrolledInputs({
-					...isScrolledInputs,
-					phoneNumber: true,
-				})
-			}
-			if (!shippingAddressRef.current?.value) {
-				shippingAddressRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				setIsScrolledInputs({
-					...isScrolledInputs,
-					shippingAddress: true,
-				})
-			}
-			if (!addressExtraRef.current?.value) {
-				addressExtraRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				setIsScrolledInputs({
-					...isScrolledInputs,
-					addressExtra: true,
-				})
-			}
-			if (!zipRef.current?.value) {
-				zipRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				setIsScrolledInputs({
-					...isScrolledInputs,
-					zip: true,
-				})
-			}
-			if (!cityRef.current?.value) {
-				cityRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				setIsScrolledInputs({
-					...isScrolledInputs,
-					city: true,
+					country: true,
 				})
 			}
 			if (!provinceRef.current?.value) {
-				provinceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				provinceRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
 				setIsScrolledInputs({
 					...isScrolledInputs,
 					province: true,
 				})
 			}
-			if (!countryRef.current?.value) {
-				countryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			if (!cityRef.current?.value) {
+				cityRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
 				setIsScrolledInputs({
 					...isScrolledInputs,
-					country: true,
+					city: true,
+				})
+			}
+			if (!zipRef.current?.value) {
+				zipRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					zip: true,
+				})
+			}
+			if (!addressExtraRef.current?.value) {
+				addressExtraRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					addressExtra: true,
+				})
+			}
+			if (!shippingAddressRef.current?.value) {
+				shippingAddressRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					shippingAddress: true,
+				})
+			}
+			if (!phoneNumberRef.current?.value) {
+				phoneNumberRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					phoneNumber: true,
+				})
+			}
+			if (!nifRef.current?.value) {
+				nifRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					nif: true,
+				})
+			}
+			if (!emailRef.current?.value) {
+				emailRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					email: true,
+				})
+			}
+			if (!nameRef.current?.value) {
+				nameRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+				})
+				setIsScrolledInputs({
+					...isScrolledInputs,
+					name: true,
 				})
 			}
 		}
@@ -279,13 +311,11 @@ const PaymentSelection = ({
 					estar completos.
 				</p>
 			) : null}
-			{
-				items.length === 0 ? (
-					<p className="text-center text-sm text-red-500">
-						*No hay productos en el carrito.
-					</p>
-				) : null
-			}
+			{items.length === 0 ? (
+				<p className="text-center text-sm text-red-500">
+					*No hay productos en el carrito.
+				</p>
+			) : null}
 		</div>
 	)
 }
