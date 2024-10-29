@@ -10,6 +10,7 @@ import {
     User,
 } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { environment } from '../environment/environment';
 
 const firebaseConfig = environment.firebase;
@@ -18,7 +19,8 @@ const firebaseConfig = environment.firebase;
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { auth, db, signInWithEmailAndPassword, signInAnonymously, signInWithCustomToken, updateEmail, onAuthStateChanged, doc, getDoc, setDoc, updateDoc };    
+export { storage, auth, db, signInWithEmailAndPassword, signInAnonymously, signInWithCustomToken, updateEmail, onAuthStateChanged, doc, getDoc, setDoc, updateDoc };    
 export type { User };
 

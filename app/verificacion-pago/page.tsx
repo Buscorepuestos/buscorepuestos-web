@@ -611,6 +611,7 @@ export default function Payment() {
 								setIsScrolledInputs={setIsScrolledInputs}
 								isScrolledInputs={isScrolledInputs}
 								items={items}
+								totalPrice={stringPrice}
 							/>
 						</div>
 					</div>
