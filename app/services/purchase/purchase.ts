@@ -58,3 +58,25 @@ export const updatePurchase = async (purchaseId: string): Promise<void> => {
         throw error;
     }
 };
+
+export const updateTransferPurchase = async (purchaseId: string, imgTransfer: string): Promise<void> => {
+    
+    console.log(imgTransfer);
+
+    const purchase = {
+        id: purchaseId,
+        "Estado": "Verificación de Pago",
+        "Metodo": "transferencia",
+        "Transferencia": [{ url: imgTransfer }]
+
+    };
+
+    try {
+        await api.patch(`/purchases/${purchaseId}`, {
+            data: purchase,
+        });
+    } catch (error) {
+        console.error('Error updating purchase:', error);
+        throw error;
+    }
+};
