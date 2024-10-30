@@ -35,6 +35,8 @@ export default defineConfig({
 				'app/core/components/paymentSelection/PaymentSelection.tsx',
 				'app/core/components/checkout/paymentSuccess.tsx',
 				'app/core/components/checkout/PaymentForm.tsx',
+				'app/core/components/transferPayment/transferPayment.tsx',
+				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
 				'app/services'
 			],

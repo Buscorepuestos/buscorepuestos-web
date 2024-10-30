@@ -1,9 +1,17 @@
 'use client'
 import React, { useState } from 'react'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 const WhatsAppIcon: React.FC = () => {
 	const [isHovered, setIsHovered] = useState(false)
+	const pathname = usePathname()
+	const hideOnPaths = ['/verificacion-pago'] // Agrega aquí otras rutas en las que deseas ocultar el ícono
+
+	// Verifica si la ruta actual está en la lista de rutas a ocultar
+	if (hideOnPaths.includes(pathname)) {
+		return null
+	}
 
 	const handleClick = () => {
 		const phoneNumber = '34611537631' // Número de teléfono de WhatsApp
@@ -30,10 +38,10 @@ const WhatsAppIcon: React.FC = () => {
 				style={{
 					width: '60px',
 					height: '60px',
-                    cursor: 'pointer',
+					cursor: 'pointer',
 				}}
-                width={60}
-                height={60}
+				width={60}
+				height={60}
 			/>
 			{isHovered && (
 				<div

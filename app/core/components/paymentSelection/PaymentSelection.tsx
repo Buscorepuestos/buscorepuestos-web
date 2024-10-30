@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PaymentForm from '../checkout/PaymentForm'
 import SumupPayment from '../sumupPayment/sumupPayment'
+import TransferPayment from '../transferPayment/transferPayment'
 import { FormsFields } from '../../../verificacion-pago/page'
 import Image from 'next/image'
 
@@ -22,6 +23,7 @@ const PaymentSelection = ({
 	setIsScrolledInputs,
 	isScrolledInputs,
 	items,
+	totalPrice,
 }: {
 	clientSecret: string
 	purchaseIds: string[]
@@ -64,12 +66,15 @@ const PaymentSelection = ({
 		country: boolean
 	}
 	items: any[]
+	totalPrice: string
 }) => {
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-		'stripe' | 'sumup' | null
+		'stripe' | 'sumup' | 'transferencia' | null
 	>(null)
 
-	const handlePaymentSelection = (method: 'stripe' | 'sumup') => {
+	const handlePaymentSelection = (
+		method: 'stripe' | 'sumup' | 'transferencia'
+	) => {
 		setSelectedPaymentMethod(method)
 	}
 
@@ -228,7 +233,9 @@ const PaymentSelection = ({
 				selectedPaymentMethod === 'sumup'
 					? 'bg-secondary-blue text-white border-secondary-blue'
 					: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
-			} xl:text-[1vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[2.7vw]`}
+			} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[2.7vw]
+			mobile:flex mobile:flex-col mobile:gap-2 mobile:items-center mobile:justify-center
+			`}
 				>
 					{selectedPaymentMethod === 'sumup' ? (
 						<Image
@@ -251,6 +258,41 @@ const PaymentSelection = ({
 				</button>
 				<button
 					onClick={() => {
+						handlePaymentSelection('transferencia')
+						setTimeout(() => {
+							backToInputRefWhenError()
+						}, 200)
+					}}
+					className={`w-full flex gap-3 items-center justify-center px-6 py-2 mr-2 border-[1px] rounded-lg transition-all duration-300 
+			${
+				selectedPaymentMethod === 'transferencia'
+					? 'bg-secondary-blue text-white border-secondary-blue'
+					: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
+			} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[2.7vw]
+			mobile:flex mobile:flex-col mobile:gap-2 mobile:items-center mobile:justify-center
+			`}
+				>
+					{selectedPaymentMethod === 'transferencia' ? (
+						<Image
+							src="/transferencia-white.svg"
+							alt="transferencia"
+							width={46}
+							height={46}
+							className="w-14 h-14 rounded-md"
+						/>
+					) : (
+						<Image
+							src="/transferencia.svg"
+							alt="transferencia"
+							width={46}
+							height={46}
+							className="w-14 h-14 rounded-md"
+						/>
+					)}
+					Transferencia
+				</button>
+				<button
+					onClick={() => {
 						handlePaymentSelection('stripe')
 						setTimeout(() => {
 							backToInputRefWhenError()
@@ -261,23 +303,27 @@ const PaymentSelection = ({
 				selectedPaymentMethod === 'stripe'
 					? 'bg-secondary-blue text-white border-secondary-blue'
 					: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
-			} xl:text-[1vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[2.7vw]`}
+			} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[2.7vw]
+			mobile:flex mobile:flex-col mobile:gap-2 mobile:items-center mobile:justify-center
+			`}
 				>
-					<Image
-						src="/klarna.png"
-						alt="klarna"
-						width={46}
-						height={46}
-						className="w-10 h-10 rounded-md"
-					/>
-					<Image
-						src="/paypal.png"
-						alt="paypal"
-						width={46}
-						height={46}
-						className="w-10 h-10 rounded-md"
-					/>
-					Otros métodos de pago
+					<div className='flex gap-4'>
+						<Image
+							src="/klarna.png"
+							alt="klarna"
+							width={46}
+							height={46}
+							className="w-10 h-10 rounded-md"
+						/>
+						<Image
+							src="/paypal.png"
+							alt="paypal"
+							width={46}
+							height={46}
+							className="w-10 h-10 rounded-md"
+						/>
+					</div>
+					Pago a plazos, Paypal
 				</button>
 			</div>
 
@@ -289,6 +335,15 @@ const PaymentSelection = ({
 							fieldsValue={fieldsValue}
 							numberPriceRounded={numberPriceRounded}
 							items={items}
+						/>
+					</div>
+				)}
+				{selectedPaymentMethod === 'transferencia' && isFormValid && (
+					<div className="flex justify-center">
+						<TransferPayment
+							totalPrice={totalPrice}
+							purchaseIds={purchaseIds}
+							fieldsValue={fieldsValue}
 						/>
 					</div>
 				)}
@@ -308,6 +363,12 @@ const PaymentSelection = ({
 			{!isFormValid && selectedPaymentMethod === 'sumup' ? (
 				<p className="text-center text-sm text-red-500">
 					*Para realizar el pago con tarjeta, todos los campos deben
+					estar completos.
+				</p>
+			) : null}
+			{!isFormValid && selectedPaymentMethod === 'transferencia' ? (
+				<p className="text-center text-sm text-red-500">
+					*Para realizar el pago con transferencia, todos los campos deben
 					estar completos.
 				</p>
 			) : null}

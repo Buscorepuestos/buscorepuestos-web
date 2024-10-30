@@ -5,7 +5,6 @@ import { FormsFields } from '../../verificacion-pago/page'
 import { updatePurchase } from '../../services/purchase/purchase'
 import { createBill } from '../../services/billing/billing.service'
 import { useDispatch } from 'react-redux'
-import { clearCart } from '../../redux/features/shoppingCartSlice'
 import { userService } from '../../services/user/userService'
 import Swal from 'sweetalert2'
 
@@ -34,6 +33,7 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 	purchaseIds,
 	fieldsValue,
 }) => {
+	console.log('fieldsValue', fieldsValue)
 	const router = useRouter()
 	const dispatch = useDispatch()
 	const [isFormValid, setIsFormValid] = useState(false)
