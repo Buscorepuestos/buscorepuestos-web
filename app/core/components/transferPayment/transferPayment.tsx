@@ -235,11 +235,11 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 					Para finalizar tu compra con este método de pago,
 					<br />
 					necesitaremos que como concepto pongas tu nombre completo y
-					nos envíes el <br />
+					nos adjuntes el <br />
 					comprobante de la transferencia, para agilizar el envío.
 				</p>
 				<p className="mt-4 text-sm sm:text-base">
-					Para enviar el comprobante usa el campo de &apos;adjuntar
+					Para adjuntar el comprobante usa el campo de &apos;adjuntar
 					archivo&apos;
 					<br />o envíanos un email, admin@buscorepuestos.com
 				</p>
