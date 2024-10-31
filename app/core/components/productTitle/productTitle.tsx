@@ -28,18 +28,13 @@ const ProductTitle: React.FC<ProductTitleProps> = ({
 							<span className="ref">Ref.</span>
 							{refNumber}
 						</h2>
-						{/* <Image
-                            src={imageSrc} 
-                            alt="compartir-desktop"
-                            width={34}
-                            height={34}
-                            className='md:w-[30px] md:h-[30px] mobile:hidden'
-                        /> */}
-						<ShareButton
-							imageSrc={imageSrc}
-							productName={productName}
-							title={title}
-						/>
+						<div className='mobile:hidden'>
+							<ShareButton
+								imageSrc={imageSrc}
+								productName={productName}
+								title={title}
+							/>
+						</div>
 					</div>
 					<h2 className="lg:text-[1.2vw] md:text-[1.5vw] sm:text-[1.8vw] mobile:text-[3.4vw] font-tertiary-font font-semibold">
 						{productName}
