@@ -228,7 +228,7 @@ const PaymentSelection = ({
 							backToInputRefWhenError()
 						}, 200)
 					}}
-					className={`w-full flex gap-3 items-center justify-center px-6 py-2 ml-2 border-[1px] rounded-lg transition-all duration-300 
+					className={`w-full flex gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-lg transition-all duration-300 
             ${
 				selectedPaymentMethod === 'sumup'
 					? 'bg-secondary-blue text-white border-secondary-blue'
@@ -263,7 +263,7 @@ const PaymentSelection = ({
 							backToInputRefWhenError()
 						}, 200)
 					}}
-					className={`w-full flex gap-3 items-center justify-center px-6 py-2 mr-2 border-[1px] rounded-lg transition-all duration-300 
+					className={`w-full flex gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-lg transition-all duration-300 
 			${
 				selectedPaymentMethod === 'transferencia'
 					? 'bg-secondary-blue text-white border-secondary-blue'
@@ -298,32 +298,36 @@ const PaymentSelection = ({
 							backToInputRefWhenError()
 						}, 200)
 					}}
-					className={`w-full flex gap-3 items-center justify-center pr-6 pl-2 py-2  border-[1px] rounded-lg transition-all duration-300 
+					className={`w-full flex gap-3 items-center justify-center px-4 py-2  border-[1px] rounded-lg transition-all duration-300 
             ${
 				selectedPaymentMethod === 'stripe'
 					? 'bg-secondary-blue text-white border-secondary-blue'
 					: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
 			} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[2.7vw]
-			mobile:flex 
+			mobile:flex mobile:flex-col
 			`}
 				>
-					<div className='flex gap-4 mobile:flex-col'>
+					<div className='flex gap-4 '>
 						<Image
 							src="/klarna.png"
 							alt="klarna"
 							width={56}
 							height={56}
-							className="sm:w-10 h-11 rounded-md"
+							className="w-10 h-10 rounded-md"
 						/>
 						<Image
 							src="/paypal.png"
 							alt="paypal"
 							width={56}
 							height={56}
-							className="sm:w-10 h-11 rounded-md"
+							className="w-10 h-10 rounded-md"
 						/>
 					</div>
-					Pago a plazos, Paypal
+					<pre>
+						En 3 plazos, < br />
+						Paypal
+					</pre>
+					
 				</button>
 			</div>
 
