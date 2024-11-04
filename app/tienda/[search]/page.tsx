@@ -144,7 +144,7 @@ export default function Store({ params }: { params: { search: string } }) {
 				})
 			)
 			router.push('/verificacion-pago')
-		}, 1500)
+		}, 2000)
 	}
 
 	return (

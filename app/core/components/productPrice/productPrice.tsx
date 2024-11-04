@@ -56,7 +56,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
                 showConfirmButton: false,
                 timer: 1500
             });
-        }, 1500);
+        }, 2000);
     };
 
     const handleRemoveFromCart = () => {
@@ -102,7 +102,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
             dispatch(addItemToCart(data));
             dispatch(savePurchaseAsync({ product: data, userId: localStorage.getItem('airtableUserId') ?? '' }));
             router.push('/verificacion-pago');
-        }, 1500);
+        }, 2000);
     };
 
     return (
