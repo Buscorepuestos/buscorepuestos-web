@@ -8,6 +8,7 @@ import PaymentSelection from '../core/components/paymentSelection/PaymentSelecti
 import Checkbox from '../core/components/checkbox/checkbox'
 import Input from '../core/components/input/input'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
+import { userService } from '../services/user/userService'
 import Image from 'next/image'
 import './stripe.css'
 
@@ -79,6 +80,23 @@ export default function Payment() {
 	})
 
 	const { items, isLoaded, purchaseIds } = useCartItems()
+
+	const [emailError, setEmailError] = useState<string | null>(null)
+	const [isFormVisible, setIsFormVisible] = useState(false)
+
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+	useEffect(() => {
+		// Verificar si hay un correo almacenado en localStorage
+		const storedEmail = localStorage.getItem('userEmail')
+		if (storedEmail) {
+			setFieldsValue((prevState) => ({
+				...prevState,
+				email: storedEmail,
+			})) // Establecer el email en fieldsValue
+			setIsFormVisible(true) // Si hay un correo, mostrar el siguiente formulario
+		}
+	}, [setFieldsValue])
 
 	const calculateTotal = () => {
 		const stringPrice = items
@@ -226,6 +244,35 @@ export default function Payment() {
 	const provinceRef = useRef<HTMLInputElement>(null)
 	const countryRef = useRef<HTMLInputElement>(null)
 
+	const handleNext = () => {
+		if (!fieldsValue.email) {
+			setEmailError('Por favor, ingrese su correo.')
+		} else if (!emailRegex.test(fieldsValue.email)) {
+			setEmailError('Por favor, ingrese un correo válido.')
+		} else {
+			setEmailError(null) // Si es válido, no hay error
+			localStorage.setItem('userEmail', fieldsValue.email) // Guardar el correo en localStorage
+			setIsFormVisible(true) // Mostrar el siguiente formulario
+			userService.updateUser({
+				id: localStorage.getItem('airtableUserId'),
+				['correo electronico']: fieldsValue.email,
+			}) // Actualizar el correo en la base de datos
+		}
+	}
+
+	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		// Actualiza el valor del correo en fieldsValue
+		setFieldsValue((prevState) => ({
+			...prevState,
+			email: e.target.value,
+		}))
+	}
+
+	let userEmail: string | null = null
+	if (typeof window !== 'undefined') {
+		userEmail = localStorage.getItem('airtableUserId')
+	}
+
 	if (!isLoaded) {
 		return <div>Loading...</div>
 	}
@@ -272,350 +319,435 @@ export default function Payment() {
 						{localDropdown()}
 					</article>
 				)}
-
-				<article className={'mobile:p-6'}>
+				<div className="relative overflow-hidden">
+					{/* Pantalla de correo */}
 					<div
-						className={'flex flex-col justify-center items-center'}
+						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${
+							isFormVisible
+								? '-translate-x-full opacity-0 absolute'
+								: 'translate-x-0 opacity-100'
+						}`}
 					>
-						{/*Personal Information*/}
-						<h1
-							className={
-								'text-title-4 font-tertiary-font mb-4 self-start'
-							}
-						>
-							Información personal
-						</h1>
-						<div
-							className={
-								'grid grid-cols-1 w-[60%] mobile:w-full gap-4'
-							}
-						>
-							<Input
-								placeholder={'Nombre y apellidos'}
-								name={'name'}
-								value={fieldsValue.name}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										name: e.target.value,
-									})
+						<div className="flex flex-col items-center">
+							<h1
+								className={
+									'text-title-4 font-tertiary-font mb-4 self-start'
 								}
-								ref={nameRef}
-								isScrolled={isScrolledInputs.name}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Email'}
-								name={'email'}
-								value={fieldsValue.email}
-								cssClass={
-									'desktop:col-span-2 tablet:col-span-2 mobile:col-span-1'
+							>
+								Comprar como invitado
+							</h1>
+							<div
+								className={
+									'grid grid-cols-1 w-[60%] mobile:w-full gap-4 mt-4'
 								}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										email: e.target.value,
-									})
-								}
-								ref={emailRef}
-								isScrolled={isScrolledInputs.email}
-							/>
-							<Input
-								placeholder={'NIF / CIF'}
-								name={'company_id'}
-								value={fieldsValue.nif}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										nif: e.target.value,
-									})
-								}
-								ref={nifRef}
-								isScrolled={isScrolledInputs.nif}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-2 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Número de teléfono'}
-								name={'phone'}
-								value={fieldsValue.phoneNumber}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										phoneNumber: e.target.value,
-									})
-								}
-								ref={phoneNumberRef}
-								isScrolled={isScrolledInputs.phoneNumber}
-							/>
-						</div>
-
-						{/*Shipping Address Information*/}
-						<h1
-							className={
-								'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
-							}
-						>
-							Dirección de envío
-						</h1>
-						<div
-							className={
-								'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4'
-							}
-						>
-							<div className={'col-span-2 tablet:col-span-3'}>
-								<SelectDropdown
-									name={'saved_shipping_address'}
-									options={shippingOptions}
-									placeholder={
-										'Direcciones de envío guardadas'
-									}
+							>
+								<Input
+									placeholder="Correo electrónico"
+									value={fieldsValue.email}
+									onChange={handleEmailChange}
 								/>
+								{emailError && (
+									<p className="text-red-500 text-sm mt-1">
+										{emailError}
+									</p>
+								)}
 							</div>
-						</div>
-						<div
-							className={
-								'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Dirección'}
-								name={'address_name'}
-								value={fieldsValue.shippingAddress}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										shippingAddress: e.target.value,
-									})
-								}
-								ref={shippingAddressRef}
-								isScrolled={isScrolledInputs.shippingAddress}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Número, piso, puerta, portal'}
-								name={'address_extra'}
-								value={fieldsValue.addressExtra}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										addressExtra: e.target.value,
-									})
-								}
-								ref={addressExtraRef}
-								isScrolled={isScrolledInputs.addressExtra}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-2 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Código postal'}
-								name={'zip'}
-								value={fieldsValue.zip}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										zip: e.target.value,
-									})
-								}
-								ref={zipRef}
-								isScrolled={isScrolledInputs.zip}
-							/>
-							<Input
-								placeholder={'Ciudad'}
-								name={'city'}
-								value={fieldsValue.city}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										city: e.target.value,
-									})
-								}
-								ref={cityRef}
-								isScrolled={isScrolledInputs.city}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-2 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Provincia'}
-								name={'province'}
-								value={fieldsValue.province}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										province: e.target.value,
-									})
-								}
-								ref={provinceRef}
-								isScrolled={isScrolledInputs.province}
-							/>
-							<Input
-								placeholder={'País'}
-								name={'country'}
-								value={fieldsValue.country}
-								cssClass={'mobile:w-[50%]'}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										country: e.target.value,
-									})
-								}
-								ref={countryRef}
-								isScrolled={isScrolledInputs.country}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Checkbox
-								name={'same_address'}
-								value={sameBillAddress}
-								onChange={handleCheckboxChange}
-								label={'Usar la misma dirección de facturación'}
-							/>
-						</div>
-
-						{/*Billing address*/}
-						<h1
-							className={
-								'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
-							}
-						>
-							Dirección de facturación
-						</h1>
-						<div
-							className={
-								'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4'
-							}
-						>
-							<div className={'col-span-2 tablet:col-span-3'}>
-								<SelectDropdown
-									name={'saved_billing_address'}
-									options={billingOptions}
-									placeholder={
-										'Direcciones de facturación guardadas'
-									}
-								/>
+							<div className="flex">
+								<button
+									className="mt-8 inline-flex items-center justify-center px-4 py-2 border border-transparent text-[16px] mobile:text-[12px] font-sm rounded-3xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+									onClick={handleNext}
+									// Deshabilitar si no es válido
+								>
+									Continuar con la compra
+								</button>
 							</div>
-						</div>
-						<div
-							className={
-								'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Dirección'}
-								name={'bill_address_name'}
-								value={fieldsValue.billingAddress}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										billingAddress: e.target.value,
-									})
-								}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Número, piso, puerta, portal'}
-								name={'bill_address_extra'}
-								value={fieldsValue.billingAddressExtra}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										billingAddressExtra: e.target.value,
-									})
-								}
-							/>
-						</div>
-						<div
-							className={
-								'grid grid-cols-2 w-[60%] mobile:w-full mt-4 gap-4'
-							}
-						>
-							<Input
-								placeholder={'Código postal'}
-								name={'bill_zip'}
-								value={fieldsValue.billingZip}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										billingZip: e.target.value,
-									})
-								}
-							/>
-							<Input
-								placeholder={'Provincia'}
-								name={'bill_province'}
-								value={fieldsValue.billingProvince}
-								onChange={(e) =>
-									setFieldsValue({
-										...fieldsValue,
-										billingProvince: e.target.value,
-									})
-								}
-							/>
-						</div>
-
-						{/*Stripe Form*/}
-						<h1
-							className={
-								'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
-							}
-						>
-							Seleccionar Método de pago
-						</h1>
-						<div className='w-full px-24 mobile:px-0'>
-							<PaymentSelection
-								clientSecret={clientSecret}
-								purchaseIds={purchaseIds}
-								fieldsValue={fieldsValue}
-								numberPriceRounded={numberPrice}
-								nameRef={nameRef}
-								emailRef={emailRef}
-								nifRef={nifRef}
-								phoneNumberRef={phoneNumberRef}
-								shippingAddressRef={shippingAddressRef}
-								addressExtraRef={addressExtraRef}
-								zipRef={zipRef}
-								cityRef={cityRef}
-								provinceRef={provinceRef}
-								countryRef={countryRef}
-								setIsScrolledInputs={setIsScrolledInputs}
-								isScrolledInputs={isScrolledInputs}
-								items={items}
-								totalPrice={stringPrice}
-							/>
 						</div>
 					</div>
-				</article>
+
+					{/* Pantalla de formulario */}
+					<div
+						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${
+							isFormVisible
+								? 'translate-x-0 opacity-100'
+								: 'translate-x-full opacity-0 absolute'
+						}`}
+					>
+						<article className={'mobile:p-6'}>
+							<div
+								className={
+									'flex flex-col justify-center items-center'
+								}
+							>
+								{/*Personal Information*/}
+								<h1
+									className={
+										'text-title-4 font-tertiary-font mb-4 self-start'
+									}
+								>
+									Información personal
+								</h1>
+								<div
+									className={
+										'grid grid-cols-1 w-[60%] mobile:w-full gap-4'
+									}
+								>
+									<Input
+										placeholder={'Nombre y apellidos'}
+										name={'name'}
+										value={fieldsValue.name}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												name: e.target.value,
+											})
+										}
+										ref={nameRef}
+										isScrolled={isScrolledInputs.name}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={'Email'}
+										name={'email'}
+										value={fieldsValue.email}
+										cssClass={
+											'desktop:col-span-2 tablet:col-span-2 mobile:col-span-1'
+										}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												email: e.target.value,
+											})
+										}
+										ref={emailRef}
+										isScrolled={isScrolledInputs.email}
+										disabled={!!userEmail}
+										buttonText="Modificar" // Texto del botón
+										onButtonClick={() => {
+											setIsFormVisible(false)
+											localStorage.removeItem('userEmail')
+										}}
+									/>
+									<Input
+										placeholder={'NIF / CIF'}
+										name={'company_id'}
+										value={fieldsValue.nif}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												nif: e.target.value,
+											})
+										}
+										ref={nifRef}
+										isScrolled={isScrolledInputs.nif}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-2 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={'Número de teléfono'}
+										name={'phone'}
+										value={fieldsValue.phoneNumber}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												phoneNumber: e.target.value,
+											})
+										}
+										ref={phoneNumberRef}
+										isScrolled={
+											isScrolledInputs.phoneNumber
+										}
+									/>
+								</div>
+
+								{/*Shipping Address Information*/}
+								<h1
+									className={
+										'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
+									}
+								>
+									Dirección de envío
+								</h1>
+								<div
+									className={
+										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4'
+									}
+								>
+									<div
+										className={
+											'col-span-2 tablet:col-span-3'
+										}
+									>
+										<SelectDropdown
+											name={'saved_shipping_address'}
+											options={shippingOptions}
+											placeholder={
+												'Direcciones de envío guardadas'
+											}
+										/>
+									</div>
+								</div>
+								<div
+									className={
+										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={'Dirección'}
+										name={'address_name'}
+										value={fieldsValue.shippingAddress}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												shippingAddress: e.target.value,
+											})
+										}
+										ref={shippingAddressRef}
+										isScrolled={
+											isScrolledInputs.shippingAddress
+										}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={
+											'Número, piso, puerta, portal'
+										}
+										name={'address_extra'}
+										value={fieldsValue.addressExtra}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												addressExtra: e.target.value,
+											})
+										}
+										ref={addressExtraRef}
+										isScrolled={
+											isScrolledInputs.addressExtra
+										}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-2 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={'Código postal'}
+										name={'zip'}
+										value={fieldsValue.zip}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												zip: e.target.value,
+											})
+										}
+										ref={zipRef}
+										isScrolled={isScrolledInputs.zip}
+									/>
+									<Input
+										placeholder={'Ciudad'}
+										name={'city'}
+										value={fieldsValue.city}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												city: e.target.value,
+											})
+										}
+										ref={cityRef}
+										isScrolled={isScrolledInputs.city}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-2 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={'Provincia'}
+										name={'province'}
+										value={fieldsValue.province}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												province: e.target.value,
+											})
+										}
+										ref={provinceRef}
+										isScrolled={isScrolledInputs.province}
+									/>
+									<Input
+										placeholder={'País'}
+										name={'country'}
+										value={fieldsValue.country}
+										cssClass={'mobile:w-[50%]'}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												country: e.target.value,
+											})
+										}
+										ref={countryRef}
+										isScrolled={isScrolledInputs.country}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Checkbox
+										name={'same_address'}
+										value={sameBillAddress}
+										onChange={handleCheckboxChange}
+										label={
+											'Usar la misma dirección de facturación'
+										}
+									/>
+								</div>
+
+								{/*Billing address*/}
+								<h1
+									className={
+										'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
+									}
+								>
+									Dirección de facturación
+								</h1>
+								<div
+									className={
+										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4'
+									}
+								>
+									<div
+										className={
+											'col-span-2 tablet:col-span-3'
+										}
+									>
+										<SelectDropdown
+											name={'saved_billing_address'}
+											options={billingOptions}
+											placeholder={
+												'Direcciones de facturación guardadas'
+											}
+										/>
+									</div>
+								</div>
+								<div
+									className={
+										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={'Dirección'}
+										name={'bill_address_name'}
+										value={fieldsValue.billingAddress}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												billingAddress: e.target.value,
+											})
+										}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={
+											'Número, piso, puerta, portal'
+										}
+										name={'bill_address_extra'}
+										value={fieldsValue.billingAddressExtra}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												billingAddressExtra:
+													e.target.value,
+											})
+										}
+									/>
+								</div>
+								<div
+									className={
+										'grid grid-cols-2 w-[60%] mobile:w-full mt-4 gap-4'
+									}
+								>
+									<Input
+										placeholder={'Código postal'}
+										name={'bill_zip'}
+										value={fieldsValue.billingZip}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												billingZip: e.target.value,
+											})
+										}
+									/>
+									<Input
+										placeholder={'Provincia'}
+										name={'bill_province'}
+										value={fieldsValue.billingProvince}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												billingProvince: e.target.value,
+											})
+										}
+									/>
+								</div>
+
+								{/*Stripe Form*/}
+								<h1
+									className={
+										'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
+									}
+								>
+									Seleccionar Método de pago
+								</h1>
+								<div className="w-full px-24 mobile:px-0">
+									<PaymentSelection
+										clientSecret={clientSecret}
+										purchaseIds={purchaseIds}
+										fieldsValue={fieldsValue}
+										numberPriceRounded={numberPrice}
+										nameRef={nameRef}
+										emailRef={emailRef}
+										nifRef={nifRef}
+										phoneNumberRef={phoneNumberRef}
+										shippingAddressRef={shippingAddressRef}
+										addressExtraRef={addressExtraRef}
+										zipRef={zipRef}
+										cityRef={cityRef}
+										provinceRef={provinceRef}
+										countryRef={countryRef}
+										setIsScrolledInputs={
+											setIsScrolledInputs
+										}
+										isScrolledInputs={isScrolledInputs}
+										items={items}
+										totalPrice={stringPrice}
+									/>
+								</div>
+							</div>
+						</article>
+					</div>
+				</div>
 			</section>
 		</div>
 	)
