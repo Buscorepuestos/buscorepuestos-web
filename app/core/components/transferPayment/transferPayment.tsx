@@ -41,6 +41,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 	const [previewType, setPreviewType] = useState<
 		'image' | 'pdf' | 'excel' | null
 	>(null)
+	const [isProcessing, setIsProcessing] = useState(false)
 
 	let userId: string | null = null
 	if (typeof window !== 'undefined') {
@@ -64,37 +65,43 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 	}
 
 	const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		setPreviewUrl(null); 
-		setPreviewType(null); 
+		const file = event.target.files?.[0]
+		setPreviewUrl(null)
+		setPreviewType(null)
 		if (file) {
-			setSelectedFile(file);
-	
-			const fileType = file.type.split('/')[0];
-			const fileURL = URL.createObjectURL(file);
-	
+			setSelectedFile(file)
+
+			const fileType = file.type.split('/')[0]
+			const fileURL = URL.createObjectURL(file)
+
 			if (fileType === 'image') {
-				setPreviewUrl(fileURL);
-				setPreviewType('image');
+				setPreviewUrl(fileURL)
+				setPreviewType('image')
 			} else if (fileType === 'application') {
 				if (file.type === 'application/pdf') {
-					setPreviewUrl(fileURL);
-					setPreviewType('pdf');
-				} else if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-					const reader = new FileReader();
+					setPreviewUrl(fileURL)
+					setPreviewType('pdf')
+				} else if (
+					file.type ===
+					'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+				) {
+					const reader = new FileReader()
 					reader.onload = (e) => {
-						const data = new Uint8Array(e.target?.result as ArrayBuffer);
-						const workbook = XLSX.read(data, { type: 'array' });
-						const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-						const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-						console.log(jsonData); // Se puede usar esta informacion para mostrarla en la vista
-					};
-					reader.readAsArrayBuffer(file);
-					setPreviewType('excel');
+						const data = new Uint8Array(
+							e.target?.result as ArrayBuffer
+						)
+						const workbook = XLSX.read(data, { type: 'array' })
+						const firstSheet =
+							workbook.Sheets[workbook.SheetNames[0]]
+						const jsonData = XLSX.utils.sheet_to_json(firstSheet)
+						console.log(jsonData) // Se puede usar esta informacion para mostrarla en la vista
+					}
+					reader.readAsArrayBuffer(file)
+					setPreviewType('excel')
 				}
 			}
 		}
-	};
+	}
 
 	const renderTransferOption = (data: TransferData, option: number) => (
 		<div className="my-4 p-4 border rounded shadow-sm">
@@ -136,6 +143,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 			return
 		}
 
+		setIsProcessing(true)
 		await createbilling()
 		await createBill({
 			Compras: purchaseIds,
@@ -279,14 +287,21 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 					<PDFViewer pdfUrl={previewUrl} />
 				)}
 			</div>
-			<div className='flex justify-end'>
-				<button
-					onClick={handlePayment}
-					className="mt-4 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-				>
-					Finalizar compra
-				</button>
-			</div>
+
+			{isProcessing ? (
+				<div className="flex justify-end my-4">
+					<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+				</div>
+			) : (
+				<div className="flex justify-end">
+					<button
+						onClick={handlePayment}
+						className="mt-4 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+					>
+						Finalizar compra
+					</button>
+				</div>
+			)}
 		</div>
 	)
 }
