@@ -39,6 +39,7 @@ export default function Store({ params }: { params: { search: string } }) {
 	>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
+	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
 
 	const searchAlgolia = useCallback(
 		async (
@@ -134,6 +135,7 @@ export default function Store({ params }: { params: { search: string } }) {
 	}
 
 	const buynow = (product: any) => {
+		setLoadingPurchase(product._id)
 		dispatch({ type: 'auth/checkUserStatus' })
 		setTimeout(() => {
 			dispatch(addItemToCart(product))
@@ -243,6 +245,7 @@ export default function Store({ params }: { params: { search: string } }) {
 								}
 								handleBuy={() => buynow(product)}
 								id={product._id}
+								loading={loadingPurchase === product._id}
 							/>
 						))}
 						{loading && <p>Loading...</p>}
