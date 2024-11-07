@@ -3,7 +3,11 @@ import Button from '../Button'
 import Link from 'next/link'
 
 function PriceView(props: { price: string }) {
-	return <p className="text-title-3 font-bold text-primary-blue">{props.price}€</p>
+	return (
+		<p className="text-title-3 font-bold text-primary-blue">
+			{props.price}€
+		</p>
+	)
 }
 
 export default function CardPrice(props: {
@@ -12,10 +16,11 @@ export default function CardPrice(props: {
 	description: string
 	price: number
 	image?: string
-	handleBuy?: () => void,
+	handleBuy?: () => void
 	id?: string
+	loading?: boolean
 }) {
-	const { image } = props;
+	const { image, loading } = props
 	return (
 		<>
 			<div
@@ -43,17 +48,27 @@ export default function CardPrice(props: {
 							<span className="font-bold">Ref. </span>
 							{props.reference}
 						</p>
-						<p className="text-sm mobile:text-[1.2rem]">{props.description}</p>
+						<p className="text-sm mobile:text-[1.2rem]">
+							{props.description}
+						</p>
 					</div>
 					<div className="flex justify-center w-[100%] ">
-						<PriceView price={props.price.toFixed(2).replace('.', ',')} />
-					</div>
-					<div className='flex justify-center w-[100%] mb-6 mobile:mb-0'>
-						<Button 
-							labelName={'Comprar'}
-							onClick={props.handleBuy}
-							xpadding='px-16'
+						<PriceView
+							price={props.price.toFixed(2).replace('.', ',')}
 						/>
+					</div>
+					<div className="flex justify-center w-[100%] mb-6 mobile:mb-0">
+						{loading ? (
+							<div className="flex justify-center my-4">
+								<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+							</div>
+						) : (
+							<Button
+								labelName="Comprar"
+								onClick={props.handleBuy}
+								xpadding="px-16"
+							/>
+						)}
 					</div>
 				</div>
 			</div>

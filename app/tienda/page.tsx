@@ -34,6 +34,7 @@ export default function Store() {
 	>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
+	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
 
 	const search = async (
 		query: string,
@@ -118,6 +119,7 @@ export default function Store() {
 	}
 
 	const buynow = (product: any) => {
+		setLoadingPurchase(product._id)
 		dispatch({ type: 'auth/checkUserStatus' })
 		setTimeout(() => {
 			dispatch(addItemToCart(product))
@@ -227,6 +229,7 @@ export default function Store() {
 								}
 								handleBuy={() => buynow(product)}
 								id={product._id}
+								loading={loadingPurchase === product._id}
 							/>
 						))}
 						{loading && <p>Loading...</p>}
