@@ -1,5 +1,5 @@
 'use client'
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Button, { ButtonProps } from '../Button'
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface'
@@ -54,22 +54,20 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	const handleAddToCart = () => {
 		setIsProccesingAddToCart(true)
 		dispatch({ type: 'auth/checkUserStatus' })
-		setTimeout(() => {
-			dispatch(addItemToCart(data))
-			dispatch(
-				savePurchaseAsync({
-					product: data,
-					userId: localStorage.getItem('airtableUserId') ?? '',
-				})
-			)
-			Swal.fire({
-				position: 'center',
-				icon: 'success',
-				title: 'Producto añadido al carrito',
-				showConfirmButton: false,
-				timer: 1500,
+		dispatch(addItemToCart(data))
+		dispatch(
+			savePurchaseAsync({
+				product: data,
+				userId: userId ?? '',
 			})
-		}, 2000)
+		)
+		Swal.fire({
+			position: 'center',
+			icon: 'success',
+			title: 'Producto añadido al carrito',
+			showConfirmButton: false,
+			timer: 1500,
+		})
 	}
 
 	const handleRemoveFromCart = () => {
@@ -84,7 +82,12 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	}
 
 	const cart = useSelector((state: RootState) => state.cart.items)
-
+	const user = useSelector(
+		(state: RootState) => state.airtableUser.currentUser ?? null
+	)
+	const userId = useSelector(
+		(state: RootState) => state.airtableUser.currentUser?.data?.id
+	)
 	useEffect(() => {
 		const item = cart.find((item) => item._id === data._id)
 		setExistingItem(item!)
@@ -115,18 +118,16 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	}, [globalStock, stock, data._id, dispatch])
 
 	const buynow = () => {
-		setIsProccesingBuyNow(true)
 		dispatch({ type: 'auth/checkUserStatus' })
-		setTimeout(() => {
-			dispatch(addItemToCart(data))
-			dispatch(
-				savePurchaseAsync({
-					product: data,
-					userId: localStorage.getItem('airtableUserId') ?? '',
-				})
-			)
-			router.push('/verificacion-pago')
-		}, 2000)
+		setIsProccesingBuyNow(true)
+		dispatch(addItemToCart(data))
+		dispatch(
+			savePurchaseAsync({
+				product: data,
+				userId: userId ?? '',
+			})
+		)
+		router.push('/verificacion-pago')
 	}
 
 	return (
@@ -156,57 +157,63 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 					{discount}
 				</p>
 			</div>
-			<div className="flex gap-7 mt-7">
-				{data.stock === false || globalStock === false ? (
-					<Button
-						labelName="Producto no disponible"
-						type="secondary"
-						bg="bg-alter-grey"
-						borderColor="border-alter-grey"
-						hoverBg="hover:bg-alter-grey"
-						hoverText="white"
-						cursor="cursor-not-allowed"
-					/>
-				) : (
-					<>
-						{existingItem ? (
-							<Button
-								labelName="Quitar de la cesta"
-								type="secondary"
-								bg="bg-secondary-blue"
-								borderColor="border-secondary-blue"
-								hoverBg="hover:bg-custom-white"
-								hoverText="hover:text-secondary-blue"
-								cursor="cursor-pointer"
-								onClick={handleRemoveFromCart}
-							/>
-						) : (
-							<>
-								{isProccesingAddToCart ? (
-									<div className="flex justify-start my-4">
-										<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
-									</div>
-								) : isProccesingBuyNow ? (
-									<div className="flex justify-center my-4">
-										<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-									</div>
-								) : (
-									<>
-										<Button
-											{...button1Props}
-											onClick={handleAddToCart}
-										/>
-										<Button
-											{...button2Props}
-											onClick={buynow}
-										/>
-									</>
-								)}
-							</>
-						)}
-					</>
-				)}
-			</div>
+			{user ? (
+				<div className="flex gap-7 mt-7">
+					{data.stock === false || globalStock === false ? (
+						<Button
+							labelName="Producto no disponible"
+							type="secondary"
+							bg="bg-alter-grey"
+							borderColor="border-alter-grey"
+							hoverBg="hover:bg-alter-grey"
+							hoverText="white"
+							cursor="cursor-not-allowed"
+						/>
+					) : (
+						<>
+							{existingItem ? (
+								<Button
+									labelName="Quitar de la cesta"
+									type="secondary"
+									bg="bg-secondary-blue"
+									borderColor="border-secondary-blue"
+									hoverBg="hover:bg-custom-white"
+									hoverText="hover:text-secondary-blue"
+									cursor="cursor-pointer"
+									onClick={handleRemoveFromCart}
+								/>
+							) : (
+								<>
+									{isProccesingAddToCart ? (
+										<div className="flex justify-start my-4">
+											<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
+										</div>
+									) : isProccesingBuyNow ? (
+										<div className="flex justify-center my-4">
+											<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+										</div>
+									) : (
+										<>
+											<Button
+												{...button1Props}
+												onClick={handleAddToCart}
+											/>
+											<Button
+												{...button2Props}
+												onClick={buynow}
+											/>
+										</>
+									)}
+								</>
+							)}
+						</>
+					)}
+				</div>
+			) : (
+				<div className="flex justify-center my-4">
+					<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+				</div>
+			)}
 		</div>
 	)
 }

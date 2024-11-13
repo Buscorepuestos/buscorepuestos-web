@@ -58,3 +58,8 @@ export interface ResponseModel<T> {
     message: string;
     data?: T[];
 }
+
+export interface AirtableUserState {
+    message: string;
+    data?: AirtableUserResponse;
+}
