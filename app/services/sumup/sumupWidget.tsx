@@ -33,7 +33,6 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 	purchaseIds,
 	fieldsValue,
 }) => {
-	console.log('fieldsValue', fieldsValue)
 	const router = useRouter()
 	const dispatch = useDispatch()
 	const [isFormValid, setIsFormValid] = useState(false)
@@ -179,9 +178,8 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 									icon: 'error',
 									confirmButtonText: 'Aceptar',
 								})
-								setTimeout(() => {
-									router.push('/verificacion-pago')
-								}, 2000)
+								//se recarga la pagina para que se vuelva a cargar el widget
+								router.refresh()
 							}
 						},
 					})
