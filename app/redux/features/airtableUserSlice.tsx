@@ -1,10 +1,10 @@
 // src/store/userSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { AirtableUser, UserModel } from '../../types/airtableUser';
+import { AirtableUser, UserModel, AirtableUserResponse, AirtableUserState } from '../../types/airtableUser';
 import { userService } from '../../services/user/userService';
 
 interface UserState {
-    currentUser: AirtableUser | null;
+    currentUser: AirtableUserState | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
@@ -62,7 +62,10 @@ const userSlice = createSlice({
             })
             .addCase(getByuid.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.currentUser = action.payload;
+                state.currentUser = {
+                    message: 'User fetched successfully',
+                    data: action.payload as unknown as AirtableUserResponse
+                };
             })
             .addCase(getByuid.rejected, (state, action) => {
                 state.status = 'failed';
@@ -73,7 +76,10 @@ const userSlice = createSlice({
             })
             .addCase(createUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.currentUser = action.payload;
+                state.currentUser = {
+                    message: 'User fetched successfully',
+                    data: action.payload as unknown as AirtableUserResponse
+                };
             })
             .addCase(createUser.rejected, (state, action) => {
                 state.status = 'failed';
@@ -84,7 +90,10 @@ const userSlice = createSlice({
             })
             .addCase(createAnonymousUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.currentUser = action.payload;
+                state.currentUser = {
+                    message: 'User fetched successfully',
+                    data: action.payload as unknown as AirtableUserResponse
+                };
             })
             .addCase(createAnonymousUser.rejected, (state, action) => {
                 state.status = 'failed';
@@ -95,7 +104,10 @@ const userSlice = createSlice({
             })
             .addCase(updateUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.currentUser = action.payload;
+                state.currentUser = {
+                    message: 'User fetched successfully',
+                    data: action.payload as unknown as AirtableUserResponse
+                };
             })
             .addCase(updateUser.rejected, (state, action) => {
                 state.status = 'failed';
