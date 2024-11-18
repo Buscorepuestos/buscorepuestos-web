@@ -50,6 +50,18 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	const [isProccesingAddToCart, setIsProccesingAddToCart] =
 		useState<boolean>(false)
 	const [isProccesingBuyNow, setIsProccesingBuyNow] = useState<boolean>(false)
+	const userId = useSelector(
+		(state: RootState) => {
+			const currentUser = state.airtableUser.currentUser;
+			return currentUser && Array.isArray(currentUser.data) && currentUser.data.length > 0
+				? currentUser.data[0].id
+				: null;
+		}
+	)
+	const cart = useSelector((state: RootState) => state.cart.items)
+	const user = useSelector(
+		(state: RootState) => state.airtableUser.currentUser ?? null
+	)
 
 	const handleAddToCart = () => {
 		setIsProccesingAddToCart(true)
@@ -81,13 +93,6 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 		)
 	}
 
-	const cart = useSelector((state: RootState) => state.cart.items)
-	const user = useSelector(
-		(state: RootState) => state.airtableUser.currentUser ?? null
-	)
-	const userId = useSelector(
-		(state: RootState) => state.airtableUser.currentUser?.data?.id
-	)
 	useEffect(() => {
 		const item = cart.find((item) => item._id === data._id)
 		setExistingItem(item!)
