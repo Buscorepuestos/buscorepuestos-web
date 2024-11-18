@@ -33,7 +33,10 @@ function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
 	const [isLoaded, setIsLoaded] = useState(false)
 	const purchaseIds = items.map((item) => item.purchaseId ?? '')
-
+	const userId = useSelector(
+		(state: RootState) => state.airtableUser.currentUser?.data?.id
+	)
+	console.log('userId:', userId)
 	useEffect(() => {
 		if (items) {
 			setIsLoaded(true)
@@ -384,7 +387,7 @@ export default function Payment() {
 										'text-title-4 font-tertiary-font mb-4 self-start'
 									}
 								>
-									Información personal
+									Datos de envío
 								</h1>
 								<div
 									className={
@@ -469,16 +472,16 @@ export default function Payment() {
 								</div>
 
 								{/*Shipping Address Information*/}
-								<h1
+								{/* <h1
 									className={
 										'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
 									}
 								>
 									Dirección de envío
-								</h1>
+								</h1> */}
 								<div
 									className={
-										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4'
+										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4 mt-4'
 									}
 								>
 									<div
