@@ -44,6 +44,8 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 		userId = localStorage.getItem('airtableUserId')
 	}
 
+	
+
 	// Function to check form validity and missing fields
 	useEffect(() => {
 		const fields = fieldsValue
@@ -79,7 +81,6 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 			phone: Number(fieldsValue.phoneNumber),
 			province: fieldsValue.province,
 		}
-
 		const extraData = {
 			email: fieldsValue.email,
 			billingAddress: fieldsValue.billingAddress,

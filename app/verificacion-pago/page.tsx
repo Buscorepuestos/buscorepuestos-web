@@ -29,30 +29,51 @@ export interface FormsFields {
 	billingProvince: string
 }
 
+export interface addressFields {
+	Created: string
+	additionalInformation: string
+	address: string
+	addressNumber: string
+	country: string
+	cp: string
+	id: string
+	location: string
+	name: string
+	nif: string
+	phone: number
+	province: string
+}
+
 function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
 	const [isLoaded, setIsLoaded] = useState(false)
 	const purchaseIds = items.map((item) => item.purchaseId ?? '')
-	const userId = useSelector(
-		(state: RootState) => state.airtableUser.currentUser?.data?.id
-	)
-	console.log('userId:', userId)
+	const userId = useSelector((state: RootState) => {
+		const currentUser = state.airtableUser.currentUser
+		return currentUser &&
+			Array.isArray(currentUser.data) &&
+			currentUser.data.length > 0
+			? currentUser.data[0].id
+			: null
+	})
 	useEffect(() => {
 		if (items) {
 			setIsLoaded(true)
 		}
 	}, [items])
 
-	return { items, isLoaded, purchaseIds }
+	return { items, isLoaded, purchaseIds, userId }
 }
 
 export default function Payment() {
 	const dispatch = useDispatch()
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
+	const [isSwitchOn, setIsSwitchOn] = useState(true)
 	const [clientSecret, setClientSecret] = useState('')
 	const [error, setError] = useState<string | null>(null)
 	const [isMobile, setIsMobile] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
+	const [userAddresses, setUserAddresses] = useState<addressFields[]>([])
 	const [isScrolledInputs, setIsScrolledInputs] = useState({
 		name: false,
 		email: false,
@@ -82,7 +103,7 @@ export default function Payment() {
 		billingProvince: '',
 	})
 
-	const { items, isLoaded, purchaseIds } = useCartItems()
+	const { items, isLoaded, purchaseIds, userId } = useCartItems()
 
 	const [emailError, setEmailError] = useState<string | null>(null)
 	const [isFormVisible, setIsFormVisible] = useState(false)
@@ -199,11 +220,54 @@ export default function Payment() {
 		}
 	}, [sameBillAddress])
 
-	const shippingOptions = [
-		{ value: 'opcion1', label: 'Direcciones de envío guardadas' },
-		{ value: 'option2', label: 'Option 2' },
-		{ value: 'option3', label: 'Option 3' },
-	]
+	useEffect(() => {
+		const fetchUser = async () => {
+			if (userId) {
+				try {
+					const user = await userService.getUserById(userId)
+					const userData = user.data?.fields.userAddresses
+					if (userData) {
+						const addresses = await Promise.all(
+							userData.map(async (address: any) => {
+								const addresses =
+									await userService.getUserAdressesById(
+										address
+									)
+								return addresses.data.fields
+							}) || []
+						)
+						setUserAddresses(addresses)
+					}
+				} catch (error) {
+					console.error('Error fetching user:', error)
+				}
+			}
+		}
+
+		fetchUser()
+	}, [userId])
+
+	const shippingOptions = userAddresses.map((address) => ({
+		value: address.id,
+		label: address.address,
+	}))
+
+	const addressOnChanges = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const address = userAddresses.find(
+			(address) => address.id === event.target.value
+		)
+		if (address) {
+			setFieldsValue((prevState) => ({
+				...prevState,
+				shippingAddress: address.address,
+				addressExtra: address.addressNumber,
+				zip: address.cp,
+				city: address.location,
+				province: address.province,
+				country: address.country,
+			}))
+		}
+	}
 
 	const billingOptions = [
 		{ value: 'opcion1', label: 'Direcciones de facturación guardadas' },
@@ -211,10 +275,9 @@ export default function Payment() {
 		{ value: 'option3', label: 'Option 3' },
 	]
 
-	const handleCheckboxChange = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setSameBillAddress(event.target.checked)
+	const handleCheckboxChange = () => {
+		setIsSwitchOn((prev) => !prev)
+		setSameBillAddress((prev) => !prev)
 	}
 
 	const localDropdown = () => {
@@ -491,10 +554,20 @@ export default function Payment() {
 									>
 										<SelectDropdown
 											name={'saved_shipping_address'}
-											options={shippingOptions}
+											options={
+												shippingOptions.length > 0
+													? shippingOptions
+													: [
+															{
+																value: 'option1',
+																label: 'Aún no tienes direcciones guardadas',
+															},
+														]
+											}
 											placeholder={
 												'Direcciones de envío guardadas'
 											}
+											onChange={addressOnChanges}
 										/>
 									</div>
 								</div>
@@ -607,7 +680,7 @@ export default function Payment() {
 										isScrolled={isScrolledInputs.country}
 									/>
 								</div>
-								<div
+								{/* <div
 									className={
 										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
 									}
@@ -620,100 +693,135 @@ export default function Payment() {
 											'Usar la misma dirección de facturación'
 										}
 									/>
-								</div>
-
-								{/*Billing address*/}
-								<h1
-									className={
-										'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
-									}
-								>
-									Dirección de facturación
-								</h1>
-								<div
-									className={
-										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4'
-									}
-								>
-									<div
-										className={
-											'col-span-2 tablet:col-span-3'
-										}
-									>
-										<SelectDropdown
-											name={'saved_billing_address'}
-											options={billingOptions}
-											placeholder={
-												'Direcciones de facturación guardadas'
-											}
-										/>
+								</div> */}
+								<div className="flex flex-col justify-center items-center space-y-4">
+									<div className="flex flex-col justify-center items-center space-y-4">
+										<p
+											className="
+												ms-10 mt-4 font-tertiary-font text-custom-grey
+												xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] 
+												sm:text-[1.6vw] mobile:text-[3vw]
+											"
+										>
+											¿Usar los mismos datos para la
+											factura?
+										</p>
+										<label className="inline-flex items-center cursor-pointer">
+											<span
+												className="
+												font-tertiary-font ms-3 mr-4 text-custom-grey
+												xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] 
+												sm:text-[1.6vw] mobile:text-[3vw]
+											"
+											>
+												No
+											</span>
+											<input
+												type="checkbox"
+												value=""
+												className="sr-only peer"
+												onChange={handleCheckboxChange}
+												checked={isSwitchOn}
+											/>
+											<div className="relative w-16 h-8 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+											<span
+												className="
+												font-tertiary-font ms-3 mr-4 text-custom-grey
+												xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] 
+												sm:text-[1.6vw] mobile:text-[3vw]
+											"
+											>
+												Si
+											</span>
+										</label>
 									</div>
 								</div>
-								<div
-									className={
-										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-									}
-								>
-									<Input
-										placeholder={'Dirección'}
-										name={'bill_address_name'}
-										value={fieldsValue.billingAddress}
-										onChange={(e) =>
-											setFieldsValue({
-												...fieldsValue,
-												billingAddress: e.target.value,
-											})
-										}
-									/>
-								</div>
-								<div
-									className={
-										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-									}
-								>
-									<Input
-										placeholder={
-											'Número, piso, puerta, portal'
-										}
-										name={'bill_address_extra'}
-										value={fieldsValue.billingAddressExtra}
-										onChange={(e) =>
-											setFieldsValue({
-												...fieldsValue,
-												billingAddressExtra:
-													e.target.value,
-											})
-										}
-									/>
-								</div>
-								<div
-									className={
-										'grid grid-cols-2 w-[60%] mobile:w-full mt-4 gap-4'
-									}
-								>
-									<Input
-										placeholder={'Código postal'}
-										name={'bill_zip'}
-										value={fieldsValue.billingZip}
-										onChange={(e) =>
-											setFieldsValue({
-												...fieldsValue,
-												billingZip: e.target.value,
-											})
-										}
-									/>
-									<Input
-										placeholder={'Provincia'}
-										name={'bill_province'}
-										value={fieldsValue.billingProvince}
-										onChange={(e) =>
-											setFieldsValue({
-												...fieldsValue,
-												billingProvince: e.target.value,
-											})
-										}
-									/>
-								</div>
+								{!isSwitchOn && (
+									<>
+										{/*Billing address*/}
+										<h1
+											className={
+												'text-title-4 font-tertiary-font mb-4 mt-12 self-start'
+											}
+										>
+											Dirección de facturación
+										</h1>
+										<div
+											className={
+												'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+											}
+										>
+											<Input
+												placeholder={'Dirección'}
+												name={'bill_address_name'}
+												value={
+													fieldsValue.billingAddress
+												}
+												onChange={(e) =>
+													setFieldsValue({
+														...fieldsValue,
+														billingAddress:
+															e.target.value,
+													})
+												}
+											/>
+										</div>
+										<div
+											className={
+												'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+											}
+										>
+											<Input
+												placeholder={
+													'Número, piso, puerta, portal'
+												}
+												name={'bill_address_extra'}
+												value={
+													fieldsValue.billingAddressExtra
+												}
+												onChange={(e) =>
+													setFieldsValue({
+														...fieldsValue,
+														billingAddressExtra:
+															e.target.value,
+													})
+												}
+											/>
+										</div>
+										<div
+											className={
+												'grid grid-cols-2 w-[60%] mobile:w-full mt-4 gap-4'
+											}
+										>
+											<Input
+												placeholder={'Código postal'}
+												name={'bill_zip'}
+												value={fieldsValue.billingZip}
+												onChange={(e) =>
+													setFieldsValue({
+														...fieldsValue,
+														billingZip:
+															e.target.value,
+													})
+												}
+											/>
+											<Input
+												placeholder={'Provincia'}
+												name={'bill_province'}
+												value={
+													fieldsValue.billingProvince
+												}
+												onChange={(e) =>
+													setFieldsValue({
+														...fieldsValue,
+														billingProvince:
+															e.target.value,
+													})
+												}
+											/>
+										</div>
+									</>
+								)}
 
 								{/*Stripe Form*/}
 								<h1
@@ -745,6 +853,8 @@ export default function Payment() {
 										isScrolledInputs={isScrolledInputs}
 										items={items}
 										totalPrice={stringPrice}
+										isSwitchOn={isSwitchOn}
+										setFieldsValue={setFieldsValue}
 									/>
 								</div>
 							</div>

@@ -74,17 +74,6 @@ const fetchDistributorData = async (id: string) => {
 	}
 }
 
-const fetchAirtableUserById = async (id: string) => {
-	try {
-		const response = await axios.get(
-			`${environment.api.url}/users/${id}`
-		)
-		return response.data
-	} catch (error) {
-		console.error('Error fetching user data:', error)
-	}
-}
-
 export async function generateMetadata({ params }: { params: { id: string } }) {
 	const data = await fetchProductData(params.id)
 
