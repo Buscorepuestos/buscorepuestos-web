@@ -13,7 +13,7 @@ export default function SumupPayment({
 	purchaseIds: string[]
 	fieldsValue: FormsFields,
 	numberPriceRounded: number
-	items: any[]
+	items: any[],
 }) {
 	const [checkoutId, setCheckoutId] = useState(null)
 

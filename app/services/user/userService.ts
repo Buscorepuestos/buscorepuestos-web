@@ -1,6 +1,6 @@
 // src/services/userService.ts
 import api from '../../api/api';
-import { AirtableUser, UserModel, ResponseModel, AirtableUserResponse } from '../../types/airtableUser';
+import { AirtableUser, UserModel, ResponseModel, AirtableUserResponse, AirtableUserState } from '../../types/airtableUser';
 
 export const userService = {
     async createUser(user: UserModel): Promise<ResponseModel<UserModel>> {
@@ -36,8 +36,8 @@ export const userService = {
         return res.data;
     },
 
-    async getUserById(userId: string): Promise<UserModel> {
-        const res = await api.get<UserModel>(`/users/${userId}`);
+    async getUserById(userId: string): Promise<AirtableUserState> {
+        const res = await api.get<AirtableUserState>(`/users/${userId}`);
         return res.data;
     },
 
@@ -51,5 +51,10 @@ export const userService = {
             data: entity,
         });
         return res.data;
-    }
+    },
+    
+    async getUserAdressesById(addressId: string): Promise<any> {
+        const res = await api.get<any>(`/user-addresses/${addressId}`);
+        return res.data;
+    },
 };
