@@ -33,6 +33,7 @@ interface UserFields {
     Rol: string;
     uid: string;
     id: string;
+    userAddresses?: string[];
 }
 
 interface UserRawJson {
