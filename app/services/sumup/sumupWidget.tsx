@@ -6,6 +6,7 @@ import { updatePurchase } from '../../services/purchase/purchase'
 import { createBill } from '../../services/billing/billing.service'
 import { useDispatch } from 'react-redux'
 import { userService } from '../../services/user/userService'
+import { updateUser } from '../mailchimp/mailchimp'
 import Swal from 'sweetalert2'
 
 interface PaymentWidgetProps {
@@ -139,6 +140,10 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 						locale: 'es-ES',
 						onResponse: async (type, body) => {
 							if (type === 'success') {
+								await updateUser({
+									firstName: fieldsValue.name,
+									email: fieldsValue.email,
+								})
 								await createbilling()
 								await createBill({
 									"Id Pago Summup": body.transaction_code,

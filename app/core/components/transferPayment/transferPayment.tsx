@@ -6,6 +6,7 @@ import { FormsFields } from '../../../verificacion-pago/page'
 import { createBill } from '../../../services/billing/billing.service'
 import { userService } from '../../../services/user/userService'
 import { useRouter } from 'next/navigation'
+import { updateUser } from '../../../services/mailchimp/mailchimp'
 import Image from 'next/image'
 import PDFViewer from '@/app/lib/pdfviewer'
 import * as XLSX from 'xlsx'
@@ -144,6 +145,10 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 		}
 
 		setIsProcessing(true)
+		await updateUser({
+			firstName: fieldsValue.name,
+			email: fieldsValue.email,
+		})
 		await createbilling()
 		await createBill({
 			Compras: purchaseIds,

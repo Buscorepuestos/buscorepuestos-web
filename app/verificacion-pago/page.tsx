@@ -5,10 +5,10 @@ import { RootState } from '../redux/store'
 import ShoppingBasket from '../core/components/shopping-cart/ShoppingBasket'
 import SelectDropdown from '../core/components/selectDropdown/selectDropdown'
 import PaymentSelection from '../core/components/paymentSelection/PaymentSelection'
-import Checkbox from '../core/components/checkbox/checkbox'
 import Input from '../core/components/input/input'
 import { createPaymentIntent } from '../services/checkout/stripe.service'
 import { userService } from '../services/user/userService'
+import { subscribe } from '../services/mailchimp/mailchimp'
 import Image from 'next/image'
 import './stripe.css'
 
@@ -310,7 +310,7 @@ export default function Payment() {
 	const provinceRef = useRef<HTMLInputElement>(null)
 	const countryRef = useRef<HTMLInputElement>(null)
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		if (!fieldsValue.email) {
 			setEmailError('Por favor, ingrese su correo.')
 		} else if (!emailRegex.test(fieldsValue.email)) {
@@ -323,6 +323,7 @@ export default function Payment() {
 				id: localStorage.getItem('airtableUserId'),
 				['correo electronico']: fieldsValue.email,
 			}) // Actualizar el correo en la base de datos
+			await subscribe(fieldsValue.email) // Suscribir al usuario a Mailchimp
 		}
 	}
 
@@ -680,20 +681,6 @@ export default function Payment() {
 										isScrolled={isScrolledInputs.country}
 									/>
 								</div>
-								{/* <div
-									className={
-										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
-									}
-								>
-									<Checkbox
-										name={'same_address'}
-										value={sameBillAddress}
-										onChange={handleCheckboxChange}
-										label={
-											'Usar la misma dirección de facturación'
-										}
-									/>
-								</div> */}
 								<div className="flex flex-col justify-center items-center space-y-4">
 									<div className="flex flex-col justify-center items-center space-y-4">
 										<p
