@@ -96,7 +96,7 @@ export default function Payment() {
 		zip: '',
 		city: '',
 		province: '',
-		country: '',
+		country: 'España',
 		billingAddress: '',
 		billingAddressExtra: '',
 		billingZip: '',
@@ -532,6 +532,7 @@ export default function Payment() {
 										isScrolled={
 											isScrolledInputs.phoneNumber
 										}
+										type='number'
 									/>
 								</div>
 
@@ -678,7 +679,7 @@ export default function Payment() {
 											})
 										}
 										ref={countryRef}
-										isScrolled={isScrolledInputs.country}
+										disabled
 									/>
 								</div>
 								<div className="flex flex-col justify-center items-center space-y-4">
