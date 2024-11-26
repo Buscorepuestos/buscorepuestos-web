@@ -11,6 +11,7 @@ interface InputProps {
 	disabled?: boolean
 	buttonText?: string // Añadido para el texto del botón
 	onButtonClick?: () => void // Añadido para manejar el clic del botón
+	type?: string
 }
 
 const Input: React.FC<InputProps> = ({
@@ -24,6 +25,7 @@ const Input: React.FC<InputProps> = ({
 	disabled = false,
 	buttonText,
 	onButtonClick,
+	type = 'text',
 }) => {
 	cssClass = cssClass ? cssClass : ''
 
@@ -48,13 +50,14 @@ const Input: React.FC<InputProps> = ({
 		<div className={`relative ${cssClass}`}>
 			<input
 				name={name}
-				type="text"
+				type={type}
 				className={`
                     flex border-[1px] w-full rounded-xl text-gray-800 
                     p-2 font-tertiary-font focus:border-secondary-blue focus:outline-none
                     placeholder:text-custom-grey
                     xl:text-[0.9vw] lg:text-[1.6vw] md:text-[1.7vw] sm:text-[2vw] mobile:text-[3vw]
 					${error || isScrolled ? 'border-red-500' : 'border-secondary-blue'}
+					
                 `}
 				placeholder={placeholder}
 				value={value}

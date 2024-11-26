@@ -5,6 +5,7 @@ import { createBill } from '../../../services/billing/billing.service'
 import { useDispatch } from 'react-redux'
 import { FormsFields } from '../../../verificacion-pago/page'
 import { environment } from '../../../environment/environment'
+import { updateUser } from '../../../services/mailchimp/mailchimp'
 
 const StripeForm = (props: { 
 	clientSecret: string; 
@@ -147,6 +148,11 @@ const StripeForm = (props: {
 
 	const handleSubmit = async (e: { preventDefault: () => void }) => {
 		e.preventDefault()
+
+		await updateUser({
+			firstName: props.fieldsValues.name,
+			email: props.fieldsValues.email,
+		})
 
 		await createbilling()
 
