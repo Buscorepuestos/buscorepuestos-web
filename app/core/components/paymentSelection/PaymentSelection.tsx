@@ -403,7 +403,7 @@ const PaymentSelection = ({
 						`}
 					>
 						<Image
-							src="/Transferencia-gris.svg"
+							src="/transferencia-gris.svg"
 							alt="transferencia"
 							width={46}
 							height={46}
