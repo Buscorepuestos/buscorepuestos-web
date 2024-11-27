@@ -46,6 +46,26 @@ const Input: React.FC<InputProps> = ({
 		}
 	}, [isScrolled])
 
+	// Función para manejar las teclas no válidas
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (type === 'number') {
+			// Bloquea letras, caracteres especiales y espacios
+			const invalidKeys = ['e', 'E', '+', '-', '.', ',']
+			if (invalidKeys.includes(e.key)) {
+				e.preventDefault()
+			}
+		}
+	}
+
+	// Validar el valor ingresado
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (type === 'number') {
+			const numericValue = e.target.value.replace(/[^0-9]/g, '') // Solo números
+			e.target.value = numericValue
+		}
+		if (onChange) onChange(e)
+	}
+
 	return (
 		<div className={`relative ${cssClass}`}>
 			<input
@@ -61,11 +81,12 @@ const Input: React.FC<InputProps> = ({
                 `}
 				placeholder={placeholder}
 				value={value}
-				onChange={onChange}
+				onChange={(e) => handleChange(e)}
 				onBlur={() => handleOnBlur()}
 				autoComplete="off"
 				ref={ref}
 				disabled={disabled}
+				onKeyDown={handleKeyDown}
 			/>
 			{buttonText && onButtonClick && (
 				<button
