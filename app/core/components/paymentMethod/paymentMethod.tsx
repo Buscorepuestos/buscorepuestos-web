@@ -52,7 +52,7 @@ const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
                 </div>
                 <div className="hidden mobile:block w-[95%] m-auto h-[1.5px] bg-secondary-blue separator" />
                 <div className='flex'>
-                    <div className="flex flex-col items-center gap-2 pr-6 mobile:pr-6 border-r-[2px] border-secondary-blue">
+                    <div className="flex flex-col items-center gap-2 pr-6 pl-4 mobile:px-[3.4rem] border-r-[2px] border-secondary-blue">
                         <Image
                             src={paymentOptions[2].src}
                             alt={paymentOptions[2].alt}
@@ -62,7 +62,7 @@ const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
                         />
                         <p>{paymentOptions[2].subtitle}</p>
                     </div>
-                    <div className="flex flex-col items-center gap-2 px-6 sm:border-r-[2px] sm:border-secondary-blue">
+                    <div className="flex flex-col items-center gap-2 px-6">
                         <Image
                             src={paymentOptions[3].src}
                             alt={paymentOptions[3].alt}
@@ -73,30 +73,7 @@ const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
                         <p>{paymentOptions[3].subtitle}</p>
                     </div>
                 </div>
-                <div className="hidden mobile:block w-[95%] m-auto h-[2px] bg-secondary-blue separator" />
-                <div className="mobile:hidden flex flex-col items-center gap-2 mobile:justify-center">
-                    <Image
-                        src={paymentOptions[4].src}
-                        alt={paymentOptions[4].alt}
-                        width={paymentOptions[4].width}
-                        height={paymentOptions[4].height}
-                        className={paymentOptions[4].className}
-                    />
-                    <p>{paymentOptions[4].subtitle}</p>
-                </div>
 			</div>
-            <div className="hidden mobile:flex mobile:justify-center">
-                <div className="flex flex-col items-center gap-2 my-4 text-[3vw]">
-                    <Image
-                        src={paymentOptions[4].src}
-                        alt={paymentOptions[4].alt}
-                        width={paymentOptions[4].width}
-                        height={paymentOptions[4].height}
-                        className={paymentOptions[4].className}
-                    />
-                    <p>{paymentOptions[4].subtitle}</p>
-                </div>
-            </div>
 		</div>
 	)
 }
