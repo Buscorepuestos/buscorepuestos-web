@@ -31,14 +31,7 @@ const paymentOptions = [
 		subtitle: 'Subtitle 4',
 		width: 100,
 		height: 100,
-	},
-	{
-		src: '/path/to/image5.jpg',
-		alt: 'Alt text 5',
-		subtitle: 'Subtitle 5',
-		width: 100,
-		height: 100,
-	},
+	}
 ]
 
 describe('PaymentMethods Component', () => {

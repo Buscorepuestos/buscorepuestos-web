@@ -31,20 +31,12 @@ const paymentOptions = [
 		className: `xl:w-[3vw] lg:w-[4vw] md:w-[4.3vw] sm:w-[5.5vw] mobile:w-[11vw]`,
 	},
 	{
-		src: '/contrareembolso.svg',
-		alt: 'contrareembolso',
-		subtitle: 'Contra reembolso',
-		width: 50,
-		height: 50,
-		className: `xl:w-[3.1vw] lg:w-[4vw] md:w-[4.6vw] sm:w-[5.5vw] mobile:w-[11vw]`,
-	},
-	{
-		src: '/bizum.svg',
-		alt: 'bizum',
-		subtitle: 'Paga con Bizum',
+		src: '/paypal-product.png',
+		alt: 'paypal;',
+		subtitle: 'Paypal',
 		width: 35,
 		height: 35,
-		className: `xl:w-[2.3vw] lg:w-[3vw] md:w-[3.3vw] sm:w-[4vw] mobile:w-[8.5vw]`,
+		className: `xl:w-[3vw] lg:w-[3vw] md:w-[3.3vw] sm:w-[4vw] mobile:w-[12vw]`,
 	},
 	{
 		src: '/plazos.svg',
@@ -192,12 +184,15 @@ export default async function Product({ params }: { params: { id: string } }) {
 									discountRounded ? `${discountRounded}%` : ''
 								}
 								button1Props={{
-									type: 'secondary',
-									labelName: 'Añadir a la cesta',
+									type: 'secondary'
 								}}
 								button2Props={{
-									type: 'primary',
+									type: 'tertiary',
 									labelName: 'Comprar',
+									bg: 'bg-primary-blue',
+									hoverBg: 'hover:bg-primary-lila',
+									hoverText: 'hover:text-white',
+									borderColor: 'border-pprimary-lila'
 								}}
 								data={data}
 								stock={
@@ -222,8 +217,8 @@ export default async function Product({ params }: { params: { id: string } }) {
 					</div>
 					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
 				</div>
-				<div className="flex flex-col px-[5vw] xl:px-[10vw] mobile:px-[3vw]">
-					<div className="flex justify-end mobile:justify-center mb-6">
+				<div className="flex justify-end mobile:justify-center px-[5vw] xl:px-[10vw] mobile:px-[3vw]">
+					<div className="flex mobile:justify-center mb-6">
 						<PaymentMethod paymentOptions={paymentOptions} />
 					</div>
 				</div>

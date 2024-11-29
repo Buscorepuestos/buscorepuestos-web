@@ -269,12 +269,6 @@ export default function Payment() {
 		}
 	}
 
-	const billingOptions = [
-		{ value: 'opcion1', label: 'Direcciones de facturación guardadas' },
-		{ value: 'option2', label: 'Option 2' },
-		{ value: 'option3', label: 'Option 3' },
-	]
-
 	const handleCheckboxChange = () => {
 		setIsSwitchOn((prev) => !prev)
 		setSameBillAddress((prev) => !prev)
@@ -355,15 +349,24 @@ export default function Payment() {
 					<article>
 						<ShoppingBasket products={items} isMobile={isMobile} />
 						<div className="w-full h-[2px] bg-secondary-blue mt-6" />
-						<div className={'flex justify-end items-center mr-8'}>
-							<p className={'mr-6 font-medium'}>Total:</p>
-							<p
-								className={
-									'text-title-3 text-primary-blue-2 font-semibold'
-								}
+						<div className='flex flex-col'>
+							<div
+								className={'flex justify-end items-center mr-8'}
 							>
-								{stringPrice}€
-							</p>
+								<p className={'mr-6 font-medium'}>Total:</p>
+								<p
+									className={
+										'text-title-3 text-primary-blue-2 font-semibold'
+									}
+								>
+									{stringPrice}€
+								</p>
+							</div>
+							<div className="flex justify-end mt-[-0.5rem] mr-8">
+								<p className="text-sm text-secondary-blue">
+									Envío incluido
+								</p>
+							</div>
 						</div>
 						<div className="w-full h-[2px] bg-secondary-blue mb-8" />
 					</article>
@@ -373,7 +376,7 @@ export default function Payment() {
 					<article>
 						<ShoppingBasket products={items} isMobile={isMobile} />
 						<div className="w-full h-[2px] bg-secondary-blue mt-6" />
-						<div className={'flex justify-end items-center mr-20'}>
+						<div className={'flex justify-center items-center'}>
 							<p className={'mr-6 font-medium'}>Total:</p>
 							<p
 								className={
@@ -383,6 +386,11 @@ export default function Payment() {
 								{stringPrice}€
 							</p>
 						</div>
+						<div className="flex justify-center mt-[-0.5rem]">
+								<p className="text-sm text-secondary-blue">
+									Envío incluido
+								</p>
+							</div>
 						{localDropdown()}
 					</article>
 				)}
@@ -412,6 +420,11 @@ export default function Payment() {
 									placeholder="Correo electrónico"
 									value={fieldsValue.email}
 									onChange={handleEmailChange}
+									onKeyDown={(e) => {
+										if (e.key === 'Enter') {
+											handleNext()
+										}
+									}}
 								/>
 								{emailError && (
 									<p className="text-red-500 text-sm mt-1">
@@ -532,7 +545,7 @@ export default function Payment() {
 										isScrolled={
 											isScrolledInputs.phoneNumber
 										}
-										type='number'
+										type="number"
 									/>
 								</div>
 

@@ -134,19 +134,24 @@ export default function Store({ params }: { params: { search: string } }) {
 		setInputValue(''); // Resetea inputValue si cambias el modelo
 	}
 
-	const buynow = (product: any) => {
-		setLoadingPurchase(product._id)
-		dispatch({ type: 'auth/checkUserStatus' })
-		setTimeout(() => {
-			dispatch(addItemToCart(product))
-			dispatch(
-				savePurchaseAsync({
-					product: product,
-					userId: localStorage.getItem('airtableUserId') ?? '',
-				})
-			)
-			router.push('/verificacion-pago')
-		}, 2000)
+	// const buynow = (product: any) => {
+	// 	setLoadingPurchase(product._id)
+	// 	dispatch({ type: 'auth/checkUserStatus' })
+	// 	setTimeout(() => {
+	// 		dispatch(addItemToCart(product))
+	// 		dispatch(
+	// 			savePurchaseAsync({
+	// 				product: product,
+	// 				userId: localStorage.getItem('airtableUserId') ?? '',
+	// 			})
+	// 		)
+	// 		router.push('/verificacion-pago')
+	// 	}, 2000)
+	// }
+
+	const handle = (productId: string) => {
+		setLoadingPurchase(productId)
+		router.push(`/producto/${productId}`)
 	}
 
 	return (
@@ -243,7 +248,7 @@ export default function Store({ params }: { params: { search: string } }) {
 										? product.images[0]
 										: '/nodisponible.png'
 								}
-								handleBuy={() => buynow(product)}
+								handle={() => handle(product._id)}
 								id={product._id}
 								loading={loadingPurchase === product._id}
 							/>

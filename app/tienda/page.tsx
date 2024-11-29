@@ -118,21 +118,10 @@ export default function Store() {
 		setSelectedModel(model)
 	}
 
-	const buynow = (product: any) => {
-		setLoadingPurchase(product._id)
-		dispatch({ type: 'auth/checkUserStatus' })
-		setTimeout(() => {
-			dispatch(addItemToCart(product))
-			dispatch(
-				savePurchaseAsync({
-					product: product,
-					userId: localStorage.getItem('airtableUserId') ?? '',
-				})
-			)
-			router.push('/verificacion-pago')
-		}, 2000)
+	const handle = (productId: string) => {
+		setLoadingPurchase(productId)
+		router.push(`/producto/${productId}`)
 	}
-
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
@@ -227,7 +216,7 @@ export default function Store() {
 										? product.images[0]
 										: '/nodisponible.png'
 								}
-								handleBuy={() => buynow(product)}
+								handle={() => handle(product._id)}
 								id={product._id}
 								loading={loadingPurchase === product._id}
 							/>

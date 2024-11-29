@@ -14,6 +14,8 @@ interface Product {
     refLocal?: string;
     idEmpresa?: string;
     isMetasync?: boolean;
+    productName?: string;
+    subcategory?: string;
 }
 
 interface ShoppingBasketProps {
@@ -56,6 +58,8 @@ const ShoppingBasket: React.FC<ShoppingBasketProps> = ({ products, isMobile }) =
                         refLocal={product.refLocal}
                         idEmpresa={product.idEmpresa}
                         isMetasync={product.isMetasync}
+                        productName={product.productName}
+                        subcategory={product.subcategory}
                     />
                 ))}
             </BasketContainer>

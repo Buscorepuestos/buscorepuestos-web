@@ -16,7 +16,7 @@ export default function CardPrice(props: {
 	description: string
 	price: number
 	image?: string
-	handleBuy?: () => void
+	handle?: () => void
 	id?: string
 	loading?: boolean
 }) {
@@ -57,16 +57,15 @@ export default function CardPrice(props: {
 							price={props.price.toFixed(2).replace('.', ',')}
 						/>
 					</div>
-					<div className="flex justify-center w-[100%] mb-6 mobile:mb-0">
+					<div className="flex justify-center w-[100%] mt-4 mobile:mb-0">
 						{loading ? (
 							<div className="flex justify-center my-4">
 								<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 							</div>
 						) : (
 							<Button
-								labelName="Comprar"
-								onClick={props.handleBuy}
-								xpadding="px-16"
+								labelName="Ver producto"
+								onClick={props.handle}
 							/>
 						)}
 					</div>
