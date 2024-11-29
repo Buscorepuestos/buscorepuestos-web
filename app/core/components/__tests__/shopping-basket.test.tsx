@@ -20,6 +20,7 @@ describe('ShoppingBasket Component', () => {
             isMobile: false,
             stock: true,
             _id: 'productId1',
+            productName: 'Product 1',
         },
         {
             images: ['/card-preview.webp'],
@@ -31,6 +32,7 @@ describe('ShoppingBasket Component', () => {
             isMobile: true,
             stock: true,
             _id: 'productId2',
+            productName: 'Product 2',
         }
     ];
 

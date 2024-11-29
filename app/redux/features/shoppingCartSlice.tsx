@@ -47,6 +47,7 @@ export interface CartItem {
     refLocal?: string;
     idEmpresa?: string;
     isMetasync?: boolean;
+    subcategory?: string;
 }
 
 export interface CartState {
@@ -141,5 +142,6 @@ export const selectProductProperties = (product: ProductMongoInterface) => ({
     refLocal: product.refLocal,
     idEmpresa: product.idEmpresa,
     isMetasync: product.isMetasync,
+    subcategory: product.subcategory,
 });
 

@@ -16,6 +16,7 @@ import { PartInterface } from '../../../types/metasync/product'
 import { environment } from '../../../environment/environment'
 import { updateMetasyncProduct } from '../../../services/products/products.service'
 import { updateAlgoliaProductStock } from '../../../services/algolia/updateStock.service'
+import Link from 'next/link'
 
 interface ProductCartInfoProps {
 	_id: string
@@ -30,6 +31,8 @@ interface ProductCartInfoProps {
 	refLocal?: string
 	idEmpresa?: string
 	isMetasync?: boolean
+	productName?: string
+	subcategory?: string
 }
 
 const Article = styled.article<{ isAvailable: boolean }>`
@@ -153,13 +156,15 @@ const ProductCartInfo: React.FC<ProductCartInfoProps> = (props) => {
 			/>
 			<div className={'flex justify-between w-full'}>
 				<div className={'ml-16 tablet:ml-8 mobile:ml-4 mobile:w-full'}>
+				<Link href={`/producto/${props._id}`}>
 					<h1
 						className={
-							'text-title-3 tablet:text-title-4 mobile:text-base font-semibold font-poppins line-clamp-1 mobile:line-clamp-2'
+							'text-title-3 tablet:text-title-4 mobile:text-base font-semibold font-poppins line-clamp-1 mobile:line-clamp-2 cursor-pointer hover:underline'
 						}
 					>
-						{props.title}
+						{props.productName ? props.productName : props.subcategory}
 					</h1>
+				</Link>
 					<h2
 						className={
 							'text-sm tablet:text-xs mobile:text-xs font-poppins'
