@@ -192,12 +192,15 @@ export default async function Product({ params }: { params: { id: string } }) {
 									discountRounded ? `${discountRounded}%` : ''
 								}
 								button1Props={{
-									type: 'secondary',
-									labelName: 'Añadir a la cesta',
+									type: 'secondary'
 								}}
 								button2Props={{
-									type: 'primary',
+									type: 'tertiary',
 									labelName: 'Comprar',
+									bg: 'bg-primary-blue',
+									hoverBg: 'hover:bg-primary-lila',
+									hoverText: 'hover:text-white',
+									borderColor: 'border-pprimary-lila'
 								}}
 								data={data}
 								stock={
