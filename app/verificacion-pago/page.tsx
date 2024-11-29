@@ -269,12 +269,6 @@ export default function Payment() {
 		}
 	}
 
-	const billingOptions = [
-		{ value: 'opcion1', label: 'Direcciones de facturación guardadas' },
-		{ value: 'option2', label: 'Option 2' },
-		{ value: 'option3', label: 'Option 3' },
-	]
-
 	const handleCheckboxChange = () => {
 		setIsSwitchOn((prev) => !prev)
 		setSameBillAddress((prev) => !prev)
@@ -412,6 +406,11 @@ export default function Payment() {
 									placeholder="Correo electrónico"
 									value={fieldsValue.email}
 									onChange={handleEmailChange}
+									onKeyDown={(e) => {
+										if (e.key === 'Enter') {
+											handleNext()
+										}
+									}}
 								/>
 								{emailError && (
 									<p className="text-red-500 text-sm mt-1">

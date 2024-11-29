@@ -12,6 +12,7 @@ interface InputProps {
 	buttonText?: string // Añadido para el texto del botón
 	onButtonClick?: () => void // Añadido para manejar el clic del botón
 	type?: string
+	onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
 const Input: React.FC<InputProps> = ({
@@ -26,6 +27,7 @@ const Input: React.FC<InputProps> = ({
 	buttonText,
 	onButtonClick,
 	type = 'text',
+	onKeyDown,
 }) => {
 	cssClass = cssClass ? cssClass : ''
 
@@ -55,6 +57,7 @@ const Input: React.FC<InputProps> = ({
 				e.preventDefault()
 			}
 		}
+		if (onKeyDown) onKeyDown(e)
 	}
 
 	// Validar el valor ingresado
