@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PaymentForm from '../checkout/PaymentForm'
 import SumupPayment from '../sumupPayment/sumupPayment'
 import TransferPayment from '../transferPayment/transferPayment'
 import { FormsFields } from '../../../verificacion-pago/page'
+import { createPaymentIntent } from '../../../services/checkout/stripe.service'
 import Image from 'next/image'
 
 const PaymentSelection = ({
-	clientSecret,
 	purchaseIds,
 	fieldsValue,
 	numberPriceRounded,
+	numberPrice,
 	nameRef,
 	emailRef,
 	nifRef,
@@ -27,10 +28,10 @@ const PaymentSelection = ({
 	isSwitchOn,
 	setFieldsValue,
 }: {
-	clientSecret: string
 	purchaseIds: string[]
 	fieldsValue: FormsFields
 	numberPriceRounded: number
+	numberPrice: number
 	nameRef: React.RefObject<HTMLInputElement>
 	emailRef: React.RefObject<HTMLInputElement>
 	nifRef: React.RefObject<HTMLInputElement>
@@ -76,9 +77,22 @@ const PaymentSelection = ({
 		'stripe' | 'sumup' | 'transferencia' | null
 	>(null)
 
-	const [selectedPaymentMethodDisabled, setSelectedPaymentMethodDisabled] = useState<
-		'stripe' | 'sumup' | 'transferencia' | null
-	>(null)
+	const [selectedPaymentMethodDisabled, setSelectedPaymentMethodDisabled] =
+		useState<'stripe' | 'sumup' | 'transferencia' | null>(null)
+	const [clientSecretExists, setClientSecretExists] = useState(false)
+	const [clientSecret, setClientSecret] = useState<string | null>(null)
+	const prevPurchaseIdsRef = useRef<string[]>([])
+	const createPayuPaymentIntent = async () => {
+		const res = await createPaymentIntent({
+			amount: numberPriceRounded,
+			currency: 'eur',
+			cartIDs: purchaseIds,
+			automatic_payment_methods: { enabled: true },
+		})
+		setClientSecret(res.data.client_secret)
+		setClientSecretExists(true)
+		return res
+	}
 
 	const handlePaymentSelection = (
 		method: 'stripe' | 'sumup' | 'transferencia'
@@ -92,6 +106,15 @@ const PaymentSelection = ({
 				billingZip: fieldsValue.zip,
 				billingProvince: fieldsValue.province,
 			}))
+		}
+		if (
+			method === 'stripe' &&
+			!clientSecretExists &&
+			JSON.stringify(prevPurchaseIdsRef.current) !==
+				JSON.stringify(purchaseIds)
+		) {
+			createPayuPaymentIntent()
+			prevPurchaseIdsRef.current = purchaseIds
 		}
 	}
 
@@ -456,7 +479,7 @@ const PaymentSelection = ({
 						<SumupPayment
 							purchaseIds={purchaseIds}
 							fieldsValue={fieldsValue}
-							numberPriceRounded={numberPriceRounded}
+							numberPriceRounded={numberPrice}
 							items={items}
 						/>
 					</div>
@@ -470,7 +493,7 @@ const PaymentSelection = ({
 						/>
 					</div>
 				)}
-				{selectedPaymentMethod === 'stripe' && (
+				{selectedPaymentMethod === 'stripe' && clientSecret ? (
 					<div className="flex justify-center">
 						{clientSecret && (
 							<PaymentForm
@@ -481,7 +504,11 @@ const PaymentSelection = ({
 							/>
 						)}
 					</div>
-				)}
+				) : selectedPaymentMethod === 'stripe' && !clientSecret ? (
+					<div className="flex justify-center my-4">
+						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+					</div>
+				): null}
 			</div>
 			{!isFormValid && selectedPaymentMethodDisabled === 'sumup' ? (
 				<p className="text-center text-sm text-red-500">
@@ -489,7 +516,8 @@ const PaymentSelection = ({
 					estar completos.
 				</p>
 			) : null}
-			{!isFormValid && selectedPaymentMethodDisabled === 'transferencia' ? (
+			{!isFormValid &&
+			selectedPaymentMethodDisabled === 'transferencia' ? (
 				<p className="text-center text-sm text-red-500">
 					*Para realizar el pago con transferencia, todos los campos
 					deben estar completos.
@@ -497,8 +525,8 @@ const PaymentSelection = ({
 			) : null}
 			{!isFormValid && selectedPaymentMethodDisabled === 'stripe' ? (
 				<p className="text-center text-sm text-red-500">
-					*Para realizar el pago con Klarna o Paypal, todos los campos deben
-					estar completos.
+					*Para realizar el pago con Klarna o Paypal, todos los campos
+					deben estar completos.
 				</p>
 			) : null}
 			{items.length === 0 ? (

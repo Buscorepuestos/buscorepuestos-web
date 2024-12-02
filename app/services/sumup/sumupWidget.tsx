@@ -143,6 +143,10 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 								await updateUser({
 									firstName: fieldsValue.name,
 									email: fieldsValue.email,
+									address: fieldsValue.shippingAddress,
+									addressExtra: fieldsValue.addressExtra,
+									zip: fieldsValue.zip,
+									state: fieldsValue.province,
 								})
 								await createbilling()
 								await createBill({
