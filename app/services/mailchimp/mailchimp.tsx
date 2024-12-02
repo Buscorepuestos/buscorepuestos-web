@@ -12,7 +12,7 @@ export const subscribe = async (email: string): Promise<ApiResponse> => {
 
 export const updateUser = async (user: any): Promise<ApiResponse> => {
     try {
-        return (await api.put(`/mailchimp/update`, { user })).data;
+        return (await api.patch(`/mailchimp/update`, { user })).data;
     } catch (error) {
         console.error('Error updating user:', error)
         throw error

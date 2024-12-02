@@ -1,12 +1,11 @@
 'use client'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/store'
 import ShoppingBasket from '../core/components/shopping-cart/ShoppingBasket'
 import SelectDropdown from '../core/components/selectDropdown/selectDropdown'
 import PaymentSelection from '../core/components/paymentSelection/PaymentSelection'
 import Input from '../core/components/input/input'
-import { createPaymentIntent } from '../services/checkout/stripe.service'
 import { userService } from '../services/user/userService'
 import { subscribe } from '../services/mailchimp/mailchimp'
 import Image from 'next/image'
@@ -47,7 +46,10 @@ export interface addressFields {
 function useCartItems() {
 	const items = useSelector((state: RootState) => state.cart.items)
 	const [isLoaded, setIsLoaded] = useState(false)
-	const purchaseIds = items.map((item) => item.purchaseId ?? '')
+	const purchaseIds = useMemo(
+		() => items.map((item) => item.purchaseId ?? '').filter((id) => id !== ''),
+		[items]
+	)
 	const userId = useSelector((state: RootState) => {
 		const currentUser = state.airtableUser.currentUser
 		return currentUser &&
@@ -69,7 +71,6 @@ export default function Payment() {
 	const dispatch = useDispatch()
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [isSwitchOn, setIsSwitchOn] = useState(true)
-	const [clientSecret, setClientSecret] = useState('')
 	const [error, setError] = useState<string | null>(null)
 	const [isMobile, setIsMobile] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
@@ -122,24 +123,24 @@ export default function Payment() {
 		}
 	}, [setFieldsValue])
 
-	const calculateTotal = () => {
+	const calculateTotal = useMemo(() => {
 		const stringPrice = items
 			.filter((product) => product.stock)
 			.map((product) => product.buscorepuestosPrice)
 			.reduce((acc, price) => acc + Number(price), 0)
 			.toFixed(2)
-
+	
 		const numberPrice = parseFloat(stringPrice)
 		const numberPriceRounded = Math.round(numberPrice * 100)
-
+	
 		return {
 			stringPrice,
 			numberPriceRounded,
 			numberPrice,
 		}
-	}
+	}, [items])
 
-	const { numberPriceRounded, stringPrice, numberPrice } = calculateTotal()
+	const { numberPriceRounded, stringPrice, numberPrice } = calculateTotal
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -155,45 +156,6 @@ export default function Payment() {
 			}
 		}
 	}, [])
-
-	const prevPurchaseIdsRef = useRef<string[]>([])
-
-	useEffect(() => {
-		const createIntent = async () => {
-			try {
-				if (
-					purchaseIds.length === 0 ||
-					purchaseIds.every((id) => id.trim() === '')
-				) {
-					console.error(
-						'No se puede crear el PaymentIntent porque purchaseIds está vacío o solo contiene strings vacíos.'
-					)
-					return
-				}
-
-				const res = await createPaymentIntent({
-					amount: numberPriceRounded,
-					currency: 'eur',
-					cartIDs: purchaseIds,
-					automatic_payment_methods: { enabled: true },
-				})
-				setClientSecret(res.data.client_secret)
-			} catch (error) {
-				setError('Error al crear el Payment Intent')
-				console.error('Error al crear el Payment Intent:', error)
-			}
-		}
-
-		// Compara el valor actual de purchaseIds con el anterior
-		if (
-			JSON.stringify(prevPurchaseIdsRef.current) !==
-			JSON.stringify(purchaseIds)
-		) {
-			createIntent()
-			// Actualiza el valor anterior
-			prevPurchaseIdsRef.current = purchaseIds
-		}
-	}, [purchaseIds, numberPriceRounded])
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
@@ -349,7 +311,7 @@ export default function Payment() {
 					<article>
 						<ShoppingBasket products={items} isMobile={isMobile} />
 						<div className="w-full h-[2px] bg-secondary-blue mt-6" />
-						<div className='flex flex-col'>
+						<div className="flex flex-col">
 							<div
 								className={'flex justify-end items-center mr-8'}
 							>
@@ -387,10 +349,10 @@ export default function Payment() {
 							</p>
 						</div>
 						<div className="flex justify-center mt-[-0.5rem]">
-								<p className="text-sm text-secondary-blue">
-									Envío incluido
-								</p>
-							</div>
+							<p className="text-sm text-secondary-blue">
+								Envío incluido
+							</p>
+						</div>
 						{localDropdown()}
 					</article>
 				)}
@@ -832,32 +794,35 @@ export default function Payment() {
 								>
 									Seleccionar Método de pago
 								</h1>
-								<div className="w-full px-24 mobile:px-0">
-									<PaymentSelection
-										clientSecret={clientSecret}
-										purchaseIds={purchaseIds}
-										fieldsValue={fieldsValue}
-										numberPriceRounded={numberPrice}
-										nameRef={nameRef}
-										emailRef={emailRef}
-										nifRef={nifRef}
-										phoneNumberRef={phoneNumberRef}
-										shippingAddressRef={shippingAddressRef}
-										addressExtraRef={addressExtraRef}
-										zipRef={zipRef}
-										cityRef={cityRef}
-										provinceRef={provinceRef}
-										countryRef={countryRef}
-										setIsScrolledInputs={
-											setIsScrolledInputs
-										}
-										isScrolledInputs={isScrolledInputs}
-										items={items}
-										totalPrice={stringPrice}
-										isSwitchOn={isSwitchOn}
-										setFieldsValue={setFieldsValue}
-									/>
-								</div>
+									<div className="w-full px-24 mobile:px-0">
+										<PaymentSelection
+											purchaseIds={purchaseIds}
+											fieldsValue={fieldsValue}
+											numberPriceRounded={numberPriceRounded}
+											numberPrice={numberPrice}
+											nameRef={nameRef}
+											emailRef={emailRef}
+											nifRef={nifRef}
+											phoneNumberRef={phoneNumberRef}
+											shippingAddressRef={
+												shippingAddressRef
+											}
+											addressExtraRef={addressExtraRef}
+											zipRef={zipRef}
+											cityRef={cityRef}
+											provinceRef={provinceRef}
+											countryRef={countryRef}
+											setIsScrolledInputs={
+												setIsScrolledInputs
+											}
+											isScrolledInputs={isScrolledInputs}
+											items={items}
+											totalPrice={stringPrice}
+											isSwitchOn={isSwitchOn}
+											setFieldsValue={setFieldsValue}
+										/>
+									</div>
+								{/* )} */}
 							</div>
 						</article>
 					</div>
