@@ -71,7 +71,15 @@ export default function Store() {
 					'idEmpresa',
 				],
 			})
-			setProducts(result.hits as unknown as IProductMongoose[])
+			const sortedProducts = (result.hits as unknown as IProductMongoose[]).sort(
+				(a, b) => {
+					const aHasImages = a.images && a.images.length > 0 ? 1 : 0;
+					const bHasImages = b.images && b.images.length > 0 ? 1 : 0;
+					return bHasImages - aHasImages;
+				}
+			);
+	
+			setProducts(sortedProducts);
 		} catch (err) {
 			console.log(err)
 			setError((err as Error).message)
