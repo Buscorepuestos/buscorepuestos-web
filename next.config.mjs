@@ -22,6 +22,12 @@ const nextConfig = {
 				port: '',
 				pathname: '/.attachments/**',
 			},
+			{
+				protocol: 'https',
+				hostname: 'cdn15.metasync.com',
+				port: '',
+				pathname: '**',	
+			},
 		],
 	},
 }
