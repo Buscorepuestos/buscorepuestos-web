@@ -10,8 +10,8 @@ export function Header() {
 	const principalMenuLinks = [
 		{ label: 'Tienda', href: '/tienda' },
 		{ label: 'Quiénes somos', href: '#' },
-		{ label: 'Ayuda', href: '#' },
-		{ label: 'Contacto', href: '#' },
+		{ label: 'Ayuda', href: '/ayuda' },
+		{ label: 'Contacto', href: '/contacto' },
 	]
 
 	const secondaryMenuLinks = [
@@ -57,7 +57,16 @@ export function Header() {
 	}, []);
 
 	useEffect(() => {
-		setIsProductPage(pathname.startsWith('/product'))
+		const starWith = pathname.startsWith.bind(pathname)
+		if (
+			starWith('/producto') || 
+			starWith('/contacto') || 
+			starWith('/ayuda')
+		){
+			setIsProductPage(true)
+		} else {
+			setIsProductPage(false)
+		}
 	}, [pathname])
 
 	const cart = useAppSelector((state) => state.cart.items);
