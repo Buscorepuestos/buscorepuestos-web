@@ -112,7 +112,7 @@ describe('Componente Header', () => {
 	})
 
 	test('Aplica clase mt-0 cuando pathname comienza con /product y no es pantalla ancha', () => {
-		usePathnameMock.mockReturnValue('/product/123');
+		usePathnameMock.mockReturnValue('/producto/123');
 		resizeWindow(640, 858); // Simula una pantalla no ancha
 		renderWithProvider(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes
@@ -120,7 +120,7 @@ describe('Componente Header', () => {
 	});
 
 	test('Aplica clase mt-[1vw] cuando pathname comienza con /product y es pantalla ancha', () => {
-		usePathnameMock.mockReturnValue('/product/123');
+		usePathnameMock.mockReturnValue('/producto/123');
 		resizeWindow(1280, 1024); // Simula una pantalla ancha
 		renderWithProvider(<Header />);
 		const sectionElement = screen.getByRole('region'); // Asegúrate de tener role="region" en la sección si no ya lo tienes

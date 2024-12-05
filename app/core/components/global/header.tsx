@@ -9,7 +9,7 @@ import { environment } from '../../../environment/environment'
 export function Header() {
 	const principalMenuLinks = [
 		{ label: 'Tienda', href: '/tienda' },
-		{ label: 'Quiénes somos', href: '#' },
+		{ label: 'Quiénes somos', href: '/sobre-nosotros' },
 		{ label: 'Ayuda', href: '/ayuda' },
 		{ label: 'Contacto', href: '/contacto' },
 	]
@@ -61,7 +61,8 @@ export function Header() {
 		if (
 			starWith('/producto') || 
 			starWith('/contacto') || 
-			starWith('/ayuda')
+			starWith('/ayuda') ||
+			starWith('/sobre-nosotros')
 		){
 			setIsProductPage(true)
 		} else {
