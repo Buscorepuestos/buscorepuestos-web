@@ -74,7 +74,7 @@ const Page = () => {
 								&quot;Sistema de transmisión&quot;.
 								<br />
 							</p>
-							<p>
+							<p className='text-sm'>
 								Hace optimizar el manejo del vehículo <br /> y
 								lo mantiene en sincronía.
 							</p>
@@ -104,9 +104,9 @@ const Page = () => {
 						</div>
 						<div className="mt-6">
 							<p className="font-bold">&quot;El motor&quot;.</p>
-							<p>
-								El corazón de nuestra plataforma, <br />{' '}
-								encargado de cada artículo publicado en <br />{' '}
+							<p className='text-sm'>
+								El corazón de nuestra plataforma, <br />
+								encargado de cada artículo publicado <br /> en 
 								nuestra web y el correcto filtrado <br /> de los
 								colaboradores.
 							</p>
