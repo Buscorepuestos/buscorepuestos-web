@@ -15,10 +15,10 @@ const footerLinks = [
 	{
 		category: 'PÁGINAS RECIENTES',
 		links: [
-			{ name: 'Tienda', href: '#' },
-			{ name: 'Menú', href: '#' },
-			{ name: 'Quienes somos', href: '#' },
-			{ name: 'Contacto', href: '#' },
+			{ name: 'Tienda', href: '/tienda' },
+			{ name: 'Menú', href: '/' },
+			{ name: 'Quienes somos', href: '/sobre-nosotros' },
+			{ name: 'Contacto', href: '/contacto' },
 		],
 	},
 	{

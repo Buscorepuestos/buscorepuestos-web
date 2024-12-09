@@ -9,6 +9,7 @@ interface FiltersProps {
 	onSubcategoryChange: (subcategory: string | null) => void
 	onBrandChange: (brand: string | null) => void
 	onModelChange: (model: string | null) => void
+	onYearChange: (year: number | null) => void
 }
 
 const appID = environment.algoliaAppID
@@ -19,6 +20,7 @@ const Filters: React.FC<FiltersProps> = ({
 	onSubcategoryChange,
 	onBrandChange,
 	onModelChange,
+	onYearChange,
 }) => {
 	const [selectedCategory, setSelectedCategory] =
 		useState<CategoryKey | null>(null)
@@ -27,8 +29,10 @@ const Filters: React.FC<FiltersProps> = ({
 	>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
+	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [brands, setBrands] = useState<string[]>([])
 	const [models, setModels] = useState<string[]>([])
+	const [years, setYears] = useState<number[]>([])
 	const [isFiltersVisible, setIsFiltersVisible] = useState<boolean>(false)
 
 	const algoliaClient = algoliasearch(appID, apiKey)
@@ -44,15 +48,16 @@ const Filters: React.FC<FiltersProps> = ({
 			onSubcategoryChange(null)
 			setBrands([])
 			setModels([])
+			setYears([])
 		} else {
 			setSelectedSubcategory(subcategory)
 			onSubcategoryChange(subcategory)
-			fetchBrandsAndModels(subcategory)
+			fetchBrandsAndModelsAndYear(subcategory)
 			// setIsFiltersVisible(false) // Ocultar filtros después de seleccionar
 		}
 	}
 
-	const fetchBrandsAndModels = async (
+	const fetchBrandsAndModelsAndYear = async (
 		subcategory: string,
 		selectedBrand?: string
 	) => {
@@ -81,6 +86,12 @@ const Filters: React.FC<FiltersProps> = ({
 				...new Set(hits.map((hit: any) => hit.articleModel)),
 			]
 			setModels(uniqueModels)
+
+			// Filtrar los años en base a la combinación de subcategoría y marca
+			const uniqueYears = [
+				...new Set(hits.map((hit: any) => hit.year)),
+			]
+			setYears(uniqueYears)
 		} catch (error) {
 			console.error('Error fetching brands and models:', error)
 		}
@@ -97,7 +108,7 @@ const Filters: React.FC<FiltersProps> = ({
 
 		// Filtrar modelos en función de la subcategoría y la marca seleccionada
 		if (selectedSubcategory) {
-			fetchBrandsAndModels(selectedSubcategory, selectedBrand) // Filtrado por subcategoría y marca
+			fetchBrandsAndModelsAndYear(selectedSubcategory, selectedBrand) // Filtrado por subcategoría y marca
 		}
 	}
 
@@ -105,6 +116,12 @@ const Filters: React.FC<FiltersProps> = ({
 		const selectedModel = event.target.value
 		setSelectedModel(selectedModel)
 		onModelChange(selectedModel)
+	}
+
+	const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const selectedYear = parseInt(event.target.value)
+		setSelectedYear(selectedYear)
+		onYearChange(selectedYear)
 	}
 
 	const toggleFiltersVisibility = () => {
@@ -347,6 +364,48 @@ const Filters: React.FC<FiltersProps> = ({
 									className="bg-white"
 								>
 									{toTitleCase(model)}
+								</option>
+							))}
+						</select>
+						<span className="absolute inset-y-0 right-2 flex items-center pr-2 pointer-events-none">
+							<Image
+								src="/dropdown-arrow.svg"
+								alt="arrow down"
+								width={20}
+								height={20}
+							/>
+						</span>
+					</div>
+				</div>
+
+				<div className="mb-4">
+					<label className="block text-dark-grey font-bold mb-5">
+						Año:
+					</label>
+					<div className="relative">
+						<span
+							className="absolute left-3 -top-4 text-secondary-blue text-xs z-10"
+							style={{
+								background: isFiltersVisible ? 'white' : 'linear-gradient(to top, white 10%, rgba(206, 206, 206, 0.685) 200%)',
+								padding: '0 4px',
+							}}
+						>
+							Año del coche
+						</span>
+						<select
+							value={selectedYear || ''}
+							onChange={handleYearChange}
+							className="block w-full border-2 border-secondary-blue rounded-3xl shadow-sm focus:border-secondary-blue focus:ring-primary-blue p-2 bg-white"
+							disabled={!selectedBrand}
+						>
+							<option value="" className="bg-white hidden"></option>
+							{years.map((year) => (
+								<option
+									key={year}
+									value={year}
+									className="bg-white"
+								>
+									{year}
 								</option>
 							))}
 						</select>

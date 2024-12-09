@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { environment } from '../../../environment/environment'
 
 const socialMediaLinks = [
 	{ imgUrl: 'facebook.svg', href: '#' },
@@ -22,10 +23,10 @@ const footerLinks = [
 	{
 		category: 'PÁGINAS\nRECIENTES',
 		links: [
-			{ name: 'Tienda', href: '#' },
-			{ name: 'Menú', href: '#' },
-			{ name: 'Quienes somos', href: '#' },
-			{ name: 'Contacto', href: '#' },
+			{ name: 'Tienda', href: '/tienda' },
+			{ name: 'Menú', href: `/` },
+			{ name: 'Quienes somos', href: '/sobre-nosotros' },
+			{ name: 'Contacto', href: '/contacto' },
 		],
 	},
 	{
