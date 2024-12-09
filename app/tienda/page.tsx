@@ -34,13 +34,15 @@ export default function Store() {
 	>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
+	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
 
 	const search = async (
 		query: string,
 		subcategory: string | null = null,
 		brand: string | null = null,
-		model: string | null = null
+		model: string | null = null,
+		year: number | null = null
 	) => {
 		setLoading(true)
 		let searchQuery = query
@@ -52,6 +54,7 @@ export default function Store() {
 			}
 			if (brand) filters.push(`brand:${brand}`)
 			if (model) filters.push(`articleModel:${model}`)
+			if (year) filters.push(`year:${year}`)
 
 			const result = await index.search(searchQuery, {
 				facetFilters: filters,
@@ -93,9 +96,9 @@ export default function Store() {
 	}, [dispatch])
 
 	useEffect(() => {
-		search(inputValue, selectedSubcategory, selectedBrand, selectedModel)
+		search(inputValue, selectedSubcategory, selectedBrand, selectedModel, selectedYear)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedSubcategory, selectedBrand, selectedModel])
+	}, [selectedSubcategory, selectedBrand, selectedModel, selectedYear])
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
@@ -126,6 +129,10 @@ export default function Store() {
 		setSelectedModel(model)
 	}
 
+	const handleYearChange = (year: number | null) => {
+		setSelectedYear(year)
+	}
+
 	const handle = (productId: string) => {
 		setLoadingPurchase(productId)
 		router.push(`/producto/${productId}`)
@@ -138,6 +145,7 @@ export default function Store() {
 						onSubcategoryChange={handleSubcategoryChange} 
 						onBrandChange={handleBrandChange}
 						onModelChange={handleModelChange}
+						onYearChange={handleYearChange}
 					/>
 				</div>
 				<div className="flex flex-col gap-5 sm:max-h-[1500rem] mobile:items-center">
@@ -205,6 +213,7 @@ export default function Store() {
 							onSubcategoryChange={handleSubcategoryChange}
 							onBrandChange={handleBrandChange}
 							onModelChange={handleModelChange}
+							onYearChange={handleYearChange}
 						/>
 					</div>
 					<section
