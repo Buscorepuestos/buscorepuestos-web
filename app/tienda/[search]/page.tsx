@@ -39,6 +39,7 @@ export default function Store({ params }: { params: { search: string } }) {
 	>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
+	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
 
 	const searchAlgolia = useCallback(
@@ -46,7 +47,8 @@ export default function Store({ params }: { params: { search: string } }) {
 			query: string,
 			subcategory: string | null = null,
 			brand: string | null = null,
-			model: string | null = null
+			model: string | null = null,
+			year: number | null = null
 		) => {
 			setLoading(true)
 			let searchQuery = query
@@ -58,6 +60,7 @@ export default function Store({ params }: { params: { search: string } }) {
 				}
 				if (brand) filters.push(`brand:${brand}`)
 				if (model) filters.push(`articleModel:${model}`)
+				if (year) filters.push(`year:${year}`)
 
 				const result = await index.search(searchQuery, {
 					hitsPerPage: 100,
@@ -75,6 +78,7 @@ export default function Store({ params }: { params: { search: string } }) {
 						'stock',
 						'refLocal',
 						'idEmpresa',
+						'year'
 					],
 				})
 				const sortedProducts = (result.hits as unknown as IProductMongoose[]).sort(
@@ -99,13 +103,13 @@ export default function Store({ params }: { params: { search: string } }) {
 		// Si no hay un valor en inputValue, realiza la búsqueda inicial desde params.search
 		if (!inputValue) {
 			const searchQuery = decodeURIComponent(params.search);
-			searchAlgolia(searchQuery, selectedSubcategory, selectedBrand, selectedModel);
+			searchAlgolia(searchQuery, selectedSubcategory, selectedBrand, selectedModel, selectedYear);
 		} else {
 			// Realiza la búsqueda basada en el inputValue y los filtros seleccionados
-			searchAlgolia(inputValue, selectedSubcategory, selectedBrand, selectedModel);
+			searchAlgolia(inputValue, selectedSubcategory, selectedBrand, selectedModel, selectedYear);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [params.search, selectedSubcategory, selectedBrand, selectedModel]);
+	}, [params.search, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
@@ -139,6 +143,11 @@ export default function Store({ params }: { params: { search: string } }) {
 		setInputValue(''); // Resetea inputValue si cambias el modelo
 	}
 
+	const handleYearChange = (year: number | null) => {
+		setSelectedYear(year);
+		setInputValue(''); // Resetea inputValue si cambias el año
+	}
+
 	// const buynow = (product: any) => {
 	// 	setLoadingPurchase(product._id)
 	// 	dispatch({ type: 'auth/checkUserStatus' })
@@ -167,6 +176,7 @@ export default function Store({ params }: { params: { search: string } }) {
 						onSubcategoryChange={handleSubcategoryChange} 
 						onBrandChange={handleBrandChange}
 						onModelChange={handleModelChange}
+						onYearChange={handleYearChange}
 					/>
 				</div>
 				<div className="flex flex-col gap-5 sm:max-h-[1500rem] mobile:items-center">
@@ -234,6 +244,7 @@ export default function Store({ params }: { params: { search: string } }) {
 							onSubcategoryChange={handleSubcategoryChange}
 							onBrandChange={handleBrandChange}
 							onModelChange={handleModelChange}
+							onYearChange={handleYearChange}
 						/>
 					</div>
 					<section
