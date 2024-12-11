@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { environment } from '../../environment/environment'
 import Filters from '../../core/components/filters/filters'
 import Image from 'next/image'
+import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import '../tienda.css'
 
 const appID = environment.algoliaAppID
@@ -39,7 +40,6 @@ export default function Store({ params }: { params: { search: string } }) {
 
 	const [currentPage, setCurrentPage] = useState(0) // Página actual
 	const [totalPages, setTotalPages] = useState(0) // Total de páginas
-	const [inputPage, setInputPage] = useState('') // Control del input de la página
 
 	const searchAlgolia = useCallback(
 		async (
@@ -162,37 +162,6 @@ export default function Store({ params }: { params: { search: string } }) {
 				selectedYear,
 				prevPage
 			)
-		}
-	}
-
-	const handlePageInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const newValue = e.target.value.replace(/[^0-9]/g, '') // Solo números
-
-		// Si el valor es vacío, el input se mantendrá vacío.
-		if (
-			newValue === '' ||
-			(parseInt(newValue, 10) >= 1 &&
-				parseInt(newValue, 10) <= totalPages)
-		) {
-			setInputPage(newValue) // Actualiza el valor solo si está dentro del rango
-		}
-	}
-
-	const goToPage = () => {
-		const page = parseInt(inputPage, 10) - 1
-		if (page >= 0 && page < totalPages) {
-			setCurrentPage(page)
-			// Llama a la función de búsqueda con la nueva página
-			searchAlgolia(
-				inputValue,
-				selectedSubcategory,
-				selectedBrand,
-				selectedModel,
-				selectedYear,
-				page
-			)
-		} else {
-			alert('Página fuera de rango')
 		}
 	}
 
@@ -365,38 +334,15 @@ export default function Store({ params }: { params: { search: string } }) {
 						<button
 							onClick={handlePrevPage}
 							disabled={currentPage === 0}
-							className="text-primary-blue text-2xl hover:text-primary-lila"
 						>
-							←
+							<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 						</button>
-						<div className="flex items-center gap-2">
-							<input
-								type="text"
-								value={inputPage}
-								onChange={handlePageInputChange}
-								placeholder="Ir a página..."
-								className="border border-gray-300 px-2 py-1 rounded-md w-16 text-center"
-								min={1}
-								max={totalPages}
-							/>
-							<button
-								onClick={goToPage}
-								className="bg-primary-blue text-white px-4 py-1 rounded-md text-sm hover:bg-primary-lila"
-								disabled={
-									parseInt(inputPage, 10) < 1 ||
-									parseInt(inputPage, 10) > totalPages
-								}
-							>
-								Ir
-							</button>
-						</div>
 						<span>{`Página ${currentPage + 1} de ${totalPages}`}</span>
 						<button
 							onClick={handleNextPage}
 							disabled={currentPage === totalPages - 1}
-							className="text-primary-blue text-2xl hover:text-primary-lila"
 						>
-							→
+							<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 						</button>
 					</div>
 				</div>
