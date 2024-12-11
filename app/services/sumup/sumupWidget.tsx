@@ -45,23 +45,30 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 		userId = localStorage.getItem('airtableUserId')
 	}
 
-	
-
 	// Function to check form validity and missing fields
 	useEffect(() => {
 		const fields = fieldsValue
 		let missingField = ''
 
-		if (!fields.name) missingField = 'Por favor, ingresa tu nombre completo.'
-		else if (!fields.email) missingField = 'Por favor, ingresa tu correo electrónico.'
-		else if (!fields.nif) missingField = 'Por favor, ingresa tu NIF o identificación fiscal.'
-		else if (!fields.phoneNumber) missingField = 'Por favor, ingresa tu número de teléfono.'
-		else if (!fields.shippingAddress) missingField = 'Por favor, ingresa tu dirección.'
-		else if (!fields.addressExtra) missingField = 'Por favor, ingresa el número de tu dirección.'
-		else if (!fields.zip) missingField = 'Por favor, ingresa tu código postal.'
+		if (!fields.name)
+			missingField = 'Por favor, ingresa tu nombre completo.'
+		else if (!fields.email)
+			missingField = 'Por favor, ingresa tu correo electrónico.'
+		else if (!fields.nif)
+			missingField = 'Por favor, ingresa tu NIF o identificación fiscal.'
+		else if (!fields.phoneNumber)
+			missingField = 'Por favor, ingresa tu número de teléfono.'
+		else if (!fields.shippingAddress)
+			missingField = 'Por favor, ingresa tu dirección.'
+		else if (!fields.addressExtra)
+			missingField = 'Por favor, ingresa el número de tu dirección.'
+		else if (!fields.zip)
+			missingField = 'Por favor, ingresa tu código postal.'
 		else if (!fields.city) missingField = 'Por favor, ingresa tu ciudad.'
-		else if (!fields.province) missingField = 'Por favor, selecciona tu provincia.'
-		else if (!fields.country) missingField = 'Por favor, selecciona tu país.'
+		else if (!fields.province)
+			missingField = 'Por favor, selecciona tu provincia.'
+		else if (!fields.country)
+			missingField = 'Por favor, selecciona tu país.'
 
 		setMissingFieldMessage(missingField)
 		setIsFormValid(!missingField)
@@ -139,59 +146,71 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 						showSubmitButton: true,
 						locale: 'es-ES',
 						onResponse: async (type, body) => {
-							if (type === 'success') {
-								await updateUser({
-									firstName: fieldsValue.name,
-									email: fieldsValue.email,
-									address: fieldsValue.shippingAddress,
-									addressExtra: fieldsValue.addressExtra,
-									zip: fieldsValue.zip,
-									state: fieldsValue.province,
-								})
-								await createbilling()
-								await createBill({
-									"Id Pago Summup": body.transaction_code,
-									Compras: purchaseIds,
-									Usuarios: [userId!],
-									transfer: false,
-									address: fieldsValue.shippingAddress,
-									country: fieldsValue.country,
-									location: fieldsValue.city,
-									addressNumber: fieldsValue.addressExtra,
-									name: fieldsValue.name,
-									cp: fieldsValue.zip,
-									nif: fieldsValue.nif,
-									phone: Number(fieldsValue.phoneNumber),
-									province: fieldsValue.province,
-								})
-								await userService.createUserAddresses({
-									user: [userId!],
-									name: fieldsValue.name,
-									nif: fieldsValue.nif,
-									address: fieldsValue.shippingAddress,
-									country: fieldsValue.country,
-									location: fieldsValue.city,
-									addressNumber: fieldsValue.addressExtra,
-									phone: Number(fieldsValue.phoneNumber),
-									province: fieldsValue.province,
-									cp: fieldsValue.zip,
-									["Correo electrónico"]: fieldsValue.email
-								})
-								purchaseIds.forEach(async (purchaseId) => {
-									await updatePurchase(purchaseId)
-								})
-								router.push('/pago-exitoso?pagoSumup=true')
-							} else if (type === 'error') {
+							if (type === 'success' && body.transaction_code) {
+								// Procesar solo si la transacción es exitosa
+								try {
+									await updateUser({
+										firstName: fieldsValue.name,
+										email: fieldsValue.email,
+										address: fieldsValue.shippingAddress,
+										addressExtra: fieldsValue.addressExtra,
+										zip: fieldsValue.zip,
+										state: fieldsValue.province,
+									});
+									await createbilling();
+									await createBill({
+										"Id Pago Summup": body.transaction_code,
+										Compras: purchaseIds,
+										Usuarios: [userId!],
+										transfer: false,
+										address: fieldsValue.shippingAddress,
+										country: fieldsValue.country,
+										location: fieldsValue.city,
+										addressNumber: fieldsValue.addressExtra,
+										name: fieldsValue.name,
+										cp: fieldsValue.zip,
+										nif: fieldsValue.nif,
+										phone: Number(fieldsValue.phoneNumber),
+										province: fieldsValue.province,
+									});
+									await userService.createUserAddresses({
+										user: [userId!],
+										name: fieldsValue.name,
+										nif: fieldsValue.nif,
+										address: fieldsValue.shippingAddress,
+										country: fieldsValue.country,
+										location: fieldsValue.city,
+										addressNumber: fieldsValue.addressExtra,
+										phone: Number(fieldsValue.phoneNumber),
+										province: fieldsValue.province,
+										cp: fieldsValue.zip,
+										["Correo electrónico"]: fieldsValue.email,
+									});
+									purchaseIds.forEach(async (purchaseId) => {
+										await updatePurchase(purchaseId);
+									});
+									router.push('/pago-exitoso?pagoSumup=true');
+								} catch (error) {
+									console.error("Error procesando la transacción:", error);
+									Swal.fire({
+										title: 'Error',
+										text: 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.',
+										icon: 'error',
+										confirmButtonText: 'Aceptar',
+									});
+									router.refresh(); // Recargar la página para intentar de nuevo
+								}
+							} else if (type === 'error' || !body.transaction_code) {
+								// Manejar errores o cancelaciones
 								Swal.fire({
 									title: 'Error',
-									text: 'Ha ocurrido un error al procesar el pago.',
+									text: 'El pago no se ha completado o ha sido cancelado.',
 									icon: 'error',
 									confirmButtonText: 'Aceptar',
-								})
-								//se recarga la pagina para que se vuelva a cargar el widget
-								router.refresh()
+								});
+								router.refresh(); // Redirigir a la página de resumen si el pago falla
 							}
-						},
+						}
 					})
 				}
 			}

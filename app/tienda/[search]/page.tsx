@@ -1,23 +1,15 @@
 'use client'
-import React, {
-	ChangeEvent,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import CardPrice from '../../core/components/cards/CardPrice'
 import { IProductMongoose } from '../../types/product'
 import algoliasearch from 'algoliasearch'
 import SearchBar from '../../core/components/SearchBar'
-import {
-	addItemToCart,
-	savePurchaseAsync,
-} from '../../redux/features/shoppingCartSlice'
 import { useAppDispatch } from '../../redux/hooks'
 import { useRouter } from 'next/navigation'
 import { environment } from '../../environment/environment'
 import Filters from '../../core/components/filters/filters'
 import Image from 'next/image'
+import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import '../tienda.css'
 
 const appID = environment.algoliaAppID
@@ -29,6 +21,10 @@ export default function Store({ params }: { params: { search: string } }) {
 	const router = useRouter()
 	const client = algoliasearch(appID, apiKey)
 	const index = client.initIndex(indexName)
+
+	index.setSettings({
+		paginationLimitedTo: 20000,
+	})
 
 	const [products, setProducts] = useState<IProductMongoose[]>([])
 	const [loading, setLoading] = useState(true)
@@ -42,13 +38,17 @@ export default function Store({ params }: { params: { search: string } }) {
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
 
+	const [currentPage, setCurrentPage] = useState(0) // Página actual
+	const [totalPages, setTotalPages] = useState(0) // Total de páginas
+
 	const searchAlgolia = useCallback(
 		async (
 			query: string,
 			subcategory: string | null = null,
 			brand: string | null = null,
 			model: string | null = null,
-			year: number | null = null
+			year: number | null = null,
+			page: number = 0
 		) => {
 			setLoading(true)
 			let searchQuery = query
@@ -65,6 +65,7 @@ export default function Store({ params }: { params: { search: string } }) {
 				const result = await index.search(searchQuery, {
 					hitsPerPage: 100,
 					facetFilters: filters,
+					page: page,
 					attributesToRetrieve: [
 						'title',
 						'mainReference',
@@ -78,18 +79,19 @@ export default function Store({ params }: { params: { search: string } }) {
 						'stock',
 						'refLocal',
 						'idEmpresa',
-						'year'
+						'year',
 					],
 				})
-				const sortedProducts = (result.hits as unknown as IProductMongoose[]).sort(
-					(a, b) => {
-						const aHasImages = a.images && a.images.length > 0 ? 1 : 0;
-						const bHasImages = b.images && b.images.length > 0 ? 1 : 0;
-						return bHasImages - aHasImages;
-					}
-				);
-		
-				setProducts(sortedProducts);
+				const sortedProducts = (
+					result.hits as unknown as IProductMongoose[]
+				).sort((a, b) => {
+					const aHasImages = a.images && a.images.length > 0 ? 1 : 0
+					const bHasImages = b.images && b.images.length > 0 ? 1 : 0
+					return bHasImages - aHasImages
+				})
+
+				setProducts(sortedProducts)
+				setTotalPages(result.nbPages) // Total de páginas disponibles
 			} catch (error) {
 				setError((error as Error).message)
 			} finally {
@@ -100,16 +102,68 @@ export default function Store({ params }: { params: { search: string } }) {
 	)
 
 	useEffect(() => {
+		dispatch({ type: 'auth/checkUserStatus' })
+	}, [dispatch])
+
+	useEffect(() => {
 		// Si no hay un valor en inputValue, realiza la búsqueda inicial desde params.search
 		if (!inputValue) {
-			const searchQuery = decodeURIComponent(params.search);
-			searchAlgolia(searchQuery, selectedSubcategory, selectedBrand, selectedModel, selectedYear);
+			const searchQuery = decodeURIComponent(params.search)
+			searchAlgolia(
+				searchQuery,
+				selectedSubcategory,
+				selectedBrand,
+				selectedModel,
+				selectedYear
+			)
 		} else {
 			// Realiza la búsqueda basada en el inputValue y los filtros seleccionados
-			searchAlgolia(inputValue, selectedSubcategory, selectedBrand, selectedModel, selectedYear);
+			searchAlgolia(
+				inputValue,
+				selectedSubcategory,
+				selectedBrand,
+				selectedModel,
+				selectedYear
+			)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [params.search, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
+	}, [
+		params.search,
+		selectedSubcategory,
+		selectedBrand,
+		selectedModel,
+		selectedYear,
+	])
+
+	const handleNextPage = () => {
+		if (currentPage < totalPages - 1) {
+			const nextPage = currentPage + 1
+			setCurrentPage(nextPage)
+			searchAlgolia(
+				inputValue,
+				selectedSubcategory,
+				selectedBrand,
+				selectedModel,
+				selectedYear,
+				nextPage
+			)
+		}
+	}
+
+	const handlePrevPage = () => {
+		if (currentPage > 0) {
+			const prevPage = currentPage - 1
+			setCurrentPage(prevPage)
+			searchAlgolia(
+				inputValue,
+				selectedSubcategory,
+				selectedBrand,
+				selectedModel,
+				selectedYear,
+				prevPage
+			)
+		}
+	}
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
@@ -121,31 +175,31 @@ export default function Store({ params }: { params: { search: string } }) {
 
 	const handleEnterPress = () => {
 		// Reinicia los filtros antes de realizar una nueva búsqueda desde la barra de búsqueda
-		setSelectedSubcategory(null);
-		setSelectedBrand(null);
-		setSelectedModel(null);
-		
-		searchAlgolia(inputValue); // Realiza la búsqueda solo cuando se presiona Enter
+		setSelectedSubcategory(null)
+		setSelectedBrand(null)
+		setSelectedModel(null)
+
+		searchAlgolia(inputValue) // Realiza la búsqueda solo cuando se presiona Enter
 	}
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
-		setSelectedSubcategory(subcategory);
-		setInputValue(''); // Resetea inputValue si cambias la subcategoría
+		setSelectedSubcategory(subcategory)
+		setInputValue('') // Resetea inputValue si cambias la subcategoría
 	}
-	
+
 	const handleBrandChange = (brand: string | null) => {
-		setSelectedBrand(brand);
-		setInputValue(''); // Resetea inputValue si cambias la marca
+		setSelectedBrand(brand)
+		setInputValue('') // Resetea inputValue si cambias la marca
 	}
-	
+
 	const handleModelChange = (model: string | null) => {
-		setSelectedModel(model);
-		setInputValue(''); // Resetea inputValue si cambias el modelo
+		setSelectedModel(model)
+		setInputValue('') // Resetea inputValue si cambias el modelo
 	}
 
 	const handleYearChange = (year: number | null) => {
-		setSelectedYear(year);
-		setInputValue(''); // Resetea inputValue si cambias el año
+		setSelectedYear(year)
+		setInputValue('') // Resetea inputValue si cambias el año
 	}
 
 	// const buynow = (product: any) => {
@@ -172,8 +226,8 @@ export default function Store({ params }: { params: { search: string } }) {
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
-					<Filters 
-						onSubcategoryChange={handleSubcategoryChange} 
+					<Filters
+						onSubcategoryChange={handleSubcategoryChange}
 						onBrandChange={handleBrandChange}
 						onModelChange={handleModelChange}
 						onYearChange={handleYearChange}
@@ -269,9 +323,28 @@ export default function Store({ params }: { params: { search: string } }) {
 								loading={loadingPurchase === product._id}
 							/>
 						))}
-						{loading && <p>Loading...</p>}
-						{error && <p>Error</p>}
 					</section>
+					{loading && (
+						<div className="flex justify-center my-4">
+							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+						</div>
+					)}
+					{error && <p>Error</p>}
+					<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
+						<button
+							onClick={handlePrevPage}
+							disabled={currentPage === 0}
+						>
+							<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
+						</button>
+						<span>{`Página ${currentPage + 1} de ${totalPages}`}</span>
+						<button
+							onClick={handleNextPage}
+							disabled={currentPage === totalPages - 1}
+						>
+							<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
+						</button>
+					</div>
 				</div>
 			</div>
 		</main>
