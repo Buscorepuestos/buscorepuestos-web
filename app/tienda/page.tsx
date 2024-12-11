@@ -4,15 +4,12 @@ import CardPrice from '../core/components/cards/CardPrice'
 import { IProductMongoose } from '../types/product'
 import algoliasearch from 'algoliasearch'
 import SearchBar from '../core/components/SearchBar'
-import {
-	addItemToCart,
-	savePurchaseAsync,
-} from '../redux/features/shoppingCartSlice'
 import { useAppDispatch } from '../redux/hooks'
 import { useRouter } from 'next/navigation'
 import { environment } from '../environment/environment'
 import Filters from '../core/components/filters/filters'
 import Image from 'next/image'
+import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import './tienda.css'
 
 const appID = environment.algoliaAppID
@@ -24,6 +21,10 @@ export default function Store() {
 	const router = useRouter()
 	const client = algoliasearch(appID, apiKey)
 	const index = client.initIndex(indexName)
+
+	index.setSettings({
+		paginationLimitedTo: 20000,
+	})
 
 	const [products, setProducts] = useState<IProductMongoose[]>([])
 	const [loading, setLoading] = useState(true)
@@ -37,12 +38,16 @@ export default function Store() {
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
 
+	const [currentPage, setCurrentPage] = useState(0) // Página actual
+	const [totalPages, setTotalPages] = useState(0) // Total de páginas
+
 	const search = async (
 		query: string,
 		subcategory: string | null = null,
 		brand: string | null = null,
 		model: string | null = null,
-		year: number | null = null
+		year: number | null = null,
+		page: number = 0
 	) => {
 		setLoading(true)
 		let searchQuery = query
@@ -59,6 +64,7 @@ export default function Store() {
 			const result = await index.search(searchQuery, {
 				facetFilters: filters,
 				hitsPerPage: 100,
+				page: page,
 				attributesToRetrieve: [
 					'title',
 					'mainReference',
@@ -74,15 +80,17 @@ export default function Store() {
 					'idEmpresa',
 				],
 			})
-			const sortedProducts = (result.hits as unknown as IProductMongoose[]).sort(
-				(a, b) => {
-					const aHasImages = a.images && a.images.length > 0 ? 1 : 0;
-					const bHasImages = b.images && b.images.length > 0 ? 1 : 0;
-					return bHasImages - aHasImages;
-				}
-			);
-	
-			setProducts(sortedProducts);
+
+			const sortedProducts = (
+				result.hits as unknown as IProductMongoose[]
+			).sort((a, b) => {
+				const aHasImages = a.images && a.images.length > 0 ? 1 : 0
+				const bHasImages = b.images && b.images.length > 0 ? 1 : 0
+				return bHasImages - aHasImages
+			})
+
+			setProducts(sortedProducts)
+			setTotalPages(result.nbPages) // Total de páginas disponibles
 		} catch (err) {
 			console.log(err)
 			setError((err as Error).message)
@@ -96,9 +104,45 @@ export default function Store() {
 	}, [dispatch])
 
 	useEffect(() => {
-		search(inputValue, selectedSubcategory, selectedBrand, selectedModel, selectedYear)
+		search(
+			inputValue,
+			selectedSubcategory,
+			selectedBrand,
+			selectedModel,
+			selectedYear
+		)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSubcategory, selectedBrand, selectedModel, selectedYear])
+
+	const handleNextPage = () => {
+		if (currentPage < totalPages - 1) {
+			const nextPage = currentPage + 1
+			setCurrentPage(nextPage)
+			search(
+				inputValue,
+				selectedSubcategory,
+				selectedBrand,
+				selectedModel,
+				selectedYear,
+				nextPage
+			)
+		}
+	}
+
+	const handlePrevPage = () => {
+		if (currentPage > 0) {
+			const prevPage = currentPage - 1
+			setCurrentPage(prevPage)
+			search(
+				inputValue,
+				selectedSubcategory,
+				selectedBrand,
+				selectedModel,
+				selectedYear,
+				prevPage
+			)
+		}
+	}
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
@@ -110,11 +154,11 @@ export default function Store() {
 
 	const handleEnterPress = () => {
 		// Reinicia los filtros antes de realizar una nueva búsqueda desde la barra de búsqueda
-		setSelectedSubcategory(null);
-		setSelectedBrand(null);
-		setSelectedModel(null);
-		
-		search(inputValue); // Realiza la búsqueda solo cuando se presiona Enter
+		setSelectedSubcategory(null)
+		setSelectedBrand(null)
+		setSelectedModel(null)
+
+		search(inputValue) // Realiza la búsqueda solo cuando se presiona Enter
 	}
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
@@ -141,8 +185,8 @@ export default function Store() {
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
-					<Filters 
-						onSubcategoryChange={handleSubcategoryChange} 
+					<Filters
+						onSubcategoryChange={handleSubcategoryChange}
 						onBrandChange={handleBrandChange}
 						onModelChange={handleModelChange}
 						onYearChange={handleYearChange}
@@ -238,9 +282,28 @@ export default function Store() {
 								loading={loadingPurchase === product._id}
 							/>
 						))}
-						{loading && <p>Loading...</p>}
-						{error && <p>Error</p>}
 					</section>
+					{loading && (
+						<div className="flex justify-center my-4">
+							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+						</div>
+					)}
+					{error && <p>Error</p>}
+					<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
+						<button
+							onClick={handlePrevPage}
+							disabled={currentPage === 0}
+						>
+							<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
+						</button>
+						<span>{`Página ${currentPage + 1} de ${totalPages}`}</span>
+						<button
+							onClick={handleNextPage}
+							disabled={currentPage === totalPages - 1}
+						>
+							<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
+						</button>
+					</div>
 				</div>
 			</div>
 		</main>
