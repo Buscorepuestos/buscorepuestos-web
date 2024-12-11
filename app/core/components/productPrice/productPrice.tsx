@@ -50,18 +50,24 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	const [isProccesingAddToCart, setIsProccesingAddToCart] =
 		useState<boolean>(false)
 	const [isProccesingBuyNow, setIsProccesingBuyNow] = useState<boolean>(false)
-	const userId = useSelector(
-		(state: RootState) => {
-			const currentUser = state.airtableUser.currentUser;
-			return currentUser && Array.isArray(currentUser.data) && currentUser.data.length > 0
-				? currentUser.data[0].id
-				: null;
-		}
-	)
+	const userId = useSelector((state: RootState) => {
+		const currentUser = state.airtableUser.currentUser
+		return currentUser &&
+			Array.isArray(currentUser.data) &&
+			currentUser.data.length > 0
+			? currentUser.data[0].id
+			: null
+	})
+	const userId2 = useSelector((state: RootState) => {
+		const currentUser = state.airtableUser.currentUser as any;
+		return currentUser?.data?.id || null;
+	});
 	const cart = useSelector((state: RootState) => state.cart.items)
 	const user = useSelector(
 		(state: RootState) => state.airtableUser.currentUser ?? null
 	)
+
+	console.log('Redux state:', useSelector((state: RootState) => state.airtableUser));
 
 	const handleAddToCart = () => {
 		setIsProccesingAddToCart(true)
@@ -70,7 +76,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 		dispatch(
 			savePurchaseAsync({
 				product: data,
-				userId: userId ?? '',
+				userId: userId === null ? userId2 : userId ?? '',
 			})
 		)
 		Swal.fire({
@@ -122,16 +128,19 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 		}
 	}, [globalStock, stock, data._id, dispatch])
 
-	const buynow = () => {
+	const buynow = async () => {
 		dispatch({ type: 'auth/checkUserStatus' })
 		setIsProccesingBuyNow(true)
 		dispatch(addItemToCart(data))
-		dispatch(
-			savePurchaseAsync({
-				product: data,
-				userId: userId ?? '',
-			})
-		)
+		
+		setTimeout(() => {
+			dispatch(
+				savePurchaseAsync({
+					product: data,
+					userId: userId === null ? userId2 : userId ?? '',
+				})
+			)
+		}, 2000)
 		router.push('/verificacion-pago')
 	}
 
