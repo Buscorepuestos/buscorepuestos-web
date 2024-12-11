@@ -4,10 +4,6 @@ import CardPrice from '../core/components/cards/CardPrice'
 import { IProductMongoose } from '../types/product'
 import algoliasearch from 'algoliasearch'
 import SearchBar from '../core/components/SearchBar'
-import {
-	addItemToCart,
-	savePurchaseAsync,
-} from '../redux/features/shoppingCartSlice'
 import { useAppDispatch } from '../redux/hooks'
 import { useRouter } from 'next/navigation'
 import { environment } from '../environment/environment'
@@ -24,6 +20,10 @@ export default function Store() {
 	const router = useRouter()
 	const client = algoliasearch(appID, apiKey)
 	const index = client.initIndex(indexName)
+
+	index.setSettings({
+		paginationLimitedTo: 20000,
+	})
 
 	const [products, setProducts] = useState<IProductMongoose[]>([])
 	const [loading, setLoading] = useState(true)
@@ -313,9 +313,13 @@ export default function Store() {
 								loading={loadingPurchase === product._id}
 							/>
 						))}
-						{loading && <p>Loading...</p>}
-						{error && <p>Error</p>}
 					</section>
+					{loading && (
+						<div className="flex justify-center my-4">
+							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+						</div>
+					)}
+					{error && <p>Error</p>}
 					<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
 						<button
 							onClick={handlePrevPage}
@@ -337,7 +341,10 @@ export default function Store() {
 							<button
 								onClick={goToPage}
 								className="bg-primary-blue text-white px-4 py-1 rounded-md text-sm hover:bg-primary-lila"
-								disabled={parseInt(inputPage, 10) < 1 || parseInt(inputPage, 10) > totalPages}
+								disabled={
+									parseInt(inputPage, 10) < 1 ||
+									parseInt(inputPage, 10) > totalPages
+								}
 							>
 								Ir
 							</button>
