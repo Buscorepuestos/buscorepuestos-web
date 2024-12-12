@@ -200,7 +200,7 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 									});
 									router.refresh(); // Recargar la página para intentar de nuevo
 								}
-							} else if (type === 'error' || !body.transaction_code) {
+							} else if (type === 'error' && !body.transaction_code) {
 								// Manejar errores o cancelaciones
 								Swal.fire({
 									title: 'Error',
