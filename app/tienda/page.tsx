@@ -126,6 +126,7 @@ export default function Store() {
 				selectedYear,
 				nextPage
 			)
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 
@@ -141,6 +142,7 @@ export default function Store() {
 				selectedYear,
 				prevPage
 			)
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 
