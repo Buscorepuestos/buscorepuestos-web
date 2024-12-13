@@ -32,7 +32,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 	const transferDataCaixa: TransferData = {
 		banco: 'La Caixa',
 		beneficiario: 'Buscorepuestos.com',
-		iban: 'ES61 2100 5758 3802 0038 2056',
+		iban: 'ES78 2100 2904 0502 3645 3412',
 		bic: 'CAIXESBBXXX',
 	}
 	const router = useRouter()

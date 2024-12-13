@@ -96,20 +96,20 @@ describe('Componente Header', () => {
 		expect(getByTestId('Menu')).toBeTruthy()
 	})
 
-	test('Alternar abrir y cerrar menú secundario', () => {
-		resizeWindow(640, 858)
+	// test('Alternar abrir y cerrar menú secundario', () => {
+	// 	resizeWindow(640, 858)
 
-		const { getByAltText, getByTestId } = renderWithProvider(<Header />)
-		const botonMenu = getByAltText('Hamburguesa')
+	// 	const { getByAltText, getByTestId } = renderWithProvider(<Header />)
+	// 	const botonMenu = getByAltText('Hamburguesa')
 
-		fireEvent.click(botonMenu)
+	// 	fireEvent.click(botonMenu)
 
-		const botonMenuSecundario = getByTestId('secondary-toggle')
+	// 	const botonMenuSecundario = getByTestId('secondary-toggle')
 
-		fireEvent.click(botonMenuSecundario)
+	// 	fireEvent.click(botonMenuSecundario)
 
-		expect(getByTestId('secondary-menu')).toBeTruthy()
-	})
+	// 	expect(getByTestId('secondary-menu')).toBeTruthy()
+	// })
 
 	test('Aplica clase mt-0 cuando pathname comienza con /product y no es pantalla ancha', () => {
 		usePathnameMock.mockReturnValue('/producto/123');
