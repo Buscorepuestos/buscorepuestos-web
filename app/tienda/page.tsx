@@ -219,9 +219,9 @@ export default function Store() {
 								alt="garantia"
 								width={34}
 								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
+								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
 							/>
-							<p>2 años de garantía</p>
+							<p className='mobile:font-bold'>2 años de garantía</p>
 						</div>
 						<div className="flex items-center md:gap-4 sm:gap-1 mobile:gap-5">
 							<Image
@@ -229,9 +229,9 @@ export default function Store() {
 								alt="devolucion"
 								width={34}
 								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
+								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
 							/>
-							<p>devolución gratuita</p>
+							<p className='mobile:font-bold'>devolución gratuita</p>
 						</div>
 						<div className="flex items-center md:gap-4 sm:gap-1 mobile:gap-5">
 							<Image
@@ -239,9 +239,9 @@ export default function Store() {
 								alt="atencion"
 								width={34}
 								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[9vw]"
+								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[11vw]"
 							/>
-							<p>Atencíon al cliente 24h</p>
+							<p className='mobile:font-bold'>Atencíon al cliente 24h</p>
 						</div>
 						<div className="flex items-center md:gap-4 sm:gap-1 mobile:gap-5">
 							<Image
@@ -249,9 +249,9 @@ export default function Store() {
 								alt="pago"
 								width={34}
 								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
+								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
 							/>
-							<p>Pago a plazos</p>
+							<p className='mobile:font-bold'>Pago a plazos</p>
 						</div>
 					</div>
 					<div className="sm:hidden mobile:w-full px-[8vw]">
