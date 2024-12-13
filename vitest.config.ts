@@ -37,6 +37,7 @@ export default defineConfig({
 				'app/core/components/checkout/PaymentForm.tsx',
 				'app/core/components/transferPayment/transferPayment.tsx',
 				'app/core/components/productPrice/productPrice.tsx',
+				'app/core/components/shopping-cart/ProductCartInfo.tsx',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
 				'app/services'
