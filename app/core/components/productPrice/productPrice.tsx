@@ -146,10 +146,15 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
 	return (
 		<div className="flex flex-col justify-center items-center font-tertiary-font">
-			<p className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
-				{price}€
-			</p>
-			<p className="font-semibold xl:text-[1vw] sm:text-[1.8vw]">
+			<div className='flex items-center gap-3'>
+				<p className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
+					{price}€
+				</p>
+				<p className='bg-custom-orange rounded-full text-custom-white px-2 text-[2.8vw] xl:text-[0.9vw] md:text-[1.3vw] sm:text-[1.4vw]'>
+					-10%
+				</p>
+			</div>
+			<p className="mt-[-1.3rem] font-semibold text-dark-grey xl:text-[1vw] md:text-[1.2vw] sm:text-[1.7vw]">
 				{shippingInfo}
 			</p>
 			<div className="text-custom-orange gap-3 flex items-center">
@@ -158,11 +163,11 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 					alt="warning"
 					width={20}
 					height={20}
-					className="sm:w-[17px] sm:h-[17px] md:w-[22px] md:h-[22px]"
+					className="mobile:w-[13px] sm:w-[15px] md:w-[12px] lg:w-[15px]"
 				/>
 				<p className="text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw]">
 					Precio medio pieza original nueva:
-					<span className="font-semibold line-through">
+					<span className="font-extrabold line-through">
 						{' '}
 						{originalPrice}€{' '}
 					</span>

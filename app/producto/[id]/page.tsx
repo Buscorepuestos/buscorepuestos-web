@@ -159,11 +159,13 @@ export default async function Product({ params }: { params: { id: string } }) {
 							classNamePrincipal="
 								grid grid-cols-2 gap-4 mobile:grid-cols-1 mobile:gap-4 mt-16
 								font-tertiary-font text-secondary-blue font-semibold
-								justify-center pl-[6vw] pr-[5vw]  mobile:pl-[3vw] 
+								justify-center pl-[6vw] pr-[5vw]
+								mobile:flex mobile:mt-2 mobile:pl-0 mobile:pr-0 mobile:mb-4
 							"
 							classNameImg="lg:w-[2.5vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
+							isProductPage={true}
 						/>
-						<div className="flex justify-center mobile:justify-center mobile:px-[3vw] mt-8">
+						<div className=" mobile:hidden flex justify-center mobile:justify-center mobile:px-[3vw] mt-8">
 							<div className="flex mobile:justify-center mb-6">
 								<PaymentMethod
 									paymentOptions={paymentOptions}
@@ -232,6 +234,13 @@ export default async function Product({ params }: { params: { id: string } }) {
 						</div>
 					</div>
 					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
+					<div className="hidden mobile:block justify-center mobile:justify-center mobile:px-[3vw] mt-8">
+							<div className="flex mobile:justify-center mb-6">
+								<PaymentMethod
+									paymentOptions={paymentOptions}
+								/>
+							</div>
+						</div>
 				</div>
 			</div>
 		</>
