@@ -146,11 +146,15 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
 	return (
 		<div className="flex flex-col justify-center items-center font-tertiary-font">
-			<div className='flex items-center gap-3'>
+			<div className='relative flex items-center'>
 				<p className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
 					{price}€
 				</p>
-				<p className='bg-custom-orange rounded-full text-custom-white px-2 text-[2.8vw] xl:text-[0.9vw] md:text-[1.3vw] sm:text-[1.4vw]'>
+				<p className='
+					absolute left-[105%] top-[40%] transform -translate-y-1/2 bg-custom-orange rounded-full 
+					text-custom-white px-2 text-[2.8vw] xl:text-[0.9vw] md:text-[1.3vw] xl:h-[1.1vw] lg:h-[1.6vw] md:h-[1.8vw] mobile:h-[3.5vw]
+					sm:text-[1.4vw]
+				'>
 					-10%
 				</p>
 			</div>

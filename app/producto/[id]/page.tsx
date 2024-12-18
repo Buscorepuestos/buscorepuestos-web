@@ -12,8 +12,8 @@ import { environment } from '../../environment/environment'
 import { PartInterface } from '../../types/metasync/product'
 import { AxiosResponse } from 'axios'
 import axios from 'axios'
+import Warranties from '../../core/components/warranties/Warranties'
 import '../product.css'
-
 const paymentOptions = [
 	{
 		src: '/tarjeta.svg',
@@ -138,7 +138,7 @@ export default async function Product({ params }: { params: { id: string } }) {
 				<meta property="og:type" content="product" />
 			</Head>
 			<div>
-				<div className="w-full mobile:w-[100vw] mt-[4vw] mb-[2vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]">
+				<div className="w-full mobile:w-[100vw] mt-[4vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]">
 					<div>
 						{data && (
 							<div className="mobile:mb-10 hidden mobile:block">
@@ -235,13 +235,12 @@ export default async function Product({ params }: { params: { id: string } }) {
 					</div>
 					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
 					<div className="hidden mobile:block justify-center mobile:justify-center mobile:px-[3vw] mt-8">
-							<div className="flex mobile:justify-center mb-6">
-								<PaymentMethod
-									paymentOptions={paymentOptions}
-								/>
-							</div>
+						<div className="flex mobile:justify-center mb-6">
+							<PaymentMethod paymentOptions={paymentOptions} />
 						</div>
+					</div>
 				</div>
+				<Warranties />
 			</div>
 		</>
 	)
