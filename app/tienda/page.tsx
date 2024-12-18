@@ -8,7 +8,7 @@ import { useAppDispatch } from '../redux/hooks'
 import { useRouter } from 'next/navigation'
 import { environment } from '../environment/environment'
 import Filters from '../core/components/filters/filters'
-import Image from 'next/image'
+import Facilities from '../core/components/facilities/Facilities'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import './tienda.css'
 
@@ -205,55 +205,15 @@ export default function Store() {
 							borderWidth={'2px'}
 						/>
 					</div>
-					<div
-						className="
+					<Facilities 
+						classNamePrincipal="
 							flex w-full my-5 md:gap-14 sm:gap-3 bg-gray-200 font-tertiary-font 
 							text-secondary-blue font-semibold h-[5rem] mobile:h-[13rem] justify-center 
 							rounded-3xl lg:text-[14px] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-[3.2vw] mobile:px-[2.9rem]
 							mobile:grid mobile:grid-cols-2 mobile:gap-0 mobile:w-[85%] mobile:font-normal mobile:py-[1rem]
 						"
-					>
-						<div className="flex items-center md:gap-4 sm:gap-1 mobile:gap-5">
-							<Image
-								src="/garantia.svg"
-								alt="garantia"
-								width={34}
-								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
-							/>
-							<p className='mobile:font-bold'>2 años de garantía</p>
-						</div>
-						<div className="flex items-center md:gap-4 sm:gap-1 mobile:gap-5">
-							<Image
-								src="/devolucion.svg"
-								alt="devolucion"
-								width={34}
-								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
-							/>
-							<p className='mobile:font-bold'>devolución gratuita</p>
-						</div>
-						<div className="flex items-center md:gap-4 sm:gap-1 mobile:gap-5">
-							<Image
-								src="/atencion.svg"
-								alt="atencion"
-								width={34}
-								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[11vw]"
-							/>
-							<p className='mobile:font-bold'>Atencíon al cliente 24h</p>
-						</div>
-						<div className="flex items-center md:gap-4 sm:gap-1 mobile:gap-5">
-							<Image
-								src="/pago.svg"
-								alt="pago"
-								width={34}
-								height={34}
-								className="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
-							/>
-							<p className='mobile:font-bold'>Pago a plazos</p>
-						</div>
-					</div>
+						classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
+					/>
 					<div className="sm:hidden mobile:w-full px-[8vw]">
 						<Filters
 							onSubcategoryChange={handleSubcategoryChange}
