@@ -38,6 +38,8 @@ export default defineConfig({
 				'app/core/components/transferPayment/transferPayment.tsx',
 				'app/core/components/productPrice/productPrice.tsx',
 				'app/core/components/shopping-cart/ProductCartInfo.tsx',
+				'app/core/components/warranties/Warranties.tsx',	
+				'app/core/components/facilities/Facilities.tsx',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
 				'app/services'

@@ -9,6 +9,8 @@ export interface ButtonProps {
 	xpadding?: string;
 	onClick?: () => void;
 	cursor?: string;
+	textColor?: string;
+	height?: string;
 }
 
 export default function Button(props: ButtonProps) {
@@ -21,7 +23,10 @@ export default function Button(props: ButtonProps) {
 			hoverBg = 'hover:bg-custom-white',
 			hoverText = 'hover:text-secondary-blue',
 			borderColor = 'border-secondary-blue',
-			cursor = 'cursor-pointer'
+			cursor = 'cursor-pointer',
+			textColor = 'text-custom-white',
+			height = '',
+			xpadding = ''
 		} = props
 
 		return (
@@ -29,8 +34,8 @@ export default function Button(props: ButtonProps) {
 				onClick={props.onClick}
 				className={`
 						${bg} ${borderColor} border-[2px] box-border shadow-lg 
-						${hoverText} ${hoverBg} ${cursor}
-						rounded-3xl text-custom-white font-semibold
+						${hoverText} ${hoverBg} ${cursor} ${height} ${xpadding}
+						rounded-3xl ${textColor} font-semibold
 						transition duration-300 ease-in-out p-2
 						font-tertiary-font text-[3vw] xl:text-[1.3vw] lg:text-[1.5vw] md:text-[1.6vw] sm:text-[1.5vw]
 					`}

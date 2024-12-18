@@ -8,7 +8,7 @@ describe('ProductTitle', () => {
     });
 
     const props = {
-        title: 'Parachoques delantero Mitsubishi Evo VIII 2004',
+        title: 'Parachoques delantero mitsubishi evo viii 2004',
         refNumber: '5FG8715S52SA',
         productName: 'MITSUBISHI EVO VIII 2004',
         imageSrc: '/COMPARTIR.svg',
