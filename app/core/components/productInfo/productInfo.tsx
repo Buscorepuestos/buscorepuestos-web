@@ -10,7 +10,7 @@ interface ProductInfoProps {
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ vehicleVersion, engine, engineCode, oemReference, observations }: ProductInfoProps) => {
     return (
-        <div className='flex flex-col  text-dark-grey font-tertiary-font text-[0.9vw] xl:text-[1vw] sm:text-[1.5vw] mobile:text-[2.8vw] px-10'>
+        <div className='flex flex-col mt-6 text-dark-grey font-tertiary-font text-[0.9vw] xl:text-[1vw] sm:text-[1.5vw] mobile:text-[2.8vw] px-10'>
             <p className='font-semibold'>Versión del vehículo</p>
             <p>{vehicleVersion}</p>
             <p className='font-semibold'>Motor</p>

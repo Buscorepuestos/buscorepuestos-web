@@ -114,6 +114,13 @@ export default function Store() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSubcategory, selectedBrand, selectedModel, selectedYear])
 
+	// useEffect(() => {
+    //     document.body.style.backgroundColor = 'white';
+    //     return () => {
+    //         document.body.style.backgroundColor = ''; // Restablecer si es necesario
+    //     };
+    // }, []);
+
 	const handleNextPage = () => {
 		if (currentPage < totalPages - 1) {
 			const nextPage = currentPage + 1

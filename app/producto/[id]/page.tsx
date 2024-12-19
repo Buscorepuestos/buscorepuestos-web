@@ -192,7 +192,7 @@ export default async function Product({ params }: { params: { id: string } }) {
 								title="Valoración del proveedor"
 							/>
 						</div>
-						<div className="mt-[1.5vw] ml-10 flex justify-center">
+						<div>
 							<ProductPrice
 								price={buscoRepuestoPrice}
 								shippingInfo="Envío e IVA incluido"
@@ -220,7 +220,6 @@ export default async function Product({ params }: { params: { id: string } }) {
 								}
 							/>
 						</div>
-						<div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
 						<div>
 							{data && (
 								<ProductInfo

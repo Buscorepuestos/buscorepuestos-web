@@ -62,6 +62,8 @@ export function Header() {
 			starWith('/contacto') ||
 			starWith('/ayuda') ||
 			starWith('/sobre-nosotros')
+			// starWith('/verificacion-pago')
+			
 		) {
 			setIsProductPage(true)
 		} else {
