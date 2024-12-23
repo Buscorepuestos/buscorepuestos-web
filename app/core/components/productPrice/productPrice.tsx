@@ -135,18 +135,18 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	}, [globalStock, stock, data._id, dispatch])
 
 	const buynow = async () => {
-		// dispatch({ type: 'auth/checkUserStatus' })
-		// setIsProccesingBuyNow(true)
-		// dispatch(addItemToCart(data))
+		dispatch({ type: 'auth/checkUserStatus' })
+		setIsProccesingBuyNow(true)
+		dispatch(addItemToCart(data))
 
-		// setTimeout(() => {
-		// 	dispatch(
-		// 		savePurchaseAsync({
-		// 			product: data,
-		// 			userId: userId === null ? userId2 : userId ?? '',
-		// 		})
-		// 	)
-		// }, 2000)
+		setTimeout(() => {
+			dispatch(
+				savePurchaseAsync({
+					product: data,
+					userId: userId === null ? userId2 : userId ?? '',
+				})
+			)
+		}, 2000)
 		// router.push('/verificacion-pago')
 		setOnePageIsOpen(true)
 	}
@@ -191,78 +191,85 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 							{discount}
 						</p>
 					</div>
-					{user ? (
-						<div className="flex gap-7 mt-7">
-							{data.stock === false || globalStock === false ? (
-								<Button
-									labelName="Producto no disponible"
-									type="secondary"
-									bg="bg-alter-grey"
-									borderColor="border-alter-grey"
-									hoverBg="hover:bg-alter-grey"
-									hoverText="white"
-									cursor="cursor-not-allowed"
-								/>
-							) : (
-								<>
-									{existingItem ? (
+					{!onePageIsOpen && (
+						<div>
+							{user ? (
+								<div className="flex gap-7 mt-7">
+									{data.stock === false ||
+									globalStock === false ? (
 										<Button
-											labelName="Quitar de la cesta"
+											labelName="Producto no disponible"
 											type="secondary"
-											bg="bg-secondary-blue"
-											borderColor="border-secondary-blue"
-											hoverBg="hover:bg-custom-white"
-											hoverText="hover:text-secondary-blue"
-											cursor="cursor-pointer"
-											onClick={handleRemoveFromCart}
+											bg="bg-alter-grey"
+											borderColor="border-alter-grey"
+											hoverBg="hover:bg-alter-grey"
+											hoverText="white"
+											cursor="cursor-not-allowed"
 										/>
 									) : (
 										<>
-											{isProccesingAddToCart ? (
-												<div className="flex justify-start my-4">
-													<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
-												</div>
-											) : isProccesingBuyNow ? (
-												<div className="flex justify-center my-4">
-													<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-												</div>
+											{existingItem ? (
+												<Button
+													labelName="Quitar de la cesta"
+													type="secondary"
+													bg="bg-secondary-blue"
+													borderColor="border-secondary-blue"
+													hoverBg="hover:bg-custom-white"
+													hoverText="hover:text-secondary-blue"
+													cursor="cursor-pointer"
+													onClick={
+														handleRemoveFromCart
+													}
+												/>
 											) : (
 												<>
-													<Button
-														{...button1Props}
-														onClick={
-															handleAddToCart
-														}
-													/>
-													<Button
-														{...button2Props}
-														onClick={buynow}
-													/>
+													{isProccesingAddToCart ? (
+														<div className="flex justify-start my-4">
+															<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
+														</div>
+													) : isProccesingBuyNow ? (
+														<div className="flex justify-center my-4">
+															<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+														</div>
+													) : (
+														<>
+															<Button
+																{...button1Props}
+																onClick={
+																	handleAddToCart
+																}
+															/>
+															<Button
+																{...button2Props}
+																onClick={buynow}
+															/>
+														</>
+													)}
 												</>
 											)}
 										</>
 									)}
-								</>
+								</div>
+							) : (
+								<div className="flex justify-center my-4">
+									<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+								</div>
 							)}
-						</div>
-					) : (
-						<div className="flex justify-center my-4">
-							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 						</div>
 					)}
 				</div>
 			</div>
-			<div className={`w-[93%] m-auto h-[2px] bg-secondary-blue mt-[1.5vw] mobile:mt-[3vw]`} />
+			<div
+				className={`w-[93%] m-auto h-[2px] bg-secondary-blue mt-[1.5vw] mobile:mt-[3vw]`}
+			/>
 			<div>
 				<div
 					className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${
 						onePageIsOpen ? '' : 'max-h-0'
-					} flex justify-center`}
+					}`}
 				>
-					<div className="py-8 px-10">
-						<CheckoutPage
-							isProductPage={true}
-						/>
+					<div className="py-8 sm:px-10 mobile:py-0">
+						<CheckoutPage isProductPage={true} />
 					</div>
 				</div>
 			</div>

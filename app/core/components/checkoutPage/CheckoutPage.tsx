@@ -68,7 +68,7 @@ function useCartItems() {
 }
 
 interface checkoutPageProps {
-	isProductPage?: boolean
+	isProductPage: boolean
 }
 
 const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
@@ -305,10 +305,10 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 	}
 
 	return (
-		<div className={`flex justify-center mobile:mt-[12vw] ${!isProductPage && 'mt-[22rem] mb-[10rem]'}`}>
+		<div className={`flex justify-center ${isProductPage && 'flex-col mobile:mt-[4vw]'}  ${!isProductPage && 'mt-[22rem] mb-[10rem] mobile:mt-[12vw]'}`}>
 			<section
 				className={
-					`w-max-[750px] mobile:w-[100vw] ${!isProductPage && 'bg-custom-white rounded-[10px] shadow-lg p-6'} mobile:rounded-bl-[5rem] mobile:rounded-br-[5rem]`
+					`w-max-[750px] ${!isProductPage && 'mobile:w-[100vw] bg-custom-white rounded-[10px] shadow-lg p-6'} mobile:rounded-bl-[5rem] mobile:rounded-br-[5rem]`
 				}
 			>
 				{!isMobile && !isProductPage && (
@@ -372,14 +372,14 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 						<div className="flex flex-col items-center">
 							<h1
 								className={
-									'text-title-4 font-tertiary-font mb-4 self-start'
+									'text-title-4 font-tertiary-font font-semibold text-dark-grey mb-4 self-start'
 								}
 							>
 								Comprar como invitado
 							</h1>
 							<div
 								className={
-									'grid grid-cols-1 w-[60%] mobile:w-full gap-4 mt-4'
+									`grid grid-cols-1 w-[60%] mobile:w-full gap-4 mt-4`
 								}
 							>
 								<Input
@@ -421,7 +421,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 						<article className={'mobile:p-6'}>
 							<div
 								className={
-									'flex flex-col justify-center items-center'
+									`flex flex-col justify-center ${!isProductPage ? 'items-center': 'items-start'}`
 								}
 							>
 								{/*Personal Information*/}
@@ -434,7 +434,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</h1>
 								<div
 									className={
-										'grid grid-cols-1 w-[60%] mobile:w-full gap-4'
+										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full'}  mobile:w-full gap-4`
 									}
 								>
 									<Input
@@ -449,11 +449,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										}
 										ref={nameRef}
 										isScrolled={isScrolledInputs.name}
+										isProductPage={isProductPage}
 									/>
 								</div>
 								<div
 									className={
-										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -477,6 +478,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 											setIsFormVisible(false)
 											localStorage.removeItem('userEmail')
 										}}
+										isProductPage={isProductPage}
 									/>
 									<Input
 										placeholder={'NIF / CIF'}
@@ -490,11 +492,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										}
 										ref={nifRef}
 										isScrolled={isScrolledInputs.nif}
+										isProductPage={isProductPage}
 									/>
 								</div>
 								<div
 									className={
-										'grid grid-cols-2 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+										`grid grid-cols-2 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full sm:grid-cols-1 md:grid-cols-2'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -512,6 +515,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 											isScrolledInputs.phoneNumber
 										}
 										type="number"
+										isProductPage={isProductPage}
 									/>
 								</div>
 
@@ -525,7 +529,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</h1> */}
 								<div
 									className={
-										'grid grid-cols-3 mobile:grid-cols-1 w-[60%] mobile:w-full gap-4 mt-4'
+										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full gap-4 mt-4`
 									}
 								>
 									<div
@@ -554,7 +558,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -571,11 +575,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										isScrolled={
 											isScrolledInputs.shippingAddress
 										}
+										isProductPage={isProductPage}
 									/>
 								</div>
 								<div
 									className={
-										'grid grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -594,11 +599,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										isScrolled={
 											isScrolledInputs.addressExtra
 										}
+										isProductPage={isProductPage}
 									/>
 								</div>
 								<div
 									className={
-										'grid grid-cols-2 w-[60%] mobile:w-full mt-4 gap-4'
+										`grid grid-cols-2 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -613,6 +619,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										}
 										ref={zipRef}
 										isScrolled={isScrolledInputs.zip}
+										isProductPage={isProductPage}
 									/>
 									<Input
 										placeholder={'Ciudad'}
@@ -626,11 +633,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										}
 										ref={cityRef}
 										isScrolled={isScrolledInputs.city}
+										isProductPage={isProductPage}
 									/>
 								</div>
 								<div
 									className={
-										'grid grid-cols-2 mobile:grid-cols-1 w-[60%] mobile:w-full mt-4 gap-4'
+										`grid grid-cols-2 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -645,6 +653,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										}
 										ref={provinceRef}
 										isScrolled={isScrolledInputs.province}
+										isProductPage={isProductPage}
 									/>
 									<Input
 										placeholder={'País'}
@@ -659,10 +668,13 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										}
 										ref={countryRef}
 										disabled
+										isProductPage={isProductPage}
 									/>
 								</div>
-								<div className="flex flex-col justify-center items-center space-y-4">
-									<div className="flex flex-col justify-center items-center space-y-4">
+								</div>
+								<div>
+								{/* <div className="flex flex-col justify-center items-center space-y-4"> */}
+									<div className="flex flex-col justify-center items-center place-items-center space-y-4">
 										<p
 											className="
 												ms-10 mt-4 font-tertiary-font text-custom-grey
@@ -702,7 +714,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 											</span>
 										</label>
 									</div>
-								</div>
+								{/* </div> */}
 								{!isSwitchOn && (
 									<>
 										{/*Billing address*/}
@@ -798,7 +810,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								>
 									Seleccionar Método de pago
 								</h1>
-									<div className="w-full px-24 mobile:px-0">
+									<div className={`${!isProductPage && 'w-full px-24 mobile:px-0'}`}>
 										<PaymentSelection
 											purchaseIds={purchaseIds}
 											fieldsValue={fieldsValue}
@@ -824,6 +836,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 											totalPrice={stringPrice}
 											isSwitchOn={isSwitchOn}
 											setFieldsValue={setFieldsValue}
+											isProductPage={isProductPage}
 										/>
 									</div>
 								{/* )} */}

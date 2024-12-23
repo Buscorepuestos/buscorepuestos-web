@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import PaymentForm from '../checkout/PaymentForm'
 import SumupPayment from '../sumupPayment/sumupPayment'
 import TransferPayment from '../transferPayment/transferPayment'
-import { FormsFields } from '../../../verificacion-pago/page'
+import { FormsFields } from '../../../core/components/checkoutPage/CheckoutPage'
 import { createPaymentIntent } from '../../../services/checkout/stripe.service'
 import Image from 'next/image'
 
@@ -27,6 +27,7 @@ const PaymentSelection = ({
 	totalPrice,
 	isSwitchOn,
 	setFieldsValue,
+	isProductPage,
 }: {
 	purchaseIds: string[]
 	fieldsValue: FormsFields
@@ -72,6 +73,7 @@ const PaymentSelection = ({
 	totalPrice: string
 	isSwitchOn: boolean
 	setFieldsValue: React.Dispatch<React.SetStateAction<FormsFields>>
+	isProductPage: boolean
 }) => {
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
 		'stripe' | 'sumup' | 'transferencia' | null
@@ -271,7 +273,7 @@ const PaymentSelection = ({
 	}
 
 	return (
-		<div className="w-full mx-auto p-4 bg-white shadow-lg rounded-lg">
+		<div className={`${!isProductPage && 'w-full mx-auto p-4 bg-white shadow-lg rounded-lg'}`}>
 			{isFormValid ? (
 				<div className="flex justify-between mb-6 gap-4">
 					<button
@@ -281,7 +283,7 @@ const PaymentSelection = ({
 								backToInputRefWhenError()
 							}, 200)
 						}}
-						className={`w-full flex gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-lg transition-all duration-300 
+						className={`w-full flex ${isProductPage ? 'xl:flex-row sm:flex-col':''} gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-lg transition-all duration-300 
 				${
 					selectedPaymentMethod === 'sumup'
 						? 'bg-secondary-blue text-white border-secondary-blue'
@@ -316,7 +318,7 @@ const PaymentSelection = ({
 								backToInputRefWhenError()
 							}, 200)
 						}}
-						className={`w-full flex gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-lg transition-all duration-300 
+						className={`w-full flex ${isProductPage ? 'xl:flex-row sm:flex-col':''} gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-lg transition-all duration-300 
 				${
 					selectedPaymentMethod === 'transferencia'
 						? 'bg-secondary-blue text-white border-secondary-blue'
@@ -351,29 +353,29 @@ const PaymentSelection = ({
 								backToInputRefWhenError()
 							}, 200)
 						}}
-						className={`w-full flex gap-3 items-center justify-center px-4 py-2  border-[1px] rounded-lg transition-all duration-300 
+						className={`w-full flex ${isProductPage ? 'sm:flex-col xl:flex-row gap-3 xl:gap-[3rem] lg:gap-2' : 'gap-6'}  items-center justify-center px-4 py-2  border-[1px] rounded-lg transition-all duration-300 
 				${
 					selectedPaymentMethod === 'stripe'
 						? 'bg-secondary-blue text-white border-secondary-blue'
 						: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
 				} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[2.7vw]
-				mobile:flex mobile:flex-col
+				mobile:flex mobile:flex-col 
 				`}
 					>
-						<div className="flex gap-4 ">
+						<div className={`flex gap-4 ${isProductPage && 'xl:flex-row'}`}>
 							<Image
 								src="/klarna.png"
 								alt="klarna"
 								width={56}
 								height={56}
-								className="w-10 h-10 rounded-md"
+								className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`}
 							/>
 							<Image
 								src="/paypal.png"
 								alt="paypal"
 								width={56}
 								height={56}
-								className="w-10 h-10 rounded-md"
+								className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`}
 							/>
 						</div>
 						<pre>
@@ -392,7 +394,7 @@ const PaymentSelection = ({
 							}, 200)
 						}}
 						className={`
-							w-full flex gap-3 items-center justify-center px-6 py-2 
+							w-full flex ${isProductPage ? 'xl:flex-row sm:flex-col':''} gap-3 items-center justify-center px-6 py-2 
 							border-[1px] rounded-lg transition-all duration-300 
 							bg-light-grey text-alter-grey border-light-grey
 							xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] 
@@ -417,7 +419,7 @@ const PaymentSelection = ({
 							}, 200)
 						}}
 						className={`
-							w-full flex gap-3 items-center justify-center px-6 py-2 
+							w-full flex ${isProductPage ? 'xl:flex-row sm:flex-col':''} gap-3 items-center justify-center px-6 py-2 
 							border-[1px] rounded-lg transition-all duration-300 
 							bg-light-grey text-alter-grey border-light-grey
 							xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] 
@@ -442,27 +444,27 @@ const PaymentSelection = ({
 							}, 200)
 						}}
 						className={`
-							w-full flex gap-3 items-center justify-center px-4 py-2  
+							w-full flex ${isProductPage ? 'sm:flex-col xl:flex-row gap-3 xl:gap-[3rem] lg:gap-2' : 'gap-6'} items-center justify-center px-4 py-2  
 							border-[1px] rounded-lg transition-all duration-300 	
 							bg-light-grey text-alter-grey border-light-grey
 							xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] 
 							mobile:text-[2.7vw] mobile:flex mobile:flex-col
 						`}
 					>
-						<div className="flex gap-4 ">
+						<div className={`flex gap-4 ${isProductPage && 'xl:flex-row'}`}>
 							<Image
 								src="/klarna.png"
 								alt="klarna"
 								width={56}
 								height={56}
-								className="w-10 h-10 rounded-md"
+								className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`}
 							/>
 							<Image
 								src="/paypal.png"
 								alt="paypal"
 								width={56}
 								height={56}
-								className="w-10 h-10 rounded-md"
+								className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`}
 							/>
 						</div>
 						<pre>

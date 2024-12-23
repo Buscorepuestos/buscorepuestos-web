@@ -13,6 +13,7 @@ interface InputProps {
 	onButtonClick?: () => void // Añadido para manejar el clic del botón
 	type?: string
 	onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
+	isProductPage?: boolean
 }
 
 const Input: React.FC<InputProps> = ({
@@ -28,6 +29,7 @@ const Input: React.FC<InputProps> = ({
 	onButtonClick,
 	type = 'text',
 	onKeyDown,
+	isProductPage,
 }) => {
 	cssClass = cssClass ? cssClass : ''
 
@@ -78,7 +80,7 @@ const Input: React.FC<InputProps> = ({
                     flex border-[1px] w-full rounded-xl text-gray-800 
                     p-2 font-tertiary-font focus:border-secondary-blue focus:outline-none
                     placeholder:text-custom-grey
-                    xl:text-[0.9vw] lg:text-[1.6vw] md:text-[1.7vw] sm:text-[2vw] mobile:text-[3vw]
+                    xl:text-[0.9vw] ${isProductPage ? 'lg:text-[1.1vw] md:text-[1.5vw] sm:text-[1.5vw]':'lg:text-[1.6vw] md:text-[1.7vw] sm:text-[2vw] mobile:text-[3vw]'}
 					${error || isScrolled ? 'border-red-500' : 'border-secondary-blue'}
 					
                 `}
@@ -93,7 +95,7 @@ const Input: React.FC<InputProps> = ({
 			/>
 			{buttonText && onButtonClick && (
 				<button
-					className="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary-blue text-sm underline cursor-pointer"
+					className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-primary-blue  ${isProductPage ? 'xl:text-sm lg:text-[1.2vw] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-sm':'text-sm'} underline cursor-pointer`}
 					onClick={onButtonClick}
 				>
 					{buttonText}
