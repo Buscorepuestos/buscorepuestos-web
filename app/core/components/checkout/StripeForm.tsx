@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import { PaymentIntent, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { createBill } from '../../../services/billing/billing.service'
 import { useDispatch } from 'react-redux'
-import { FormsFields } from '../../../verificacion-pago/page'
+import { FormsFields } from '../checkoutPage/CheckoutPage'
 import { environment } from '../../../environment/environment'
 import { updateUser } from '../../../services/mailchimp/mailchimp'
 
