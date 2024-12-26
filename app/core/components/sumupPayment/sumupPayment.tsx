@@ -2,7 +2,7 @@
 import PaymentWidget from '../../../services/sumup/sumupWidget'
 import { useEffect, useState } from 'react'
 import { environment } from '../../../environment/environment'
-import { FormsFields } from '../../../verificacion-pago/page'
+import { FormsFields } from '../../../core/components/checkoutPage/CheckoutPage'
 import { CartItem } from '../../../redux/features/shoppingCartSlice'
 
 export default function SumupPayment({

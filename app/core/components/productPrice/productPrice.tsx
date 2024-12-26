@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation'
 import Swal from 'sweetalert2'
 import { updateMetasyncProduct } from '../../../services/products/products.service'
 import { updateAlgoliaProductStock } from '../../../services/algolia/updateStock.service'
+import CheckoutPage from '../checkoutPage/CheckoutPage'
 
 interface ProductPriceProps {
 	price: string
@@ -59,15 +60,20 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 			: null
 	})
 	const userId2 = useSelector((state: RootState) => {
-		const currentUser = state.airtableUser.currentUser as any;
-		return currentUser?.data?.id || null;
-	});
+		const currentUser = state.airtableUser.currentUser as any
+		return currentUser?.data?.id || null
+	})
 	const cart = useSelector((state: RootState) => state.cart.items)
 	const user = useSelector(
 		(state: RootState) => state.airtableUser.currentUser ?? null
 	)
 
-	console.log('Redux state:', useSelector((state: RootState) => state.airtableUser));
+	const [onePageIsOpen, setOnePageIsOpen] = useState<boolean>(false)
+
+	// console.log(
+	// 	'Redux state:',
+	// 	useSelector((state: RootState) => state.airtableUser)
+	// )
 
 	const handleAddToCart = () => {
 		setIsProccesingAddToCart(true)
@@ -132,7 +138,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 		dispatch({ type: 'auth/checkUserStatus' })
 		setIsProccesingBuyNow(true)
 		dispatch(addItemToCart(data))
-		
+
 		setTimeout(() => {
 			dispatch(
 				savePurchaseAsync({
@@ -141,101 +147,134 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 				})
 			)
 		}, 2000)
-		router.push('/verificacion-pago')
+		// router.push('/verificacion-pago')
+		setOnePageIsOpen(true)
 	}
 
 	return (
-		<div className="flex flex-col justify-center items-center font-tertiary-font">
-			<div className='relative flex items-center'>
-				<p className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
-					{price}€
-				</p>
-				<p className='
+		<div className="relative overflow-hidden">
+			<div className="mt-[1.5vw] ml-10 flex justify-center">
+				<div className="flex flex-col justify-center items-center font-tertiary-font">
+					<div className="relative flex items-center">
+						<p className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
+							{price}€
+						</p>
+						<p
+							className="
 					absolute left-[105%] top-[40%] transform -translate-y-1/2 bg-custom-orange rounded-full 
 					text-custom-white px-2 text-[2.8vw] xl:text-[0.9vw] md:text-[1.3vw] xl:h-[1.1vw] lg:h-[1.6vw] md:h-[1.8vw] mobile:h-[3.5vw]
 					sm:text-[1.4vw]
-				'>
-					-10%
-				</p>
-			</div>
-			<p className="mt-[-1.3rem] font-semibold text-dark-grey xl:text-[1vw] md:text-[1.2vw] sm:text-[1.7vw]">
-				{shippingInfo}
-			</p>
-			<div className="text-custom-orange gap-3 flex items-center">
-				<Image
-					src={warningImgSrc}
-					alt="warning"
-					width={20}
-					height={20}
-					className="mobile:w-[13px] sm:w-[15px] md:w-[12px] lg:w-[15px]"
-				/>
-				<p className="text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw]">
-					Precio medio pieza original nueva:
-					<span className="font-extrabold line-through">
-						{' '}
-						{originalPrice}€{' '}
-					</span>
-				</p>
-				<p className="text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] bg-custom-orange text-custom-white rounded-2xl px-1 flex items-center">
-					{discount}
-				</p>
-			</div>
-			{user ? (
-				<div className="flex gap-7 mt-7">
-					{data.stock === false || globalStock === false ? (
-						<Button
-							labelName="Producto no disponible"
-							type="secondary"
-							bg="bg-alter-grey"
-							borderColor="border-alter-grey"
-							hoverBg="hover:bg-alter-grey"
-							hoverText="white"
-							cursor="cursor-not-allowed"
+				"
+						>
+							-10%
+						</p>
+					</div>
+					<p className="mt-[-1.3rem] font-semibold text-dark-grey xl:text-[1vw] md:text-[1.2vw] sm:text-[1.7vw]">
+						{shippingInfo}
+					</p>
+					<div className="text-custom-orange gap-3 flex items-center">
+						<Image
+							src={warningImgSrc}
+							alt="warning"
+							width={20}
+							height={20}
+							className="mobile:w-[13px] sm:w-[15px] md:w-[12px] lg:w-[15px]"
 						/>
-					) : (
-						<>
-							{existingItem ? (
-								<Button
-									labelName="Quitar de la cesta"
-									type="secondary"
-									bg="bg-secondary-blue"
-									borderColor="border-secondary-blue"
-									hoverBg="hover:bg-custom-white"
-									hoverText="hover:text-secondary-blue"
-									cursor="cursor-pointer"
-									onClick={handleRemoveFromCart}
-								/>
-							) : (
-								<>
-									{isProccesingAddToCart ? (
-										<div className="flex justify-start my-4">
-											<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
-										</div>
-									) : isProccesingBuyNow ? (
-										<div className="flex justify-center my-4">
-											<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-										</div>
+						<p className="text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw]">
+							Precio medio pieza original nueva:
+							<span className="font-extrabold line-through">
+								{' '}
+								{originalPrice}€{' '}
+							</span>
+						</p>
+						<p className="text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] bg-custom-orange text-custom-white rounded-2xl px-1 flex items-center">
+							{discount}
+						</p>
+					</div>
+					{!onePageIsOpen && (
+						<div>
+							{user ? (
+								<div className="flex gap-7 mt-7">
+									{data.stock === false ||
+									globalStock === false ? (
+										<Button
+											labelName="Producto no disponible"
+											type="secondary"
+											bg="bg-alter-grey"
+											borderColor="border-alter-grey"
+											hoverBg="hover:bg-alter-grey"
+											hoverText="white"
+											cursor="cursor-not-allowed"
+										/>
 									) : (
 										<>
-											<Button
-												{...button1Props}
-												onClick={handleAddToCart}
-											/>
-											<Button
-												{...button2Props}
-												onClick={buynow}
-											/>
+											{existingItem ? (
+												<Button
+													labelName="Quitar de la cesta"
+													type="secondary"
+													bg="bg-secondary-blue"
+													borderColor="border-secondary-blue"
+													hoverBg="hover:bg-custom-white"
+													hoverText="hover:text-secondary-blue"
+													cursor="cursor-pointer"
+													onClick={
+														handleRemoveFromCart
+													}
+												/>
+											) : (
+												<>
+													{isProccesingAddToCart ? (
+														<div className="flex justify-start my-4">
+															<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
+														</div>
+													) : isProccesingBuyNow ? (
+														<div className="flex justify-center my-4">
+															<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+														</div>
+													) : (
+														<>
+															<Button
+																{...button1Props}
+																onClick={
+																	handleAddToCart
+																}
+															/>
+															<Button
+																{...button2Props}
+																onClick={buynow}
+															/>
+														</>
+													)}
+												</>
+											)}
 										</>
 									)}
-								</>
+								</div>
+							) : (
+								<div className="flex justify-center my-4">
+									<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+								</div>
 							)}
-						</>
+						</div>
 					)}
 				</div>
-			) : (
-				<div className="flex justify-center my-4">
-					<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+			</div>
+			<div
+				className={`w-[93%] m-auto h-[2px] bg-secondary-blue mt-[1.5vw] mobile:mt-[3vw]`}
+			/>
+			<div>
+				<div
+					className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+						onePageIsOpen ? '' : 'max-h-0'
+					}`}
+				>
+					<div className="py-8 sm:px-10 mobile:py-0">
+						<CheckoutPage isProductPage={true} />
+					</div>
 				</div>
+			</div>
+			{onePageIsOpen && (
+				<div className="w-[93%] m-auto h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
 			)}
 		</div>
 	)

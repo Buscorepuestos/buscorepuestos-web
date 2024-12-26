@@ -40,6 +40,7 @@ export default defineConfig({
 				'app/core/components/shopping-cart/ProductCartInfo.tsx',
 				'app/core/components/warranties/Warranties.tsx',	
 				'app/core/components/facilities/Facilities.tsx',
+				'app/core/components/checkoutPage/CheckoutPage.tsx',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
 				'app/services'
