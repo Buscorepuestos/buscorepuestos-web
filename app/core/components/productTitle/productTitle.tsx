@@ -21,7 +21,7 @@ const ProductTitle: React.FC<ProductTitleProps> = ({
 			<div className="mobile:grid mobile:grid-cols-custom-layout-mobile mobile:items-center sm:px-10">
 				<div>
 					<div className="grid grid-cols-custom-layout mobile:flex items-center mb-0 md:gap-3 sm:gap-4">
-						<h1 className="lg:text-[1.3vw] md:text-[1.5vw] sm:text-[1.8vw] mobile:text-[4vw] font-tertiary-font font-semibold overflow-hidden truncate w-auto text-dark-grey">
+						<h1 className="lg:text-[1.3vw] md:text-[1.5vw] sm:text-[1.8vw] mobile:text-[4vw] font-tertiary-font font-extrabold overflow-hidden truncate w-auto text-dark-grey">
 							{title.charAt(0).toUpperCase() + title.slice(1).toLowerCase()}
 						</h1>
 						<h2 className="mobile:hidden text-[0.8vw] lg:text-[0.9vw] sm:text-[1.3vw] font-tertiary-font flex justify-center text-dark-grey font-light">

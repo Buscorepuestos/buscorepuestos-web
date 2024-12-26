@@ -62,6 +62,7 @@ export function Header() {
 			starWith('/contacto') ||
 			starWith('/ayuda') ||
 			starWith('/sobre-nosotros')
+			// starWith('/verificacion-pago')
 		) {
 			setIsProductPage(true)
 		} else {
@@ -216,14 +217,14 @@ export function Header() {
 										: undefined
 								}
 							>
-								<div className="w-full flex items-center hover:bg-gray-100 h-[10vw] border-secondary-blue border-b-[1px] pl-14">
-									<Link
-										key={index}
-										href={link.href}
-										className="text-[4vw] font-semibold"
-										style={{ color: 'var(--neutro300)' }}
-										onClick={closeMenu}
-									>
+								<Link
+									key={index}
+									href={link.href}
+									className="text-[4vw] font-semibold"
+									style={{ color: 'var(--neutro300)' }}
+									onClick={closeMenu}
+								>
+									<div className="w-full flex items-center hover:bg-gray-100 h-[10vw] border-secondary-blue border-b-[1px] pl-14">
 										{/* {link.label === 'Tienda' ? (
 											<div className="flex items-center gap-10">
 												<p>{link.label}</p>
@@ -239,8 +240,8 @@ export function Header() {
 											link.label
 										)} */}
 										{link.label}
-									</Link>
-								</div>
+									</div>
+								</Link>
 								{link.label === 'Tienda' &&
 									isSecondaryMenuOpen && (
 										<div

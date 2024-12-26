@@ -1,7 +1,7 @@
 import { loadStripe } from '@stripe/stripe-js'
 import StripeForm from './StripeForm'
 import { Elements } from '@stripe/react-stripe-js'
-import { FormsFields } from '@/app/verificacion-pago/page'
+import { FormsFields } from '../checkoutPage/CheckoutPage'
 import { environment } from '../../../environment/environment'
 
 const stripePromise = loadStripe(environment.stripe_publishable_key)

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { clearCart } from '../../../../app/redux/features/shoppingCartSlice'
 import { useStripe } from '@stripe/react-stripe-js'
+import { updatePurchase } from '../../../services/purchase/purchase'
 import { useSearchParams } from 'next/navigation'
 import { createBill } from '../../../services/billing/billing.service'
 import { userService } from '../../../services/user/userService'
@@ -197,6 +198,9 @@ const PaymentSuccess = () => {
 					if (!billingExecuted) {
 						if (!pagoSummup) {
 							await createBill(parsedBillingData)
+							parsedBillingData.Compras.forEach(async (purchaseId: any) => {
+								await updatePurchase(purchaseId);
+							});
 							await userService.createUserAddresses(
 								parsedAddressData
 							)

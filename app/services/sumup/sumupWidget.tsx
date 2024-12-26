@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { FormsFields } from '../../verificacion-pago/page'
+import { FormsFields } from '../../core/components/checkoutPage/CheckoutPage'
 import { updatePurchase } from '../../services/purchase/purchase'
 import { createBill } from '../../services/billing/billing.service'
 import { useDispatch } from 'react-redux'
