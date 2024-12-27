@@ -50,7 +50,7 @@ export default function SumupPayment({
 
 	return (
 		<div>
-			{checkoutId && items.length === 1 ? (
+			{checkoutId && items.length > 0 ? (
 				<PaymentWidget 
 					checkoutId={checkoutId} 
 					purchaseIds={purchaseIds}
