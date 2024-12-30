@@ -166,7 +166,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 					sm:text-[1.4vw]
 				"
 						>
-							-10%
+							-30%
 						</p>
 					</div>
 					<p className="mt-[-1.3rem] font-semibold text-dark-grey xl:text-[1vw] md:text-[1.2vw] sm:text-[1.7vw]">
