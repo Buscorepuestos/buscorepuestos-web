@@ -16,6 +16,6 @@ export const environment = {
         measurementId: "G-XZ08Y69T6S",
     },
     api: {
-        url: "https://buscorepuestos.herokuapp.com/api",
+        url: "https://buscorepuesto-de461a6f006a.herokuapp.com/api",
     },
 };

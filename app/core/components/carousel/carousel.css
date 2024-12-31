@@ -78,3 +78,47 @@
         height: 10.5vw;
     }
 }
+
+.mySwiper3 {
+    width: 100%;
+    @media (min-width: 768px) {
+        height: 35vw;
+    }
+    @media (min-width: 1024px) {
+        height: 35vw;
+    }
+    @media (min-width: 1280px) {
+        height: 30vw;
+    }
+    @media (max-width: 640px) {
+        margin-left: 5.5vw;
+        width: 85%;
+    }
+}
+
+.carousel-image-expanded {
+    height: 30vw;
+    border-radius: 1rem;
+
+    @media (max-width: 1300px) {
+        height: 35vw;
+    }
+
+    @media (max-width: 640px) {
+        height: 65vw;
+    }
+}
+
+.carousel-thumb-images-expanded {
+    height: 6vw;
+    border-radius: 1rem;
+
+    @media (max-width: 1300px) {
+        height: 8vw;
+    }
+
+    @media (max-width: 640px) {
+        height: 10.5vw;
+    }
+}
+
