@@ -1,5 +1,5 @@
 'use client'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, use, useEffect, useState } from 'react'
 import { SwiperSlide } from 'swiper/react'
 import Banner from '@/app/core/components/Banner'
 import CardInfo from '@/app/core/components/cards/CardInfo'
@@ -12,6 +12,13 @@ import Dropdown from './core/components/Dropdown'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from './redux/store'
+import { IProductMongoose } from './types/product'
+import { environment } from './environment/environment'
+import algoliasearch from 'algoliasearch'
+
+const appID = environment.algoliaAppID
+const apiKey = environment.algoliaAPIKey
+const indexName = environment.algoliaIndexName
 
 const cardInfoPropsArray = [
 	{
@@ -248,7 +255,65 @@ export default function Home() {
 	const [isMobile, setIsMobile] = useState(false)
 	const [searchTerm, setSearchTerm] = useState('')
 	const router = useRouter()
-	const dispatch = useDispatch<AppDispatch>();
+	const dispatch = useDispatch<AppDispatch>()
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState<string | null>(null)
+	const [products, setProducts] = useState<IProductMongoose[]>([])
+	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
+
+	const client = algoliasearch(appID, apiKey)
+	const index = client.initIndex(indexName)
+
+	const search = async () => {
+		setLoading(true)
+		try {
+			const filters: string[] = ['isMetasync:true', 'stock:true']
+
+			const result = await index.search('', {
+				facetFilters: filters,
+				hitsPerPage: 40,
+				attributesToRetrieve: [
+					'title',
+					'mainReference',
+					'brand',
+					'articleModel',
+					'year',
+					'buscorepuestosPrice',
+					'images',
+					'_id',
+					'isMetasync',
+					'stock',
+					'refLocal',
+					'idEmpresa',
+				],
+			})
+
+			const sortedProducts = (
+				result.hits as unknown as IProductMongoose[]
+			).sort((a, b) => {
+				const aHasImages = a.images && a.images.length > 0 ? 1 : 0
+				const bHasImages = b.images && b.images.length > 0 ? 1 : 0
+				return bHasImages - aHasImages
+			})
+
+			const filteredProducts = sortedProducts.filter(
+				(product) =>
+					!product.images.includes('https://cdn11.metasync.com/simg')
+			)
+
+			setProducts(filteredProducts)
+		} catch (err) {
+			console.log(err)
+			setError((err as Error).message)
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	useEffect(() => {
+		search()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -274,8 +339,40 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-        dispatch({ type: "auth/checkUserStatus" });
-    }, [dispatch]);
+		dispatch({ type: 'auth/checkUserStatus' })
+	}, [dispatch])
+
+	console.log('products', products)
+
+	const cleanValue = (text: string) => {
+		return `${' ' + text.replace('-', '')}`
+	}
+
+	const handle = (productId: string) => {
+		setLoadingPurchase(productId)
+		router.push(`/producto/${productId}`)
+	}
+
+	const handleFilterRoutes = (title: string) => {
+		const routeMap: { [key: string]: string } = {
+			'Interior\nHabitáculo': '/tienda/Guarnecidos%20Palanca%20Cambio',
+			'Carrocería\ny lunas': '/tienda/Aleron%20Trasero',
+			'Faros y\npilotos': '/tienda/Faro%20Derecho',
+			'Sistema de\nseguridad': '/tienda/Airbag%20Delantero%20Derecho',
+			'Electrónica\ny electricidad': '/tienda/Conmutador%20De%20Arranque',
+			'Suspensión,\nEjes y Dirección':
+				'/tienda/Brazo%20Suspension%20Inferior%20Delantero%20Izquierdo',
+			'Cajas de\ncambio y\ntransmisión':
+				'/tienda/Transmision%20Delantera%20Izquierda',
+			'Refrigeración y\naire\nacondicionado':
+				'/tienda/Compresor%20Aire%20Acondicionado',
+		}
+
+		const route = routeMap[title]
+		if (route) {
+			router.push(route)
+		}
+	}
 
 	return (
 		<main>
@@ -327,13 +424,21 @@ export default function Home() {
 				<div className="flex w-[99vw] justify-center mx-auto">
 					<div className="grid grid-cols-2 md:grid-cols-4 lg:gap-[85px] sm:gap-[16px] mobile:gap-[20px] mb-[85px]">
 						{cardInfoPropsArray.map((cardInfoProps, index) => (
-							<CardInfo
+							<button
 								key={index}
-								title={cardInfoProps.title}
-								image={cardInfoProps.image}
-								href={cardInfoProps.href}
-								className={classCardCategories}
-							/>
+								className="transition-transform transform hover:scale-105 hover:shadow-lg rounded-b-[24px]"
+								onClick={() =>
+									handleFilterRoutes(cardInfoProps.title)
+								}
+							>
+								<CardInfo
+									key={index}
+									title={cardInfoProps.title}
+									image={cardInfoProps.image}
+									href={cardInfoProps.href}
+									className={classCardCategories}
+								/>
+							</button>
 						))}
 					</div>
 				</div>
@@ -531,16 +636,25 @@ export default function Home() {
 					</h2>
 				</div>
 				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
-					{cardPropsArray.map((cardProps, index) => (
+					{products.slice(0, 10).map((product: any, index) => (
 						<SwiperSlide
 							key={index}
 							className="flex justify-center items-center"
 						>
 							<CardPrice
-								title={cardProps.title}
-								price={cardProps.price}
-								description={cardProps.description}
-								reference={cardProps.reference}
+								key={index}
+								title={product.title}
+								reference={product.mainReference!}
+								description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+								price={product?.buscorepuestosPrice || 0}
+								image={
+									product.images[0]
+										? product.images[0]
+										: '/nodisponible.png'
+								}
+								handle={() => handle(product._id)}
+								id={product._id}
+								loading={loadingPurchase === product._id}
 							/>
 						</SwiperSlide>
 					))}
@@ -551,7 +665,6 @@ export default function Home() {
 
 			<Banner
 				imgUrl="/banner-truck.webp"
-				
 				aligned="center"
 				color="blue"
 				position={''}
@@ -570,21 +683,17 @@ export default function Home() {
 							</div>
 						))}
 					</div>
-					<Slider
-						breakpoints={breakPointsCardValoration}
-					>
+					<Slider breakpoints={breakPointsCardValoration}>
 						{cardValorationPropsArray.map(
 							(cardValoration, index) => (
 								<SwiperSlide key={index}>
 									<CardValoration
 										title={cardValoration.title}
-										valoration={
-											cardValoration.valoration
-										}
+										valoration={cardValoration.valoration}
 										comments={cardValoration.comments}
 									/>
 								</SwiperSlide>
-							),
+							)
 						)}
 					</Slider>
 				</div>
@@ -598,16 +707,25 @@ export default function Home() {
 					</h2>
 				</div>
 				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
-					{cardPropsArray.map((cardProps, index) => (
+					{products.slice(10, 20).map((product: any, index) => (
 						<SwiperSlide
 							key={index}
 							className="flex justify-center items-center"
 						>
 							<CardPrice
-								title={cardProps.title}
-								price={cardProps.price}
-								description={cardProps.description}
-								reference={cardProps.reference}
+								key={index}
+								title={product.title}
+								reference={product.mainReference!}
+								description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+								price={product?.buscorepuestosPrice || 0}
+								image={
+									product.images[0]
+										? product.images[0]
+										: '/nodisponible.png'
+								}
+								handle={() => handle(product._id)}
+								id={product._id}
+								loading={loadingPurchase === product._id}
 							/>
 						</SwiperSlide>
 					))}
