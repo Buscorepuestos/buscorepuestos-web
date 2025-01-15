@@ -195,6 +195,7 @@ export default function Store() {
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
 					<Filters
+						initialSubcategory={''}
 						onSubcategoryChange={handleSubcategoryChange}
 						onBrandChange={handleBrandChange}
 						onModelChange={handleModelChange}
@@ -223,6 +224,7 @@ export default function Store() {
 					/>
 					<div className="sm:hidden mobile:w-full px-[8vw]">
 						<Filters
+							initialSubcategory={''}
 							onSubcategoryChange={handleSubcategoryChange}
 							onBrandChange={handleBrandChange}
 							onModelChange={handleModelChange}
