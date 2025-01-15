@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useAppSelector } from '../../../redux/hooks'
-import { environment } from '../../../environment/environment'
 
 export function Header() {
 	const principalMenuLinks = [
@@ -15,15 +14,16 @@ export function Header() {
 	]
 
 	const secondaryMenuLinks = [
-		{ label: 'Marcas', href: '#' },
-		{ label: 'Categorías', href: '#' },
-		{ label: 'Accesorios', href: '#' },
-		{ label: 'Alumbrado', href: '#' },
-		{ label: 'Cambio/Embrague', href: '#' },
-		{ label: 'Carrocería', href: '#' },
-		{ label: 'Climatización', href: '#' },
-		{ label: 'Electricidad', href: '#' },
-		{ label: 'Motor', href: '#' },
+		{ label: 'Accesorios', href: 'tienda/Enganche%20Remolque' },
+		{ label: 'Alumbrado', href: 'tienda/Faro%20Derecho' },
+		{ label: 'Cambio/Embrague', href: 'tienda/Pomo%20Palanca%20Cambio' },
+		{ label: 'Carrocería', href: 'tienda/Aleta%20Delantera%20Derecha' },
+		{
+			label: 'Climatización',
+			href: 'tienda/Compresor%20Aire%20Acondicionado',
+		},
+		{ label: 'Electricidad', href: 'tienda/Conmutador%20De%20Arranque' },
+		{ label: 'Motor', href: 'tienda/Valvula%20Egr' },
 	]
 
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -173,16 +173,22 @@ export function Header() {
 				<>
 					<div className="w-full h-[2px] bg-secondary-blue my-2 md:my-0 sm:my-0" />
 					<div className="flex flex-wrap justify-between gap-4 px-4 md:px-[43px] pt-3">
-						{secondaryMenuLinks.map((link, index) => (
-							<Link
-								key={index}
-								href={link.href}
-								className="lg:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] transition duration-300 ease-in-out hover:underline font-semibold"
-								style={{ color: 'var(--neutro300)' }}
-							>
-								{link.label}
-							</Link>
-						))}
+						{secondaryMenuLinks.map((link, index) => {
+							// Si la ruta actual es /tienda, evita repetir /tienda en el href
+							const adjustedHref = pathname.startsWith('/tienda')
+							? `/${link.href.replace('tienda/', 'tienda/')}`
+							: `/${link.href}`
+							return (
+								<Link
+									key={index}
+									href={adjustedHref}
+									className="lg:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] transition duration-300 ease-in-out hover:underline font-semibold"
+									style={{ color: 'var(--neutro300)' }}
+								>
+									{link.label}
+								</Link>
+							)
+						})}
 					</div>
 				</>
 			)}

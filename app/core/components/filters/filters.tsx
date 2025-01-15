@@ -6,6 +6,7 @@ import { environment } from '../../../environment/environment'
 import './filters.css'
 
 interface FiltersProps {
+	initialSubcategory: string | null
 	onSubcategoryChange: (subcategory: string | null) => void
 	onBrandChange: (brand: string | null) => void
 	onModelChange: (model: string | null) => void
@@ -17,6 +18,7 @@ const apiKey = environment.algoliaAPIKey
 const indexName = environment.algoliaIndexName
 
 const Filters: React.FC<FiltersProps> = ({
+	initialSubcategory,
 	onSubcategoryChange,
 	onBrandChange,
 	onModelChange,
@@ -37,6 +39,35 @@ const Filters: React.FC<FiltersProps> = ({
 
 	const algoliaClient = algoliasearch(appID, apiKey)
 	const index = algoliaClient.initIndex(indexName)
+
+	useEffect(() => {
+		// Mapa de subcategorías a categorías
+		const subcategoryCategoryMap: Record<string, { category: string, subcategory: string }> = {
+			'Guarnecidos Palanca Cambio': { category: 'INTERIOR', subcategory: 'GUARNECIDOS PALANCA CAMBIO' },
+			'Aleron Trasero': { category: 'CARROCERÍA TRASERA', subcategory: 'ALERON TRASERO' },
+			'Faro Derecho': { category: 'ALUMBRADO', subcategory: 'FARO DERECHO' },
+			'Airbag Delantero Derecho': { category: 'INTERIOR', subcategory: 'AIRBAG DELANTERO DERECHO' },
+			'Conmutador De Arranque': { category: 'ELECTRICIDAD', subcategory: 'CONMUTADOR DE ARRANQUE' },
+			'Brazo Suspension Inferior Delantero Izquierdo': { category: 'SUSPENSIÓN / FRENOS', subcategory: 'BRAZO SUSPENSION INFERIOR DELANTERO IZQUIERDO' },
+			'Transmision Delantera Izquierda': { category: 'DIRECCIÓN / TRANSMISIÓN', subcategory: 'TRANSMISION DELANTERA IZQUIERDA' },
+			'Compresor Aire Acondicionado': { category: 'CLIMATIZACIÓN', subcategory: 'COMPRESOR AIRE ACONDICIONADO' },
+			'Enganche Remolque': { category: 'ACCESORIOS', subcategory: 'ENGANCHE REMOLQUE' },
+			'Pomo Palanca Cambio': { category: 'CAMBIO / EMBRAGUE', subcategory: 'POMO PALANCA CAMBIO' },
+			'Aleta Delantera Derecha': { category: 'CARROCERÍA FRONTAL', subcategory: 'ALETA DELANTERA DERECHA' },
+			'Valvula Egr': { category: 'MOTOR / ADMISIÓN / ESCAPE', subcategory: 'VALVULA EGR' },
+		};
+	
+		// Verificar si la subcategoría inicial tiene un mapeo correspondiente
+		if (initialSubcategory && subcategoryCategoryMap[initialSubcategory]) {
+			const { category, subcategory } = subcategoryCategoryMap[initialSubcategory];
+	
+			// Solo modificar la categoría y subcategoría si aún no se ha seleccionado
+			if (selectedCategory !== category && !selectedSubcategory) {
+				setSelectedCategory(category as CategoryKey);
+				setSelectedSubcategory(subcategory);
+			}
+		}
+	}, [initialSubcategory, selectedCategory, selectedSubcategory]);
 
 	const handleCategoryChange = (category: CategoryKey) => {
 		setSelectedCategory(selectedCategory === category ? null : category)
@@ -88,9 +119,7 @@ const Filters: React.FC<FiltersProps> = ({
 			setModels(uniqueModels)
 
 			// Filtrar los años en base a la combinación de subcategoría y marca
-			const uniqueYears = [
-				...new Set(hits.map((hit: any) => hit.year)),
-			]
+			const uniqueYears = [...new Set(hits.map((hit: any) => hit.year))]
 			setYears(uniqueYears)
 		} catch (error) {
 			console.error('Error fetching brands and models:', error)
@@ -298,7 +327,9 @@ const Filters: React.FC<FiltersProps> = ({
 						<span
 							className="absolute left-3 -top-4 text-secondary-blue text-xs z-10"
 							style={{
-								background: isFiltersVisible ? 'white' : 'linear-gradient(to top, white 10%, rgba(206, 206, 206, 0.685) 200%)',
+								background: isFiltersVisible
+									? 'white'
+									: 'linear-gradient(to top, white 10%, rgba(206, 206, 206, 0.685) 200%)',
 								padding: '0 4px',
 							}}
 						>
@@ -343,7 +374,9 @@ const Filters: React.FC<FiltersProps> = ({
 						<span
 							className="absolute left-3 -top-4 text-secondary-blue text-xs z-10"
 							style={{
-								background: isFiltersVisible ? 'white' : 'linear-gradient(to top, white 10%, rgba(206, 206, 206, 0.685) 200%)',
+								background: isFiltersVisible
+									? 'white'
+									: 'linear-gradient(to top, white 10%, rgba(206, 206, 206, 0.685) 200%)',
 								padding: '0 4px',
 							}}
 						>
@@ -354,9 +387,10 @@ const Filters: React.FC<FiltersProps> = ({
 							onChange={handleModelChange}
 							className="block w-full border-2 border-secondary-blue rounded-3xl shadow-sm focus:border-secondary-blue focus:ring-primary-blue p-2 bg-white"
 						>
-							<option value="" className="bg-white hidden">
-                                
-                            </option>
+							<option
+								value=""
+								className="bg-white hidden"
+							></option>
 							{models.map((model) => (
 								<option
 									key={model}
@@ -386,7 +420,9 @@ const Filters: React.FC<FiltersProps> = ({
 						<span
 							className="absolute left-3 -top-4 text-secondary-blue text-xs z-10"
 							style={{
-								background: isFiltersVisible ? 'white' : 'linear-gradient(to top, white 10%, rgba(206, 206, 206, 0.685) 200%)',
+								background: isFiltersVisible
+									? 'white'
+									: 'linear-gradient(to top, white 10%, rgba(206, 206, 206, 0.685) 200%)',
 								padding: '0 4px',
 							}}
 						>
@@ -398,7 +434,10 @@ const Filters: React.FC<FiltersProps> = ({
 							className="block w-full border-2 border-secondary-blue rounded-3xl shadow-sm focus:border-secondary-blue focus:ring-primary-blue p-2 bg-white"
 							disabled={!selectedBrand}
 						>
-							<option value="" className="bg-white hidden"></option>
+							<option
+								value=""
+								className="bg-white hidden"
+							></option>
 							{years.map((year) => (
 								<option
 									key={year}
