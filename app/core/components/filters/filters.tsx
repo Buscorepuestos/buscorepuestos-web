@@ -51,6 +51,10 @@ const Filters: React.FC<FiltersProps> = ({
 			'Brazo Suspension Inferior Delantero Izquierdo': { category: 'SUSPENSIÓN / FRENOS', subcategory: 'BRAZO SUSPENSION INFERIOR DELANTERO IZQUIERDO' },
 			'Transmision Delantera Izquierda': { category: 'DIRECCIÓN / TRANSMISIÓN', subcategory: 'TRANSMISION DELANTERA IZQUIERDA' },
 			'Compresor Aire Acondicionado': { category: 'CLIMATIZACIÓN', subcategory: 'COMPRESOR AIRE ACONDICIONADO' },
+			'Enganche Remolque': { category: 'ACCESORIOS', subcategory: 'ENGANCHE REMOLQUE' },
+			'Pomo Palanca Cambio': { category: 'CAMBIO / EMBRAGUE', subcategory: 'POMO PALANCA CAMBIO' },
+			'Aleta Delantera Derecha': { category: 'CARROCERÍA FRONTAL', subcategory: 'ALETA DELANTERA DERECHA' },
+			'Valvula Egr': { category: 'MOTOR / ADMISIÓN / ESCAPE', subcategory: 'VALVULA EGR' },
 		};
 	
 		// Verificar si la subcategoría inicial tiene un mapeo correspondiente

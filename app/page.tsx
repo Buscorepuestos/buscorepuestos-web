@@ -378,7 +378,7 @@ export default function Home() {
 		<main>
 			<Banner
 				imgUrl="/banner-motor.webp"
-				height="561px"
+				height={isMobile? '400px' : '561px'}
 				aligned="center"
 				color="blue"
 				position=""
@@ -413,9 +413,9 @@ export default function Home() {
 					Dos años de garantía en todas las piezas
 				</p>
 			</Banner>
-			<section className="pt-[72px]">
+			<section className="pt-[40px]">
 				<div className="flex justify-center items-center">
-					<h2 className="text-title-2 text-center max-w-[505px] mb-[31px]">
+					<h2 className="text-title-2 text-dark-grey text-center max-w-[505px] mb-[31px] mobile:text-[40px]">
 						Disponemos del catálogo de
 						<span className="text-primary-blue">15.435.468</span>
 						piezas diferentes
