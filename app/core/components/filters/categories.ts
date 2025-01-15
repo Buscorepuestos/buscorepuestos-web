@@ -1,4 +1,5 @@
 export type CategoryKey =
+	| 'INTERIOR'
 	| 'CARROCERÍA TRASERA'
 	| 'CARROCERÍA LATERALES'
 	| 'MOTOR / ADMISIÓN / ESCAPE'
@@ -8,7 +9,6 @@ export type CategoryKey =
 	| 'DIRECCIÓN / TRANSMISIÓN'
 	| 'ACCESORIOS'
 	| 'SUSPENSIÓN / FRENOS'
-	| 'INTERIOR'
 	| 'CAMBIO / EMBRAGUE'
 	| 'CLIMATIZACIÓN'
 	| 'MOTOS'

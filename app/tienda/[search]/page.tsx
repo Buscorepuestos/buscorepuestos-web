@@ -106,20 +106,26 @@ export default function Store({ params }: { params: { search: string } }) {
 	}, [dispatch])
 
 	useEffect(() => {
-		// Si no hay un valor en inputValue, realiza la búsqueda inicial desde params.search
-		if (!inputValue) {
-			const searchQuery = decodeURIComponent(params.search)
+		const searchQuery = decodeURIComponent(params.search)
+
+		// Si el valor de searchQuery está presente y no es igual a selectedSubcategory,
+		// actualizamos selectedSubcategory
+		if (searchQuery && searchQuery !== selectedSubcategory) {
+			setSelectedSubcategory(searchQuery)
+		}
+
+		// Realizamos la búsqueda solo si selectedSubcategory y inputValue son diferentes
+		if (inputValue && inputValue !== selectedSubcategory) {
 			searchAlgolia(
-				searchQuery,
+				inputValue,
 				selectedSubcategory,
 				selectedBrand,
 				selectedModel,
 				selectedYear
 			)
-		} else {
-			// Realiza la búsqueda basada en el inputValue y los filtros seleccionados
+		} else if (searchQuery && searchQuery !== selectedSubcategory) {
 			searchAlgolia(
-				inputValue,
+				searchQuery,
 				selectedSubcategory,
 				selectedBrand,
 				selectedModel,
@@ -128,11 +134,12 @@ export default function Store({ params }: { params: { search: string } }) {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
-		params.search,
-		selectedSubcategory,
-		selectedBrand,
-		selectedModel,
-		selectedYear,
+		params.search, // Detectar cambios en el parámetro de búsqueda
+		selectedSubcategory, // Cuando selectedSubcategory cambia
+		selectedBrand, // Cuando cambia la marca
+		selectedModel, // Cuando cambia el modelo
+		selectedYear, // Cuando cambia el año
+		inputValue, // Cuando cambia el valor del input
 	])
 
 	const handleNextPage = () => {
@@ -221,12 +228,13 @@ export default function Store({ params }: { params: { search: string } }) {
 		setLoadingPurchase(productId)
 		router.push(`/producto/${productId}`)
 	}
-
+	console.log('products', products)
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
 					<Filters
+						initialSubcategory={selectedSubcategory}
 						onSubcategoryChange={handleSubcategoryChange}
 						onBrandChange={handleBrandChange}
 						onModelChange={handleModelChange}
@@ -244,7 +252,7 @@ export default function Store({ params }: { params: { search: string } }) {
 							borderWidth={'2px'}
 						/>
 					</div>
-					<Facilities 
+					<Facilities
 						classNamePrincipal="
 							flex w-full my-5 md:gap-14 sm:gap-3 bg-gray-200 font-tertiary-font 
 							text-secondary-blue font-semibold h-[5rem] mobile:h-[13rem] justify-center 
@@ -255,6 +263,7 @@ export default function Store({ params }: { params: { search: string } }) {
 					/>
 					<div className="sm:hidden mobile:w-full px-[8vw]">
 						<Filters
+							initialSubcategory={selectedSubcategory}
 							onSubcategoryChange={handleSubcategoryChange}
 							onBrandChange={handleBrandChange}
 							onModelChange={handleModelChange}

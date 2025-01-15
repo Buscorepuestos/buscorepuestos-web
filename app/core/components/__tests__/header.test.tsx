@@ -21,8 +21,6 @@ const principalMenuLinks = [
 ]
 
 const secondaryMenuLinks = [
-	{ label: 'Marcas', href: '#' },
-	{ label: 'Categorías', href: '#' },
 	{ label: 'Accesorios', href: '#' },
 	{ label: 'Alumbrado', href: '#' },
 	{ label: 'Cambio/Embrague', href: '#' },
