@@ -9,6 +9,7 @@ import './globals.css'
 import { Header } from '@/app/core/components/global/header'
 import { Footer } from '@/app/core/components/global/footer'
 import Script from 'next/script'
+import CookieConsentModalWrapper from './core/components/cookieConsentModal/CookieConsentModalWrapper'
 
 const workSans = localFont({
 	src: './fonts/WorkSans_wght.ttf',
@@ -71,8 +72,12 @@ export default function RootLayout({
 					<WhatsAppIcon />
 					<Footer />
 					<SpeedInsights />
+
+					{/* Envoltorio del modal */}
+					<CookieConsentModalWrapper />
 				</StoreProvider>
 			</body>
 		</html>
 	)
 }
+
