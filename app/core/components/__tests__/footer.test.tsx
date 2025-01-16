@@ -24,10 +24,10 @@ const footerLinks = [
 	{
 		category: 'MÁS INFORMACIÓN',
 		links: [
-			{ name: 'Aviso Legal', href: '#' },
-			{ name: 'Política de privacidad', href: '#' },
-			{ name: 'Política de cookies', href: '#' },
-			{ name: 'Términos y condiciones', href: '#' },
+			{ name: 'Aviso Legal', href: '/aviso-legal' },
+			{ name: 'Política de privacidad', href: '/politica-privacidad' },
+			{ name: 'Política de cookies', href: '/politica-cookies' },
+			{ name: 'Términos y condiciones', href: '/terminos-condiciones' },
 		],
 	},
 ]

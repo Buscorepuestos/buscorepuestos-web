@@ -61,7 +61,11 @@ export function Header() {
 			starWith('/producto') ||
 			starWith('/contacto') ||
 			starWith('/ayuda') ||
-			starWith('/sobre-nosotros')
+			starWith('/sobre-nosotros') ||
+			starWith('/aviso-legal') ||
+			starWith('/politica-privacidad') ||
+			starWith('/politica-cookies') ||
+			starWith('/terminos-condiciones') 
 			// starWith('/verificacion-pago')
 		) {
 			setIsProductPage(true)
