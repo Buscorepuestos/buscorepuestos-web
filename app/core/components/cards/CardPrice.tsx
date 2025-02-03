@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Button from '../Button'
 import Link from 'next/link'
+import Star from '../svg/star'
 
 function PriceView(props: { price: string }) {
 	return (
@@ -9,6 +10,8 @@ function PriceView(props: { price: string }) {
 		</p>
 	)
 }
+
+const MAX_VALORATION = 5
 
 export default function CardPrice(props: {
 	title: string
@@ -24,7 +27,7 @@ export default function CardPrice(props: {
 	return (
 		<>
 			<div
-				className="max-w-[207px] max-h-[366px] mobile:max-h-[345px]
+				className="max-w-[207px]
 					flex flex-col justify-between pb-[23px] m-6 gap-4 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl
 					transition duration-300 ease-in-out"
 			>
@@ -48,9 +51,27 @@ export default function CardPrice(props: {
 							<span className="font-bold">Ref. </span>
 							{props.reference}
 						</p>
-						<p className="text-sm mobile:text-[1.2rem]">
+						<p className="text-sm mobile:text-[1.2rem] truncate overflow-ellipsis whitespace-nowrap max-w-[150px]">
 							{props.description}
 						</p>
+					</div>
+					<p className="mt-2 text-sm mobile:text-[2.9vw] font-tertiary-font text-primary-blue font-extrabold">
+						Valoración del proveedor
+					</p>
+					<div className="flex w-[100%] justify-center flex-row gap-4 mobile:gap-3 mt-2 mb-2">
+						{Array.from({ length: MAX_VALORATION }, (_, index) => (
+							<Star
+								key={index}
+								isFilled={true}
+								className="
+									xl:w-[1vw] xl:h-[1vw]
+									lg:w-[1.4vw] lg:h-[1.4vw]
+									md:w-[1.4vw] md:h-[1.4vw]
+									sm:w-[1.6vw] sm:h-[1.6vw]
+									mobile:w-[3.3vw] mobile:h-[3.3vw]
+								"
+							/>
+						))}
 					</div>
 					<div className="flex justify-center w-[100%] ">
 						<PriceView

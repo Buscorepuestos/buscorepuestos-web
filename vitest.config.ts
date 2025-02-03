@@ -44,6 +44,7 @@ export default defineConfig({
 				'app/core/components/carousel/carousel.tsx',
 				'app/core/components/cookieConsentModal/CookieConsentModal.tsx',
 				'app/core/components/cookieConsentModal/CookieConsentModalWrapper.tsx',
+				'app/core/components/filterTag/FilterTag.tsx',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
 				'app/services'
