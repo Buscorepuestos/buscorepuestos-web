@@ -187,7 +187,7 @@ export default async function Product({ params }: { params: { id: string } }) {
 						)}
 						<div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
 							<SupplierRating
-								valoration={valoracion || 0}
+								valoration={5}
 								location={Provincia || ''}
 								title="Valoración del proveedor"
 							/>

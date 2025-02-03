@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { categories, CategoryKey } from './categories'
 import algoliasearch from 'algoliasearch'
 import { environment } from '../../../environment/environment'
+import FilterTag from '../filterTag/FilterTag'
 import './filters.css'
 
 interface FiltersProps {
@@ -36,38 +37,81 @@ const Filters: React.FC<FiltersProps> = ({
 	const [models, setModels] = useState<string[]>([])
 	const [years, setYears] = useState<number[]>([])
 	const [isFiltersVisible, setIsFiltersVisible] = useState<boolean>(false)
+	const [selectedFilters, setSelectedFilters] = useState<
+		{ type: string; value: string }[]
+	>([])
 
 	const algoliaClient = algoliasearch(appID, apiKey)
 	const index = algoliaClient.initIndex(indexName)
 
 	useEffect(() => {
 		// Mapa de subcategorías a categorías
-		const subcategoryCategoryMap: Record<string, { category: string, subcategory: string }> = {
-			'Guarnecidos Palanca Cambio': { category: 'INTERIOR', subcategory: 'GUARNECIDOS PALANCA CAMBIO' },
-			'Aleron Trasero': { category: 'CARROCERÍA TRASERA', subcategory: 'ALERON TRASERO' },
-			'Faro Derecho': { category: 'ALUMBRADO', subcategory: 'FARO DERECHO' },
-			'Airbag Delantero Derecho': { category: 'INTERIOR', subcategory: 'AIRBAG DELANTERO DERECHO' },
-			'Conmutador De Arranque': { category: 'ELECTRICIDAD', subcategory: 'CONMUTADOR DE ARRANQUE' },
-			'Brazo Suspension Inferior Delantero Izquierdo': { category: 'SUSPENSIÓN / FRENOS', subcategory: 'BRAZO SUSPENSION INFERIOR DELANTERO IZQUIERDO' },
-			'Transmision Delantera Izquierda': { category: 'DIRECCIÓN / TRANSMISIÓN', subcategory: 'TRANSMISION DELANTERA IZQUIERDA' },
-			'Compresor Aire Acondicionado': { category: 'CLIMATIZACIÓN', subcategory: 'COMPRESOR AIRE ACONDICIONADO' },
-			'Enganche Remolque': { category: 'ACCESORIOS', subcategory: 'ENGANCHE REMOLQUE' },
-			'Pomo Palanca Cambio': { category: 'CAMBIO / EMBRAGUE', subcategory: 'POMO PALANCA CAMBIO' },
-			'Aleta Delantera Derecha': { category: 'CARROCERÍA FRONTAL', subcategory: 'ALETA DELANTERA DERECHA' },
-			'Valvula Egr': { category: 'MOTOR / ADMISIÓN / ESCAPE', subcategory: 'VALVULA EGR' },
-		};
-	
+		const subcategoryCategoryMap: Record<
+			string,
+			{ category: string; subcategory: string }
+		> = {
+			'Guarnecidos Palanca Cambio': {
+				category: 'INTERIOR',
+				subcategory: 'GUARNECIDOS PALANCA CAMBIO',
+			},
+			'Aleron Trasero': {
+				category: 'CARROCERÍA TRASERA',
+				subcategory: 'ALERON TRASERO',
+			},
+			'Faro Derecho': {
+				category: 'ALUMBRADO',
+				subcategory: 'FARO DERECHO',
+			},
+			'Airbag Delantero Derecho': {
+				category: 'INTERIOR',
+				subcategory: 'AIRBAG DELANTERO DERECHO',
+			},
+			'Conmutador De Arranque': {
+				category: 'ELECTRICIDAD',
+				subcategory: 'CONMUTADOR DE ARRANQUE',
+			},
+			'Brazo Suspension Inferior Delantero Izquierdo': {
+				category: 'SUSPENSIÓN / FRENOS',
+				subcategory: 'BRAZO SUSPENSION INFERIOR DELANTERO IZQUIERDO',
+			},
+			'Transmision Delantera Izquierda': {
+				category: 'DIRECCIÓN / TRANSMISIÓN',
+				subcategory: 'TRANSMISION DELANTERA IZQUIERDA',
+			},
+			'Compresor Aire Acondicionado': {
+				category: 'CLIMATIZACIÓN',
+				subcategory: 'COMPRESOR AIRE ACONDICIONADO',
+			},
+			'Enganche Remolque': {
+				category: 'ACCESORIOS',
+				subcategory: 'ENGANCHE REMOLQUE',
+			},
+			'Pomo Palanca Cambio': {
+				category: 'CAMBIO / EMBRAGUE',
+				subcategory: 'POMO PALANCA CAMBIO',
+			},
+			'Aleta Delantera Derecha': {
+				category: 'CARROCERÍA FRONTAL',
+				subcategory: 'ALETA DELANTERA DERECHA',
+			},
+			'Valvula Egr': {
+				category: 'MOTOR / ADMISIÓN / ESCAPE',
+				subcategory: 'VALVULA EGR',
+			},
+		}
+
 		// Verificar si la subcategoría inicial tiene un mapeo correspondiente
 		if (initialSubcategory && subcategoryCategoryMap[initialSubcategory]) {
-			const { category, subcategory } = subcategoryCategoryMap[initialSubcategory];
-	
+			const { category, subcategory } =
+				subcategoryCategoryMap[initialSubcategory]
+
 			// Solo modificar la categoría y subcategoría si aún no se ha seleccionado
 			if (selectedCategory !== category && !selectedSubcategory) {
-				setSelectedCategory(category as CategoryKey);
-				setSelectedSubcategory(subcategory);
+				setSelectedCategory(category as CategoryKey)
+				setSelectedSubcategory(subcategory)
 			}
 		}
-	}, [initialSubcategory, selectedCategory, selectedSubcategory]);
+	}, [initialSubcategory, selectedCategory, selectedSubcategory])
 
 	const handleCategoryChange = (category: CategoryKey) => {
 		setSelectedCategory(selectedCategory === category ? null : category)
@@ -80,12 +124,39 @@ const Filters: React.FC<FiltersProps> = ({
 			setBrands([])
 			setModels([])
 			setYears([])
+			setSelectedFilters((filters) =>
+				filters.filter((filter) => filter.type !== 'subcategory')
+			)
 		} else {
 			setSelectedSubcategory(subcategory)
 			onSubcategoryChange(subcategory)
 			fetchBrandsAndModelsAndYear(subcategory)
+			setSelectedFilters((filters) => [
+				...filters.filter((filter) => filter.type !== 'subcategory'),
+				{ type: 'subcategory', value: subcategory },
+			])
 			// setIsFiltersVisible(false) // Ocultar filtros después de seleccionar
 		}
+	}
+
+	const removeFilter = (filterType: string) => {
+		if (filterType === 'subcategory') {
+			setSelectedSubcategory(null)
+			onSubcategoryChange(null)
+		} else if (filterType === 'brand') {
+			setSelectedBrand(null)
+			onBrandChange(null)
+		} else if (filterType === 'model') {
+			setSelectedModel(null)
+			onModelChange(null)
+		} else if (filterType === 'year') {
+			setSelectedYear(null)
+			onYearChange(null)
+		}
+
+		setSelectedFilters((filters) =>
+			filters.filter((filter) => filter.type !== filterType)
+		)
 	}
 
 	const fetchBrandsAndModelsAndYear = async (
@@ -130,6 +201,10 @@ const Filters: React.FC<FiltersProps> = ({
 		const selectedBrand = event.target.value
 		setSelectedBrand(selectedBrand)
 		onBrandChange(selectedBrand)
+		setSelectedFilters((filters) => [
+			...filters.filter((filter) => filter.type !== 'brand'),
+			{ type: 'brand', value: selectedBrand },
+		])
 
 		// Resetear el modelo cuando se cambia la marca
 		setSelectedModel(null)
@@ -145,12 +220,20 @@ const Filters: React.FC<FiltersProps> = ({
 		const selectedModel = event.target.value
 		setSelectedModel(selectedModel)
 		onModelChange(selectedModel)
+		setSelectedFilters((filters) => [
+			...filters.filter((filter) => filter.type !== 'model'),
+			{ type: 'model', value: selectedModel },
+		])
 	}
 
 	const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const selectedYear = parseInt(event.target.value)
 		setSelectedYear(selectedYear)
 		onYearChange(selectedYear)
+		setSelectedFilters((filters) => [
+			...filters.filter((filter) => filter.type !== 'year'),
+			{ type: 'year', value: selectedYear.toString() },
+		])
 	}
 
 	const toggleFiltersVisibility = () => {
@@ -184,7 +267,10 @@ const Filters: React.FC<FiltersProps> = ({
 	return (
 		<div className="w-auto font-tertiary-font">
 			<div className="flex justify-between items-center gap-5 mb-4">
-				<div className="flex gap-5" onClick={toggleFiltersVisibility}>
+				<div
+					className="sm:hidden flex gap-5"
+					onClick={toggleFiltersVisibility}
+				>
 					<p className="text-primary-blue font-bold cursor-pointer">
 						Filtrar
 					</p>
@@ -195,7 +281,26 @@ const Filters: React.FC<FiltersProps> = ({
 						height={20}
 					/>
 				</div>
+				<div className="mobile:hidden flex gap-5">
+					<p className="text-primary-blue font-bold">Filtrar</p>
+					<Image
+						src="/filtros.svg"
+						alt="filtro"
+						width={20}
+						height={20}
+					/>
+				</div>
 			</div>
+
+			<div className="flex flex-wrap gap-2 mb-4 sm:hidden">
+					{selectedFilters.map((filter) => (
+						<FilterTag
+							key={filter.type}
+							filterName={`${filter.value}`}
+							onRemove={() => removeFilter(filter.type)}
+						/>
+					))}
+				</div>
 
 			<div
 				className={` ${isFiltersVisible ? 'fixed z-10 top-0 left-0 right-0 bg-white p-6 h-[100%] overflow-y-auto' : 'hidden'} sm:block`}

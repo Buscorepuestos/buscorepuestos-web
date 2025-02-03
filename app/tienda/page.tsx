@@ -40,6 +40,7 @@ export default function Store() {
 
 	const [currentPage, setCurrentPage] = useState(0) // Página actual
 	const [totalPages, setTotalPages] = useState(0) // Total de páginas
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null)
 
 	const search = async (
 		query: string,
@@ -84,12 +85,26 @@ export default function Store() {
 			const sortedProducts = (
 				result.hits as unknown as IProductMongoose[]
 			).sort((a, b) => {
+				if (sortOrder === 'asc')
+					return (
+						(a.buscorepuestosPrice || 0) -
+						(b.buscorepuestosPrice || 0)
+					)
+				if (sortOrder === 'desc')
+					return (
+						(b.buscorepuestosPrice || 0) -
+						(a.buscorepuestosPrice || 0)
+					)
+				return 0
+			})
+
+			const sortedProductsWithImages = sortedProducts.sort((a, b) => {
 				const aHasImages = a.images && a.images.length > 0 ? 1 : 0
 				const bHasImages = b.images && b.images.length > 0 ? 1 : 0
 				return bHasImages - aHasImages
 			})
 
-			setProducts(sortedProducts)
+			setProducts(sortedProductsWithImages)
 			setTotalPages(result.nbPages) // Total de páginas disponibles
 		} catch (err) {
 			console.log(err)
@@ -112,14 +127,13 @@ export default function Store() {
 			selectedYear
 		)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedSubcategory, selectedBrand, selectedModel, selectedYear])
-
-	// useEffect(() => {
-    //     document.body.style.backgroundColor = 'white';
-    //     return () => {
-    //         document.body.style.backgroundColor = ''; // Restablecer si es necesario
-    //     };
-    // }, []);
+	}, [
+		selectedSubcategory,
+		selectedBrand,
+		selectedModel,
+		selectedYear,
+		sortOrder,
+	])
 
 	const handleNextPage = () => {
 		if (currentPage < totalPages - 1) {
@@ -133,7 +147,7 @@ export default function Store() {
 				selectedYear,
 				nextPage
 			)
-			window.scrollTo({ top: 0, behavior: 'smooth' });
+			window.scrollTo({ top: 0, behavior: 'smooth' })
 		}
 	}
 
@@ -149,7 +163,7 @@ export default function Store() {
 				selectedYear,
 				prevPage
 			)
-			window.scrollTo({ top: 0, behavior: 'smooth' });
+			window.scrollTo({ top: 0, behavior: 'smooth' })
 		}
 	}
 
@@ -190,6 +204,8 @@ export default function Store() {
 		setLoadingPurchase(productId)
 		router.push(`/producto/${productId}`)
 	}
+
+	console.log('products', products)
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
@@ -213,7 +229,7 @@ export default function Store() {
 							borderWidth={'2px'}
 						/>
 					</div>
-					<Facilities 
+					<Facilities
 						classNamePrincipal="
 							flex w-full my-5 md:gap-14 sm:gap-3 bg-gray-200 font-tertiary-font 
 							text-secondary-blue font-semibold h-[5rem] mobile:h-[13rem] justify-center 
@@ -230,6 +246,21 @@ export default function Store() {
 							onModelChange={handleModelChange}
 							onYearChange={handleYearChange}
 						/>
+					</div>
+					<div className="flex w-[100%] mr-11 justify-end sm:my-4">
+						<select
+							className="border border-gray-300 p-2 rounded mobile:text-sm"
+							value={sortOrder || ''}
+							onChange={(e) =>
+								setSortOrder(
+									e.target.value as 'asc' | 'desc' | null
+								)
+							}
+						>
+							<option disabled value="">Ordenar por precio</option>
+							<option value="asc">Menor a Mayor</option>
+							<option value="desc">Mayor a Menor</option>
+						</select>
 					</div>
 					<section
 						className={
