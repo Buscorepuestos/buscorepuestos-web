@@ -1,8 +1,8 @@
 export const environment = {
     production: false,
     base_url: 'http://localhost:4000',
-    algoliaAppID: 'DSKGGHHS58',
-    algoliaAPIKey: '6f49eeb288faef802bf5236c9fa6720d',
+    algoliaAppID: 'U141ZKH0I5',
+    algoliaAPIKey: '598a2b322df8482e3a5ea7ddca74c02b',
     algoliaIndexName: 'dev_PRODUCTS',
     stripe_publishable_key: 'pk_test_51P4jfZ01jERzk1YWCaZjfadeUUdmvdOxkfR9wmyqiEHpK7u7rhhdHoGT9HnUKSnhUeq15oXjHVQcwKdJC4SymqwL00SZF1AZdq',
     firebase: {

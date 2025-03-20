@@ -1,8 +1,8 @@
 export const environment = {
     production: true,
     base_url: 'https://www.buscorepuestos.com',
-    algoliaAppID: 'DSKGGHHS58',
-    algoliaAPIKey: '6f49eeb288faef802bf5236c9fa6720d',
+    algoliaAppID: 'U141ZKH0I5',
+    algoliaAPIKey: '598a2b322df8482e3a5ea7ddca74c02b',
     algoliaIndexName: 'release_PRODUCTS',
     stripe_publishable_key: 'pk_live_51P4jfZ01jERzk1YW4SuXiM5tYJSyrVCCcbS24j4rzwuq4tvnv4CYo3Sk0FkH4iXDnYRPTZbw8x6vtXFBE7mU0uZH003VvYWkw1',
     firebase: {
