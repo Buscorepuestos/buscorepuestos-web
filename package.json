@@ -2,7 +2,7 @@
 	"name": "buscorepuestos-web",
 	"version": "0.1.0",
 	"scripts": {
-		"dev": "shx cp ./app/environment/dev/environment.dev.ts ./app/environment/environment.ts",
+		"dev": "shx cp ./app/environment/dev/environment.dev.ts ./app/environment/environment.ts && next dev -p 4000 -H 0.0.0.0",
 		"dev-environment": "shx cp ./app/environment/dev-environment/environment.dev-environment.ts ./app/environment/environment.ts",
 		"release": "shx cp ./app/environment/release/environment.release.ts ./app/environment/environment.ts",
 		"start-dev": "next dev -p 4000",
