@@ -3,10 +3,11 @@ import { ApiResponse } from '../../types/response'
 
 export const subscribe = async (email: string): Promise<ApiResponse> => {
     try {
-        return (await api.post(`/mailchimp/subscribe`, { email })).data;
-    } catch (error) {
+        const response = await api.post(`/mailchimp/subscribe`, { email });
+        return response.data;
+    } catch (error: any) {
         console.error('Error subscribing:', error)
-        throw error
+        return Promise.reject(error);
     }
 }
 
