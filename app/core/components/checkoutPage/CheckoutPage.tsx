@@ -112,6 +112,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 
 	const [emailError, setEmailError] = useState<string | null>(null)
 	const [isFormVisible, setIsFormVisible] = useState(false)
+	const [isSubscribing, setIsSubscribing] = useState(false);
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -272,20 +273,49 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 
 	const handleNext = async () => {
 		if (!fieldsValue.email) {
-			setEmailError('Por favor, ingrese su correo.')
+			setEmailError('Por favor, ingrese su correo.');
+			setError(null);
 		} else if (!emailRegex.test(fieldsValue.email)) {
-			setEmailError('Por favor, ingrese un correo válido.')
+			setEmailError('Por favor, ingrese un correo válido.');
+			setError(null);
 		} else {
-			setEmailError(null) // Si es válido, no hay error
-			localStorage.setItem('userEmail', fieldsValue.email) // Guardar el correo en localStorage
-			setIsFormVisible(true) // Mostrar el siguiente formulario
+			setEmailError(null);
+			localStorage.setItem('userEmail', fieldsValue.email);
+
 			userService.updateUser({
 				id: localStorage.getItem('airtableUserId'),
 				['correo electronico']: fieldsValue.email,
-			}) // Actualizar el correo en la base de datos
-			await subscribe(fieldsValue.email) // Suscribir al usuario a Mailchimp
+			});
+	
+			setIsSubscribing(true); // <-- INICIO DEL SPINNER
+	
+			try {
+				const response = await subscribe(fieldsValue.email);
+				console.log("Subscripción exitosa:", response);
+				setIsFormVisible(true);
+				setError(null);
+			} catch (error: any) {
+				console.error("Error en handleNext al subscribir:", error);
+	
+				let errorMessageToDisplay = 'Hubo un error al intentar suscribirte. Por favor, inténtalo de nuevo más tarde.';
+	
+				if (error.response && error.response.data) {
+					const responseData = error.response.data;
+	
+					if (responseData.details) {
+						errorMessageToDisplay = `Error al suscribir: ${responseData.details}`;
+					} else if (responseData.error) {
+						errorMessageToDisplay = responseData.error;
+					}
+				}
+	
+				setError(errorMessageToDisplay);
+				setIsFormVisible(false);
+			} finally {
+				setIsSubscribing(false); // <-- FIN DEL SPINNER (SIEMPRE, éxito o error)
+			}
 		}
-	}
+	};
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		// Actualiza el valor del correo en fieldsValue
@@ -397,16 +427,30 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										{emailError}
 									</p>
 								)}
+								{error && (
+									<p className="text-red-500 text-sm mt-2">
+										{error}
+									</p>
+								)}
 							</div>
-							<div className="flex">
-								<button
-									className="mt-8 inline-flex items-center justify-center px-4 py-2 border border-transparent text-[16px] mobile:text-[12px] font-sm rounded-3xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-									onClick={handleNext}
-									// Deshabilitar si no es válido
-								>
-									Continuar con la compra
-								</button>
-							</div>
+							{
+								isSubscribing ? (
+									<div className="flex justify-center my-4">
+										<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+									</div>
+								) : (
+									<div className="flex">
+										<button
+											className="mt-8 inline-flex items-center justify-center px-4 py-2 border border-transparent text-[16px] mobile:text-[12px] font-sm rounded-3xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+											onClick={handleNext}
+											disabled={isSubscribing}
+											// Deshabilitar si no es válido
+										>
+											Continuar con la compra
+										</button>
+									</div>
+								)
+							}
 						</div>
 					</div>
 

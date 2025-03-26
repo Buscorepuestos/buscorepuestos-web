@@ -149,14 +149,19 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 							if (type === 'success' && body.transaction_code) {
 								// Procesar solo si la transacción es exitosa
 								try {
-									await updateUser({
-										firstName: fieldsValue.name,
-										email: fieldsValue.email,
-										address: fieldsValue.shippingAddress,
-										addressExtra: fieldsValue.addressExtra,
-										zip: fieldsValue.zip,
-										state: fieldsValue.province,
-									});
+									try {
+										await updateUser({
+											firstName: fieldsValue.name,
+											email: fieldsValue.email,
+											address: fieldsValue.shippingAddress,
+											addressExtra: fieldsValue.addressExtra,
+											zip: fieldsValue.zip,
+											state: fieldsValue.province,
+										});
+									} catch (updateUserError) {
+										console.error("Error en updateUser (no crítico para el pago):", updateUserError);
+									}
+
 									await createbilling();
 									await createBill({
 										"Id Pago Summup": body.transaction_code,
