@@ -652,9 +652,9 @@ export default function Home() {
 										? product.images[0]
 										: '/nodisponible.png'
 								}
-								handle={() => handle(product._id.$oid)}
-								id={product._id.$oid}
-								loading={loadingPurchase === product._id.$oid}
+								handle={() => handle(product._id)}
+								id={product._id}
+								loading={loadingPurchase === product._id}
 							/>
 						</SwiperSlide>
 					))}
@@ -723,9 +723,9 @@ export default function Home() {
 										? product.images[0]
 										: '/nodisponible.png'
 								}
-								handle={() => handle(product._id.$oid)}
-								id={product._id.$oid}
-								loading={loadingPurchase === product._id.$oid}
+								handle={() => handle(product._id)}
+								id={product._id}
+								loading={loadingPurchase === product._id}
 							/>
 						</SwiperSlide>
 					))}
