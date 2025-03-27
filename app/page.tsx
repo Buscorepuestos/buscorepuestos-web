@@ -652,9 +652,9 @@ export default function Home() {
 										? product.images[0]
 										: '/nodisponible.png'
 								}
-								handle={() => handle(product._id.$oid.$oid)}
-								id={product._id.$oid.$oid}
-								loading={loadingPurchase === product._id.$oid.$oid}
+								handle={() => handle(product._id.$oid)}
+								id={product._id.$oid}
+								loading={loadingPurchase === product._id.$oid}
 							/>
 						</SwiperSlide>
 					))}
