@@ -49,7 +49,6 @@ describe('ShareButton Component', () => {
 		expect(navigator.share).toHaveBeenCalledWith({
 			title: 'Test Product',
 			text: `Mira este producto: Test Title\nMás información en: ${window.location.href}`,
-			url: window.location.href,
 		})
 	})
 

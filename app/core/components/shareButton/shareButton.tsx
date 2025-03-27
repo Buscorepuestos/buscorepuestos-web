@@ -21,7 +21,6 @@ const ShareButton: React.FC<ShareButtonProps> = ({
 				.share({
 					title: productName,
 					text: `Mira este producto: ${title}\nMás información en: ${window.location.href}`,
-					url: window.location.href,
 				})
 				.catch((error) => console.error('Error al compartir:', error))
 		} else {
