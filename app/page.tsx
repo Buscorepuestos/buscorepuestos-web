@@ -261,60 +261,6 @@ export default function Home() {
 	const [products, setProducts] = useState<IProductMongoose[]>([])
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
 
-	const client = algoliasearch(appID, apiKey)
-	const index = client.initIndex(indexName)
-
-	const search = async () => {
-		setLoading(true)
-		try {
-			const filters: string[] = ['isMetasync:true', 'stock:true']
-
-			const result = await index.search('', {
-				facetFilters: filters,
-				hitsPerPage: 40,
-				attributesToRetrieve: [
-					'title',
-					'mainReference',
-					'brand',
-					'articleModel',
-					'year',
-					'buscorepuestosPrice',
-					'images',
-					'_id',
-					'isMetasync',
-					'stock',
-					'refLocal',
-					'idEmpresa',
-				],
-			})
-
-			const sortedProducts = (
-				result.hits as unknown as IProductMongoose[]
-			).sort((a, b) => {
-				const aHasImages = a.images && a.images.length > 0 ? 1 : 0
-				const bHasImages = b.images && b.images.length > 0 ? 1 : 0
-				return bHasImages - aHasImages
-			})
-
-			const filteredProducts = sortedProducts.filter(
-				(product) =>
-					!product.images.includes('https://cdn11.metasync.com/simg')
-			)
-
-			setProducts(filteredProducts)
-		} catch (err) {
-			console.log(err)
-			setError((err as Error).message)
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	useEffect(() => {
-		search()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
 	useEffect(() => {
 		const handleResize = () => {
 			setIsMobile(window.innerWidth < 640)
@@ -341,8 +287,6 @@ export default function Home() {
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
 	}, [dispatch])
-
-	console.log('products', products)
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
