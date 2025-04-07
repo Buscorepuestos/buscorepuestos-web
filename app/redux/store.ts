@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import shoppingCartReducer from "./features/shoppingCartSlice";
 import firebaseUserReducer from "./features/firebaseUserSlice";
 import airtableUserSlice from "./features/airtableUserSlice";
+import productSearchSlice from "./features/productSearchSlice";
 import { localStorageMiddleware } from "./middlewares/localStorageMiddleware";
 import { authMiddleware } from "./middlewares/userMiddleware";
 
@@ -11,6 +12,7 @@ export const makeStore = () => {
             cart: shoppingCartReducer,
             firebaseUser: firebaseUserReducer,
             airtableUser: airtableUserSlice,
+            productSearch: productSearchSlice,
         },
         middleware: (getDefaultMiddleware) => 
             getDefaultMiddleware()

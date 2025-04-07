@@ -1,32 +1,30 @@
 'use client'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import CardPrice from '../core/components/cards/CardPrice'
 import { IProductMongoose } from '../types/product'
-import algoliasearch from 'algoliasearch'
 import SearchBar from '../core/components/SearchBar'
-import { useAppDispatch } from '../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { useRouter } from 'next/navigation'
-import { environment } from '../environment/environment'
 import Filters from '../core/components/filters/filters'
 import Facilities from '../core/components/facilities/Facilities'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
+import {
+	fetchProducts,
+	setCurrentPage,
+} from '../redux/features/productSearchSlice'
 import './tienda.css'
-
-const appID = environment.algoliaAppID
-const apiKey = environment.algoliaAPIKey
-const indexName = environment.algoliaIndexName
 
 export default function Store() {
 	const dispatch = useAppDispatch()
+	const {
+		error: searchError,
+		loading: searchLoading,
+		searchResults,
+		currentPage,
+		totalPages,
+	} = useAppSelector((state) => state.productSearch)
 	const router = useRouter()
-	const client = algoliasearch(appID, apiKey)
-	const index = client.initIndex(indexName)
 
-	index.setSettings({
-		paginationLimitedTo: 20000,
-	})
-
-	const [products, setProducts] = useState<IProductMongoose[]>([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
@@ -37,132 +35,60 @@ export default function Store() {
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
-
-	const [currentPage, setCurrentPage] = useState(0) // Página actual
-	const [totalPages, setTotalPages] = useState(0) // Total de páginas
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null)
-
-	const search = async (
-		query: string,
-		subcategory: string | null = null,
-		brand: string | null = null,
-		model: string | null = null,
-		year: number | null = null,
-		page: number = 0
-	) => {
-		setLoading(true)
-		let searchQuery = query
-		try {
-			const filters: string[] = ['isMetasync:true', 'stock:true']
-			if (subcategory) {
-				searchQuery = ''
-				filters.push(`productName:${subcategory}`)
-			}
-			if (brand) filters.push(`brand:${brand}`)
-			if (model) filters.push(`articleModel:${model}`)
-			if (year) filters.push(`year:${year}`)
-
-			const result = await index.search(searchQuery, {
-				facetFilters: filters,
-				hitsPerPage: 100,
-				page: page,
-				attributesToRetrieve: [
-					'title',
-					'mainReference',
-					'brand',
-					'articleModel',
-					'year',
-					'buscorepuestosPrice',
-					'images',
-					'_id',
-					'isMetasync',
-					'stock',
-					'refLocal',
-					'idEmpresa',
-				],
-			})
-
-			const sortedProducts = (
-				result.hits as unknown as IProductMongoose[]
-			).sort((a, b) => {
-				if (sortOrder === 'asc')
-					return (
-						(a.buscorepuestosPrice || 0) -
-						(b.buscorepuestosPrice || 0)
-					)
-				if (sortOrder === 'desc')
-					return (
-						(b.buscorepuestosPrice || 0) -
-						(a.buscorepuestosPrice || 0)
-					)
-				return 0
-			})
-
-			const sortedProductsWithImages = sortedProducts.sort((a, b) => {
-				const aHasImages = a.images && a.images.length > 0 ? 1 : 0
-				const bHasImages = b.images && b.images.length > 0 ? 1 : 0
-				return bHasImages - aHasImages
-			})
-
-			setProducts(sortedProductsWithImages)
-			setTotalPages(result.nbPages) // Total de páginas disponibles
-		} catch (err) {
-			console.log(err)
-			setError((err as Error).message)
-		} finally {
-			setLoading(false)
-		}
-	}
+	const [isTyping, setIsTyping] = useState(false)
+	const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
-	}, [dispatch])
+		setLoading(true)
+		dispatch(
+			fetchProducts({
+				searchTerm: inputValue.trim(),
+				page: currentPage,
+				sortOrder: null,
+			})
+		).finally(() => setLoading(false))
+	}, [dispatch, inputValue, currentPage])
 
 	useEffect(() => {
-		search(
-			inputValue,
-			selectedSubcategory,
-			selectedBrand,
-			selectedModel,
-			selectedYear
-		)
+		if (debounceTimer.current) {
+			clearTimeout(debounceTimer.current)
+		}
+
+		if (inputValue.trim() !== '') {
+			setIsTyping(true)
+			debounceTimer.current = setTimeout(() => {
+				setIsTyping(false)
+				setLoading(true)
+				dispatch(
+					fetchProducts({
+						searchTerm: inputValue.trim(),
+						page: 1,
+						sortOrder,
+					})
+				).finally(() => setLoading(false))
+			}, 500)
+		}
+
+		return () => {
+			if (debounceTimer.current) {
+				clearTimeout(debounceTimer.current)
+			}
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [
-		selectedSubcategory,
-		selectedBrand,
-		selectedModel,
-		selectedYear,
-		sortOrder,
-	])
+	}, [inputValue, sortOrder])
 
 	const handleNextPage = () => {
-		if (currentPage < totalPages - 1) {
-			const nextPage = currentPage + 1
-			setCurrentPage(nextPage)
-			search(
-				inputValue,
-				selectedSubcategory,
-				selectedBrand,
-				selectedModel,
-				selectedYear,
-				nextPage
-			)
+		if (currentPage < totalPages) {
+			dispatch(setCurrentPage(currentPage + 1))
 			window.scrollTo({ top: 0, behavior: 'smooth' })
 		}
 	}
 
 	const handlePrevPage = () => {
-		if (currentPage > 0) {
-			const prevPage = currentPage - 1
-			setCurrentPage(prevPage)
-			search(
-				inputValue,
-				selectedSubcategory,
-				selectedBrand,
-				selectedModel,
-				selectedYear,
-				prevPage
-			)
+		if (currentPage > 1) {
+			dispatch(setCurrentPage(currentPage - 1))
 			window.scrollTo({ top: 0, behavior: 'smooth' })
 		}
 	}
@@ -173,31 +99,27 @@ export default function Store() {
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setInputValue(event.target.value)
-	}
-
-	const handleEnterPress = () => {
-		// Reinicia los filtros antes de realizar una nueva búsqueda desde la barra de búsqueda
-		setSelectedSubcategory(null)
-		setSelectedBrand(null)
-		setSelectedModel(null)
-
-		search(inputValue) // Realiza la búsqueda solo cuando se presiona Enter
+		dispatch(setCurrentPage(1))
 	}
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
 		setSelectedSubcategory(subcategory)
+		dispatch(setCurrentPage(1))
 	}
 
 	const handleBrandChange = (brand: string | null) => {
 		setSelectedBrand(brand)
+		dispatch(setCurrentPage(1))
 	}
 
 	const handleModelChange = (model: string | null) => {
 		setSelectedModel(model)
+		dispatch(setCurrentPage(1))
 	}
 
 	const handleYearChange = (year: number | null) => {
 		setSelectedYear(year)
+		dispatch(setCurrentPage(1))
 	}
 
 	const handle = (productId: string) => {
@@ -205,7 +127,11 @@ export default function Store() {
 		router.push(`/producto/${productId}`)
 	}
 
-	console.log('products', products)
+	const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
+		setSortOrder(event.target.value as 'asc' | 'desc' | null)
+		dispatch(setCurrentPage(1))
+	}
+
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
@@ -222,7 +148,6 @@ export default function Store() {
 					<div className="flex justify-end">
 						<SearchBar
 							onChange={handleInputChange}
-							onEnterPress={handleEnterPress} // Pasa el nuevo método aquí
 							height={'52px'}
 							width={'w-[480px] mobile:w-[80vw]'}
 							borderColor={'#12B1BB'}
@@ -251,46 +176,57 @@ export default function Store() {
 						<select
 							className="border border-gray-300 p-2 rounded mobile:text-sm"
 							value={sortOrder || ''}
-							onChange={(e) =>
-								setSortOrder(
-									e.target.value as 'asc' | 'desc' | null
-								)
-							}
+							onChange={handleSortOrderChange}
 						>
-							<option disabled value="">Ordenar por precio</option>
+							<option disabled value="">
+								Ordenar por precio
+							</option>
 							<option value="asc">Menor a Mayor</option>
 							<option value="desc">Mayor a Menor</option>
 						</select>
 					</div>
-					<section
-						className={
-							'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'
-						}
-					>
-						{products.map((product: any, index) => (
-							<CardPrice
-								key={index}
-								title={product.title}
-								reference={product.mainReference!}
-								description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-								price={product?.buscorepuestosPrice || 0}
-								image={
-									product.images[0]
-										? product.images[0]
-										: '/nodisponible.png'
-								}
-								handle={() => handle(product._id)}
-								id={product._id}
-								loading={loadingPurchase === product._id}
-							/>
-						))}
-					</section>
-					{loading && (
+					{isTyping ? (
+						<div className="flex justify-center my-4">
+							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+							<span className="ml-2">Buscando...</span>
+						</div>
+					) : loading ? (
 						<div className="flex justify-center my-4">
 							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 						</div>
+					) : error ? (
+						<p>Error</p>
+					) : (
+						<>
+							<section
+								className={
+									'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'
+								}
+							>
+								{searchResults.map((product: any, index) => (
+									<CardPrice
+										key={index}
+										title={product.title}
+										reference={product.mainReference!}
+										description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+										price={
+											product?.buscorepuestosPrice || 0
+										}
+										image={
+											product.images[0]
+												? product.images[0]
+												: '/nodisponible.png'
+										}
+										handle={() => handle(product._id)}
+										id={product._id}
+										loading={
+											loadingPurchase === product._id
+										}
+									/>
+								))}
+							</section>
+						</>
 					)}
-					{error && <p>Error</p>}
 					<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
 						<button
 							onClick={handlePrevPage}
@@ -298,7 +234,7 @@ export default function Store() {
 						>
 							<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 						</button>
-						<span>{`Página ${currentPage + 1} de ${totalPages}`}</span>
+						<span>{`Página ${currentPage} de ${totalPages}`}</span>
 						<button
 							onClick={handleNextPage}
 							disabled={currentPage === totalPages - 1}
