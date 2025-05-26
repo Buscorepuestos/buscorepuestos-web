@@ -32,7 +32,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 	const transferDataCaixa: TransferData = {
 		banco: 'La Caixa',
 		beneficiario: 'Buscorepuestos.com',
-		iban: 'ES78 2100 2904 0502 3645 3412',
+		iban: 'ES12 2100 2005 2602 0010 7904',
 		bic: 'CAIXESBBXXX',
 	}
 	const router = useRouter()
@@ -108,25 +108,28 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 		<div className="my-4 p-4 border rounded shadow-sm">
 			<p className="font-bold mb-2">Opción {option}</p>
 			<div className="space-y-2">
-				{Object.entries(data).map(([key, value]) => (
-					<div key={key} className="flex gap-4 items-center">
-						<span>{`${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`}</span>
-						<button
-							onClick={() => copyToClipboard(value, option, key)}
-						>
-							<Image
-								src={
-									copiedField === `${option}-${key}`
-										? '/tick-azul-buscorepuestos.svg'
-										: '/copiar-icono-buscorepuestos.svg'
-								}
-								alt="copy"
-								width={20}
-								height={20}
-							/>
-						</button>
-					</div>
-				))}
+				{Object.entries(data).map(([key, value]) => {
+					const displayKey = key === 'iban' ? 'IBAN' : key.charAt(0).toUpperCase() + key.slice(1);
+					return (
+						<div key={key} className="flex gap-4 items-center">
+							<span>{`${displayKey}: ${value}`}</span>
+							<button
+								onClick={() => copyToClipboard(value, option, key)}
+							>
+								<Image
+									src={
+										copiedField === `${option}-${key}`
+											? '/tick-azul-buscorepuestos.svg'
+											: '/copiar-icono-buscorepuestos.svg'
+									}
+									alt="copy"
+									width={20}
+									height={20}
+								/>
+							</button>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	)
