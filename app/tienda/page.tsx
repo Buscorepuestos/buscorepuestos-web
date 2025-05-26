@@ -68,7 +68,7 @@ export default function Store() {
 						sortOrder,
 					})
 				).finally(() => setLoading(false))
-			}, 500)
+			}, 1000)
 		}
 
 		return () => {
