@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { useRouter } from 'next/navigation'
 import Filters from '../core/components/filters/filters'
 import Facilities from '../core/components/facilities/Facilities'
+import NotFoundInStore from '../core/components/notFound/NotFoundInStore'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import {
 	fetchProducts,
@@ -198,33 +199,37 @@ export default function Store() {
 						<p>Error</p>
 					) : (
 						<>
-							<section
-								className={
-									'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'
-								}
-							>
-								{searchResults.map((product: any, index) => (
-									<CardPrice
-										key={index}
-										title={product.title}
-										reference={product.mainReference!}
-										description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-										price={
-											product?.buscorepuestosPrice || 0
-										}
-										image={
-											product.images[0]
-												? product.images[0]
-												: '/nodisponible.png'
-										}
-										handle={() => handle(product._id)}
-										id={product._id}
-										loading={
-											loadingPurchase === product._id
-										}
-									/>
-								))}
-							</section>
+							{searchResults.length > 0 ? (
+								<section
+									className={
+										'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'
+									}
+								>
+									{searchResults.map((product: any, index) => (
+										<CardPrice
+											key={index}
+											title={product.title}
+											reference={product.mainReference!}
+											description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+											price={
+												product?.buscorepuestosPrice || 0
+											}
+											image={
+												product.images[0]
+													? product.images[0]
+													: '/nodisponible.png'
+											}
+											handle={() => handle(product._id)}
+											id={product._id}
+											loading={
+												loadingPurchase === product._id
+											}
+										/>
+									))}
+								</section>
+							) : (
+								<NotFoundInStore />
+							)}
 						</>
 					)}
 					<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
