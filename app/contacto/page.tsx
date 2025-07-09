@@ -35,8 +35,8 @@ const page = () => {
                     <div className='flex items-center mt-4 mobile:mb-4 mobile:pl-1 mobile:gap-3'>
                         <img src="/correo-icono-buscorepuestos.svg" alt="Correo" className='w-8 h-8' />
                         <p className='ml-4 text-[1.7rem] mobile:text-[1.5rem] font-bold text-primary-blue'>
-                            <a href="mailto:info@buscorepuestos.com">
-                                info@buscorepuestos.com
+                            <a href="mailto:buscorepuestosoficial@gmail.com">
+                                buscorepuestosoficial@gmail.com
                             </a>
                         </p>
                     </div>
