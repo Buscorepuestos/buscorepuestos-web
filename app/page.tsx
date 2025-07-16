@@ -336,6 +336,7 @@ export default function Home() {
 						<span className="text-warning"> nuevas</span>.
 					</h1>
 					<SearchBar
+						value={searchTerm} // <-- AÑADIDO: El valor del input ahora es controlado por la pro
 						onChange={handleInputChange}
 						onEnterPress={handleSearch}
 						height={'52px'}

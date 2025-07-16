@@ -159,7 +159,14 @@ export default function Components() {
 						labelName="Accede a todas las categorías"
 					/>
 				</div>
-				<SearchBar />
+				<SearchBar 
+					value="" // <-- AÑADIDO: El valor del input ahora es controlado por la prop
+					onChange={() => {}}
+					height="52px"
+					width="w-[480px] mobile:w-[80vw]"
+					borderColor="#12B1BB"
+					borderWidth="2px"
+				/>
 				<Divider />
 				<TitleComponentSection name="Card components" />
 				<h3 className="text-title-3 text-dark-grey">Card with price</h3>
