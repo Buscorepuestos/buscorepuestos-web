@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { categories, CategoryKey } from './categories'
-import algoliasearch from 'algoliasearch'
+import api from '../../../api/api'
 import { environment } from '../../../environment/environment'
 import FilterTag from '../filterTag/FilterTag'
 import './filters.css'
 
 interface FiltersProps {
-	initialSubcategory: string | null
 	onSubcategoryChange: (subcategory: string | null) => void
 	onBrandChange: (brand: string | null) => void
 	onModelChange: (model: string | null) => void
 	onYearChange: (year: number | null) => void
+	selectedSubcategory: string | null;
+	selectedBrand: string | null;
+	selectedModel: string | null;
+	selectedYear: number | null;
 }
 
 const appID = environment.algoliaAppID
@@ -19,20 +22,17 @@ const apiKey = environment.algoliaAPIKey
 const indexName = environment.algoliaIndexName
 
 const Filters: React.FC<FiltersProps> = ({
-	initialSubcategory,
 	onSubcategoryChange,
 	onBrandChange,
 	onModelChange,
 	onYearChange,
+	selectedSubcategory,
+	selectedBrand,
+	selectedModel,
+	selectedYear,
 }) => {
 	const [selectedCategory, setSelectedCategory] =
 		useState<CategoryKey | null>(null)
-	const [selectedSubcategory, setSelectedSubcategory] = useState<
-		string | null
-	>(null)
-	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
-	const [selectedModel, setSelectedModel] = useState<string | null>(null)
-	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [brands, setBrands] = useState<string[]>([])
 	const [models, setModels] = useState<string[]>([])
 	const [years, setYears] = useState<number[]>([])
@@ -40,229 +40,120 @@ const Filters: React.FC<FiltersProps> = ({
 	const [selectedFilters, setSelectedFilters] = useState<
 		{ type: string; value: string }[]
 	>([])
+	const [loadingOptions, setLoadingOptions] = useState<boolean>(false);
 
-	const algoliaClient = algoliasearch(appID, apiKey)
-	const index = algoliaClient.initIndex(indexName)
+	    // Efecto para obtener las opciones de filtros (marcas, modelos, años) del backend
+    useEffect(() => {
+        // Si no hay una subcategoría seleccionada, no hay nada que buscar. Reseteamos las opciones.
+        if (!selectedSubcategory) {
+            setBrands([]);
+            setModels([]);
+            setYears([]);
+            return;
+        }
 
-	useEffect(() => {
-		// Mapa de subcategorías a categorías
-		const subcategoryCategoryMap: Record<
-			string,
-			{ category: string; subcategory: string }
-		> = {
-			'Guarnecidos Palanca Cambio': {
-				category: 'INTERIOR',
-				subcategory: 'GUARNECIDOS PALANCA CAMBIO',
-			},
-			'Aleron Trasero': {
-				category: 'CARROCERÍA TRASERA',
-				subcategory: 'ALERON TRASERO',
-			},
-			'Faro Derecho': {
-				category: 'ALUMBRADO',
-				subcategory: 'FARO DERECHO',
-			},
-			'Airbag Delantero Derecho': {
-				category: 'INTERIOR',
-				subcategory: 'AIRBAG DELANTERO DERECHO',
-			},
-			'Conmutador De Arranque': {
-				category: 'ELECTRICIDAD',
-				subcategory: 'CONMUTADOR DE ARRANQUE',
-			},
-			'Brazo Suspension Inferior Delantero Izquierdo': {
-				category: 'SUSPENSIÓN / FRENOS',
-				subcategory: 'BRAZO SUSPENSION INFERIOR DELANTERO IZQUIERDO',
-			},
-			'Transmision Delantera Izquierda': {
-				category: 'DIRECCIÓN / TRANSMISIÓN',
-				subcategory: 'TRANSMISION DELANTERA IZQUIERDA',
-			},
-			'Compresor Aire Acondicionado': {
-				category: 'CLIMATIZACIÓN',
-				subcategory: 'COMPRESOR AIRE ACONDICIONADO',
-			},
-			'Enganche Remolque': {
-				category: 'ACCESORIOS',
-				subcategory: 'ENGANCHE REMOLQUE',
-			},
-			'Pomo Palanca Cambio': {
-				category: 'CAMBIO / EMBRAGUE',
-				subcategory: 'POMO PALANCA CAMBIO',
-			},
-			'Aleta Delantera Derecha': {
-				category: 'CARROCERÍA FRONTAL',
-				subcategory: 'ALETA DELANTERA DERECHA',
-			},
-			'Valvula Egr': {
-				category: 'MOTOR / ADMISIÓN / ESCAPE',
-				subcategory: 'VALVULA EGR',
-			},
-		}
+        const fetchFilterOptions = async () => {
+            setLoadingOptions(true);
+            try {
+                const params = new URLSearchParams();
+                // Añadimos los filtros activos para que el backend devuelva opciones contextuales
+                if (selectedSubcategory) params.append('subcategory', selectedSubcategory);
+                if (selectedBrand) params.append('brand', selectedBrand);
+                
+                // Llamada al nuevo endpoint del backend
+                const response = await api.get(`/products/filter-options?${params.toString()}`);
+                const options = response.data;
+                
+                // Actualizamos los estados con las opciones recibidas
+                setBrands(options.brands || []);
+                setModels(options.models || []);
+                setYears(options.years || []);
 
-		// Verificar si la subcategoría inicial tiene un mapeo correspondiente
-		if (initialSubcategory && subcategoryCategoryMap[initialSubcategory]) {
-			const { category, subcategory } =
-				subcategoryCategoryMap[initialSubcategory]
+            } catch (error) {
+                console.error("Error fetching filter options:", error);
+                // En caso de error, reseteamos las opciones para evitar inconsistencias
+                setBrands([]);
+                setModels([]);
+                setYears([]);
+            } finally {
+                setLoadingOptions(false);
+            }
+        };
 
-			// Solo modificar la categoría y subcategoría si aún no se ha seleccionado
-			if (selectedCategory !== category && !selectedSubcategory) {
-				setSelectedCategory(category as CategoryKey)
-				setSelectedSubcategory(subcategory)
-			}
-		}
-	}, [initialSubcategory, selectedCategory, selectedSubcategory])
+        fetchFilterOptions();
+    // Este efecto se ejecuta cada vez que el usuario cambia la subcategoría o la marca
+    }, [selectedSubcategory, selectedBrand]);
 
-	const handleCategoryChange = (category: CategoryKey) => {
-		setSelectedCategory(selectedCategory === category ? null : category)
-	}
 
-	const handleSubcategoryChange = (subcategory: string) => {
-		if (selectedSubcategory === subcategory) {
-			setSelectedSubcategory(null)
-			onSubcategoryChange(null)
-			setBrands([])
-			setModels([])
-			setYears([])
-			setSelectedFilters((filters) =>
-				filters.filter((filter) => filter.type !== 'subcategory')
-			)
-		} else {
-			setSelectedSubcategory(subcategory)
-			onSubcategoryChange(subcategory)
-			fetchBrandsAndModelsAndYear(subcategory)
-			setSelectedFilters((filters) => [
-				...filters.filter((filter) => filter.type !== 'subcategory'),
-				{ type: 'subcategory', value: subcategory },
-			])
-			// setIsFiltersVisible(false) // Ocultar filtros después de seleccionar
-		}
-	}
+    // Handlers para cambios en los filtros.
+    // Solo llaman a las funciones del padre, que es quien controla el estado global.
+    const handleCategoryChange = (category: CategoryKey) => {
+        setSelectedCategory(prevCategory => prevCategory === category ? null : category);
+    };
 
-	const removeFilter = (filterType: string) => {
-		if (filterType === 'subcategory') {
-			setSelectedSubcategory(null)
-			onSubcategoryChange(null)
-		} else if (filterType === 'brand') {
-			setSelectedBrand(null)
-			onBrandChange(null)
-		} else if (filterType === 'model') {
-			setSelectedModel(null)
-			onModelChange(null)
-		} else if (filterType === 'year') {
-			setSelectedYear(null)
-			onYearChange(null)
-		}
+    const handleSubcategoryChange = (subcategory: string) => {
+        // Si el usuario deselecciona, pasamos null. Si selecciona, pasamos el valor.
+        const newSubcategory = selectedSubcategory === subcategory ? null : subcategory;
+        onSubcategoryChange(newSubcategory);
+    };
 
-		setSelectedFilters((filters) =>
-			filters.filter((filter) => filter.type !== filterType)
-		)
-	}
+    const handleBrandChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        // Si el valor es "", pasamos null.
+        onBrandChange(event.target.value || null);
+    };
 
-	const fetchBrandsAndModelsAndYear = async (
-		subcategory: string,
-		selectedBrand?: string
-	) => {
-		try {
-			const filters = [`productName:${subcategory}`] // Filtro inicial basado en la subcategoría
+    const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        onModelChange(event.target.value || null);
+    };
 
-			if (selectedBrand) {
-				filters.push(`brand:${selectedBrand}`) // Si hay una marca seleccionada, se agrega al filtro
-			}
+    const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const year = event.target.value ? parseInt(event.target.value, 10) : null;
+        onYearChange(year);
+    };
 
-			const { hits } = await index.search('', {
-				facets: ['brand', 'articleModel'],
-				facetFilters: filters, // Usamos el array de filtros actualizado
-			})
+    // Función para eliminar un filtro desde los "tags"
+    const removeFilter = (filterType: string) => {
+        if (filterType === 'subcategory') onSubcategoryChange(null);
+        else if (filterType === 'brand') onBrandChange(null);
+        else if (filterType === 'model') onModelChange(null);
+        else if (filterType === 'year') onYearChange(null);
+    };
+    
+    // Construir la lista de filtros activos para mostrar los tags
+    const activeFilters = [
+        selectedSubcategory && { type: 'subcategory', value: selectedSubcategory },
+        selectedBrand && { type: 'brand', value: selectedBrand },
+        selectedModel && { type: 'model', value: selectedModel },
+        selectedYear && { type: 'year', value: selectedYear.toString() },
+    ].filter(Boolean) as { type: string, value: string }[]; // 'filter(Boolean)' elimina los nulos/falsos
+    
 
-			// Filtrar las marcas solo si no hay una marca ya seleccionada
-			if (!selectedBrand) {
-				const uniqueBrands = [
-					...new Set(hits.map((hit: any) => hit.brand)),
-				]
-				setBrands(uniqueBrands)
-			}
+    // Funciones para la UI
+    const toggleFiltersVisibility = () => setIsFiltersVisible(!isFiltersVisible);
+    const closeFilters = () => setIsFiltersVisible(false);
 
-			// Filtrar los modelos en base a la combinación de subcategoría y marca
-			const uniqueModels = [
-				...new Set(hits.map((hit: any) => hit.articleModel)),
-			]
-			setModels(uniqueModels)
+    // Efecto para bloquear el scroll del body cuando el filtro móvil está abierto
+    useEffect(() => {
+        if (isFiltersVisible) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+        return () => {
+            document.body.classList.remove('overflow-hidden');
+        };
+    }, [isFiltersVisible]);
 
-			// Filtrar los años en base a la combinación de subcategoría y marca
-			const uniqueYears = [...new Set(hits.map((hit: any) => hit.year))]
-			setYears(uniqueYears)
-		} catch (error) {
-			console.error('Error fetching brands and models:', error)
-		}
-	}
+    // Función de utilidad para capitalizar texto
+    function toTitleCase(str: string): string {
+        if (!str) return '';
+        return str
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
 
-	const handleBrandChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const selectedBrand = event.target.value
-		setSelectedBrand(selectedBrand)
-		onBrandChange(selectedBrand)
-		setSelectedFilters((filters) => [
-			...filters.filter((filter) => filter.type !== 'brand'),
-			{ type: 'brand', value: selectedBrand },
-		])
-
-		// Resetear el modelo cuando se cambia la marca
-		setSelectedModel(null)
-		onModelChange(null)
-
-		// Filtrar modelos en función de la subcategoría y la marca seleccionada
-		if (selectedSubcategory) {
-			fetchBrandsAndModelsAndYear(selectedSubcategory, selectedBrand) // Filtrado por subcategoría y marca
-		}
-	}
-
-	const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const selectedModel = event.target.value
-		setSelectedModel(selectedModel)
-		onModelChange(selectedModel)
-		setSelectedFilters((filters) => [
-			...filters.filter((filter) => filter.type !== 'model'),
-			{ type: 'model', value: selectedModel },
-		])
-	}
-
-	const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const selectedYear = parseInt(event.target.value)
-		setSelectedYear(selectedYear)
-		onYearChange(selectedYear)
-		setSelectedFilters((filters) => [
-			...filters.filter((filter) => filter.type !== 'year'),
-			{ type: 'year', value: selectedYear.toString() },
-		])
-	}
-
-	const toggleFiltersVisibility = () => {
-		setIsFiltersVisible(!isFiltersVisible)
-	}
-
-	const closeFilters = () => {
-		setIsFiltersVisible(false) // Función para cerrar filtros
-	}
-
-	useEffect(() => {
-		if (isFiltersVisible) {
-			document.body.classList.add('overflow-hidden')
-		} else {
-			document.body.classList.remove('overflow-hidden')
-		}
-
-		return () => {
-			document.body.classList.remove('overflow-hidden')
-		}
-	}, [isFiltersVisible])
-
-	function toTitleCase(str: string): string {
-		return str
-			.toLowerCase()
-			.split(' ')
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Convierte la primera letra en mayúscula
-			.join(' ')
-	}
 
 	return (
 		<div className="w-auto font-tertiary-font">
@@ -293,14 +184,14 @@ const Filters: React.FC<FiltersProps> = ({
 			</div>
 
 			<div className="flex flex-wrap gap-2 mb-4 sm:hidden">
-					{selectedFilters.map((filter) => (
-						<FilterTag
-							key={filter.type}
-							filterName={`${filter.value}`}
-							onRemove={() => removeFilter(filter.type)}
-						/>
-					))}
-				</div>
+				{selectedFilters.map((filter) => (
+					<FilterTag
+						key={filter.type}
+						filterName={`${filter.value}`}
+						onRemove={() => removeFilter(filter.type)}
+					/>
+				))}
+			</div>
 
 			<div
 				className={` ${isFiltersVisible ? 'fixed z-10 top-0 left-0 right-0 bg-white p-6 h-[100%] overflow-y-auto' : 'hidden'} sm:block`}

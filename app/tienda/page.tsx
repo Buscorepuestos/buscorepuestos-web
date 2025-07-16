@@ -29,9 +29,7 @@ export default function Store() {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
-	const [selectedSubcategory, setSelectedSubcategory] = useState<
-		string | null
-	>(null)
+	const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
@@ -42,15 +40,24 @@ export default function Store() {
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
-		setLoading(true)
-		dispatch(
-			fetchProducts({
-				searchTerm: inputValue.trim(),
-				page: currentPage,
-				sortOrder: null,
-			})
-		).finally(() => setLoading(false))
-	}, [dispatch, inputValue, currentPage])
+		const debounceTimer = setTimeout(() => {
+			setLoading(true);
+			dispatch(
+				fetchProducts({
+					searchTerm: inputValue.trim(),
+					page: currentPage,
+					sortOrder,
+					// Pasamos todos los filtros seleccionados
+					subcategory: selectedSubcategory,
+					brand: selectedBrand,
+					model: selectedModel,
+					year: selectedYear,
+				})
+			).finally(() => setLoading(false));
+		}, 500); // 500ms de 
+		return () => clearTimeout(debounceTimer);
+	}, [dispatch, inputValue, currentPage, sortOrder, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
+
 
 	useEffect(() => {
 		if (debounceTimer.current) {
@@ -104,17 +111,26 @@ export default function Store() {
 	}
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
-		setSelectedSubcategory(subcategory)
-		dispatch(setCurrentPage(1))
-	}
+        setSelectedSubcategory(subcategory);
+        // Reseteamos los filtros dependientes
+        setSelectedBrand(null);
+        setSelectedModel(null);
+        setSelectedYear(null);
+        dispatch(setCurrentPage(1));
+    };
 
 	const handleBrandChange = (brand: string | null) => {
 		setSelectedBrand(brand)
+		// Reseteamos los filtros dependientes
+		setSelectedModel(null)
+		setSelectedYear(null)
 		dispatch(setCurrentPage(1))
 	}
 
 	const handleModelChange = (model: string | null) => {
 		setSelectedModel(model)
+		// Reseteamos el filtro de año
+		setSelectedYear(null)
 		dispatch(setCurrentPage(1))
 	}
 
@@ -138,16 +154,20 @@ export default function Store() {
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
 					<Filters
-						initialSubcategory={''}
 						onSubcategoryChange={handleSubcategoryChange}
 						onBrandChange={handleBrandChange}
 						onModelChange={handleModelChange}
 						onYearChange={handleYearChange}
+						selectedBrand={selectedBrand}
+						selectedModel={selectedModel}
+						selectedYear={selectedYear}
+						selectedSubcategory={selectedSubcategory}
 					/>
 				</div>
 				<div className="flex flex-col gap-5 sm:max-h-[1500rem] mobile:items-center">
 					<div className="flex justify-end">
 						<SearchBar
+							value={inputValue} // <-- AÑADIDO: El valor del input ahora es controlado por la prop
 							onChange={handleInputChange}
 							height={'52px'}
 							width={'w-[480px] mobile:w-[80vw]'}
@@ -166,11 +186,14 @@ export default function Store() {
 					/>
 					<div className="sm:hidden mobile:w-full px-[8vw]">
 						<Filters
-							initialSubcategory={''}
 							onSubcategoryChange={handleSubcategoryChange}
 							onBrandChange={handleBrandChange}
 							onModelChange={handleModelChange}
 							onYearChange={handleYearChange}
+							selectedBrand={selectedBrand}
+							selectedModel={selectedModel}
+							selectedYear={selectedYear}
+							selectedSubcategory={selectedSubcategory}
 						/>
 					</div>
 					<div className="flex w-[100%] mr-11 justify-end sm:my-4">
