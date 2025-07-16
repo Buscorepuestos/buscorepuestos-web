@@ -17,24 +17,36 @@ const initialState: ProductSearchState = {
     currentPage: 1,
 };
 
+interface FetchProductsParams {
+    searchTerm?: string;
+    page?: number;
+    sortOrder?: 'asc' | 'desc' | null;
+    subcategory?: string | null;
+    brand?: string | null;
+    model?: string | null;
+    year?: number | null;
+}
+
 export const fetchProducts = createAsyncThunk(
     'productSearch/fetchProducts',
-    async ({ searchTerm, page, sortOrder }: { searchTerm?: string, page?: number, sortOrder?: 'asc' | 'desc' | null } = {}) => {
+    async (params: FetchProductsParams = {}) => {
+        const { searchTerm, page, sortOrder, subcategory, brand, model, year } = params;
         const queryParams = new URLSearchParams();
-        if (searchTerm) {
-            queryParams.append('q', searchTerm);
-        }
-        if (page) {
-            queryParams.append('page', String(page));
-        }
-        if (sortOrder) {
-            queryParams.append('sortOrder', sortOrder);
-        }
+
+        if (searchTerm) queryParams.append('q', searchTerm);
+        if (page) queryParams.append('page', String(page));
+        if (sortOrder) queryParams.append('sortOrder', sortOrder);
+        
+        // Añadir los nuevos filtros a la URL
+        if (subcategory) queryParams.append('subcategory', subcategory);
+        if (brand) queryParams.append('brand', brand);
+        if (model) queryParams.append('model', model);
+        if (year) queryParams.append('year', String(year));
 
         const response = await api.get(`/products/search?${queryParams.toString()}`);
         return response.data;
     }
-);
+); 
 
 const productSearchSlice = createSlice({
     name: 'productSearch',
