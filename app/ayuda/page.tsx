@@ -10,8 +10,21 @@ const FaqAccordion = () => {
 			answer: `Después de que el vendedor nos confirme que tiene la pieza preparada para su envío, recibirás el repuesto en tu domicilio entre 24 y 48h laborables.`,
 		},
 		{
-			question: '¿Se puede comprar contrareembolso?',
-			answer: `Podrás pagar con diferentes métodos de pago incluido el contrareembolso, aunque en esta modalidad de pago se cobra el envío por adelantado para asegurarnos el compromiso de la recepción y evitar malas prácticas.`,
+			question: '¿Dónde puedo consultar la política de devoluciones?',
+			answer: (
+				<>
+					Puedes consultar nuestra política de devoluciones completa en el
+					siguiente documento.
+					<a
+						href="https://drive.google.com/file/d/1zPY7RIb_UwulVHyHNmlRI1X-dYnXVl-o/view?usp=drive_link"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-blue-500 hover:underline ml-1"
+					>
+						Haz clic aquí para verla.
+					</a>
+				</>
+			),
 		},
 		{
 			question: '¿Tengo que pagar algo por el servicio de búsqueda?',
@@ -72,7 +85,8 @@ const FaqAccordion = () => {
                                         px-4 font-tertiary-font pt-2 pb-4 text-gray-600 text-[1.6rem] mobile:text-[1.4rem]
                                     "
 								>
-									{item.answer}
+									{/* Se envuelve la respuesta en un div para manejar tanto strings como JSX */}
+                                    <div>{item.answer}</div>
 								</Disclosure.Panel>
 							</>
 						)}
