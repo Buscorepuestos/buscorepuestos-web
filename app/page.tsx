@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from './redux/store'
 import { IProductMongoose } from './types/product'
 import { environment } from './environment/environment'
-import algoliasearch from 'algoliasearch'
+import api from './api/api'
 
 const appID = environment.algoliaAppID
 const apiKey = environment.algoliaAPIKey
@@ -256,10 +256,11 @@ export default function Home() {
 	const [searchTerm, setSearchTerm] = useState('')
 	const router = useRouter()
 	const dispatch = useDispatch<AppDispatch>()
-	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState<string | null>(null)
-	const [products, setProducts] = useState<IProductMongoose[]>([])
-	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
+	const [latestProducts, setLatestProducts] = useState<IProductMongoose[]>([]);
+	const [randomProducts, setRandomProducts] = useState<IProductMongoose[]>([]);
+	const [loadingLatest, setLoadingLatest] = useState(true);
+	const [loadingRandom, setLoadingRandom] = useState(true);
+	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null);
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -285,8 +286,32 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-		dispatch({ type: 'auth/checkUserStatus' })
-	}, [dispatch])
+		const fetchHomeProducts = async () => {
+			// Usamos Promise.allSettled para que si una petición falla, la otra pueda continuar
+			const [latestResult, randomResult] = await Promise.allSettled([
+				api.get('/products/latest?limit=12'),
+				api.get('/products/random?limit=12')
+			]);
+
+			if (latestResult.status === 'fulfilled') {
+				setLatestProducts(latestResult.value.data);
+			} else {
+				console.error("Error fetching latest products:", latestResult.reason);
+			}
+			setLoadingLatest(false);
+
+			if (randomResult.status === 'fulfilled') {
+				setRandomProducts(randomResult.value.data);
+			} else {
+				console.error("Error fetching random products:", randomResult.reason);
+			}
+			setLoadingRandom(false);
+		};
+
+		fetchHomeProducts();
+		dispatch({ type: 'auth/checkUserStatus' });
+	}, [dispatch]);
+
 
 	const cleanValue = (text: string) => {
 		return `${' ' + text.replace('-', '')}`
@@ -322,7 +347,7 @@ export default function Home() {
 		<main>
 			<Banner
 				imgUrl="/banner-motor.webp"
-				height={isMobile? '400px' : '561px'}
+				height={isMobile ? '400px' : '561px'}
 				aligned="center"
 				color="blue"
 				position=""
@@ -574,37 +599,34 @@ export default function Home() {
 			</section>
 
 			<section className="pt-[72px]">
-				<div className=" flex justify-start ml-36 mobile:ml-12">
-					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
-						{' '}
-						Novedades
-					</h2>
-				</div>
-				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
-					{products.slice(0, 10).map((product: any, index) => (
-						<SwiperSlide
-							key={index}
-							className="flex justify-center items-center"
-						>
-							<CardPrice
-								key={index}
-								title={product.title}
-								reference={product.mainReference!}
-								description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-								price={product?.buscorepuestosPrice || 0}
-								image={
-									product.images[0]
-										? product.images[0]
-										: '/nodisponible.png'
-								}
-								handle={() => handle(product._id)}
-								id={product._id}
-								loading={loadingPurchase === product._id}
-							/>
-						</SwiperSlide>
-					))}
-				</Slider>
-			</section>
+                <div className="flex justify-start ml-36 mobile:ml-12">
+                    <h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
+                        Novedades
+                    </h2>
+                </div>
+                {loadingLatest ? (
+                    <div className="flex justify-center items-center h-48">
+                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+                    </div>
+                ) : (
+                    <Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+                        {latestProducts.map((product, index) => (
+                            <SwiperSlide key={index} className="flex justify-center items-center">
+                                <CardPrice
+                                    title={product.title}
+                                    reference={product.mainReference || ''}
+                                    description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+                                    price={product.buscorepuestosPrice || 0}
+                                    image={product.images?.[0] || '/nodisponible.png'}
+                                    handle={() => handle(product._id)}
+                                    id={product._id}
+                                    loading={loadingPurchase === product._id}
+                                />
+                            </SwiperSlide>
+                        ))}
+                    </Slider>
+                )}
+            </section>
 
 			<Dropdown />
 
@@ -645,37 +667,34 @@ export default function Home() {
 			</Banner>
 
 			<section className="pt-[72px]">
-				<div className="flex justify-start ml-36 mobile:ml-12">
-					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
-						{' '}
-						Podría interesarte
-					</h2>
-				</div>
-				<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
-					{products.slice(10, 20).map((product: any, index) => (
-						<SwiperSlide
-							key={index}
-							className="flex justify-center items-center"
-						>
-							<CardPrice
-								key={index}
-								title={product.title}
-								reference={product.mainReference!}
-								description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-								price={product?.buscorepuestosPrice || 0}
-								image={
-									product.images[0]
-										? product.images[0]
-										: '/nodisponible.png'
-								}
-								handle={() => handle(product._id)}
-								id={product._id}
-								loading={loadingPurchase === product._id}
-							/>
-						</SwiperSlide>
-					))}
-				</Slider>
-			</section>
+                <div className="flex justify-start ml-36 mobile:ml-12">
+                    <h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
+                        Podría interesarte
+                    </h2>
+                </div>
+                {loadingRandom ? (
+                    <div className="flex justify-center items-center h-48">
+                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+                    </div>
+                ) : (
+                    <Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+                        {randomProducts.map((product) => (
+                            <SwiperSlide key={product._id} className="flex justify-center items-center">
+                                <CardPrice
+                                    title={product.title}
+                                    reference={product.mainReference || ''}
+                                    description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+                                    price={product.buscorepuestosPrice || 0}
+                                    image={product.images?.[0] || '/nodisponible.png'}
+                                    handle={() => handle(product._id)}
+                                    id={product._id}
+                                    loading={loadingPurchase === product._id}
+                                />
+                            </SwiperSlide>
+                        ))}
+                    </Slider>
+                )}
+            </section>
 		</main>
 	)
 }

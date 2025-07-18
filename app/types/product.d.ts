@@ -1,4 +1,5 @@
 export interface IProductMongoose {
+	_id: string;
 	airtableId?: string;
 	airtableIdFromProviderDashboard?: string;
 	buscorepuestosReference: string;
