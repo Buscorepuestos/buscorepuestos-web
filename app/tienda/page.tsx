@@ -149,6 +149,11 @@ export default function Store() {
 		dispatch(setCurrentPage(1))
 	}
 
+	const handleClearSearch = () => {
+        setInputValue('');
+        dispatch(setCurrentPage(1));
+    };
+
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
@@ -173,6 +178,7 @@ export default function Store() {
 							width={'w-[480px] mobile:w-[80vw]'}
 							borderColor={'#12B1BB'}
 							borderWidth={'2px'}
+							onClear={handleClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
 						/>
 					</div>
 					<Facilities
