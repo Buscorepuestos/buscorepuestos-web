@@ -15,12 +15,12 @@ export default function Store({ params }: { params: { search: string } }) {
     const dispatch = useAppDispatch();
     const router = useRouter();
 
-    const { 
-        searchResults: products, 
+    const {
+        searchResults: products,
         loading: loadingSearch, // Renombrado para evitar conflicto con el estado local 'loading'
-        error, 
-        currentPage, 
-        totalPages 
+        error,
+        currentPage,
+        totalPages
     } = useAppSelector(state => state.productSearch);
 
     // --- ESTADOS LOCALES ---
@@ -30,7 +30,7 @@ export default function Store({ params }: { params: { search: string } }) {
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-    
+
     // Estados de UI
     const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -41,7 +41,7 @@ export default function Store({ params }: { params: { search: string } }) {
     useEffect(() => {
         const searchQuery = decodeURIComponent(params.search || '');
         setInputValue(searchQuery);
-        
+
         // Una nueva búsqueda desde la URL debe ser una búsqueda "limpia"
         setSelectedSubcategory(null);
         setSelectedBrand(null);
@@ -78,7 +78,7 @@ export default function Store({ params }: { params: { search: string } }) {
         return () => {
             if (debounceTimer.current) clearTimeout(debounceTimer.current);
         };
-    // Este efecto depende de todos los estados que pueden modificar la búsqueda
+        // Este efecto depende de todos los estados que pueden modificar la búsqueda
     }, [dispatch, inputValue, currentPage, sortOrder, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
 
     // --- HANDLERS ---
@@ -152,6 +152,11 @@ export default function Store({ params }: { params: { search: string } }) {
         return text ? ` ${text.replace('-', '')}` : '';
     };
 
+    const handleClearSearch = () => {
+        setInputValue('');
+        dispatch(setCurrentPage(1));
+    };
+
     return (
         <main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
             <div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
@@ -177,6 +182,7 @@ export default function Store({ params }: { params: { search: string } }) {
                             width={'w-[480px] mobile:w-[80vw]'}
                             borderColor={'#12B1BB'}
                             borderWidth={'2px'}
+                            onClear={handleClearSearch} // NUEVO: Función para limpiar la búsqueda
                         />
                     </div>
                     <Facilities

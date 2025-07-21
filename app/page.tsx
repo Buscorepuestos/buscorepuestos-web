@@ -343,6 +343,11 @@ export default function Home() {
 		}
 	}
 
+	const handleOnClearSearch = () => {
+		setSearchTerm('')
+		dispatch({ type: 'SET_CURRENT_PAGE', payload: 1 })
+	}
+
 	return (
 		<main>
 			<Banner
@@ -368,6 +373,7 @@ export default function Home() {
 						width={'w-[496px] mobile:w-[82vw]'}
 						borderColor={'#12B1BB'}
 						borderWidth={'2px'}
+						onClear={handleOnClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
 					/>
 				</div>
 			</Banner>

@@ -135,7 +135,7 @@ export function Header() {
 					</div>
 				)}
 				<div className="flex flex-row gap-7">
-					{isWideScreen && (
+					{/* {isWideScreen && (
 						<div className="flex flex-col items-center">
 							<Link href="#">
 								<Image
@@ -149,7 +149,7 @@ export function Header() {
 								Accede
 							</p>
 						</div>
-					)}
+					)} */}
 					<div className="relative flex flex-col items-center">
 						<Link href="/verificacion-pago">
 							<Image
@@ -202,7 +202,7 @@ export function Header() {
 					className="absolute top-[12.8vw] left-0 right-0 bg-custom-white shadow-md "
 				>
 					<div className="flex flex-col items-start border-t border-secondary-blue">
-						<div className="w-full flex items-center gap-5 text-[4vw] py-5 text-secondary-blue font-semibold hover:bg-gray-100 h-[12vw] border-secondary-blue border-b-[1px] pl-14">
+						{/* <div className="w-full flex items-center gap-5 text-[4vw] py-5 text-secondary-blue font-semibold hover:bg-gray-100 h-[12vw] border-secondary-blue border-b-[1px] pl-14">
 							<Image
 								src="/USUARIO.svg"
 								alt="UserMobile"
@@ -211,7 +211,7 @@ export function Header() {
 								className="mobile:w-[7vw] mobile:h-[7vw]"
 							/>
 							<p style={{ color: 'var(--neutro300)' }}>Accede</p>
-						</div>
+						</div> */}
 						{principalMenuLinks.map((link, index) => (
 							<div
 								key={index}
