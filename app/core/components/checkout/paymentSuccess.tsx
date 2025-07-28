@@ -30,142 +30,6 @@ const PaymentSuccess = () => {
 	const searchParams = useSearchParams()
 	const pagoSummup = searchParams.get('pagoSumup')
 
-	// useEffect(() => {
-	// 	const payment_intent_id = searchParams.get('payment_intent')
-	// 	const client_secret = searchParams.get('payment_intent_client_secret')
-
-	// 	const createBilling = async () => {
-	// 		const storedBillingData = localStorage.getItem('billingData')
-	// 		let parsedEmailData: any
-
-	// 		if (storedBillingData) {
-	// 			try {
-	// 				const parsedBillingData = JSON.parse(storedBillingData)
-	// 				setBillingData(parsedBillingData)
-
-	// 				const storedExtraData = localStorage.getItem('extraData')
-
-	// 				if (storedExtraData) {
-	// 					parsedEmailData = JSON.parse(storedExtraData)
-	// 					setExtraData(parsedEmailData)
-	// 				}
-
-	// 				const cart = localStorage.getItem('copyCart')
-
-	// 				if (cart) {
-	// 					const parsedCart = JSON.parse(cart)
-	// 					setCart(parsedCart)
-	// 				}
-
-	// 				dispatch(clearCart())
-
-	// 			} catch (error) {
-	// 				console.error(
-	// 					'Error parsing or processing billing data:',
-	// 					error
-	// 				)
-	// 			}
-	// 		} else {
-	// 			console.error('No billing data found in localStorage')
-	// 		}
-	// 	}
-
-	// 	const getPaymentIntent = async (paymentIntentId: string) => {
-	// 		if (!stripe || !paymentIntentId) {
-	// 			return null
-	// 		}
-
-	// 		try {
-	// 			const { paymentIntent } =
-	// 				await stripe.retrievePaymentIntent(paymentIntentId)
-	// 			return paymentIntent
-	// 		} catch (error) {
-	// 			console.error('Error retrieving payment intent:', error)
-	// 			return null
-	// 		}
-	// 	}
-
-	// 	const verifyPayment = async () => {
-	// 		if (!payment_intent_id) {
-	// 			return
-	// 		}
-
-	// 		const paymentIntent = client_secret
-	// 			? await getPaymentIntent(client_secret)
-	// 			: null
-
-	// 		if (paymentIntent) {
-	// 			if (paymentIntent?.status === 'succeeded') {
-	// 				await createBilling()
-	// 			} else {
-	// 				Swal.fire({
-	// 					title: 'Error en el pago',
-	// 					text: 'Ha ocurrido un error al procesar tu pago',
-	// 					icon: 'error',
-	// 					confirmButtonText: 'Aceptar',
-	// 				}).then((result) => {
-	// 					if (result.isConfirmed) {
-	// 						router.push('/')
-	// 					}
-	// 				})
-	// 			}
-	// 		}
-	// 	}
-
-	// 	verifyPayment()
-
-	// 	const verifySummupPayment = async () => {
-	// 		if (pagoSummup === 'true') {
-	// 			console.log('Pago Summup')
-	// 			await createBilling()
-	// 		}
-	// 	}
-
-	// 	verifySummupPayment()
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [
-	// 	dispatch,
-	// 	router,
-	// 	searchParams,
-	// 	stripe,
-	// ])
-
-	// useEffect(() => {
-	// 	const storedBillingData = localStorage.getItem('billingData')
-	// 	const storedExtraData = localStorage.getItem('extraData')
-	// 	const userAddress = localStorage.getItem('userAddress')
-	// 	let parsedBillingData: any
-	// 	let parsedEmailData: any
-	// 	let userAddressData: any
-	// 	if (storedBillingData) {
-	// 		parsedBillingData = JSON.parse(storedBillingData)
-	// 	}
-	// 	if (storedExtraData) {
-	// 		parsedEmailData = JSON.parse(storedExtraData)
-	// 	}
-	// 	if (userAddress) {
-	// 		userAddressData = JSON.parse(userAddress)
-	// 	}
-	// 	const billingExecuted = async () => {
-	// 			const billingExecuted =
-	// 			localStorage.getItem('billingExecuted')
-	// 		if (!billingExecuted) {
-	// 			if (!pagoSummup) {
-	// 				await createBill(parsedBillingData)
-	// 				await userService.createUserAddresses(userAddressData)
-	// 			}
-	// 			await userService.updateUser({
-	// 				id: parsedBillingData.Usuarios[0],
-	// 				['correo electronico']: parsedEmailData.email,
-	// 			})
-	// 			// Marcar que las funciones ya se han ejecutado
-	// 			localStorage.setItem('billingExecuted', 'true')
-	// 		}
-	// 	}
-	// 	billingExecuted()
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [])
-
 	useEffect(() => {
 		const payment_intent_id = searchParams.get('payment_intent')
 		const client_secret = searchParams.get('payment_intent_client_secret')
@@ -260,107 +124,90 @@ const PaymentSuccess = () => {
 	}, [dispatch, router, searchParams, stripe])
 
 	return (
-		<div className="flex items-center justify-center min-h-screen font-tertiary-font mt-[20rem] mb-[5rem] mobile:mt-[15rem]">
-			<div className="w-full max-w-[60vw] border-[4px] border-secondary-blue p-12 rounded-xl shadow-xl bg-white">
-				<p className="font-bold text-primary-blue text-[2.8rem] text-center mb-6">
-					Pago exitoso
+		<div className="flex items-center justify-center min-h-screen font-tertiary-font bg-gray-50 py-16 px-4 sm:px-6 lg:px-8 mt-[20rem] mb-[5rem] mobile:mt-[7rem]">
+			<div className="w-full max-w-lg lg:w-11/12 xl:max-w-screen-2xl border-[3px] border-secondary-blue p-6 md:p-8 lg:p-12 rounded-xl lg:rounded-2xl shadow-xl bg-white">
+				<p className="font-bold text-primary-blue text-lg mobile:text-[1.5rem] text-center mb-6">
+					¡Pago exitoso!
 				</p>
-				<p className="font-bold text-[2.8rem] text-center mb-4 text-dark-grey">
-					Detalles de Facturación
+				<p className="font-bold text-lg mobile:text-[1.8rem] text-center mb-10 lg:mb-16 text-dark-grey">
+					Detalles del Pedido
 				</p>
 				{billingData ? (
 					<div>
-						<div className="sm:grid sm:grid-cols-2 justify-center justify-items-center">
-							<div className="space-y-4 text-[2.3rem] text-dark-grey">
-								<p className="font-bold text-[2.5rem] mb-2 text-secondary-blue">
-									Datos personales
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-20">
+							{/* Columna 1 */}
+							<div className="space-y-4">
+								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg mb-4 text-secondary-blue border-b-2 pb-3">
+									Datos Personales
 								</p>
-								<p>
-									<strong>Nombre y apellidos:</strong>{' '}
-									{billingData.name}
+								<p className='text-base md:text-lg text-dark-grey'>
+									<strong>Nombre:</strong> {billingData.name}
 								</p>
-								<p>
-									<strong>Teléfono:</strong>{' '}
-									{billingData.phone}
+								<p className='text-base md:text-lg text-dark-grey'>
+									<strong>Teléfono:</strong> {billingData.phone}
 								</p>
-								<p>
-									<strong>Email:</strong> {extraData.email}
+								<p className='text-base md:text-lg  text-dark-grey'>
+									<strong>Email:</strong> {extraData?.email}
 								</p>
-								<p className="font-bold text-[2.5rem] mb-2 text-secondary-blue">
-									Direccion de envío
-								</p>
-								<p>
-									<strong>Dirección:</strong>{' '}
-									{billingData.address}
-								</p>
-								<p>
-									<strong>Número de Dirección:</strong>{' '}
-									{billingData.addressNumber}
-								</p>
-								<p>
-									<strong>Provincia:</strong>{' '}
-									{billingData.province}
-								</p>
-								<p>
-									<strong>Ciudad:</strong>{' '}
-									{billingData.location}
-								</p>
-								<p>
-									<strong>País:</strong> {billingData.country}
-								</p>
-								<p>
-									<strong>Código Postal:</strong>{' '}
-									{billingData.cp}
-								</p>
-								<p>
+								<p className='text-base md:text-lg  text-dark-grey'>
 									<strong>NIF:</strong> {billingData.nif}
 								</p>
+
+								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg pt-6 mb-4 text-secondary-blue border-b-2 pb-3">
+									Dirección de Envío
+								</p>
+								<p className='text-base md:text-lg text-dark-grey'>
+									<strong>Dirección:</strong> {billingData.address}, {billingData.addressNumber}
+								</p>
+								<p className='text-base md:text-lg  text-dark-grey'>
+									<strong>Localidad:</strong> {billingData.location}, {billingData.province} ({billingData.cp})
+								</p>
+								<p className='text-base md:text-lg text-dark-grey'>
+									<strong>País:</strong> {billingData.country}
+								</p>
 							</div>
-							<div className="space-y-4 text-[2.3rem] text-dark-grey">
-								<p className="font-bold text-[2.5rem] mb-2 text-secondary-blue">
-									Dirección de facturación
+
+							{/* Columna 2 */}
+							<div className="space-y-4">
+								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg mb-4 text-secondary-blue border-b-2 pb-3">
+									Dirección de Facturación
 								</p>
-								<p>
-									<strong>Dirección:</strong>{' '}
-									{extraData.billingAddress}
+								<p className='text-base md:text-lg text-dark-grey'>
+									<strong>Dirección:</strong> {extraData?.billingAddress}, {extraData?.billingAddressExtra}
 								</p>
-								<p>
-									<strong>Número de Dirección:</strong>{' '}
-									{extraData.billingAddressExtra}
+								<p className='text-base md:text-lg  text-dark-grey'>
+									<strong>Número de direccion:</strong> {extraData?.billingAddressExtra}
 								</p>
-								<p>
-									<strong>Provincia:</strong>{' '}
-									{extraData.billingProvince}
+								<p className='text-base md:text-lg  text-dark-grey'>
+									<strong>Provincia:</strong> {extraData?.billingProvince}
 								</p>
-								<p>
-									<strong>Código Postal:</strong>{' '}
-									{extraData.billingZip}
+								<p className='text-base md:text-lg  text-dark-grey'>
+									<strong>Código postal:</strong> {extraData?.billingZip}
 								</p>
-								<p className="font-bold text-[2.5rem] mb-2 text-secondary-blue">
+
+								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg pt-6 mb-4 text-secondary-blue border-b-2 pb-3">
 									Productos
 								</p>
-								{cart.map((product: any) => (
-									<div
-										key={product.id}
-										className="flex gap-2"
-									>
-										<Image
-											src={product.images[0]}
-											alt={product.title}
-											width={100}
-											height={100}
-											className="rounded-lg"
-										/>
-										<p>{product.title}</p>
-									</div>
-								))}
+								<div className="space-y-5">
+									{cart.map((product: any) => (
+										<div key={product.id} className="flex items-center gap-5">
+											<Image
+												src={product.images[0]}
+												alt={product.title}
+												width={90}
+												height={90}
+												className="rounded-lg object-cover flex-shrink-0"
+											/>
+											<p className='text-base md:text-lg text-dark-grey font-medium'>{product.title}</p>
+										</div>
+									))}
+								</div>
 							</div>
 						</div>
-						<div className="flex justify-center mt-6">
+						<div className="flex justify-center mt-16 lg:mt-20">
 							<Image
 								src="/nuevo-logo-buscorepuestos.png"
 								alt="Logo"
-								className="mb-4"
 								width={350}
 								height={350}
 							/>
