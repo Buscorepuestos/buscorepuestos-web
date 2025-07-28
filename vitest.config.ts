@@ -47,6 +47,7 @@ export default defineConfig({
 				'app/core/components/filterTag/FilterTag.tsx',
 				'app/core/components/notFound/NotFoundInStore.tsx',
 				'app/core/components/whatsapp/whatsapp.tsx',
+				'app/core/components/input/input.tsx',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
 				'app/services'
