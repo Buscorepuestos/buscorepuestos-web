@@ -26,10 +26,10 @@ const NotFoundInStore = () => {
 		<div className="flex justify-center items-center my-16">
 			<div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-gray-200 font-tertiary-font">
 				<h3 className="text-2xl font-bold text-dark-grey text-left mb-2">
-					¿No encontraste lo que buscás?
+					¿No encontraste lo que buscas?
 				</h3>
 				<p className="text-custom-grey text-left mb-4">
-					Te ayudamos a conseguirlo por WhatsApp.
+					Disponemos de más stock que aún no está publicado
 				</p>
 
 				<ul className="text-left mb-6 space-y-2 text-custom-grey">

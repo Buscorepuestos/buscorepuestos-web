@@ -22,7 +22,7 @@ const Facilities: React.FC<FacilitiesProps> = ({ classNamePrincipal, classNameIm
 				/>
 				<p className={` ${isProductPage && 'mobile:text-[3vw] lg:text-[1vw] md:text-[1.5vw]' } font-normal mobile:font-bold`}>2 años de garantía</p>
 			</div>
-			<div className={` ${isProductPage ? 'mobile:gap-2' : 'mobile:gap-5'} flex items-center md:gap-4 sm:gap-1 `}>
+			<div className={` ${isProductPage ? 'mobile:gap-2' : 'mobile:gap-5 mobile:hidden'} flex items-center md:gap-4 sm:gap-1 `}>
 				<Image
 					src="/devolucion.svg"
 					alt="devolucion"
@@ -32,7 +32,7 @@ const Facilities: React.FC<FacilitiesProps> = ({ classNamePrincipal, classNameIm
 				/>
 				<p className={` ${isProductPage && 'mobile:text-[3vw] lg:text-[1vw] md:text-[1.5vw]' } font-normal mobile:font-bold`}>devolución gratuita</p>
 			</div>
-			<div className={` ${isProductPage && 'mobile:hidden'} flex items-center md:gap-4 sm:gap-1 mobile:gap-5`}>
+			<div className={` ${isProductPage && 'mobile:hidden'} mobile:hidden flex items-center md:gap-4 sm:gap-1 mobile:gap-5`}>
 				<Image
 					src="/atencion.svg"
 					alt="atencion"
@@ -40,7 +40,7 @@ const Facilities: React.FC<FacilitiesProps> = ({ classNamePrincipal, classNameIm
 					height={34}
 					className={classNameImg}
 				/>
-				<p className={` ${isProductPage && 'lg:text-[1vw] md:text-[1.5vw]'} font-normal mobile:font-bold `}>Atencíon al cliente 24h</p>
+				<p className={` ${isProductPage && 'lg:text-[1vw] md:text-[1.5vw] '} font-normal mobile:font-bold `}>Atencíon al cliente 24h</p>
 			</div>
 			<div className={` ${isProductPage && 'mobile:hidden'} flex items-center md:gap-4 sm:gap-1 mobile:gap-5`}>
 				<Image
