@@ -111,13 +111,13 @@ export default function Store() {
 	}
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
-        setSelectedSubcategory(subcategory);
-        // Reseteamos los filtros dependientes
-        setSelectedBrand(null);
-        setSelectedModel(null);
-        setSelectedYear(null);
-        dispatch(setCurrentPage(1));
-    };
+		setSelectedSubcategory(subcategory);
+		// Reseteamos los filtros dependientes
+		setSelectedBrand(null);
+		setSelectedModel(null);
+		setSelectedYear(null);
+		dispatch(setCurrentPage(1));
+	};
 
 	const handleBrandChange = (brand: string | null) => {
 		setSelectedBrand(brand)
@@ -150,12 +150,12 @@ export default function Store() {
 	}
 
 	const handleClearSearch = () => {
-        setInputValue('');
-        dispatch(setCurrentPage(1));
-    };
+		setInputValue('');
+		dispatch(setCurrentPage(1));
+	};
 
 	return (
-		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[25vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
+		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[18vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
 					<Filters
@@ -170,6 +170,15 @@ export default function Store() {
 					/>
 				</div>
 				<div className="flex flex-col gap-5 sm:max-h-[1500rem] mobile:items-center">
+					<Facilities
+						classNamePrincipal="
+							flex w-full my-5 md:gap-14 sm:gap-3 bg-gray-200 font-tertiary-font 
+							text-secondary-blue font-semibold h-[5rem] mobile:h-[6rem] justify-center 
+							rounded-3xl lg:text-[14px] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-[3.2vw] mobile:px-[2.9rem]
+							mobile:grid mobile:grid-cols-2 mobile:gap-0 mobile:w-[85%] mobile:font-normal mobile:py-[1rem]
+						"
+						classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
+					/>
 					<div className="flex justify-end">
 						<SearchBar
 							value={inputValue} // <-- AÑADIDO: El valor del input ahora es controlado por la prop
@@ -181,39 +190,32 @@ export default function Store() {
 							onClear={handleClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
 						/>
 					</div>
-					<Facilities
-						classNamePrincipal="
-							flex w-full my-5 md:gap-14 sm:gap-3 bg-gray-200 font-tertiary-font 
-							text-secondary-blue font-semibold h-[5rem] mobile:h-[13rem] justify-center 
-							rounded-3xl lg:text-[14px] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-[3.2vw] mobile:px-[2.9rem]
-							mobile:grid mobile:grid-cols-2 mobile:gap-0 mobile:w-[85%] mobile:font-normal mobile:py-[1rem]
-						"
-						classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
-					/>
-					<div className="sm:hidden mobile:w-full px-[8vw]">
-						<Filters
-							onSubcategoryChange={handleSubcategoryChange}
-							onBrandChange={handleBrandChange}
-							onModelChange={handleModelChange}
-							onYearChange={handleYearChange}
-							selectedBrand={selectedBrand}
-							selectedModel={selectedModel}
-							selectedYear={selectedYear}
-							selectedSubcategory={selectedSubcategory}
-						/>
-					</div>
-					<div className="flex w-[100%] mr-11 justify-end sm:my-4">
-						<select
-							className="border border-gray-300 p-2 rounded mobile:text-sm"
-							value={sortOrder || ''}
-							onChange={handleSortOrderChange}
-						>
-							<option disabled value="">
-								Ordenar por precio
-							</option>
-							<option value="asc">Menor a Mayor</option>
-							<option value="desc">Mayor a Menor</option>
-						</select>
+					<div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
+						<div className="sm:hidden mobile:w-full px-[8vw]">
+							<Filters
+								onSubcategoryChange={handleSubcategoryChange}
+								onBrandChange={handleBrandChange}
+								onModelChange={handleModelChange}
+								onYearChange={handleYearChange}
+								selectedBrand={selectedBrand}
+								selectedModel={selectedModel}
+								selectedYear={selectedYear}
+								selectedSubcategory={selectedSubcategory}
+							/>
+						</div>
+						<div className="flex w-[100%] mr-11 justify-end sm:my-4">
+							<select
+								className="border border-gray-300 p-2 rounded mobile:text-sm"
+								value={sortOrder || ''}
+								onChange={handleSortOrderChange}
+							>
+								<option disabled value="">
+									Ordenar por precio
+								</option>
+								<option value="asc">Menor a Mayor</option>
+								<option value="desc">Mayor a Menor</option>
+							</select>
+						</div>
 					</div>
 					{isTyping ? (
 						<div className="flex justify-center my-4">

@@ -21,12 +21,6 @@ const WhatsAppIcon: React.FC = () => {
 		if (pathname === '/') {
 			return 'Buscamos la referencia exacta que necesitas'
 		}
-		if (pathname.startsWith('/tienda')) {
-			if (!loading && searchResults.length === 0) {
-				return 'Disponemos de más stock que aún no está publicado'
-			}
-			return '¡Buscaremos el repuesto nuevo\no en el extranjero!'
-		}
 		if (pathname.startsWith('/producto')) {
 			return 'Verifica si este repuesto es válido\npara tu coche'
 		}
