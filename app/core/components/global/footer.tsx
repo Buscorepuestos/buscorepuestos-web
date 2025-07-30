@@ -1,13 +1,26 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { environment } from '../../../environment/environment'
 
 const socialMediaLinks = [
-	{ imgUrl: 'facebook.svg', href: '#' },
-	{ imgUrl: 'instagram.svg', href: '#' },
-	{ imgUrl: 'whatsapp.svg', href: '#' },
-	{ imgUrl: 'linkedin.svg', href: '#' },
-	{ imgUrl: 'mail.svg', href: '#' },
+	{ 
+        imgUrl: 'facebook.svg', 
+        href: 'https://www.facebook.com/buscorepuestosoficial' 
+    },
+	{ 
+        imgUrl: 'instagram.svg', 
+        href: 'https://www.instagram.com/buscorepuestos_com/#' 
+    },
+	{ 
+        imgUrl: 'whatsapp.svg', 
+        // Se usa el formato wa.me para abrir WhatsApp directamente
+        href: 'https://wa.me/34611537631' 
+    },
+	// { imgUrl: 'linkedin.svg', href: '#' }, // <-- Ícono de LinkedIn eliminado
+	{ 
+        imgUrl: 'mail.svg',
+        // Se usa mailto: para abrir el cliente de correo por defecto
+        href: 'mailto:buscorepuestosoficial@gmail.com' 
+    },
 ]
 
 const footerLinks = [
@@ -62,6 +75,8 @@ export function Footer() {
 										className="self-end"
 										key={index}
 										href={link.href}
+										target="_blank"
+                                        rel="noopener noreferrer"
 									>
 										<Image
 											src={`/${link.imgUrl}`}

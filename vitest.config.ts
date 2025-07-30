@@ -48,6 +48,8 @@ export default defineConfig({
 				'app/core/components/notFound/NotFoundInStore.tsx',
 				'app/core/components/whatsapp/whatsapp.tsx',
 				'app/core/components/input/input.tsx',
+				'app/core/components/global/header.tsx',
+				'app/redux/middlewares/userMiddleware.ts',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
 				'app/services'
