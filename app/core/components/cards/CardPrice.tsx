@@ -2,6 +2,8 @@ import Image from 'next/image'
 import Button from '../Button'
 import Link from 'next/link'
 import Star from '../svg/star'
+import noDisponible from '../../../../public/nodisponible.png'
+import { useState } from 'react'
 
 function PriceView(props: { price: string }) {
 	return (
@@ -24,6 +26,14 @@ export default function CardPrice(props: {
 	loading?: boolean
 }) {
 	const { image, loading } = props
+
+	const [imgSrc, setImgSrc] = useState(image || noDisponible.src);
+
+    // 2. Función que se dispara si la imagen principal falla al cargar
+    const handleImageError = () => {
+        // Si hay un error, cambia la fuente a la imagen de fallback.
+        setImgSrc(noDisponible.src);
+    };
 	return (
 		<>
 			<div
@@ -33,12 +43,13 @@ export default function CardPrice(props: {
 			>
 				<Image
 					unoptimized={true}
-					src={image ? image : '/card-preview.webp'}
+					src={imgSrc}
 					alt="card image"
 					width={205}
 					height={140}
 					className="rounded-t-[23px] w-[100%] h-[140px] mobile:h-[132px]"
 					loading={'lazy'}
+					onError={handleImageError}
 				/>
 				<div className="flex flex-col items-start px-[0.5vw] mobile:px-4 w-full">
 					<div className="w-full h-auto mobile:h-auto">

@@ -1,17 +1,36 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react' // 1. Importamos useState y useEffect
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useAppSelector } from '../../../redux/hooks'
-import { RootState } from '../../../redux/store'
 
 const WhatsAppIcon: React.FC = () => {
 	const pathname = usePathname()
+	// 2. Estado para saber si el usuario ha hecho scroll
+	const [isScrolled, setIsScrolled] = useState(false)
+
 	const hideOnPaths = ['/verificacion-pago', '/pago-exitoso']
 
-	const { searchResults, loading } = useAppSelector(
-		(state: RootState) => state.productSearch
-	)
+	// 3. useEffect para detectar el evento de scroll
+	useEffect(() => {
+		const handleScroll = () => {
+			// Si el usuario ha bajado más de 50px, cambiamos el estado
+			if (window.scrollY > 50) {
+				setIsScrolled(true)
+			} else {
+				// Opcional: si quieres que se vuelva a ocultar al subir, mantén esta línea.
+				// Si quieres que se quede visible una vez aparece, puedes eliminar el 'else'.
+				setIsScrolled(false) 
+			}
+		}
+
+		// Añadimos el listener cuando el componente se monta
+		window.addEventListener('scroll', handleScroll)
+
+		// Limpiamos el listener cuando el componente se desmonta para evitar fugas de memoria
+		return () => {
+			window.removeEventListener('scroll', handleScroll)
+		}
+	}, []) // El array vacío [] asegura que el efecto se ejecute solo una vez
 
 	if (hideOnPaths.includes(pathname)) {
 		return null
@@ -31,9 +50,8 @@ const WhatsAppIcon: React.FC = () => {
 
 	const handleClick = () => {
 		const phoneNumber = '34611537631'
-		let message = '' // Mensaje por defecto (vacío)
+		let message = ''
 
-		// Lógica para el mensaje predeterminado en la página de producto
 		if (pathname.startsWith('/producto')) {
 			const currentUrl = window.location.href
 			message = `Hola, me gustaría verificar si este repuesto es compatible con mi coche.\n\nEste es el repuesto que estoy viendo:\n${currentUrl}\n\nMi matrícula es: `
@@ -56,16 +74,24 @@ const WhatsAppIcon: React.FC = () => {
 			className="flex flex-col items-end gap-2 cursor-pointer group"
 			onClick={handleClick}
 		>
-			{/* Contenedor de la burbuja de texto */}
 			{copy && (
-				<div className="relative mb-1">
-					{/* El cuadro de texto con el color verde específico */}
-					<div className="bg-[#29A71A] p-3 rounded-xl shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-105">
+				// 4. Aplicamos clases condicionales al contenedor de la burbuja
+				<div
+					className={`
+            relative mb-1 transition-opacity duration-500 ease-in-out
+            // Lógica para mobile: opacidad depende del scroll. Se oculta también a los clics.
+            ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+            // Lógica para desktop (md y superior): siempre visible.
+            md:opacity-100 md:pointer-events-auto
+          `}
+				>
+					{/* El cuadro de texto */}
+					<div className="bg-[#29A71A] p-3 rounded-xl shadow-lg">
 						<p className="text-sm text-center text-white font-semibold whitespace-pre-line">
 							{copy}
 						</p>
 					</div>
-					{/* El puntero/flecha con el nuevo color */}
+					{/* El puntero/flecha */}
 					<div
 						className="absolute right-5 -bottom-2 w-0 h-0 
               border-l-[8px] border-l-transparent
