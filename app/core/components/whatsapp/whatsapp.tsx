@@ -54,7 +54,7 @@ const WhatsAppIcon: React.FC = () => {
 
 		if (pathname.startsWith('/producto')) {
 			const currentUrl = window.location.href
-			message = `Hola, me gustaría verificar si este repuesto es compatible con mi coche.\n\nEste es el repuesto que estoy viendo:\n${currentUrl}\n\nMi matrícula es: `
+			message = `${currentUrl}\n\nHola, estoy viendo este producto en la tienda`
 		}
 
 		const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(

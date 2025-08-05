@@ -13,6 +13,7 @@ import {
 	fetchProducts,
 	setCurrentPage,
 } from '../redux/features/productSearchSlice'
+import { useUserLocation } from '../hooks/useUserLoaction'
 import './tienda.css'
 
 export default function Store() {
@@ -34,9 +35,17 @@ export default function Store() {
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null)
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'proximity' | null>(null);
 	const [isTyping, setIsTyping] = useState(false)
 	const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+
+	const { province: userProvince, requestLocation } = useUserLocation();
+
+	useEffect(() => {
+		// Pedir la ubicación una sola vez al cargar el componente
+		requestLocation();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
@@ -47,6 +56,7 @@ export default function Store() {
 					searchTerm: inputValue.trim(),
 					page: currentPage,
 					sortOrder,
+					userProvince: sortOrder === 'proximity' ? userProvince : null,
 					// Pasamos todos los filtros seleccionados
 					subcategory: selectedSubcategory,
 					brand: selectedBrand,
@@ -56,7 +66,7 @@ export default function Store() {
 			).finally(() => setLoading(false));
 		}, 500); // 500ms de 
 		return () => clearTimeout(debounceTimer);
-	}, [dispatch, inputValue, currentPage, sortOrder, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
+	}, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
 
 
 	useEffect(() => {
@@ -145,7 +155,7 @@ export default function Store() {
 	}
 
 	const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-		setSortOrder(event.target.value as 'asc' | 'desc' | null)
+		setSortOrder(event.target.value as 'asc' | 'desc' | 'proximity' | null);
 		dispatch(setCurrentPage(1))
 	}
 
@@ -210,10 +220,14 @@ export default function Store() {
 								onChange={handleSortOrderChange}
 							>
 								<option disabled value="">
-									Ordenar por precio
+									Ordenar por
 								</option>
-								<option value="asc">Menor a Mayor</option>
-								<option value="desc">Mayor a Menor</option>
+								{/* NUEVA OPCIÓN */}
+								<option value="proximity" disabled={!userProvince}>
+									Proximidad (más cercanos)
+								</option>
+								<option value="asc">Precio: Menor a Mayor</option>
+								<option value="desc">Precio: Mayor a Menor</option>
 							</select>
 						</div>
 					</div>
