@@ -20,7 +20,8 @@ const initialState: ProductSearchState = {
 interface FetchProductsParams {
     searchTerm?: string;
     page?: number;
-    sortOrder?: 'asc' | 'desc' | null;
+    sortOrder?: 'asc' | 'desc' | 'proximity' | null;
+    userProvince?: string | null; // Para ordenar por proximidad
     subcategory?: string | null;
     brand?: string | null;
     model?: string | null;
@@ -30,12 +31,16 @@ interface FetchProductsParams {
 export const fetchProducts = createAsyncThunk(
     'productSearch/fetchProducts',
     async (params: FetchProductsParams = {}) => {
-        const { searchTerm, page, sortOrder, subcategory, brand, model, year } = params;
+        const { searchTerm, page, sortOrder, subcategory, brand, model, year, userProvince } = params;
         const queryParams = new URLSearchParams();
 
         if (searchTerm) queryParams.append('q', searchTerm);
         if (page) queryParams.append('page', String(page));
         if (sortOrder) queryParams.append('sortOrder', sortOrder);
+
+        if (sortOrder === 'proximity' && userProvince) {
+            queryParams.append('userProvince', userProvince);
+        }
         
         // Añadir los nuevos filtros a la URL
         if (subcategory) queryParams.append('subcategory', subcategory);

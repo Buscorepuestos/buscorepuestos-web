@@ -10,6 +10,7 @@ import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import NotFoundInStore from '../../core/components/notFound/NotFoundInStore' // Importado para el caso de no encontrar resultados
 import '../tienda.css'
 import { fetchProducts, setCurrentPage } from '../../redux/features/productSearchSlice'
+import { useUserLocation } from '../../hooks/useUserLoaction'
 
 export default function Store({ params }: { params: { search: string } }) {
     const dispatch = useAppDispatch();
@@ -29,7 +30,10 @@ export default function Store({ params }: { params: { search: string } }) {
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+
+
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'proximity' | null>(null);
+    const { province: userProvince, requestLocation } = useUserLocation();
 
     // Estados de UI
     const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null);
@@ -37,7 +41,14 @@ export default function Store({ params }: { params: { search: string } }) {
 
     // --- EFECTOS ---
 
-    // Efecto #1: Se ejecuta cuando el parámetro de la URL cambia (búsqueda inicial)
+    // Efecto #1: Obtener ubicación del usuario al montar el componente
+    useEffect(() => {
+        requestLocation();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+
+    // Efecto #2: Se ejecuta cuando el parámetro de la URL cambia (búsqueda inicial)
     useEffect(() => {
         const searchQuery = decodeURIComponent(params.search || '');
         setInputValue(searchQuery);
@@ -66,6 +77,7 @@ export default function Store({ params }: { params: { search: string } }) {
                     searchTerm: inputValue.trim(),
                     page: currentPage,
                     sortOrder,
+                    userProvince: sortOrder === 'proximity' ? userProvince : null,
                     subcategory: selectedSubcategory,
                     brand: selectedBrand,
                     model: selectedModel,
@@ -79,7 +91,7 @@ export default function Store({ params }: { params: { search: string } }) {
             if (debounceTimer.current) clearTimeout(debounceTimer.current);
         };
         // Este efecto depende de todos los estados que pueden modificar la búsqueda
-    }, [dispatch, inputValue, currentPage, sortOrder, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
+    }, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
 
     // --- HANDLERS ---
 
@@ -139,7 +151,7 @@ export default function Store({ params }: { params: { search: string } }) {
     };
 
     const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSortOrder(event.target.value as 'asc' | 'desc' | null);
+        setSortOrder(event.target.value as 'asc' | 'desc' | 'proximity' | null);
         dispatch(setCurrentPage(1));
     };
 
@@ -213,9 +225,12 @@ export default function Store({ params }: { params: { search: string } }) {
                                 value={sortOrder || ''}
                                 onChange={handleSortOrderChange}
                             >
-                                <option disabled value="">Ordenar por precio</option>
-                                <option value="asc">Menor a Mayor</option>
-                                <option value="desc">Mayor a Menor</option>
+                                <option disabled value="">Ordenar por</option>
+                                <option value="proximity" disabled={!userProvince}>
+                                    Proximidad (más cercanos)
+                                </option>
+                                <option value="asc">Precio: Menor a Mayor</option>
+                                <option value="desc">Precio: Mayor a Menor</option>
                             </select>
                         </div>
                     </div>
