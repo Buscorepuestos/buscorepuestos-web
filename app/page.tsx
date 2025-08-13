@@ -254,6 +254,7 @@ const classCardCategories = 'w-full h-auto object-cover'
 export default function Home() {
 	const [isMobile, setIsMobile] = useState(false)
 	const [searchTerm, setSearchTerm] = useState('')
+	const [isSearching, setIsSearching] = useState(false);
 	const router = useRouter()
 	const dispatch = useDispatch<AppDispatch>()
 	const [latestProducts, setLatestProducts] = useState<IProductMongoose[]>([]);
@@ -280,9 +281,16 @@ export default function Home() {
 	}
 
 	const handleSearch = () => {
-		if (searchTerm) {
-			router.push(`/tienda/${searchTerm}`)
-		}
+        // Evita búsquedas vacías o dobles clics
+		if (isSearching || !searchTerm) {
+            return;
+        }
+        
+        // Activa el loader
+        setIsSearching(true);
+        
+        // Navega a la página de resultados
+		router.push(`/tienda/${searchTerm}`);
 	}
 
 	useEffect(() => {
@@ -369,6 +377,7 @@ export default function Home() {
 						value={searchTerm} // <-- AÑADIDO: El valor del input ahora es controlado por la pro
 						onChange={handleInputChange}
 						onEnterPress={handleSearch}
+						isLoading={isSearching} // <-- NUEVO: Prop para mostrar el loader
 						height={'52px'}
 						width={'w-[496px] mobile:w-[82vw]'}
 						borderColor={'#12B1BB'}
@@ -522,7 +531,7 @@ export default function Home() {
 				</div>
 			</Banner>
 			<section
-				className="desktop:hidden flex justify-center absolute z-10 md:top-[180rem] sm:top-[230rem] mobile:top-[230rem]"
+				className="desktop:hidden flex justify-center absolute z-10 md:top-[180rem] sm:top-[230rem] mobile:top-[208rem]"
 				style={{ bottom: '700px' }}
 			>
 				<div className="flex flex-col align-end w-[100vw]">

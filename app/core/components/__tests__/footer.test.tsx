@@ -4,15 +4,6 @@ import { Footer } from '../global/footer'
 
 const footerLinks = [
 	{
-		category: 'TE PUEDE INTERESAR',
-		links: [
-			{ name: 'Outlet', href: '#' },
-			{ name: 'Más buscados', href: '#' },
-			{ name: 'Servicios', href: '#' },
-			{ name: 'Partners', href: '#' },
-		],
-	},
-	{
 		category: 'PÁGINAS RECIENTES',
 		links: [
 			{ name: 'Tienda', href: '/tienda' },

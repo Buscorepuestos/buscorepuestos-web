@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import Filters from '../core/components/filters/filters'
 import Facilities from '../core/components/facilities/Facilities'
 import NotFoundInStore from '../core/components/notFound/NotFoundInStore'
+import FilterTag from '../core/components/filterTag/FilterTag'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import {
 	fetchProducts,
@@ -164,8 +165,22 @@ export default function Store() {
 		dispatch(setCurrentPage(1));
 	};
 
+	const activeFilters = [
+		selectedSubcategory && { type: 'subcategory', value: selectedSubcategory },
+		selectedBrand && { type: 'brand', value: selectedBrand },
+		selectedModel && { type: 'model', value: selectedModel },
+		selectedYear && { type: 'year', value: selectedYear.toString() },
+	].filter(Boolean) as { type: string, value: string }[]
+
+	const removeFilter = (filterType: string) => {
+		if (filterType === 'subcategory') handleSubcategoryChange(null)
+		else if (filterType === 'brand') handleBrandChange(null)
+		else if (filterType === 'model') handleModelChange(null)
+		else if (filterType === 'year') handleYearChange(null)
+	}
+
 	return (
-		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[18vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
+		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[15vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
 			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
 				<div className="mobile:hidden">
 					<Filters
@@ -201,7 +216,7 @@ export default function Store() {
 						/>
 					</div>
 					<div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
-						<div className="sm:hidden mobile:w-full px-[8vw]">
+						<div className="sm:hidden mobile:w-full mobile:mt-4 px-[8vw]">
 							<Filters
 								onSubcategoryChange={handleSubcategoryChange}
 								onBrandChange={handleBrandChange}
@@ -230,6 +245,16 @@ export default function Store() {
 								<option value="desc">Precio: Mayor a Menor</option>
 							</select>
 						</div>
+					</div>
+					
+					<div className="sm:hidden flex flex-wrap gap-2 w-full mobile:px-6">
+						{activeFilters.map((filter) => (
+							<FilterTag
+								key={filter.type}
+								filterName={`${filter.value}`}
+								onRemove={() => removeFilter(filter.type)}
+							/>
+						))}
 					</div>
 					{isTyping ? (
 						<div className="flex justify-center my-4">
