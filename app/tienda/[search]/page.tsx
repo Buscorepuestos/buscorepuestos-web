@@ -11,6 +11,7 @@ import NotFoundInStore from '../../core/components/notFound/NotFoundInStore' // 
 import '../tienda.css'
 import { fetchProducts, setCurrentPage } from '../../redux/features/productSearchSlice'
 import { useUserLocation } from '../../hooks/useUserLoaction'
+import FilterTag from '../../core/components/filterTag/FilterTag'
 
 export default function Store({ params }: { params: { search: string } }) {
     const dispatch = useAppDispatch();
@@ -169,6 +170,20 @@ export default function Store({ params }: { params: { search: string } }) {
         dispatch(setCurrentPage(1));
     };
 
+    const activeFilters = [
+        selectedSubcategory && { type: 'subcategory', value: selectedSubcategory },
+        selectedBrand && { type: 'brand', value: selectedBrand },
+        selectedModel && { type: 'model', value: selectedModel },
+        selectedYear && { type: 'year', value: selectedYear.toString() },
+    ].filter(Boolean) as { type: string, value: string }[]
+
+    const removeFilter = (filterType: string) => {
+        if (filterType === 'subcategory') handleSubcategoryChange(null)
+        else if (filterType === 'brand') handleBrandChange(null)
+        else if (filterType === 'model') handleModelChange(null)
+        else if (filterType === 'year') handleYearChange(null)
+    }
+
     return (
         <main className="m-auto max-w-[1170px] mt-80 mobile:mt-[18vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
             <div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
@@ -193,7 +208,7 @@ export default function Store({ params }: { params: { search: string } }) {
 							rounded-3xl lg:text-[14px] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-[3.2vw] mobile:px-[2.9rem]
 							mobile:grid mobile:grid-cols-2 mobile:gap-0 mobile:w-[85%] mobile:font-normal mobile:py-[1rem]
 						"
-						classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
+                        classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
                     />
                     <div className="flex justify-end">
                         <SearchBar
@@ -207,7 +222,7 @@ export default function Store({ params }: { params: { search: string } }) {
                         />
                     </div>
                     <div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
-                        <div className="sm:hidden mobile:w-full px-[8vw]">
+                        <div className="sm:hidden mobile:w-full mobile:mt-4 px-[8vw]">
                             <Filters
                                 onSubcategoryChange={handleSubcategoryChange}
                                 onBrandChange={handleBrandChange}
@@ -234,6 +249,15 @@ export default function Store({ params }: { params: { search: string } }) {
                             </select>
                         </div>
                     </div>
+                    <div className="sm:hidden flex flex-wrap gap-2 mb-4 w-full mobile:px-6">
+						{activeFilters.map((filter) => (
+							<FilterTag
+								key={filter.type}
+								filterName={`${filter.value}`}
+								onRemove={() => removeFilter(filter.type)}
+							/>
+						))}
+					</div>
                     {loadingSearch ? (
                         <div className="flex justify-center my-4">
                             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>

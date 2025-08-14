@@ -137,9 +137,9 @@ const PaymentSuccess = () => {
 						<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-20">
 							{/* Columna 1 */}
 							<div className="space-y-4">
-								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg mb-4 text-secondary-blue border-b-2 pb-3">
+								{/* <p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg mb-4 text-secondary-blue border-b-2 pb-3">
 									Datos Personales
-								</p>
+								</p> */}
 								<p className='text-base md:text-lg text-dark-grey'>
 									<strong>Nombre:</strong> {billingData.name}
 								</p>
@@ -153,9 +153,9 @@ const PaymentSuccess = () => {
 									<strong>NIF:</strong> {billingData.nif}
 								</p>
 
-								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg pt-6 mb-4 text-secondary-blue border-b-2 pb-3">
+								{/* <p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg pt-6 mb-4 text-secondary-blue border-b-2 pb-3">
 									Dirección de Envío
-								</p>
+								</p> */}
 								<p className='text-base md:text-lg text-dark-grey'>
 									<strong>Dirección:</strong> {billingData.address}, {billingData.addressNumber}
 								</p>
@@ -169,8 +169,8 @@ const PaymentSuccess = () => {
 
 							{/* Columna 2 */}
 							<div className="space-y-4">
-								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg mb-4 text-secondary-blue border-b-2 pb-3">
-									Dirección de Facturación
+								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-[2rem] mb-4 text-secondary-blue border-b-2 pb-3">
+									Facturación
 								</p>
 								<p className='text-base md:text-lg text-dark-grey'>
 									<strong>Dirección:</strong> {extraData?.billingAddress}, {extraData?.billingAddressExtra}
@@ -185,7 +185,7 @@ const PaymentSuccess = () => {
 									<strong>Código postal:</strong> {extraData?.billingZip}
 								</p>
 
-								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-lg pt-6 mb-4 text-secondary-blue border-b-2 pb-3">
+								<p className="font-bold text-xl md:text-2xl lg:text-3xl mobile:text-[2rem] pt-6 mb-4 text-secondary-blue border-b-2 pb-3">
 									Productos
 								</p>
 								<div className="space-y-5">
@@ -204,12 +204,12 @@ const PaymentSuccess = () => {
 								</div>
 							</div>
 						</div>
-						<div className="flex justify-center mt-16 lg:mt-20">
+						<div className="flex  mt-16 lg:mt-20">
 							<Image
 								src="/nuevo-logo-buscorepuestos.png"
 								alt="Logo"
-								width={350}
-								height={350}
+								width={150}
+								height={150}
 							/>
 						</div>
 					</div>

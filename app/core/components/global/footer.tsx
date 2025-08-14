@@ -24,15 +24,15 @@ const socialMediaLinks = [
 ]
 
 const footerLinks = [
-	{
-		category: 'TE PUEDE\nINTERESAR',
-		links: [
-			{ name: 'Outlet', href: '#' },
-			{ name: 'Más buscados', href: '#' },
-			{ name: 'Servicios', href: '#' },
-			{ name: 'Partners', href: '#' },
-		],
-	},
+	// {
+	// 	category: 'TE PUEDE\nINTERESAR',
+	// 	links: [
+	// 		{ name: 'Outlet', href: '#' },
+	// 		{ name: 'Más buscados', href: '#' },
+	// 		{ name: 'Servicios', href: '#' },
+	// 		{ name: 'Partners', href: '#' },
+	// 	],
+	// },
 	{
 		category: 'PÁGINAS\nRECIENTES',
 		links: [
@@ -57,7 +57,7 @@ export function Footer() {
 	return (
 		<section className="flex bg-primary-blue text-white w-full lg:h-[15vw] md:h-[22vw] ">
 			<div className="my-0 mx-auto w-full max-w-screen-desktop gap-[1vw] grid grid-cols-2 mobile:flex mobile:flex-col-reverse self-center items-center">
-				<article className="self-center lg:mt-[1vw] md:mt-[5vw] sm:mt-[6vw] mobile:mt-[10vw]">
+				<article className="self-center lg:mt-[1vw] md:mt-[5vw] sm:mt-[6vw]">
 					<div className="mobile:flex mobile:flex-col-reverse mb-7 pl-[1.5vw] mobile:pl-0">
 						<div className="flex justify-center align-bottom gap-10 mobile:flex-col mobile:mt-[12vw] mobile:items-center">
 							<Link href="#">
@@ -103,7 +103,7 @@ export function Footer() {
 					</div>					
 				</article>
 				<div className='mobile:w-full mobile:pl-[8vw] mobile:mt-[6.5vw]'>
-					<article className="flex mobile:flex-col mobile:items-start justify-around gap-12 mb-[2vw]">
+					<article className="flex justify-around gap-12 mb-[2vw]">
 						{footerLinks.map((footerLink, index) => (
 							<div key={index}>
 								<h2 className="whitespace-pre-wrap lg:text-[0.8vw] md:text-[1vw] sm:text-[1.2vw] font-medium mb-[1vw] mobile:mb-[2.5vw]">{footerLink.category}</h2>
