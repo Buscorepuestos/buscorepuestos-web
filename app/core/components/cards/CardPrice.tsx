@@ -24,16 +24,17 @@ export default function CardPrice(props: {
 	handle?: () => void
 	id?: string
 	loading?: boolean
+	location?: string
 }) {
 	const { image, loading } = props
 
 	const [imgSrc, setImgSrc] = useState(image || noDisponible.src);
 
-    // 2. Función que se dispara si la imagen principal falla al cargar
-    const handleImageError = () => {
-        // Si hay un error, cambia la fuente a la imagen de fallback.
-        setImgSrc(noDisponible.src);
-    };
+	// 2. Función que se dispara si la imagen principal falla al cargar
+	const handleImageError = () => {
+		// Si hay un error, cambia la fuente a la imagen de fallback.
+		setImgSrc(noDisponible.src);
+	};
 	return (
 		<>
 			<div
@@ -69,6 +70,18 @@ export default function CardPrice(props: {
 					<p className="mt-2 text-sm mobile:text-[2.9vw] font-tertiary-font text-primary-blue font-extrabold">
 						Valoración del proveedor
 					</p>
+					<div className="flex w-full justify-center items-center flex-row gap-2 mobile:gap-3">
+						<Image
+							src="/ubication.svg"
+							alt="ubication"
+							width={22}
+							height={22}
+							className="xl:w-[0.7vw] md:w-[1.7vw] md:h-[1.7vw] sm:w-[1.5vw] sm:h-[1.5vw] mobile:w-[3.5vw] mobile:h-[3.5vw]"
+						/>
+						<span className="text-sm mobile:text-[2.9vw] font-tertiary-font text-secondary-blue font-semibold">
+							{props.location || 'Sin ubicación'}
+						</span>
+					</div>
 					<div className="flex w-[100%] justify-center flex-row gap-4 mobile:gap-3 mt-2 mb-2">
 						{Array.from({ length: MAX_VALORATION }, (_, index) => (
 							<Star
