@@ -279,6 +279,7 @@ export default function Store({ params }: { params: { search: string } }) {
                                             handle={() => handleProductClick(product._id)}
                                             id={product._id}
                                             loading={loadingPurchase === product._id}
+                                            location={product.distributorProvince}
                                         />
                                     ))}
                                 </section>
