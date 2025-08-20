@@ -9,6 +9,7 @@ import './globals.css'
 import { Header } from '@/app/core/components/global/header'
 import { Footer } from '@/app/core/components/global/footer'
 import Script from 'next/script'
+import FacebookPixel from './core/components/facebookPixel/FacebookPixel'
 import CookieConsentModalWrapper from './core/components/cookieConsentModal/CookieConsentModalWrapper'
 
 const workSans = localFont({
@@ -75,6 +76,7 @@ export default function RootLayout({
 
 					{/* Envoltorio del modal */}
 					<CookieConsentModalWrapper />
+					<FacebookPixel />
 				</StoreProvider>
 			</body>
 		</html>
