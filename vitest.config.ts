@@ -50,6 +50,7 @@ export default defineConfig({
 				'app/core/components/input/input.tsx',
 				'app/core/components/global/header.tsx',
 				'app/redux/middlewares/userMiddleware.ts',
+				'app/core/components/facebookPixel/FacebookPixel.tsx',
 				'app/hooks/useUserLoaction.ts',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',

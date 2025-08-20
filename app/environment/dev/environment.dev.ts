@@ -17,4 +17,5 @@ export const environment = {
     api: {
         url: "http://localhost:3000/api",
     },
+    pixel_facebook: '1248317335337980',
 };
