@@ -18,4 +18,5 @@ export const environment = {
     api: {
         url: "https://buscorepuesto-de461a6f006a.herokuapp.com/api",
     },
+    pixel_facebook: '1248317335337980',
 };
