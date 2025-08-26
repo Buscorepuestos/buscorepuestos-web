@@ -51,6 +51,8 @@ export default defineConfig({
 				'app/core/components/global/header.tsx',
 				'app/redux/middlewares/userMiddleware.ts',
 				'app/core/components/facebookPixel/FacebookPixel.tsx',
+				'app/core/components/cards/CardPrice.tsx',
+				'app/core/components/SearchBar.tsx',
 				'app/hooks/useUserLoaction.ts',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
