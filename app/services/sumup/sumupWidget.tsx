@@ -146,7 +146,8 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 						showSubmitButton: true,
 						locale: 'es-ES',
 						onResponse: async (type, body) => {
-							if (type === 'success' && body.transaction_code) {
+							console.log('SumUp Response:', type, body) // Depuración inicial
+							if (type === 'success' && body.status === 'PAID') {
 								// Procesar solo si la transacción es exitosa
 								try {
 									try {
