@@ -613,7 +613,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			<section className="pt-[72px]">
+			<section className="pt-[30px]">
                 <div className="flex justify-start ml-36 mobile:ml-12">
                     <h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
                         Novedades
