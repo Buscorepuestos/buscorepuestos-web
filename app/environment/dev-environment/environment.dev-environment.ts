@@ -18,4 +18,6 @@ export const environment = {
         url: "https://buscorepuestos-dev.herokuapp.com/api",
     },
     pixel_facebook: '1248317335337980',
+    scalapay_token_merchant: '8KDS3SPEL',
+    scalapay_environment: 'integration',
 };

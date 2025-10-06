@@ -146,6 +146,39 @@ const StripeForm = (props: {
 		}
 	}
 
+	const prepareLocalStorageForRedirect = () => {
+        console.log("Guardando datos del pedido en localStorage para Stripe...");
+        
+        const pendingOrder = {
+            paymentMethod: 'stripe',
+            billingData: {
+				Compras: props.purchaseIds,
+				Usuarios: [userId!],
+				transfer: false,
+				address: props.fieldsValues.shippingAddress,
+				country: props.fieldsValues.country,
+				location: props.fieldsValues.city,
+				addressNumber: props.fieldsValues.addressExtra,
+				name: props.fieldsValues.name,
+				cp: props.fieldsValues.zip,
+				nif: props.fieldsValues.nif,
+				phone: Number(props.fieldsValues.phoneNumber),
+				province: props.fieldsValues.province,
+			},
+            extraData: { 
+				email: props.fieldsValues.email,
+				billingAddress: props.fieldsValues.billingAddress,
+				billingAddressExtra: props.fieldsValues.billingAddressExtra,
+				billingProvince: props.fieldsValues.billingProvince,
+				billingZip: props.fieldsValues.billingZip,
+			},
+            cart: JSON.parse(localStorage.getItem('cart') || '[]'),
+        };
+        
+        localStorage.removeItem('pendingOrder');
+        localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
+    };
+
 	const handleSubmit = async (e: { preventDefault: () => void }) => {
 		e.preventDefault()
 
@@ -154,7 +187,8 @@ const StripeForm = (props: {
 			email: props.fieldsValues.email,
 		})
 
-		await createbilling()
+		// await createbilling()
+		prepareLocalStorageForRedirect();
 
 		if (!stripe || !elements) {
 			return
@@ -164,6 +198,7 @@ const StripeForm = (props: {
 		const { error } = await stripe.confirmPayment({
 			elements,
 			confirmParams: {
+				// return_url: `${environment.base_url}/pago-exitoso`,
 				return_url: `${environment.base_url}/pago-exitoso`,
 			},
 		})

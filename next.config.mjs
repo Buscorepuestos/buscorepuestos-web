@@ -36,6 +36,14 @@ const nextConfig = {
 			},
 		],
 	},
+	async rewrites() {
+        return [
+            {
+                source: '/_scalapay/widget.js',
+                destination: 'https://cdn.scalapay.com/widget/scalapay-widget-loader.js',
+            },
+        ];
+    },
 }
 
 export default withSentryConfig(nextConfig, {

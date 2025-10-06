@@ -18,6 +18,7 @@ import Swal from 'sweetalert2'
 import { updateMetasyncProduct } from '../../../services/products/products.service'
 import { updateAlgoliaProductStock } from '../../../services/algolia/updateStock.service'
 import CheckoutPage from '../checkoutPage/CheckoutPage'
+import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
 
 interface ProductPriceProps {
 	price: string
@@ -156,22 +157,28 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 			<div className="mt-[1.5vw] ml-10 flex justify-center">
 				<div className="flex flex-col justify-center items-center font-tertiary-font">
 					<div className="relative flex items-center">
-						<p className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
+						<p id="product-page-price" className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
 							{price}€
 						</p>
-						<p
+						{/* <p
 							className="
-					absolute left-[105%] top-[40%] transform -translate-y-1/2 bg-custom-orange rounded-full 
-					text-custom-white px-2 text-[2.8vw] xl:text-[0.9vw] md:text-[1.3vw] xl:h-[1.1vw] lg:h-[1.6vw] md:h-[1.8vw] mobile:h-[3.5vw]
-					sm:text-[1.4vw]
-				"
+							absolute left-[105%] top-[40%] transform -translate-y-1/2 bg-custom-orange rounded-full 
+							text-custom-white px-2 text-[2.8vw] xl:text-[0.9vw] md:text-[1.3vw] xl:h-[1.1vw] lg:h-[1.6vw] md:h-[1.8vw] mobile:h-[3.5vw]
+							sm:text-[1.4vw]
+						"
 						>
 							-30%
-						</p>
+						</p> */}
 					</div>
 					<p className="mt-[-1.3rem] font-semibold text-dark-grey xl:text-[1vw] md:text-[1.2vw] sm:text-[1.7vw]">
 						{shippingInfo}
 					</p>
+					<div className="mt-4 flex justify-center w-full scalapay-widget-mobile-container">
+                        <ScalapayWidget
+                            amountSelector="#product-page-price"
+                            type="product"
+                        />
+                    </div>
 					<div className="text-custom-orange gap-3 flex items-center">
 						<Image
 							src={warningImgSrc}
@@ -188,7 +195,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 							</span>
 						</p>
 						<p className="text-[2.8vw] xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] bg-custom-orange text-custom-white rounded-2xl px-1 flex items-center">
-							{discount}
+							{"-"}{discount}
 						</p>
 					</div>
 					{!onePageIsOpen && (
