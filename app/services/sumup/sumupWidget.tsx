@@ -126,6 +126,39 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 		}
 	}
 
+	const prepareLocalStorageForRedirect = () => {
+        console.log("Guardando datos del pedido en localStorage para Stripe...");
+        
+        const pendingOrder = {
+            paymentMethod: 'sumup',
+            billingData: {
+				Compras: purchaseIds,
+				Usuarios: [userId!],
+				transfer: false,
+				address: fieldsValue.shippingAddress,
+				country: fieldsValue.country,
+				location: fieldsValue.city,
+				addressNumber: fieldsValue.addressExtra,
+				name: fieldsValue.name,
+				cp: fieldsValue.zip,
+				nif: fieldsValue.nif,
+				phone: Number(fieldsValue.phoneNumber),
+				province: fieldsValue.province,
+			},
+            extraData: { 
+				email: fieldsValue.email,
+				billingAddress: fieldsValue.billingAddress,
+				billingAddressExtra: fieldsValue.billingAddressExtra,
+				billingProvince: fieldsValue.billingProvince,
+				billingZip: fieldsValue.billingZip,
+			},
+            cart: JSON.parse(localStorage.getItem('cart') || '[]'),
+        };
+        
+        localStorage.removeItem('pendingOrder');
+        localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
+    };
+
 	// Effect to load SumUp widget when the form is valid
 	useEffect(() => {
 		if (checkoutId && isFormValid) {
@@ -150,52 +183,53 @@ const PaymentWidget: React.FC<PaymentWidgetProps> = ({
 							if (type === 'success' && body.status === 'PAID') {
 								// Procesar solo si la transacción es exitosa
 								try {
-									try {
-										await updateUser({
-											firstName: fieldsValue.name,
-											email: fieldsValue.email,
-											address: fieldsValue.shippingAddress,
-											addressExtra: fieldsValue.addressExtra,
-											zip: fieldsValue.zip,
-											state: fieldsValue.province,
-										});
-									} catch (updateUserError) {
-										console.error("Error en updateUser (no crítico para el pago):", updateUserError);
-									}
+									// try {
+									// 	await updateUser({
+									// 		firstName: fieldsValue.name,
+									// 		email: fieldsValue.email,
+									// 		address: fieldsValue.shippingAddress,
+									// 		addressExtra: fieldsValue.addressExtra,
+									// 		zip: fieldsValue.zip,
+									// 		state: fieldsValue.province,
+									// 	});
+									// } catch (updateUserError) {
+									// 	console.error("Error en updateUser (no crítico para el pago):", updateUserError);
+									// }
 
-									await createbilling();
-									await createBill({
-										"Id Pago Summup": body.transaction_code,
-										Compras: purchaseIds,
-										Usuarios: [userId!],
-										transfer: false,
-										address: fieldsValue.shippingAddress,
-										country: fieldsValue.country,
-										location: fieldsValue.city,
-										addressNumber: fieldsValue.addressExtra,
-										name: fieldsValue.name,
-										cp: fieldsValue.zip,
-										nif: fieldsValue.nif,
-										phone: Number(fieldsValue.phoneNumber),
-										province: fieldsValue.province,
-									});
-									await userService.createUserAddresses({
-										user: [userId!],
-										name: fieldsValue.name,
-										nif: fieldsValue.nif,
-										address: fieldsValue.shippingAddress,
-										country: fieldsValue.country,
-										location: fieldsValue.city,
-										addressNumber: fieldsValue.addressExtra,
-										phone: Number(fieldsValue.phoneNumber),
-										province: fieldsValue.province,
-										cp: fieldsValue.zip,
-										["Correo electrónico"]: fieldsValue.email,
-									});
-									purchaseIds.forEach(async (purchaseId) => {
-										await updatePurchase(purchaseId);
-									});
-									router.push('/pago-exitoso?pagoSumup=true');
+									// await createbilling();
+									// await createBill({
+									// 	"Id Pago Summup": body.transaction_code,
+									// 	Compras: purchaseIds,
+									// 	Usuarios: [userId!],
+									// 	transfer: false,
+									// 	address: fieldsValue.shippingAddress,
+									// 	country: fieldsValue.country,
+									// 	location: fieldsValue.city,
+									// 	addressNumber: fieldsValue.addressExtra,
+									// 	name: fieldsValue.name,
+									// 	cp: fieldsValue.zip,
+									// 	nif: fieldsValue.nif,
+									// 	phone: Number(fieldsValue.phoneNumber),
+									// 	province: fieldsValue.province,
+									// });
+									// await userService.createUserAddresses({
+									// 	user: [userId!],
+									// 	name: fieldsValue.name,
+									// 	nif: fieldsValue.nif,
+									// 	address: fieldsValue.shippingAddress,
+									// 	country: fieldsValue.country,
+									// 	location: fieldsValue.city,
+									// 	addressNumber: fieldsValue.addressExtra,
+									// 	phone: Number(fieldsValue.phoneNumber),
+									// 	province: fieldsValue.province,
+									// 	cp: fieldsValue.zip,
+									// 	["Correo electrónico"]: fieldsValue.email,
+									// });
+									// purchaseIds.forEach(async (purchaseId) => {
+									// 	await updatePurchase(purchaseId);
+									// });
+									prepareLocalStorageForRedirect();
+									router.push('/pago-exitoso?pagoSumup=true&transaction_code=' + body.transaction_code);
 								} catch (error) {
 									console.error("Error procesando la transacción:", error);
 									Swal.fire({

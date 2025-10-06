@@ -40,13 +40,13 @@ export const deletePurchase = async (purchaseId: string): Promise<void> => {
     }
 };
 
-export const updatePurchase = async (purchaseId: string): Promise<void> => {
+export const updatePurchase = async (purchaseId: string, metodo?: string): Promise<void> => {
 
     const purchase = {
         id: purchaseId,
         "Pago del Cliente": "Pago Confirmado",
         "Estado": "Pendiente de Compra a Distribuidor",
-        "Metodo": "tarjeta"
+        "Metodo": metodo || "tarjeta"
     };
 
     try {

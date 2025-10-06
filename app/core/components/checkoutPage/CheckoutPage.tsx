@@ -8,6 +8,7 @@ import PaymentSelection from '../../../core/components/paymentSelection/PaymentS
 import Input from '../../../core/components/input/input'
 import { userService } from '../../../services/user/userService'
 import { subscribe } from '../../../services/mailchimp/mailchimp'
+import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
 import Image from 'next/image'
 import './stripe.css'
 
@@ -134,10 +135,10 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 			.map((product) => product.buscorepuestosPrice)
 			.reduce((acc, price) => acc + Number(price), 0)
 			.toFixed(2)
-	
+
 		const numberPrice = parseFloat(stringPrice)
 		const numberPriceRounded = Math.round(numberPrice * 100)
-	
+
 		return {
 			stringPrice,
 			numberPriceRounded,
@@ -286,9 +287,9 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 				id: localStorage.getItem('airtableUserId'),
 				['correo electronico']: fieldsValue.email,
 			});
-	
+
 			setIsSubscribing(true); // <-- INICIO DEL SPINNER
-	
+
 			try {
 				const response = await subscribe(fieldsValue.email);
 				console.log("Subscripción exitosa:", response);
@@ -296,19 +297,19 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 				setError(null);
 			} catch (error: any) {
 				console.error("Error en handleNext al subscribir:", error);
-	
+
 				let errorMessageToDisplay = 'Hubo un error al intentar suscribirte. Por favor, inténtalo de nuevo más tarde.';
-	
+
 				if (error.response && error.response.data) {
 					const responseData = error.response.data;
-	
+
 					if (responseData.details) {
 						errorMessageToDisplay = `Error al suscribir: ${responseData.details}`;
 					} else if (responseData.error) {
 						errorMessageToDisplay = responseData.error;
 					}
 				}
-	
+
 				setError(errorMessageToDisplay);
 				setIsFormVisible(false);
 			} finally {
@@ -351,6 +352,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 							>
 								<p className={'mr-6 font-medium'}>Total:</p>
 								<p
+									id="cart-total-price"
 									className={
 										'text-title-3 text-primary-blue-2 font-semibold'
 									}
@@ -362,6 +364,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								<p className="text-sm text-secondary-blue">
 									Envío incluido
 								</p>
+							</div>
+							<div className="flex justify-end mr-8 mt-1">
+								<ScalapayWidget
+									amountSelector="#cart-total-price"
+									type="cart"
+								/>
 							</div>
 						</div>
 						<div className="w-full h-[2px] bg-secondary-blue mb-8" />
@@ -375,6 +383,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 						<div className={'flex justify-center items-center'}>
 							<p className={'mr-6 font-medium'}>Total:</p>
 							<p
+								id="cart-total-price"
 								className={
 									'text-title-3 text-primary-blue-2 font-semibold'
 								}
@@ -387,17 +396,22 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								Envío incluido
 							</p>
 						</div>
+						<div className="flex justify-center scalapay-widget-mobile-container">
+							<ScalapayWidget
+								amountSelector="#cart-total-price"
+								type="cart"
+							/>
+						</div>
 						{localDropdown()}
 					</article>
 				)}
 				<div className="relative overflow-hidden">
 					{/* Pantalla de correo */}
 					<div
-						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${
-							isFormVisible
+						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${isFormVisible
 								? '-translate-x-full opacity-0 absolute'
 								: 'translate-x-0 opacity-100'
-						}`}
+							}`}
 					>
 						<div className="flex flex-col items-center">
 							<h1
@@ -444,7 +458,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 											className="mt-8 inline-flex items-center justify-center px-4 py-2 border border-transparent text-[16px] mobile:text-[12px] font-sm rounded-3xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 											onClick={handleNext}
 											disabled={isSubscribing}
-											// Deshabilitar si no es válido
+										// Deshabilitar si no es válido
 										>
 											Continuar con la compra
 										</button>
@@ -456,16 +470,15 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 
 					{/* Pantalla de formulario */}
 					<div
-						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${
-							isFormVisible
+						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${isFormVisible
 								? 'translate-x-0 opacity-100'
 								: 'translate-x-full opacity-0 absolute'
-						}`}
+							}`}
 					>
 						<article className={'mobile:p-6'}>
 							<div
 								className={
-									`flex flex-col justify-center ${!isProductPage ? 'items-center': 'items-start'}`
+									`flex flex-col justify-center ${!isProductPage ? 'items-center' : 'items-start'}`
 								}
 							>
 								{/*Personal Information*/}
@@ -478,7 +491,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</h1>
 								<div
 									className={
-										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full'}  mobile:w-full gap-4`
+										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full'}  mobile:w-full gap-4`
 									}
 								>
 									<Input
@@ -498,7 +511,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full mt-4 gap-4`
+										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -541,7 +554,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										`grid grid-cols-2 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full sm:grid-cols-1 md:grid-cols-2'} mobile:w-full mt-4 gap-4`
+										`grid grid-cols-2 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full sm:grid-cols-1 md:grid-cols-2'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -573,7 +586,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</h1> */}
 								<div
 									className={
-										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full gap-4 mt-4`
+										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full gap-4 mt-4`
 									}
 								>
 									<div
@@ -587,11 +600,11 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 												shippingOptions.length > 0
 													? shippingOptions
 													: [
-															{
-																value: 'option1',
-																label: 'Aún no tienes direcciones guardadas',
-															},
-														]
+														{
+															value: 'option1',
+															label: 'Aún no tienes direcciones guardadas',
+														},
+													]
 											}
 											placeholder={
 												'Direcciones de envío guardadas'
@@ -602,7 +615,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
+										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -624,7 +637,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
+										`grid grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -648,7 +661,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										`grid grid-cols-2 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
+										`grid grid-cols-2 ${!isProductPage ? 'w-[60%]' : 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -682,7 +695,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										`grid grid-cols-2 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]': 'w-[100%]'} mobile:w-full mt-4 gap-4`
+										`grid grid-cols-2 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'w-[100%]'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -715,49 +728,49 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										isProductPage={isProductPage}
 									/>
 								</div>
-								</div>
-								<div>
+							</div>
+							<div>
 								{/* <div className="flex flex-col justify-center items-center space-y-4"> */}
-									<div className="flex flex-col justify-center items-center place-items-center space-y-4">
-										<p
-											className="
+								<div className="flex flex-col justify-center items-center place-items-center space-y-4">
+									<p
+										className="
 												ms-10 mt-4 font-tertiary-font text-custom-grey
 												xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] 
 												sm:text-[1.6vw] mobile:text-[3vw]
 											"
+									>
+										¿Usar los mismos datos para la
+										factura?
+									</p>
+									<label className="inline-flex items-center cursor-pointer">
+										<span
+											className="
+												font-tertiary-font ms-3 mr-4 text-custom-grey
+												xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] 
+												sm:text-[1.6vw] mobile:text-[3vw]
+											"
 										>
-											¿Usar los mismos datos para la
-											factura?
-										</p>
-										<label className="inline-flex items-center cursor-pointer">
-											<span
-												className="
+											No
+										</span>
+										<input
+											type="checkbox"
+											value=""
+											className="sr-only peer"
+											onChange={handleCheckboxChange}
+											checked={isSwitchOn}
+										/>
+										<div className="relative w-16 h-8 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+										<span
+											className="
 												font-tertiary-font ms-3 mr-4 text-custom-grey
 												xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] 
 												sm:text-[1.6vw] mobile:text-[3vw]
 											"
-											>
-												No
-											</span>
-											<input
-												type="checkbox"
-												value=""
-												className="sr-only peer"
-												onChange={handleCheckboxChange}
-												checked={isSwitchOn}
-											/>
-											<div className="relative w-16 h-8 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-											<span
-												className="
-												font-tertiary-font ms-3 mr-4 text-custom-grey
-												xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] 
-												sm:text-[1.6vw] mobile:text-[3vw]
-											"
-											>
-												Si
-											</span>
-										</label>
-									</div>
+										>
+											Si
+										</span>
+									</label>
+								</div>
 								{/* </div> */}
 								{!isSwitchOn && (
 									<>
@@ -854,35 +867,35 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								>
 									Seleccionar Método de pago
 								</h1>
-									<div className={`${!isProductPage && 'w-full px-24 mobile:px-0'}`}>
-										<PaymentSelection
-											purchaseIds={purchaseIds}
-											fieldsValue={fieldsValue}
-											numberPriceRounded={numberPriceRounded}
-											numberPrice={numberPrice}
-											nameRef={nameRef}
-											emailRef={emailRef}
-											nifRef={nifRef}
-											phoneNumberRef={phoneNumberRef}
-											shippingAddressRef={
-												shippingAddressRef
-											}
-											addressExtraRef={addressExtraRef}
-											zipRef={zipRef}
-											cityRef={cityRef}
-											provinceRef={provinceRef}
-											countryRef={countryRef}
-											setIsScrolledInputs={
-												setIsScrolledInputs
-											}
-											isScrolledInputs={isScrolledInputs}
-											items={items}
-											totalPrice={stringPrice}
-											isSwitchOn={isSwitchOn}
-											setFieldsValue={setFieldsValue}
-											isProductPage={isProductPage}
-										/>
-									</div>
+								<div className={`${!isProductPage && 'w-full mobile:px-0'}`}>
+									<PaymentSelection
+										purchaseIds={purchaseIds}
+										fieldsValue={fieldsValue}
+										numberPriceRounded={numberPriceRounded}
+										numberPrice={numberPrice}
+										nameRef={nameRef}
+										emailRef={emailRef}
+										nifRef={nifRef}
+										phoneNumberRef={phoneNumberRef}
+										shippingAddressRef={
+											shippingAddressRef
+										}
+										addressExtraRef={addressExtraRef}
+										zipRef={zipRef}
+										cityRef={cityRef}
+										provinceRef={provinceRef}
+										countryRef={countryRef}
+										setIsScrolledInputs={
+											setIsScrolledInputs
+										}
+										isScrolledInputs={isScrolledInputs}
+										items={items}
+										totalPrice={stringPrice}
+										isSwitchOn={isSwitchOn}
+										setFieldsValue={setFieldsValue}
+										isProductPage={isProductPage}
+									/>
+								</div>
 								{/* )} */}
 							</div>
 						</article>

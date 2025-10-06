@@ -7,7 +7,7 @@
     border-radius: 7px;
     padding: 40px;
     @media screen and (max-width: 600px) {
-        width: 80vw;
+        width: 87vw;
         min-width: initial;
     }
 }
@@ -120,4 +120,30 @@
         width: 80vw;
         min-width: initial;
     }
+}
+
+/* Contenedor para el widget de Scalapay en vista móvil */
+.scalapay-widget-mobile-container {
+    @media (max-width: 639px) {
+        margin-top: 0.5rem;
+        width: 100%;
+        margin-left: 5vw;
+    }
+}
+
+/* 
+  Esta es la regla clave. 
+  Apuntamos directamente al web component <scalapay-widget>.
+*/
+.scalapay-widget-mobile-container scalapay-widget {
+    /* 
+      Forzamos al widget a tener un ancho máximo y usamos márgenes automáticos
+      para centrarlo dentro de su contenedor flex.
+    */
+    @media (max-width: 639px) {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
 }
