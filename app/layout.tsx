@@ -51,6 +51,7 @@ export default function RootLayout({
 				})(window,document,'script','dataLayer','GTM-TPCVDD8');`,
 					}}
 				/>
+				
 			</head>
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center min-h-screen`}

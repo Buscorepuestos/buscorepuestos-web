@@ -19,4 +19,6 @@ export const environment = {
         url: "https://buscorepuesto-de461a6f006a.herokuapp.com/api",
     },
     pixel_facebook: '1248317335337980',
+    scalapay_token_merchant: 'AMFNU346Q',
+    scalapay_environment: 'production',
 };

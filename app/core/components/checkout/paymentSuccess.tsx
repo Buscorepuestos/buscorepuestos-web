@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, Suspense } from 'react'
+import React, { useEffect, useState, Suspense, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { clearCart } from '../../../../app/redux/features/shoppingCartSlice'
@@ -8,6 +8,9 @@ import { updatePurchase } from '../../../services/purchase/purchase'
 import { useSearchParams } from 'next/navigation'
 import { createBill } from '../../../services/billing/billing.service'
 import { userService } from '../../../services/user/userService'
+import { updateUser } from '../../../services/mailchimp/mailchimp'
+import { captureScalapayOrder } from '../../../services/checkout/scalapay.service';
+import { BillingModel } from '../../../types/billing'
 import Swal from 'sweetalert2'
 import Image from 'next/image'
 import './success.css'
@@ -24,104 +27,341 @@ const PaymentSuccess = () => {
 	const [billingData, setBillingData] = useState<any>(null)
 	const [extraData, setExtraData] = useState<any>(null)
 	const [cart, setCart] = useState<[]>([])
+	const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+	const hasCaptureBeenCalled = useRef(false);
+	const [errorMessage, setErrorMessage] = useState('');
 	const stripe = useStripe()
 	const router = useRouter()
 	const dispatch = useDispatch()
 	const searchParams = useSearchParams()
-	const pagoSummup = searchParams.get('pagoSumup')
+
+	// useEffect(() => {
+	// 	const payment_intent_id = searchParams.get('payment_intent')
+	// 	const client_secret = searchParams.get('payment_intent_client_secret')
+	// 	const pagoSummup = searchParams.get('pagoSumup')
+	// 	const scalapayOrderToken = searchParams.get('orderToken');
+	//     const scalapayStatus = searchParams.get('status');
+
+	// 	const createBilling = async () => {
+	// 		try {
+	// 			const storedBillingData = localStorage.getItem('billingData')
+	// 			const storedExtraData = localStorage.getItem('extraData')
+	// 			const cart = localStorage.getItem('copyCart')
+	// 			const userAddress = localStorage.getItem('userAddress')
+
+	// 			if (storedBillingData && cart) {
+	// 				const parsedBillingData = JSON.parse(storedBillingData)
+	// 				const parsedCart = JSON.parse(cart)
+	// 				const parsedEmailData = storedExtraData
+	// 					? JSON.parse(storedExtraData)
+	// 					: null
+	// 				const parsedAddressData = userAddress
+	// 					? JSON.parse(userAddress)
+	// 					: null
+
+	// 				setBillingData(parsedBillingData)
+	// 				setExtraData(parsedEmailData)
+	// 				setCart(parsedCart)
+	// 				dispatch(clearCart())
+
+	// 				const billingExecuted =
+	// 					localStorage.getItem('billingExecuted')
+	// 				if (!billingExecuted) {
+	// 					if (!pagoSummup) {
+	// 						await createBill(parsedBillingData)
+	// 						parsedBillingData.Compras.forEach(async (purchaseId: any) => {
+	// 							await updatePurchase(purchaseId);
+	// 						});
+	// 						await userService.createUserAddresses(
+	// 							parsedAddressData
+	// 						)
+	// 					}
+	// 					await userService.updateUser({
+	// 						id: parsedBillingData.Usuarios[0],
+	// 						['correo electronico']: parsedEmailData?.email,
+	// 					})
+	// 					localStorage.setItem('billingExecuted', 'true')
+	// 				}
+	// 			} else {
+	// 				console.error('No billing data or cart found')
+	// 			}
+	// 		} catch (error) {
+	// 			console.error('Error creating billing:', error)
+	// 		}
+	// 	}
+
+	// 	const finalizeScalapayPayment = async (token: string) => {
+	// 		if (hasCaptureBeenCalled.current) {
+	//             console.log("La captura de Scalapay ya ha sido iniciada. Saltando ejecución duplicada.");
+	//             return;
+	//         }
+	//         // Marcamos que hemos iniciado el proceso para evitar futuras ejecuciones
+	//         hasCaptureBeenCalled.current = true;
+	//         try {
+	//             console.log(`Iniciando captura para Scalapay orderToken: ${token}`);
+	//             const captureResponse = await captureScalapayOrder(token);
+
+	//             if (captureResponse.status === 'APPROVED') {
+	//                 console.log('Captura de Scalapay exitosa. Procediendo a crear la factura.');
+	//                 // Si la captura es exitosa, creamos la factura y limpiamos el carrito
+	//                 await createBilling();
+	//                 setStatus('success');
+	//             } else {
+	//                 throw new Error('El pago con Scalapay fue denegado.');
+	//             }
+	//         } catch (error: any) {
+	//             console.error("Error al finalizar el pago con Scalapay:", error);
+	//             setErrorMessage(error.message || 'Ocurrió un error al confirmar tu pago.');
+	//             setStatus('error');
+	//         }
+	//     };
+
+	// 	const getPaymentIntent = async (paymentIntentId: string) => {
+	// 		if (!stripe || !paymentIntentId) return null
+
+	// 		try {
+	// 			const { paymentIntent } =
+	// 				await stripe.retrievePaymentIntent(paymentIntentId)
+	// 			return paymentIntent
+	// 		} catch (error) {
+	// 			console.error('Error retrieving payment intent:', error)
+	// 			return null
+	// 		}
+	// 	}
+
+	// 	const verifyPayment = async () => {
+	// 		if (payment_intent_id) {
+	// 			const paymentIntent = client_secret
+	// 				? await getPaymentIntent(client_secret)
+	// 				: null
+	// 			if (paymentIntent) {
+	// 				if (paymentIntent.status === 'succeeded') {
+	// 					await createBilling()
+	// 				} else {
+	// 					Swal.fire({
+	// 						title: 'Error en el pago',
+	// 						text: 'Ha ocurrido un error al procesar tu pago',
+	// 						icon: 'error',
+	// 						confirmButtonText: 'Aceptar',
+	// 					}).then(() => router.push('/'))
+	// 				}
+	// 			}
+	// 		}
+	// 		if (scalapayOrderToken && scalapayStatus === 'SUCCESS') {
+	//             const billingExecuted = localStorage.getItem('billingExecuted');
+	//             if (!billingExecuted) {
+	//                 await finalizeScalapayPayment(scalapayOrderToken);
+	//             } else {
+	//                 // Si ya se ejecutó, simplemente mostramos los datos
+	//                 await createBilling();
+	//                 setStatus('success');
+	//             }
+	//         } else if (scalapayStatus === 'FAILURE') {
+	//             setErrorMessage('El pago con Scalapay ha fallado.');
+	//             setStatus('error');
+	//         }
+	// 	}
+
+	// 	verifyPayment()
+
+	// 	if (pagoSummup === 'true') {
+	// 		createBilling()
+	// 	}
+	// }, [dispatch, router, searchParams, stripe])
+
+	// const PaymentSuccess = () => {
+	// ... tus estados ...
+	const hasBeenProcessed = useRef(false);
 
 	useEffect(() => {
-		const payment_intent_id = searchParams.get('payment_intent')
+		const source = searchParams.get('source');
+		const payment_intent_id = searchParams.get('payment_intent');
 		const client_secret = searchParams.get('payment_intent_client_secret')
-		const pagoSummup = searchParams.get('pagoSumup')
+		const pagoSummup = searchParams.get('pagoSumup');
+		const scalapayOrderToken = searchParams.get('orderToken');
+		if (!stripe && payment_intent_id) {
+			console.log("Esperando a que la instancia de Stripe esté lista...");
+			return;
+		}
+		if (hasBeenProcessed.current) return;
 
-		const createBilling = async () => {
+		const processPayment = async () => {
+			hasBeenProcessed.current = true;
+
+			const pendingOrderJSON = localStorage.getItem('pendingOrder');
+			if (!pendingOrderJSON) {
+				console.warn("No se encontró 'pendingOrder' en localStorage.");
+				// Si no hay datos, puede que ya se haya procesado.
+				// Intentamos cargar los datos de la última factura si existen
+				const lastBilling = localStorage.getItem('lastBillingSuccess');
+				if (lastBilling) {
+					const parsedData = JSON.parse(lastBilling);
+					setBillingData(parsedData.billingData);
+					setExtraData(parsedData.extraData);
+					setCart(parsedData.cart);
+					setStatus('success');
+				} else {
+					setStatus('error');
+					setErrorMessage('No se encontraron datos del pedido.');
+				}
+				return;
+			}
+
+			const pendingOrder = JSON.parse(pendingOrderJSON);
+			const { billingData, cart, extraData } = pendingOrder;
+
+			const purchaseIds = billingData.Compras;
+			const userId = billingData.Usuarios[0];
+
+			// Rellenamos los estados para mostrar la info al final
+			setCart(cart);
+			dispatch(clearCart());
+
 			try {
-				const storedBillingData = localStorage.getItem('billingData')
-				const storedExtraData = localStorage.getItem('extraData')
-				const cart = localStorage.getItem('copyCart')
-				const userAddress = localStorage.getItem('userAddress')
+				let paymentSuccessful = false;
+				interface PaymentIdField {
+					'Id Pago Scalapay'?: string | undefined;
+					'Id Pago Stripe'?: string | undefined;
+					'Id Pago Summup'?: string | undefined;
+				}
+				let paymentIdField: PaymentIdField = {}; // Objeto para el campo de ID de pago
 
-				if (storedBillingData && cart) {
-					const parsedBillingData = JSON.parse(storedBillingData)
-					const parsedCart = JSON.parse(cart)
-					const parsedEmailData = storedExtraData
-						? JSON.parse(storedExtraData)
-						: null
-					const parsedAddressData = userAddress
-						? JSON.parse(userAddress)
-						: null
+				const getPaymentIntent = async (paymentIntentId: string) => {
+					if (!stripe || !paymentIntentId) return null
+					try {
+						const { paymentIntent } = await stripe.retrievePaymentIntent(paymentIntentId)
+						return paymentIntent
+					} catch (error) {
+						console.error('Error retrieving payment intent:', error)
+						return null
+					}
+				}
 
-					setBillingData(parsedBillingData)
-					setExtraData(parsedEmailData)
-					setCart(parsedCart)
-					dispatch(clearCart())
-
-					const billingExecuted =
-						localStorage.getItem('billingExecuted')
-					if (!billingExecuted) {
-						if (!pagoSummup) {
-							await createBill(parsedBillingData)
-							parsedBillingData.Compras.forEach(async (purchaseId: any) => {
-								await updatePurchase(purchaseId);
-							});
-							await userService.createUserAddresses(
-								parsedAddressData
-							)
+				// 1. VERIFICAR PAGO Y OBTENER ID
+				if (source === 'scalapay' && pendingOrder.paymentMethod === 'scalapay') {
+					if (scalapayOrderToken) {
+						const captureResponse = await captureScalapayOrder(scalapayOrderToken);
+						paymentSuccessful = captureResponse.status === 'APPROVED';
+						if (paymentSuccessful) {
+							paymentIdField = { 'Id Pago Scalapay': scalapayOrderToken };
 						}
-						await userService.updateUser({
-							id: parsedBillingData.Usuarios[0],
-							['correo electronico']: parsedEmailData?.email,
-						})
-						localStorage.setItem('billingExecuted', 'true')
+					}
+				} else if (payment_intent_id && client_secret && pendingOrder.paymentMethod === 'stripe') {
+					const paymentIntent = client_secret
+						? await getPaymentIntent(client_secret)
+						: null
+					paymentSuccessful = paymentIntent?.status === 'succeeded';
+					if (paymentSuccessful && paymentIntent) {
+						paymentIdField = { 'Id Pago Stripe': paymentIntent.id };
+					}
+				} else if (pagoSummup === 'true' && pendingOrder.paymentMethod === 'sumup') {
+					paymentSuccessful = true;
+					const transactionCode = searchParams.get('transaction_code');
+					paymentIdField = transactionCode ? { 'Id Pago Summup': transactionCode } : {};
+				}
+
+				// 2. CONSTRUIR Y EJECUTAR LÓGICA DE FACTURACIÓN SI EL PAGO FUE EXITOSO
+				if (paymentSuccessful) {
+					try {
+						// Construimos el objeto final de facturación
+						const finalBillingData: BillingModel = {
+							...paymentIdField, // Añade el campo de ID de pago correcto
+							Compras: purchaseIds,
+							Usuarios: [userId!],
+							transfer: false,
+							address: billingData.address,
+							country: billingData.country,
+							location: billingData.location,
+							addressNumber: billingData.addressNumber,
+							name: billingData.name,
+							cp: billingData.cp,
+							nif: billingData.nif,
+							phone: Number(billingData.phone),
+							province: billingData.province,
+						};
+
+						// Rellenamos los estados para la UI
+						setBillingData(finalBillingData);
+						setExtraData(pendingOrder.extraData);
+
+						// Ejecutamos todas las acciones post-pago
+						await createBill(finalBillingData);
+						try {
+							await updateUser({
+								firstName: billingData.name,
+								email: extraData.email,
+								address: billingData.address,
+								addressExtra: billingData.addressNumber,
+								zip: billingData.cp,
+								state: billingData.province,
+							});
+						} catch (updateUserError) {
+							console.error("Error en updateUser (no crítico para el pago):", updateUserError);
+						}
+						await userService.createUserAddresses({
+							user: [userId!],
+							name: billingData.name,
+							nif: billingData.nif,
+							address: billingData.address,
+							country: billingData.country,
+							location: billingData.location,
+							addressNumber: billingData.addressNumber,
+							phone: Number(billingData.phone),
+							province: billingData.province,
+							cp: billingData.cp,
+							["Correo electrónico"]: extraData.email,
+						});
+						const metodo = paymentIdField['Id Pago Scalapay'] ? 'plazos' : paymentIdField['Id Pago Stripe'] ? 'tarjeta' : 'tarjeta';
+						purchaseIds.forEach(async (purchaseId: any) => {
+							await updatePurchase(purchaseId, metodo);
+						});
+
+						setStatus('success');
+						console.log("Factura creada y compras actualizadas.");
+
+						// Guardamos una copia para recargas de página y limpiamos el pendiente
+						localStorage.setItem('lastBillingSuccess', JSON.stringify({
+							billingData: finalBillingData,
+							extraData: pendingOrder.extraData,
+							cart: cart
+						}));
+						localStorage.removeItem('pendingOrder');
+					} catch (billingError) {
+						console.error("Error en el proceso de facturación:", billingError);
+						throw new Error('Ocurrió un error al generar tu factura.');
 					}
 				} else {
-					console.error('No billing data or cart found')
+					throw new Error('El pago no fue exitoso o fue cancelado.');
 				}
-			} catch (error) {
-				console.error('Error creating billing:', error)
+			} catch (error: any) {
+				console.error("Error procesando el pago:", error);
+				setErrorMessage(error.message || 'Ocurrió un error al procesar tu pedido.');
+				setStatus('error');
 			}
-		}
+		};
 
-		const getPaymentIntent = async (paymentIntentId: string) => {
-			if (!stripe || !paymentIntentId) return null
+		processPayment();
 
-			try {
-				const { paymentIntent } =
-					await stripe.retrievePaymentIntent(paymentIntentId)
-				return paymentIntent
-			} catch (error) {
-				console.error('Error retrieving payment intent:', error)
-				return null
-			}
-		}
+	}, [dispatch, router, searchParams, stripe, status]);
 
-		const verifyPayment = async () => {
-			if (payment_intent_id) {
-				const paymentIntent = client_secret
-					? await getPaymentIntent(client_secret)
-					: null
-				if (paymentIntent) {
-					if (paymentIntent.status === 'succeeded') {
-						await createBilling()
-					} else {
-						Swal.fire({
-							title: 'Error en el pago',
-							text: 'Ha ocurrido un error al procesar tu pago',
-							icon: 'error',
-							confirmButtonText: 'Aceptar',
-						}).then(() => router.push('/'))
-					}
-				}
-			}
-		}
+	if (status === 'loading') {
+		return (
+			<div className="flex flex-col items-center justify-center min-h-screen">
+				<div className="w-16 h-16 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+				<p className="mt-4 text-lg font-semibold">Procesando tu pedido, por favor espera...</p>
+			</div>
+		);
+	}
 
-		verifyPayment()
-
-		if (pagoSummup === 'true') {
-			createBilling()
-		}
-	}, [dispatch, router, searchParams, stripe])
+	if (status === 'error') {
+		Swal.fire({
+			title: 'Error en el pago',
+			text: errorMessage || 'Ha ocurrido un error al procesar tu pago.',
+			icon: 'error',
+			confirmButtonText: 'Volver al carrito',
+		}).then(() => router.push('/verificacion-pago'));
+		return null; // No renderizar nada mientras se muestra el Swal
+	}
 
 	return (
 		<div className="flex items-center justify-center min-h-screen font-tertiary-font bg-gray-50 py-16 px-4 sm:px-6 lg:px-8 mt-[20rem] mb-[5rem] mobile:mt-[7rem]">
