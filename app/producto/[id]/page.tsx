@@ -81,32 +81,32 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 	}
 }
 
-const validateMetasyncProduct = async (
-	refLocal: string,
-	idCompany: string
-): Promise<AxiosResponse<PartInterface>> => {
-	try {
-		const response = await axios.get(
-			`${environment.api.url}/metasync/inventory/product/${refLocal}/${idCompany}`
-		)
-		return response
-	} catch (error) {
-		console.error('Error fetching metasync product:', error)
-		throw error
-	}
-}
+// const validateMetasyncProduct = async (
+// 	refLocal: string,
+// 	idCompany: string
+// ): Promise<AxiosResponse<PartInterface>> => {
+// 	try {
+// 		const response = await axios.get(
+// 			`${environment.api.url}/metasync/inventory/product/${refLocal}/${idCompany}`
+// 		)
+// 		return response
+// 	} catch (error) {
+// 		console.error('Error fetching metasync product:', error)
+// 		throw error
+// 	}
+// }
 
 export default async function Product({ params }: { params: { id: string } }) {
 	const data = await fetchProductData(params.id)
 	const distributorData = await fetchDistributorData(data?.distributor)
 	let metasyncProduct: AxiosResponse<PartInterface> | null = null
 
-	if (data.isMetasync) {
-		metasyncProduct = await validateMetasyncProduct(
-			data.refLocal!,
-			data.idEmpresa!
-		)
-	}
+	// if (data.isMetasync) {
+	// 	metasyncProduct = await validateMetasyncProduct(
+	// 		data.refLocal!,
+	// 		data.idEmpresa!
+	// 	)
+	// }
 
 	const buscoRepuestoPriceNew = () => {
 		if (data?.buscorepuestosPrice) {
@@ -214,9 +214,10 @@ export default async function Product({ params }: { params: { id: string } }) {
 								}}
 								data={data}
 								stock={
-									metasyncProduct === null
-										? undefined
-										: metasyncProduct.data.reserva
+									// metasyncProduct === null
+									// 	? undefined
+									// 	: metasyncProduct.data.reserva
+									undefined
 								}
 							/>
 						</div>
