@@ -83,6 +83,23 @@ const PaymentSelection = ({
 		'stripe' | 'sumup' | 'transferencia' | 'scalapay' | null
 	>(null)
 
+	const [widgetIsDesktop, setWidgetIsDesktop] = useState(false);
+	const [widgetIsMobile, setWidgetIsMobile] = useState(false);
+	useEffect(() => {
+		const handleResize = () => {
+			if (window.innerWidth < 640) {
+				setWidgetIsMobile(true);
+				setWidgetIsDesktop(false);
+			} else {
+				setWidgetIsMobile(false);
+				setWidgetIsDesktop(true);
+			}
+		};
+		window.addEventListener('resize', handleResize);
+		handleResize();
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
 	const [selectedPaymentMethodDisabled, setSelectedPaymentMethodDisabled] =
 		useState<'stripe' | 'sumup' | 'transferencia' | 'scalapay' | null>(null)
 	const [clientSecretExists, setClientSecretExists] = useState(false)
@@ -413,18 +430,22 @@ const PaymentSelection = ({
 						)}
 						Pago con tarjeta
 					</button>
-					<div className='sm:hidden'>
-						{selectedPaymentMethod === 'sumup' && (
-							<div className="flex justify-center">
-								<SumupPayment
-									purchaseIds={purchaseIds}
-									fieldsValue={fieldsValue}
-									numberPriceRounded={numberPrice}
-									items={items}
-								/>
+					{
+						widgetIsMobile && selectedPaymentMethod === 'sumup' && (
+							<div>
+								{selectedPaymentMethod === 'sumup' && (
+									<div className="flex justify-center">
+										<SumupPayment
+											purchaseIds={purchaseIds}
+											fieldsValue={fieldsValue}
+											numberPriceRounded={numberPrice}
+											items={items}
+										/>
+									</div>
+								)}
 							</div>
-						)}
-					</div>
+						)
+					}
 					<button
 						onClick={() => {
 							handlePaymentSelection('transferencia')
@@ -480,9 +501,9 @@ const PaymentSelection = ({
 						className={`w-full flex ${isProductPage ? 'sm:flex-col gap-3' : 'gap-6'}  items-center justify-center px-4 py-2  
 						border-[1px] rounded-xl transition-all duration-300 
 						${selectedPaymentMethod === 'stripe'
-										? 'bg-secondary-blue text-white border-secondary-blue'
-										: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
-									} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw] 
+								? 'bg-secondary-blue text-white border-secondary-blue'
+								: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
+							} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw] 
 						
 						`}
 					>
