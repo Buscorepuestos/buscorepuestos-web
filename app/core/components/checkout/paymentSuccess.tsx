@@ -301,7 +301,7 @@ const PaymentSuccess = () => {
                     setExtraData(extraData);
 
 					console.log("Llamando al backend para finalizar el pedido...");
-					await finalizePayment(finalBillingData);
+					await finalizePayment(finalBillingData, extraData);
 					console.log("El backend confirmó la finalización del pedido.");
 
 					setStatus('success');
