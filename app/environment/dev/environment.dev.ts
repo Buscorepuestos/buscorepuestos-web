@@ -16,6 +16,7 @@ export const environment = {
     },
     api: {
         url: "http://localhost:3000/api",
+        url_public: "http://192.168.1.81:3000/api",
     },
     pixel_facebook: '1248317335337980',
     scalapay_token_merchant: '8KDS3SPEL',

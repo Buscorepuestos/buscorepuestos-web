@@ -2,7 +2,7 @@ import Axios from 'axios';
 import { environment } from '../environment/environment';
 
 const api = Axios.create({
-	baseURL: environment.api.url,
+	baseURL: environment.api.url_public,
 	headers: {
 		'Content-Type': 'application/json',
 	},
