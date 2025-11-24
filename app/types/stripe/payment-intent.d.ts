@@ -5,4 +5,5 @@ export interface PaymentIntentRequest {
 	automatic_payment_methods?: {
 		enabled: boolean,
 	},
+	userId: string;
 }
