@@ -953,7 +953,8 @@ const PaymentSelection = ({
 					currency: 'eur',
 					cartIDs: purchaseIds,
 					automatic_payment_methods: { enabled: true },
-					userId: userId!, // Asegúrate de pasar el userId
+					userId: userId!, // Asegúrate de pasar el 
+					fieldsValue
 				});
 				setClientSecret(res.data.client_secret);
 			} catch (error) {
@@ -1070,6 +1071,24 @@ const PaymentSelection = ({
 							fieldsValue={fieldsValue}
 							numberPriceRounded={numberPrice}
 							items={items}
+							userId={userId}
+							billingData={{
+								Compras: purchaseIds,
+								Usuarios: [userId!],
+								transfer: false,
+								address: fieldsValue.billingAddress,
+								country: fieldsValue.country,
+								location: fieldsValue.city,
+								addressNumber: fieldsValue.billingAddressExtra,
+								name: fieldsValue.name,
+								cp: fieldsValue.billingZip,
+								nif: fieldsValue.nif,
+								phone: Number(fieldsValue.phoneNumber),
+								province: fieldsValue.billingProvince,
+							}}
+							extraData={{ 
+								email: fieldsValue.email,
+							}}
 						/>
 					</div>
 				)}

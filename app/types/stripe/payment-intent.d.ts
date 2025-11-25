@@ -6,4 +6,5 @@ export interface PaymentIntentRequest {
 		enabled: boolean,
 	},
 	userId: string;
+	fieldsValue: FormsFields;
 }
