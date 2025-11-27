@@ -179,44 +179,14 @@ export default function Store() {
 		else if (filterType === 'year') handleYearChange(null)
 	}
 
+	const shouldShowFiltersAndSort = searchResults.length > 0 || loading || isTyping;
+
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[15vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
-			<div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
-				<div className="mobile:hidden">
-					<Filters
-						onSubcategoryChange={handleSubcategoryChange}
-						onBrandChange={handleBrandChange}
-						onModelChange={handleModelChange}
-						onYearChange={handleYearChange}
-						selectedBrand={selectedBrand}
-						selectedModel={selectedModel}
-						selectedYear={selectedYear}
-						selectedSubcategory={selectedSubcategory}
-					/>
-				</div>
-				<div className="flex flex-col gap-5 sm:max-h-[1500rem] mobile:items-center">
-					<Facilities
-						classNamePrincipal="
-							flex w-full my-5 md:gap-14 sm:gap-3 bg-gray-200 font-tertiary-font 
-							text-secondary-blue font-semibold h-[5rem] mobile:h-[6rem] justify-center 
-							rounded-3xl lg:text-[14px] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-[3.2vw] mobile:px-[2.9rem]
-							mobile:grid mobile:grid-cols-2 mobile:gap-0 mobile:w-[85%] mobile:font-normal mobile:py-[1rem]
-						"
-						classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
-					/>
-					<div className="flex justify-end">
-						<SearchBar
-							value={inputValue} // <-- AÑADIDO: El valor del input ahora es controlado por la prop
-							onChange={handleInputChange}
-							height={'52px'}
-							width={'w-[480px] mobile:w-[80vw]'}
-							borderColor={'#12B1BB'}
-							borderWidth={'2px'}
-							onClear={handleClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
-						/>
-					</div>
-					<div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
-						<div className="sm:hidden mobile:w-full mobile:mt-4 px-[8vw]">
+			<div className={shouldShowFiltersAndSort ? 'sm:grid sm:grid-cols-custom-filters sm:gap-10 ' : ''}>
+				{
+					shouldShowFiltersAndSort && (
+						<div className="mobile:hidden">
 							<Filters
 								onSubcategoryChange={handleSubcategoryChange}
 								onBrandChange={handleBrandChange}
@@ -228,25 +198,71 @@ export default function Store() {
 								selectedSubcategory={selectedSubcategory}
 							/>
 						</div>
-						<div className="flex w-[100%] mr-11 justify-end sm:my-4">
-							<select
-								className="border border-gray-300 p-2 rounded mobile:text-sm"
-								value={sortOrder || ''}
-								onChange={handleSortOrderChange}
-							>
-								<option disabled value="">
-									Ordenar por
-								</option>
-								{/* NUEVA OPCIÓN */}
-								<option value="proximity" disabled={!userProvince}>
-									Proximidad (más cercanos)
-								</option>
-								<option value="asc">Precio: Menor a Mayor</option>
-								<option value="desc">Precio: Mayor a Menor</option>
-							</select>
-						</div>
+					)
+				}
+
+				<div className="flex flex-col gap-5 sm:max-h-[1500rem] mobile:items-center">
+					<Facilities
+						classNamePrincipal="
+							flex w-full my-5 md:gap-14 sm:gap-3 bg-gray-200 font-tertiary-font 
+							text-secondary-blue font-semibold h-[5rem] mobile:h-[6rem] justify-center 
+							rounded-3xl lg:text-[14px] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-[3.2vw] mobile:px-[2.9rem]
+							mobile:grid mobile:grid-cols-2 mobile:gap-0 mobile:w-[85%] mobile:font-normal mobile:py-[1rem]
+						"
+						classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
+					/>
+					<div className={shouldShowFiltersAndSort ? 'flex justify-end' : 'flex justify-center'}>
+						<SearchBar
+							value={inputValue} // <-- AÑADIDO: El valor del input ahora es controlado por la prop
+							onChange={handleInputChange}
+							height={'52px'}
+							width={'w-[480px] mobile:w-[80vw]'}
+							borderColor={'#12B1BB'}
+							borderWidth={'2px'}
+							onClear={handleClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
+						/>
 					</div>
-					
+					<div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
+						{
+							shouldShowFiltersAndSort && (
+								<div className="sm:hidden mobile:w-full mobile:mt-4 px-[8vw]">
+									<Filters
+										onSubcategoryChange={handleSubcategoryChange}
+										onBrandChange={handleBrandChange}
+										onModelChange={handleModelChange}
+										onYearChange={handleYearChange}
+										selectedBrand={selectedBrand}
+										selectedModel={selectedModel}
+										selectedYear={selectedYear}
+										selectedSubcategory={selectedSubcategory}
+									/>
+								</div>
+							)
+						}
+						{
+							shouldShowFiltersAndSort && (
+								<div className="flex w-[100%] mr-11 justify-end sm:my-4">
+									<select
+										className="border border-gray-300 p-2 rounded mobile:text-sm"
+										value={sortOrder || ''}
+										onChange={handleSortOrderChange}
+									>
+										<option disabled value="">
+											Ordenar por
+										</option>
+										{/* NUEVA OPCIÓN */}
+										<option value="proximity" disabled={!userProvince}>
+											Proximidad (más cercanos)
+										</option>
+										<option value="asc">Precio: Menor a Mayor</option>
+										<option value="desc">Precio: Mayor a Menor</option>
+									</select>
+								</div>
+							)
+						}
+
+					</div>
+
 					<div className="sm:hidden flex flex-wrap gap-2 w-full mobile:px-6">
 						{activeFilters.map((filter) => (
 							<FilterTag
@@ -303,21 +319,26 @@ export default function Store() {
 							)}
 						</>
 					)}
-					<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
-						<button
-							onClick={handlePrevPage}
-							disabled={currentPage === 0}
-						>
-							<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
-						</button>
-						<span>{`Página ${currentPage} de ${totalPages}`}</span>
-						<button
-							onClick={handleNextPage}
-							disabled={currentPage === totalPages - 1}
-						>
-							<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
-						</button>
-					</div>
+					{
+						searchResults.length > 0 && !loading && !isTyping && (
+							<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
+								<button
+									onClick={handlePrevPage}
+									disabled={currentPage === 0}
+								>
+									<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
+								</button>
+								<span>{`Página ${currentPage} de ${totalPages}`}</span>
+								<button
+									onClick={handleNextPage}
+									disabled={currentPage === totalPages - 1}
+								>
+									<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
+								</button>
+							</div>
+						)
+					}
+
 				</div>
 			</div>
 		</main>

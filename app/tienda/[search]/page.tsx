@@ -182,24 +182,28 @@ export default function Store({ params }: { params: { search: string } }) {
         else if (filterType === 'brand') handleBrandChange(null)
         else if (filterType === 'model') handleModelChange(null)
         else if (filterType === 'year') handleYearChange(null)
-    }
+    };
+
+    const shouldShowFiltersAndSort = products.length > 0 || loadingSearch;
 
     return (
         <main className="m-auto max-w-[1170px] mt-80 mobile:mt-[18vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
-            <div className="sm:grid sm:grid-cols-custom-filters sm:gap-10">
-                <div className="mobile:hidden">
-                    <Filters
-                        onSubcategoryChange={handleSubcategoryChange}
-                        onBrandChange={handleBrandChange}
-                        onModelChange={handleModelChange}
-                        onYearChange={handleYearChange}
-                        // Pasamos todos los valores seleccionados para que Filters sea un componente controlado
-                        selectedSubcategory={selectedSubcategory}
-                        selectedBrand={selectedBrand}
-                        selectedModel={selectedModel}
-                        selectedYear={selectedYear}
-                    />
-                </div>
+            <div className={shouldShowFiltersAndSort ? 'sm:grid sm:grid-cols-custom-filters sm:gap-10 ' : ''}>
+                {shouldShowFiltersAndSort && (
+                    <div className="mobile:hidden">
+                        <Filters
+                            onSubcategoryChange={handleSubcategoryChange}
+                            onBrandChange={handleBrandChange}
+                            onModelChange={handleModelChange}
+                            onYearChange={handleYearChange}
+                            // Pasamos todos los valores seleccionados para que Filters sea un componente controlado
+                            selectedSubcategory={selectedSubcategory}
+                            selectedBrand={selectedBrand}
+                            selectedModel={selectedModel}
+                            selectedYear={selectedYear}
+                        />
+                    </div>
+                )}
                 <div className="flex flex-col gap-5 sm:max-h-[1500rem] mobile:items-center">
                     <Facilities
                         classNamePrincipal="
@@ -210,7 +214,7 @@ export default function Store({ params }: { params: { search: string } }) {
 						"
                         classNameImg="lg:w-[1.8vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[8vw]"
                     />
-                    <div className="flex justify-end">
+                    <div className={shouldShowFiltersAndSort ? 'flex justify-end' : 'flex justify-center'}>
                         <SearchBar
                             value={inputValue} // Hacemos el SearchBar un componente controlado
                             onChange={handleInputChange}
@@ -222,42 +226,51 @@ export default function Store({ params }: { params: { search: string } }) {
                         />
                     </div>
                     <div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
-                        <div className="sm:hidden mobile:w-full mobile:mt-4 px-[8vw]">
-                            <Filters
-                                onSubcategoryChange={handleSubcategoryChange}
-                                onBrandChange={handleBrandChange}
-                                onModelChange={handleModelChange}
-                                onYearChange={handleYearChange}
-                                selectedSubcategory={selectedSubcategory}
-                                selectedBrand={selectedBrand}
-                                selectedModel={selectedModel}
-                                selectedYear={selectedYear}
-                            />
-                        </div>
-                        <div className="flex w-[100%] mr-11 justify-end sm:my-4">
-                            <select
-                                className="border border-gray-300 p-2 rounded mobile:text-sm"
-                                value={sortOrder || ''}
-                                onChange={handleSortOrderChange}
-                            >
-                                <option disabled value="">Ordenar por</option>
-                                <option value="proximity" disabled={!userProvince}>
-                                    Proximidad (más cercanos)
-                                </option>
-                                <option value="asc">Precio: Menor a Mayor</option>
-                                <option value="desc">Precio: Mayor a Menor</option>
-                            </select>
-                        </div>
+                        {
+                            shouldShowFiltersAndSort && (
+                                <div className="sm:hidden mobile:w-full mobile:mt-4 px-[8vw]">
+                                    <Filters
+                                        onSubcategoryChange={handleSubcategoryChange}
+                                        onBrandChange={handleBrandChange}
+                                        onModelChange={handleModelChange}
+                                        onYearChange={handleYearChange}
+                                        selectedSubcategory={selectedSubcategory}
+                                        selectedBrand={selectedBrand}
+                                        selectedModel={selectedModel}
+                                        selectedYear={selectedYear}
+                                    />
+                                </div>
+                            )
+                        }
+                        {
+                            shouldShowFiltersAndSort && (
+                                <div className="flex w-[100%] mr-11 justify-end sm:my-4">
+                                    <select
+                                        className="border border-gray-300 p-2 rounded mobile:text-sm"
+                                        value={sortOrder || ''}
+                                        onChange={handleSortOrderChange}
+                                    >
+                                        <option disabled value="">Ordenar por</option>
+                                        <option value="proximity" disabled={!userProvince}>
+                                            Proximidad (más cercanos)
+                                        </option>
+                                        <option value="asc">Precio: Menor a Mayor</option>
+                                        <option value="desc">Precio: Mayor a Menor</option>
+                                    </select>
+                                </div>
+
+                            )
+                        }
                     </div>
                     <div className="sm:hidden flex flex-wrap gap-2 mb-4 w-full mobile:px-6">
-						{activeFilters.map((filter) => (
-							<FilterTag
-								key={filter.type}
-								filterName={`${filter.value}`}
-								onRemove={() => removeFilter(filter.type)}
-							/>
-						))}
-					</div>
+                        {activeFilters.map((filter) => (
+                            <FilterTag
+                                key={filter.type}
+                                filterName={`${filter.value}`}
+                                onRemove={() => removeFilter(filter.type)}
+                            />
+                        ))}
+                    </div>
                     {loadingSearch ? (
                         <div className="flex justify-center my-4">
                             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
@@ -288,18 +301,19 @@ export default function Store({ params }: { params: { search: string } }) {
                             )}
                         </>
                     )}
+                    {
+                        products.length > 0 && !loadingSearch && totalPages > 1 && (
+                            <div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
+                                <button onClick={handlePrevPage} disabled={currentPage <= 1}>
+                                    <ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila disabled:text-gray-400" />
+                                </button>
+                                <span>{`Página ${currentPage} de ${totalPages}`}</span>
+                                <button onClick={handleNextPage} disabled={currentPage >= totalPages}>
+                                    <ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila disabled:text-gray-400" />
+                                </button>
+                            </div>
+                        )}
 
-                    {totalPages > 1 && (
-                        <div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
-                            <button onClick={handlePrevPage} disabled={currentPage <= 1}>
-                                <ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila disabled:text-gray-400" />
-                            </button>
-                            <span>{`Página ${currentPage} de ${totalPages}`}</span>
-                            <button onClick={handleNextPage} disabled={currentPage >= totalPages}>
-                                <ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila disabled:text-gray-400" />
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
         </main>
