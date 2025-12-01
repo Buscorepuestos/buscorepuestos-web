@@ -1,3 +1,4 @@
+ import { FormsFields } from '../../../core/components/checkoutPage/CheckoutPage'
 declare namespace JSX {
     interface IntrinsicElements {
         'scalapay-widget': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
@@ -11,7 +12,7 @@ declare namespace JSX {
     }
 }
 
-export interface CreateOrderPayload {
+export interface CreateOrderPayload1 {
     purchaseIds: string[]; // IDs de las compras en Airtable/Mongo
     consumer: {
         firstName: string;
@@ -26,6 +27,13 @@ export interface CreateOrderPayload {
         suburb: string; // Ciudad
         line1: string;
     };
+}
+
+export interface CreateOrderPayload {
+    purchaseIds: string[]; // IDs de las compras en Airtable/Mongo
+    userId: string; // ID del usuario en tu sistema
+    fieldsValue: FormsFields; // Valores del formulario de checkout
+    items: any[]; 
 }
 
 export interface ScalapayCreateOrderResponse {

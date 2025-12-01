@@ -794,7 +794,7 @@
 
 // export default PaymentSelection
 'use client'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import PaymentForm from '../checkout/PaymentForm'
 import SumupPayment from '../sumupPayment/sumupPayment'
 import TransferPayment from '../transferPayment/transferPayment'
@@ -802,7 +802,6 @@ import { FormsFields } from '../../../core/components/checkoutPage/CheckoutPage'
 import { createPaymentIntent } from '../../../services/checkout/stripe.service'
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service'
-import { CreateOrderPayload } from '../../../types/scalapay'
 import Image from 'next/image'
 import Swal from 'sweetalert2'
 
@@ -811,18 +810,6 @@ const PaymentSelection = ({
 	fieldsValue,
 	numberPriceRounded,
 	numberPrice,
-	nameRef,
-	emailRef,
-	nifRef,
-	phoneNumberRef,
-	shippingAddressRef,
-	addressExtraRef,
-	zipRef,
-	cityRef,
-	provinceRef,
-	countryRef,
-	setIsScrolledInputs,
-	isScrolledInputs,
 	items,
 	totalPrice,
 	isSwitchOn,
@@ -964,8 +951,6 @@ const PaymentSelection = ({
 			} finally {
 				setIsProcessing(false);
 			}
-		} else if (method === 'scalapay') {
-			handleScalapayPayment();
 		}
 	};
 
@@ -973,63 +958,75 @@ const PaymentSelection = ({
 		setIsProcessing(true);
 		prepareLocalStorageForRedirect('scalapay');
 
-		const payload: CreateOrderPayload = {
-			purchaseIds: purchaseIds,
-			consumer: {
-				firstName: fieldsValue.name.split(' ')[0],
-				lastName: fieldsValue.name.split(' ').slice(1).join(' ') || fieldsValue.name.split(' ')[0],
-				email: fieldsValue.email,
-				phoneNumber: fieldsValue.phoneNumber,
-			},
-			shipping: {
-				name: fieldsValue.name,
-				countryCode: "ES",
-				postcode: fieldsValue.zip,
-				suburb: fieldsValue.city,
-				line1: `${fieldsValue.shippingAddress}, ${fieldsValue.addressExtra}`,
-			},
-		};
-
 		try {
-			const response = await createScalapayOrder(payload);
-			if (response.checkoutUrl) {
-				window.location.href = response.checkoutUrl;
-			} else {
-				throw new Error('La respuesta de Scalapay no contenía una URL de checkout.');
-			}
-		} catch (error: any) {
-			console.error('Error en el proceso de pago con Scalapay:', error);
-			Swal.fire('Error', error.message || 'No se pudo conectar con Scalapay.', 'error');
-			setIsProcessing(false);
-		}
+        // No guardamos en localStorage aquí, el backend se encarga de todo.
+        const response = await createScalapayOrder({
+            purchaseIds,
+            userId: userId!,
+            fieldsValue, // <-- Pasamos el objeto completo del formulario
+            items, // <-- Pasamos los items para calcular el total en el backend
+        });
+
+        if (response.checkoutUrl) {
+            window.location.href = response.checkoutUrl;
+        } else {
+            throw new Error('La respuesta del servidor no contenía una URL de checkout.');
+        }
+    } catch (error: any) {
+        console.error('Error al preparar el pago con Scalapay:', error);
+        Swal.fire('Error', error.message || 'No se pudo iniciar el pago con Scalapay.', 'error');
+		setIsProcessing(false);
+    } 
 	};
 	
 	const renderPaymentOptions = (enabled: boolean) => {
-        const buttonClass = enabled
-            ? 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
-            : 'bg-light-grey text-alter-grey border-light-grey cursor-not-allowed';
-        const selectedClass = (method: string) => selectedPaymentMethod === method ? 'bg-secondary-blue text-white border-secondary-blue' : '';
+		const getButtonStyle = (method: string) => {
+			if (!enabled) {
+				return 'bg-light-grey text-alter-grey border-light-grey cursor-not-allowed';
+			}
+			
+			// Si está seleccionado, aplicamos el fondo azul directamente y quitamos el bg-white
+			if (selectedPaymentMethod === method) {
+				return 'bg-secondary-blue text-white border-secondary-blue'; 
+			}
+			
+			// Si no está seleccionado pero está habilitado
+			return 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white';
+		};
+
         const iconSrc = (method: string, defaultSrc: string, selectedSrc: string) => selectedPaymentMethod === method ? selectedSrc : defaultSrc;
 
         return (
             <div className="flex mobile:flex-wrap justify-between mb-6 gap-3">
                 <button
                     onClick={() => enabled && handlePaymentSelection('sumup')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-xl transition-all duration-300 ${buttonClass} ${selectedClass('sumup')}`}
+                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
+					gap-3 items-center justify-center px-6 py-2 border-[1px] 
+					rounded-xl transition-all duration-300 ${getButtonStyle('sumup')}
+					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
+					`}
                 >
                     <Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={46} height={46} className="w-14 h-14 rounded-md" />
                     Pago con tarjeta
                 </button>
                 <button
                     onClick={() => enabled && handlePaymentSelection('transferencia')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} gap-3 items-center justify-center px-6 py-2 border-[1px] rounded-xl transition-all duration-300 ${buttonClass} ${selectedClass('transferencia')}`}
+                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
+					gap-3 items-center justify-center px-6 py-2 border-[1px] 
+					rounded-xl transition-all duration-300 ${getButtonStyle('transferencia')}
+					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
+					`}
                 >
                     <Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={46} height={46} className="w-14 h-14 rounded-md" />
                     Transferencia
                 </button>
                 <button
                     onClick={() => enabled && handlePaymentSelection('stripe')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col gap-3' : 'gap-6'} items-center justify-center px-4 py-2 border-[1px] rounded-xl transition-all duration-300 ${buttonClass} ${selectedClass('stripe')}`}
+                    className={`w-full flex ${isProductPage ? 'sm:flex-col gap-3' : 'gap-6'} 
+					items-center justify-center px-4 py-2 border-[1px] rounded-xl transition-all 
+					duration-300 ${getButtonStyle('stripe')}
+					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
+					`}
                 >
                     <div className="flex gap-4">
                         <Image src="/klarna.png" alt="klarna" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
@@ -1039,7 +1036,11 @@ const PaymentSelection = ({
                 </button>
                 <button
                     onClick={() => enabled && handlePaymentSelection('scalapay')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} items-center justify-center px-4 py-4 border-[1px] rounded-xl transition-all duration-300 ${buttonClass} ${selectedClass('scalapay')}`}
+                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} items-center 
+					justify-center px-4 py-4 border-[1px] rounded-xl transition-all duration-300 
+					${getButtonStyle('scalapay')}
+					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw] gap-3
+					`}
                 >
                     <Image src="/scalapay3.png" alt="scalapay" width={80} height={20} />
                     <span>Paga en 3 o 4 plazos</span>
@@ -1118,7 +1119,14 @@ const PaymentSelection = ({
 				{selectedPaymentMethod === 'scalapay' && (
 					<div className="flex flex-col justify-center items-center">
 						<ScalapayWidget amountSelector="#checkout-total-price-for-widget" type="checkout" />
-						{isProcessing && (
+						{!isProcessing ? (
+							<button
+								onClick={handleScalapayPayment}
+								className="w-1/2 mt-4 bg-custom-black font-tertiary-font  text-custom-white font-bold py-3 px-4 rounded-3xl flex items-center justify-center gap-3 hover:bg-secondary-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								<p className='text-[1.8rem] mobile:text-[1.3rem]'>Pagar con Scalapay</p>
+							</button>
+						) : (
 							<div className="w-full flex justify-center mt-4">
 								<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 							</div>
