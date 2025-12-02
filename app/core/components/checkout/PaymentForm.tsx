@@ -1,4 +1,3 @@
-'use client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import StripeFormComponent from './StripeFormComponent'; // Renombramos el formulario real
