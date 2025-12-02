@@ -36,7 +36,7 @@ export const captureScalapayOrder = async (orderToken: string): Promise<Scalapay
  */
 export const createScalapayOrder = async (payload: CreateOrderPayload): Promise<ScalapayCreateOrderResponse> => {
     try {
-        const response = await api.post<ScalapayCreateOrderResponse>('/scalapay/create-order', payload);
+        const response = await api.post<ScalapayCreateOrderResponse>('/scalapay/prepare-order', payload);
         return response.data;
     } catch (error: any) {
         console.error('Error al crear la orden de Scalapay:', error.response?.data || error.message);

@@ -1,11 +1,10 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState} from 'react'
 import { PaymentIntent, StripePaymentElementOptions } from '@stripe/stripe-js'
-import { createBill } from '../../../services/billing/billing.service'
-import { useDispatch } from 'react-redux'
 import { FormsFields } from '../checkoutPage/CheckoutPage'
 import { environment } from '../../../environment/environment'
 import { updateUser } from '../../../services/mailchimp/mailchimp'
+import Swal from 'sweetalert2'
 
 const StripeForm = (props: { 
 	clientSecret: string; 
@@ -72,80 +71,6 @@ const StripeForm = (props: {
 		setIsFormValid((!missingField && isPaymentElementComplete) || false)
 	}, [props.fieldsValues, isPaymentElementComplete])
 
-	const createbilling = async () => {
-		const billingData = {
-			'Id Pago Stripe': payment?.id as string,
-			Compras: props.purchaseIds,
-			Usuarios: [userId!],
-			transfer: false,
-			address: props.fieldsValues.shippingAddress,
-			country: props.fieldsValues.country,
-			location: props.fieldsValues.city,
-			addressNumber: props.fieldsValues.addressExtra,
-			name: props.fieldsValues.name,
-			cp: props.fieldsValues.zip,
-			nif: props.fieldsValues.nif,
-			phone: Number(props.fieldsValues.phoneNumber),
-			province: props.fieldsValues.province,
-		}
-
-		const extraData = {
-			email: props.fieldsValues.email,
-			billingAddress: props.fieldsValues.billingAddress,
-			billingAddressExtra: props.fieldsValues.billingAddressExtra,
-			billingProvince: props.fieldsValues.billingProvince,
-			billingZip: props.fieldsValues.billingZip,
-
-		}
-
-		const userAddressData = {
-				user: [userId!],
-				name: props.fieldsValues.name,
-				nif: props.fieldsValues.nif,
-				address: props.fieldsValues.shippingAddress,
-				country: props.fieldsValues.country,
-				location: props.fieldsValues.city,
-				addressNumber: props.fieldsValues.addressExtra,
-				phone: Number(props.fieldsValues.phoneNumber),
-				province: props.fieldsValues.province,
-				cp: props.fieldsValues.zip,
-				["Correo electrónico"]: props.fieldsValues.email
-			}
-	
-		try {
-			const storedBillingData = localStorage.getItem('billingData')
-			const storedEmailData = localStorage.getItem('extraData')
-			const cart = localStorage.getItem('cart')
-			const executedBill = localStorage.getItem('billingExecuted')
-			const userAddress = localStorage.getItem('userAddress')
-			if (cart) {
-				const copyCartExist = localStorage.getItem('copyCart')
-				if (copyCartExist) {
-					localStorage.removeItem('copyCart')
-				}
-				const copyCart = JSON.parse(cart)
-				localStorage.setItem('copyCart', JSON.stringify(copyCart))
-			}
-			if (executedBill) {
-				localStorage.removeItem('billingExecuted')
-			}
-			if (storedBillingData) {
-				localStorage.removeItem('billingData')
-			}
-			if (storedEmailData) {
-				localStorage.removeItem('extraData')
-			}
-			if (userAddress) {
-				localStorage.removeItem('userAddress')
-			}
-			localStorage.setItem('userAddress', JSON.stringify(userAddressData))
-			localStorage.setItem('billingData', JSON.stringify(billingData))
-			localStorage.setItem('extraData', JSON.stringify(extraData))
-		} catch (error) {
-			console.error('Error saving billing data to localStorage:', error)
-		}
-	}
-
 	const prepareLocalStorageForRedirect = () => {
         console.log("Guardando datos del pedido en localStorage para Stripe...");
         
@@ -187,7 +112,6 @@ const StripeForm = (props: {
 			email: props.fieldsValues.email,
 		})
 
-		// await createbilling()
 		prepareLocalStorageForRedirect();
 
 		if (!stripe || !elements) {
@@ -198,7 +122,6 @@ const StripeForm = (props: {
 		const { error } = await stripe.confirmPayment({
 			elements,
 			confirmParams: {
-				// return_url: `${environment.base_url}/pago-exitoso`,
 				return_url: `${environment.base_url}/pago-exitoso`,
 			},
 		})
@@ -206,8 +129,10 @@ const StripeForm = (props: {
 
 		if (error) {
 			if (error.type === 'card_error' || error.type === 'validation_error') {
+				Swal.fire('Error', error.message as string, 'error');
 				setMessage(error.message as string)
 			} else {
+				Swal.fire('Error', 'An unexpected error occurred.', 'error');
 				setMessage('An unexpected error occurred.')
 			}
 		}
