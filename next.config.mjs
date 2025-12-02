@@ -26,25 +26,29 @@ async headers() {
             // Política por defecto: solo permite recursos del mismo origen ('self').
             "default-src 'self';",
             
-            // Fuentes (fonts): Permite 'self', fuentes de Google y fuentes incrustadas.
+            // Fuentes (fonts):
             "font-src 'self' https://fonts.gstatic.com data:;",
             
-            // Scripts: Añadido *.hcaptcha.com
+            // Scripts:
             "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.stripe.com https://*.sumup.com https://cdn.scalapay.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net https://va.vercel-scripts.com https://cdnjs.cloudflare.com https://cdn.optimizely.com https://*.hcaptcha.com;",
             
-            // Estilos: Añadido *.hcaptcha.com
+            // Estilos:
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.hcaptcha.com;",
             
-            // Imágenes: Permite 'self', data URIs, y CUALQUIER fuente HTTPS.
+            // Imágenes:
             "img-src 'self' data: https:;",
             
-            // Conexiones de API (fetch, axios, XHR): Añadido blob:, *.googleadservices.com, y *.hcaptcha.com
-            `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com;`,
+            // Conexiones de API (fetch, axios, XHR):
+            `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com https://pay.google.com;`,
             
-            // Iframes y Web Workers: Añadido *.hcaptcha.com
-            "frame-src 'self' https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com;",
+            // Iframes y Web Workers:
+            // --- CAMBIO CLAVE AQUÍ: Añadimos https://www.google.com ---
+            "frame-src 'self' https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com;",
+
             "worker-src 'self' blob: https://cdnjs.cloudflare.com;",
-            "child-src 'self' blob: https://*.stripe.com https://*.sumup.com;",
+
+            // --- CAMBIO CLAVE AQUÍ: Añadimos https://www.google.com ---
+            "child-src 'self' blob: https://*.stripe.com https://*.sumup.com https://www.google.com;",
             
             // Envío de Formularios:
             "form-action 'self' https://*.facebook.com;",
@@ -69,6 +73,7 @@ async headers() {
         ];
     },
 };
+
 
 
 export default withSentryConfig(nextConfig, {
