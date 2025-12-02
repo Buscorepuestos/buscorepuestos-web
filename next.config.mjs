@@ -22,49 +22,103 @@ const nextConfig = {
 
     // --- SECCIÓN DE CSP COMPLETA Y DEFINITIVA ---
 async headers() {
-    const cspHeader = [
-        "default-src 'self';",
-        
-        // ⚠️ CORREGIDO: font-src unificado con b.stripecdn.com
-        "font-src 'self' https://fonts.gstatic.com https://b.stripecdn.com data:;",
-        
-        "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://*.sumup.com https://cdn.scalapay.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net https://va.vercel-scripts.com https://cdnjs.cloudflare.com https://cdn.optimizely.com https://*.hcaptcha.com https://googleads.g.doubleclick.net https://*.doubleclick.net;",
-        
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.hcaptcha.com;",
-        
-        // ⚠️ ACTUALIZADO: Agregar blob y Stripe CDN
-        "img-src 'self' data: https: blob: https://b.stripecdn.com https://*.stripe.com;",
-        
-        // ⚠️ ACTUALIZADO: Agregar m.stripe.com y m.stripe.network
-        `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://m.stripe.com https://m.stripe.network https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://pay.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://*.google.cl;`,
-        
-        "frame-src 'self' https://*.stripe.com https://js.stripe.com https://hooks.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com https://*.google.com https://*.doubleclick.net;",
-        
-        "worker-src 'self' blob: https://cdnjs.cloudflare.com;",
-        
-        "child-src 'self' blob: https://js.stripe.com https://*.sumup.com https://www.google.com https://*.google.com https://pay.google.com;",
-        
-        "manifest-src 'self' https://pay.google.com https://*.google.com;",
-        
-        "form-action 'self' https://*.facebook.com;",
-        "base-uri 'self';",
-        "object-src 'none';",
-        "frame-ancestors 'self';",
-        "upgrade-insecure-requests;",
-    ].join(' ');
-
-    return [
-        {
-            source: '/:path*',
-            headers: [
-                {
-                    key: 'Content-Security-Policy',
-                    value: cspHeader.replace(/\s{2,}/g, ' ').trim(),
-                },
+        // Definimos las directivas como un objeto para evitar errores de sintaxis en strings
+        const cspDirectives = {
+            "default-src": ["'self'"],
+            "font-src": ["'self'", "https://fonts.gstatic.com", "https://b.stripecdn.com", "data:"],
+            "script-src": [
+                "'self'",
+                "'unsafe-eval'",
+                "'unsafe-inline'",
+                "https://js.stripe.com",
+                "https://maps.googleapis.com", 
+                "https://*.sumup.com",
+                "https://cdn.scalapay.com",
+                "https://*.googletagmanager.com",
+                "https://*.google-analytics.com",
+                "https://connect.facebook.net",
+                "https://va.vercel-scripts.com",
+                "https://cdnjs.cloudflare.com",
+                "https://cdn.optimizely.com",
+                "https://*.hcaptcha.com",
+                "https://googleads.g.doubleclick.net",
+                "https://*.doubleclick.net"
             ],
-        },
-    ];
-},
+            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://*.hcaptcha.com"],
+            "img-src": ["'self'", "data:", "https:", "blob:", "https://b.stripecdn.com", "https://*.stripe.com"],
+            "connect-src": [
+                "'self'",
+                "blob:",
+                "https://buscorepuesto-de461a6f006a.herokuapp.com",
+                "http://localhost:*",
+                "ws://localhost:*",
+                "https://api.stripe.com", // IMPORTANTE: API explícita
+                "https://*.stripe.com",
+                "https://m.stripe.network",
+                "https://*.sumup.com",
+                "https://*.scalapay.com",
+                "https://api.scalapay.com", // Agregado para el error de Scalapay
+                "https://*.googleapis.com",
+                "https://identitytoolkit.googleapis.com",
+                "https://nominatim.openstreetmap.org",
+                "https://vitals.vercel-insights.com",
+                "https://o4505238017015808.ingest.us.sentry.io",
+                "https://*.google.com",
+                "https://pay.google.com",
+                "https://*.google-analytics.com",
+                "https://*.googleadservices.com",
+                "https://*.facebook.com",
+                "https://cdn.optimizely.com",
+                "https://*.hcaptcha.com",
+                "https://googleads.g.doubleclick.net",
+                "https://*.doubleclick.net",
+                "https://*.google.cl"
+            ],
+            "frame-src": [
+                "'self'",
+                "https://js.stripe.com",
+                "https://hooks.stripe.com",
+                "https://checkout.stripe.com", // Necesario para elementos nuevos
+                "https://*.stripe.com",
+                "https://*.sumup.com",
+                "https://*.scalapay.com",
+                "https://*.googletagmanager.com",
+                "https://*.facebook.com",
+                "https://*.hcaptcha.com",
+                "https://pay.google.com",
+                "https://www.google.com",
+                "https://*.google.com",
+                "https://*.doubleclick.net"
+            ],
+            "worker-src": ["'self'", "blob:", "https://m.stripe.network", "https://cdnjs.cloudflare.com"],
+            "child-src": ["'self'", "blob:", "https://js.stripe.com", "https://*.sumup.com", "https://www.google.com", "https://*.google.com", "https://pay.google.com"],
+            "manifest-src": ["'self'", "https://pay.google.com", "https://*.google.com"],
+            "form-action": ["'self'", "https://*.facebook.com"],
+            "base-uri": ["'self'"],
+            "object-src": ["'none'"],
+            "upgrade-insecure-requests": []
+        };
+
+        // Convertimos el objeto a string CSP válido
+        const cspString = Object.entries(cspDirectives)
+            .map(([key, values]) => {
+                if (values.length === 0) return key;
+                return `${key} ${values.join(' ')}`;
+            })
+            .join('; ');
+
+        return [
+            {
+                source: '/:path*',
+                headers: [
+                    {
+                        key: 'Content-Security-Policy',
+                        value: cspString,
+                    },
+                ],
+            },
+        ];
+    },
 };
 
 
