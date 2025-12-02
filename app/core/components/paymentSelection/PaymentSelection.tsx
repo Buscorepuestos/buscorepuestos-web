@@ -794,17 +794,85 @@
 
 // export default PaymentSelection
 'use client'
-import React, { useState, useEffect } from 'react'
-import PaymentForm from '../checkout/PaymentForm'
-import SumupPayment from '../sumupPayment/sumupPayment'
-import TransferPayment from '../transferPayment/transferPayment'
-import { FormsFields } from '../../../core/components/checkoutPage/CheckoutPage'
-import { createPaymentIntent } from '../../../services/checkout/stripe.service'
-import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
-import { createScalapayOrder } from '../../../services/checkout/scalapay.service'
-import Image from 'next/image'
-import Swal from 'sweetalert2'
-import PaymentFormWrapper from '../checkout/PaymentForm'; // <-- Importa el nuevo wrapper
+import React, { useState, useEffect } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import StripeFormComponent from '../checkout/StripeFormComponent';
+import SumupPayment from '../sumupPayment/sumupPayment';
+import TransferPayment from '../transferPayment/transferPayment';
+import { createPaymentIntent } from '../../../services/checkout/stripe.service';
+import { createScalapayOrder } from '../../../services/checkout/scalapay.service';
+import ScalapayWidget from '../scalapayWidget/ScalapayWiget';
+import { FormsFields } from '../checkoutPage/CheckoutPage';
+import { environment } from '../../../environment/environment';
+import Image from 'next/image';
+import Swal from 'sweetalert2';
+import { CreateOrderPayload } from '../../../types/scalapay';
+
+const stripePromise = loadStripe(environment.stripe_publishable_key);
+
+// --- NUEVO Componente Interno para manejar Stripe ---
+const StripePaymentHandler = ({ purchaseIds, fieldsValue, items, userId }: {
+    purchaseIds: string[];
+    fieldsValue: FormsFields;
+    items: any[];
+    userId: string;
+}) => {
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchClientSecret = async () => {
+            try {
+                const totalAmount = items.reduce((acc, item) => acc + item.buscorepuestosPrice, 0);
+                const res = await createPaymentIntent({
+                    amount: Math.round(totalAmount * 100),
+                    currency: 'eur',
+                    cartIDs: purchaseIds,
+                    userId: userId,
+                    fieldsValue: fieldsValue,
+                    automatic_payment_methods: { enabled: true },
+                });
+                if (res.data?.client_secret) {
+                    setClientSecret(res.data.client_secret);
+                } else {
+                    throw new Error("No se recibió el client_secret de Stripe.");
+                }
+            } catch (err) {
+                console.error("Error al crear PaymentIntent de Stripe:", err);
+                setError("No se pudo iniciar el pago con tarjeta. Inténtalo de nuevo.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchClientSecret();
+    }, [purchaseIds, fieldsValue, items, userId]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center my-4 items-center">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
+    if (error || !clientSecret) {
+        return <p style={{ color: 'red', marginTop: '10px' }}>{error || 'Error al cargar la pasarela de pago.'}</p>;
+    }
+
+    return (
+        <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
+            <StripeFormComponent
+                label={'Pagar ahora'}
+                purchaseIds={purchaseIds}
+                fieldsValues={fieldsValue}
+            />
+        </Elements>
+    );
+};
+
 
 const PaymentSelection = ({
 	purchaseIds,
@@ -1108,11 +1176,11 @@ const PaymentSelection = ({
 					{isProcessing ? (
 						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 					) : (
-						<PaymentFormWrapper
-							clientSecret={clientSecret!} // El signo ! indica que estamos seguros de que no es null aquí
+						<StripePaymentHandler
 							purchaseIds={purchaseIds}
-							fieldsValues={fieldsValue}
-							items={items}
+                        fieldsValue={fieldsValue}
+                        items={items}
+                        userId={userId!}
 						/>
 					)}
 				</div>
