@@ -24,18 +24,18 @@ const nextConfig = {
 async headers() {
     const cspHeader = [
         "default-src 'self';",
-        "font-src 'self' https://fonts.gstatic.com data:;",
         
-        // ⚠️ Agregar b.stripecdn.com para los assets de Stripe
+        // ⚠️ CORREGIDO: font-src unificado con b.stripecdn.com
+        "font-src 'self' https://fonts.gstatic.com https://b.stripecdn.com data:;",
+        
         "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://*.sumup.com https://cdn.scalapay.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net https://va.vercel-scripts.com https://cdnjs.cloudflare.com https://cdn.optimizely.com https://*.hcaptcha.com https://googleads.g.doubleclick.net https://*.doubleclick.net;",
         
-        // ⚠️ CRÍTICO: Permitir estilos inline de Stripe
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.hcaptcha.com;",
         
-        // ⚠️ CRÍTICO: Agregar b.stripecdn.com para imágenes e iconos
+        // ⚠️ ACTUALIZADO: Agregar blob y Stripe CDN
         "img-src 'self' data: https: blob: https://b.stripecdn.com https://*.stripe.com;",
         
-        // ⚠️ Agregar m.stripe.com y otros endpoints de Stripe
+        // ⚠️ ACTUALIZADO: Agregar m.stripe.com y m.stripe.network
         `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://m.stripe.com https://m.stripe.network https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://pay.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://*.google.cl;`,
         
         "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com https://*.google.com https://*.doubleclick.net;",
@@ -45,9 +45,6 @@ async headers() {
         "child-src 'self' blob: https://js.stripe.com https://*.sumup.com https://www.google.com https://*.google.com https://pay.google.com;",
         
         "manifest-src 'self' https://pay.google.com https://*.google.com;",
-        
-        // ⚠️ Agregar font-src para Stripe si usan fuentes personalizadas
-        "font-src 'self' https://fonts.gstatic.com https://b.stripecdn.com data:;",
         
         "form-action 'self' https://*.facebook.com;",
         "base-uri 'self';",
