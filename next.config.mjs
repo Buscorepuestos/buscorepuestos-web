@@ -21,7 +21,7 @@ const nextConfig = {
     },
 
     // --- SECCIÓN DE CSP COMPLETA Y DEFINITIVA ---
- async headers() {
+async headers() {
     const cspHeader = [
         "default-src 'self';",
         "font-src 'self' https://fonts.gstatic.com data:;",
@@ -32,6 +32,7 @@ const nextConfig = {
         "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com https://*.google.com;",
         "worker-src 'self' blob: https://cdnjs.cloudflare.com;",
         "child-src 'self' blob: https://js.stripe.com https://*.sumup.com https://www.google.com https://*.google.com https://pay.google.com;",
+        "manifest-src 'self' https://pay.google.com https://*.google.com;",
         "form-action 'self' https://*.facebook.com;",
         "base-uri 'self';",
         "object-src 'none';",
