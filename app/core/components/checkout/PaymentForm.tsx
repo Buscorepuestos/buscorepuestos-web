@@ -22,6 +22,7 @@ export default function PaymentForm(props: {
 	const options = {
 		clientSecret: props.clientSecret,
 		appearance,
+		locale: 'es' as 'es',
 	}
 	console.log('Rendering PaymentForm with clientSecret:', props.clientSecret)
 
