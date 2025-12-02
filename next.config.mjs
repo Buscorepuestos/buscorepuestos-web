@@ -24,7 +24,12 @@ const nextConfig = {
 async headers() {
         const cspDirectives = {
             "default-src": ["'self'"],
-            "font-src": ["'self'", "https://fonts.gstatic.com", "https://b.stripecdn.com", "data:"],
+            "font-src": [
+				"'self'", 
+				"https://fonts.gstatic.com", 
+				"https://b.stripecdn.com", 
+				"data:"
+			],
             "script-src": [
                 "'self'",
                 "'unsafe-eval'",
@@ -46,8 +51,24 @@ async headers() {
                 "https://pay.google.com",
                 "https://*.google.com"
             ],
-            "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://*.hcaptcha.com"],
-            "img-src": ["'self'", "data:", "https:", "blob:", "https://b.stripecdn.com", "https://*.stripe.com", "https://*.google.com", "https://www.google.com"],
+            "style-src": [
+				"'self'", 
+				"'unsafe-inline'", 
+				"https://fonts.googleapis.com", 
+				"https://*.hcaptcha.com"
+			],
+            "img-src": [
+				"'self'", 
+				"data:", 
+				"https:", 
+				"blob:", 
+				"https://b.stripecdn.com", 
+				"https://*.stripe.com", 
+				"https://*.google.com", 
+				"https://www.google.com",
+				 "https://*.gstatic.com",     // <-- AÑADIDO CRÍTICO: Para los íconos de Google y otros recursos
+            	"https://www.facebook.com"   // Para el píxel de FB
+			],
             "connect-src": [
                 "'self'",
                 "blob:",
@@ -115,7 +136,7 @@ async headers() {
                 headers: [
                     {
                         key: 'Content-Security-Policy',
-                        value: cspString,
+                        value: cspString.replace(/\s{2,}/g, ' ').trim(),
                     },
                     {
                         key: 'Permissions-Policy',
