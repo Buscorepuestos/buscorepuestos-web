@@ -10,11 +10,17 @@ export default function SumupPayment({
 	fieldsValue,
 	numberPriceRounded,
 	items,
+	userId,
+	billingData,
+	extraData
 }: {
 	purchaseIds: string[]
 	fieldsValue: FormsFields,
 	numberPriceRounded: number
 	items: CartItem[],
+	userId: string | null,
+	billingData?: any,
+	extraData?: { [key: string]: any }
 }) {
 	const [checkoutId, setCheckoutId] = useState(null)
 	
@@ -38,6 +44,10 @@ export default function SumupPayment({
 							? itemsTitle.join(', ')
 							: itemsTitle[0]
 					}`,
+					purchaseIds: purchaseIds,
+					userId: userId,
+					billingData: billingData,
+					extraData: extraData
 				}),
 			})
 			const data = await response.json()
