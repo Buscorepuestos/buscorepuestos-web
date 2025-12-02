@@ -1109,7 +1109,7 @@ const PaymentSelection = ({
                     <Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={46} height={46} className="w-14 h-14 rounded-md" />
                     Transferencia
                 </button>
-                <button
+                {/* <button
                     onClick={() => enabled && handlePaymentSelection('stripe')}
                     className={`w-full flex ${isProductPage ? 'sm:flex-col gap-3' : 'gap-6'} 
 					items-center justify-center px-4 py-2 border-[1px] rounded-xl transition-all 
@@ -1122,7 +1122,7 @@ const PaymentSelection = ({
                         <Image src="/paypal.png" alt="paypal" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
                     </div>
                     <span>En 3 plazos, Paypal</span>
-                </button>
+                </button> */}
                 <button
                     onClick={() => enabled && handlePaymentSelection('scalapay')}
                     className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} items-center 
