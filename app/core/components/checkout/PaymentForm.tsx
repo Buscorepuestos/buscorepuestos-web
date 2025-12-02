@@ -1,3 +1,5 @@
+'use client'
+
 import { loadStripe } from '@stripe/stripe-js'
 import StripeForm from './StripeForm'
 import { Elements } from '@stripe/react-stripe-js'

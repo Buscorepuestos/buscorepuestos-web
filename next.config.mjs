@@ -22,58 +22,35 @@ const nextConfig = {
 
     // --- SECCIÓN DE CSP COMPLETA Y DEFINITIVA ---
  async headers() {
-        const cspHeader = [
-            // Política por defecto: permite recursos del mismo origen.
-            "default-src 'self';",
-            
-            // Fuentes (fonts): Permite 'self', fuentes de Google y fuentes incrustadas.
-            "font-src 'self' https://fonts.gstatic.com data:;",
-            
-            // Scripts: Permite una lista blanca de dominios de confianza.
-            "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://*.sumup.com https://cdn.scalapay.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net https://va.vercel-scripts.com https://cdnjs.cloudflare.com https://cdn.optimizely.com https://*.hcaptcha.com;",
-            
-            // Estilos:
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.hcaptcha.com;",
-            
-            // Imágenes: Permite 'self', data URIs, y cualquier fuente HTTPS (necesario para imágenes de productos).
-            "img-src 'self' data: https:;",
-            
-            // Conexiones de API (fetch, axios, XHR):
-            // Añadimos explícitamente el backend y todos los servicios de pago/analítica.
-            `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com;`,
-            
-            // Iframes y Web Workers:
-            // --- CAMBIO CLAVE AQUÍ ---
-            // Añadimos todos los dominios que sabemos que cargan iframes.
-            "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com;",
+    const cspHeader = [
+        "default-src 'self';",
+        "font-src 'self' https://fonts.gstatic.com data:;",
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://*.sumup.com https://cdn.scalapay.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net https://va.vercel-scripts.com https://cdnjs.cloudflare.com https://cdn.optimizely.com https://*.hcaptcha.com;",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.hcaptcha.com;",
+        "img-src 'self' data: https:;",
+        `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://pay.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com;`,
+        "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com https://*.google.com;",
+        "worker-src 'self' blob: https://cdnjs.cloudflare.com;",
+        "child-src 'self' blob: https://js.stripe.com https://*.sumup.com https://www.google.com https://*.google.com https://pay.google.com;",
+        "form-action 'self' https://*.facebook.com;",
+        "base-uri 'self';",
+        "object-src 'none';",
+        "frame-ancestors 'self';",
+        "upgrade-insecure-requests;",
+    ].join(' ');
 
-            "worker-src 'self' blob: https://cdnjs.cloudflare.com;",
-            
-            // --- AÑADIMOS child-src como fallback, más explícito ---
-            "child-src 'self' blob: https://js.stripe.com https://*.sumup.com https://www.google.com;",
-            
-            // Envío de Formularios:
-            "form-action 'self' https://*.facebook.com;",
-            
-            // Resto de directivas estándar
-            "base-uri 'self';",
-            "object-src 'none';",
-            "frame-ancestors 'self';", // Cambiado de 'none' a 'self' para permitir iframes del mismo origen si los usas.
-            "upgrade-insecure-requests;",
-        ].join(' ');
-
-        return [
-            {
-                source: '/:path*',
-                headers: [
-                    {
-                        key: 'Content-Security-Policy',
-                        value: cspHeader.replace(/\s{2,}/g, ' ').trim(),
-                    },
-                ],
-            },
-        ];
-    },
+    return [
+        {
+            source: '/:path*',
+            headers: [
+                {
+                    key: 'Content-Security-Policy',
+                    value: cspHeader.replace(/\s{2,}/g, ' ').trim(),
+                },
+            ],
+        },
+    ];
+},
 };
 
 
