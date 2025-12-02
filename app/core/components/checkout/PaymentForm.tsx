@@ -6,7 +6,9 @@ import { Elements } from '@stripe/react-stripe-js'
 import { FormsFields } from '../checkoutPage/CheckoutPage'
 import { environment } from '../../../environment/environment'
 
-const stripePromise = loadStripe(environment.stripe_publishable_key)
+const stripePromise = loadStripe(environment.stripe_publishable_key, {
+	locale: 'es',
+})
 
 export default function PaymentForm(props: {
 	clientSecret: string
