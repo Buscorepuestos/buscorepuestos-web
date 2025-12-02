@@ -804,6 +804,7 @@ import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service'
 import Image from 'next/image'
 import Swal from 'sweetalert2'
+import PaymentFormWrapper from '../checkout/PaymentForm'; // <-- Importa el nuevo wrapper
 
 const PaymentSelection = ({
 	purchaseIds,
@@ -1102,20 +1103,20 @@ const PaymentSelection = ({
 						/>
 					</div>
 				)}
-				{selectedPaymentMethod === 'stripe' && clientSecret ? (
+				{selectedPaymentMethod === 'stripe' ? (
 					<div className="flex justify-center">
-						<PaymentForm
-							clientSecret={clientSecret}
+					{isProcessing ? (
+						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+					) : (
+						<PaymentFormWrapper
+							clientSecret={clientSecret!} // El signo ! indica que estamos seguros de que no es null aquí
 							purchaseIds={purchaseIds}
 							fieldsValues={fieldsValue}
 							items={items}
 						/>
-					</div>
-				) : selectedPaymentMethod === 'stripe' && isProcessing && (
-					<div className="flex justify-center my-4">
-						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-					</div>
-				)}
+					)}
+				</div>
+				) : null}
 				{selectedPaymentMethod === 'scalapay' && (
 					<div className="flex flex-col justify-center items-center">
 						<ScalapayWidget amountSelector="#checkout-total-price-for-widget" type="checkout" />

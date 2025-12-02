@@ -56,7 +56,8 @@ export default defineConfig({
 				'app/hooks/useUserLoaction.ts',
 				'app/lib/pdfviewer.tsx',
 				'app/redux/features',
-				'app/services'
+				'app/services',
+				'app/core/components/checkout/StripeFormComponent.tsx',
 			],
 			reporter: ['text', 'html', 'json'],
 		},
