@@ -23,6 +23,7 @@ export default function PaymentForm(props: {
 		clientSecret: props.clientSecret,
 		appearance,
 	}
+	console.log('Rendering PaymentForm with clientSecret:', props.clientSecret)
 
 	return (
 		<div>

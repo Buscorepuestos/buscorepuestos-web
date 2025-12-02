@@ -939,9 +939,9 @@ const PaymentSelection = ({
 					amount: numberPriceRounded,
 					currency: 'eur',
 					cartIDs: purchaseIds,
+					userId: userId!,
+					fieldsValue,
 					automatic_payment_methods: { enabled: true },
-					userId: userId!, // Asegúrate de pasar el 
-					fieldsValue
 				});
 				setClientSecret(res.data.client_secret);
 			} catch (error) {
