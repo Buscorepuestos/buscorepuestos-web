@@ -39,16 +39,17 @@ async headers() {
             "img-src 'self' data: https:;",
             
             // Conexiones de API (fetch, axios, XHR):
-            `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com https://pay.google.com;`,
+            // --- CAMBIO CLAVE: Usamos `*.google.com` que cubre `pay.google.com` y `www.google.com` ---
+            `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com;`,
             
             // Iframes y Web Workers:
-            // --- CAMBIO CLAVE AQUÍ: Añadimos https://www.google.com ---
-            "frame-src 'self' https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com;",
+            // --- CAMBIO CLAVE: Usamos `*.google.com` ---
+            "frame-src 'self' https://*.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://*.google.com;",
 
             "worker-src 'self' blob: https://cdnjs.cloudflare.com;",
 
-            // --- CAMBIO CLAVE AQUÍ: Añadimos https://www.google.com ---
-            "child-src 'self' blob: https://*.stripe.com https://*.sumup.com https://www.google.com;",
+            // --- CAMBIO CLAVE: Usamos `*.google.com` ---
+            "child-src 'self' blob: https://*.stripe.com https://*.sumup.com https://*.google.com;",
             
             // Envío de Formularios:
             "form-action 'self' https://*.facebook.com;",
