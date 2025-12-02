@@ -107,11 +107,6 @@ const StripeForm = (props: {
 	const handleSubmit = async (e: { preventDefault: () => void }) => {
 		e.preventDefault()
 
-		await updateUser({
-			firstName: props.fieldsValues.name,
-			email: props.fieldsValues.email,
-		})
-
 		prepareLocalStorageForRedirect();
 
 		if (!stripe || !elements) {
