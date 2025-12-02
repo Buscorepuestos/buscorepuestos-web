@@ -38,7 +38,7 @@ async headers() {
         // ⚠️ ACTUALIZADO: Agregar m.stripe.com y m.stripe.network
         `connect-src 'self' blob: https://buscorepuesto-de461a6f006a.herokuapp.com http://localhost:* ws://localhost:* https://*.stripe.com https://m.stripe.com https://m.stripe.network https://*.sumup.com https://*.scalapay.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://nominatim.openstreetmap.org https://vitals.vercel-insights.com https://o4505238017015808.ingest.us.sentry.io https://*.google.com https://pay.google.com https://*.google-analytics.com https://*.googleadservices.com https://*.facebook.com https://cdn.optimizely.com https://*.hcaptcha.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://*.google.cl;`,
         
-        "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com https://*.google.com https://*.doubleclick.net;",
+        "frame-src 'self' https://*.stripe.com https://js.stripe.com https://hooks.stripe.com https://*.sumup.com https://*.scalapay.com https://*.googletagmanager.com https://*.facebook.com https://*.hcaptcha.com https://pay.google.com https://www.google.com https://*.google.com https://*.doubleclick.net;",
         
         "worker-src 'self' blob: https://cdnjs.cloudflare.com;",
         
