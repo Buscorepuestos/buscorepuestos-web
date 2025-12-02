@@ -809,7 +809,9 @@ import Image from 'next/image';
 import Swal from 'sweetalert2';
 import { CreateOrderPayload } from '../../../types/scalapay';
 
-const stripePromise = loadStripe(environment.stripe_publishable_key);
+const stripePromise = loadStripe(environment.stripe_publishable_key, {
+	locale: 'es',
+});
 
 // --- NUEVO Componente Interno para manejar Stripe ---
 const StripePaymentHandler = ({ purchaseIds, fieldsValue, items, userId }: {
@@ -823,6 +825,9 @@ const StripePaymentHandler = ({ purchaseIds, fieldsValue, items, userId }: {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        // Usamos una variable para evitar condiciones de carrera si el componente se desmonta
+        let isMounted = true; 
+
         const fetchClientSecret = async () => {
             try {
                 const totalAmount = items.reduce((acc, item) => acc + item.buscorepuestosPrice, 0);
@@ -834,21 +839,33 @@ const StripePaymentHandler = ({ purchaseIds, fieldsValue, items, userId }: {
                     fieldsValue: fieldsValue,
                     automatic_payment_methods: { enabled: true },
                 });
-                if (res.data?.client_secret) {
-                    setClientSecret(res.data.client_secret);
-                } else {
-                    throw new Error("No se recibió el client_secret de Stripe.");
+
+                if (isMounted) {
+                    if (res.data?.client_secret) {
+                        setClientSecret(res.data.client_secret);
+                    } else {
+                        throw new Error("No se recibió el client_secret de Stripe.");
+                    }
                 }
             } catch (err) {
-                console.error("Error al crear PaymentIntent de Stripe:", err);
-                setError("No se pudo iniciar el pago con tarjeta. Inténtalo de nuevo.");
+                if (isMounted) {
+                    console.error("Error al crear PaymentIntent de Stripe:", err);
+                    setError("No se pudo iniciar el pago con tarjeta. Inténtalo de nuevo.");
+                }
             } finally {
-                setIsLoading(false);
+                if (isMounted) {
+                    setIsLoading(false);
+                }
             }
         };
 
         fetchClientSecret();
-    }, [purchaseIds, fieldsValue, items, userId]);
+
+        return () => {
+            isMounted = false; // Cleanup
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // <-- EJECUTAR SOLO UNA VEZ AL MONTAR
 
     if (isLoading) {
         return (
@@ -862,8 +879,11 @@ const StripePaymentHandler = ({ purchaseIds, fieldsValue, items, userId }: {
         return <p style={{ color: 'red', marginTop: '10px' }}>{error || 'Error al cargar la pasarela de pago.'}</p>;
     }
 
+    // --- LA SOLUCIÓN CLAVE ESTÁ AQUÍ ---
+    // Usamos el `clientSecret` como `key`. Cuando `clientSecret` cambia (aunque no debería en este nuevo flujo),
+    // React destruirá el componente <Elements> anterior y creará uno nuevo, que es lo que Stripe necesita.
     return (
-        <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
+        <Elements key={clientSecret} stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' }, locale: 'es' }}>
             <StripeFormComponent
                 label={'Pagar ahora'}
                 purchaseIds={purchaseIds}
