@@ -22,7 +22,6 @@ const nextConfig = {
 
     // --- SECCIÓN DE CSP COMPLETA Y DEFINITIVA ---
 async headers() {
-        // Definimos las directivas como un objeto para evitar errores de sintaxis en strings
         const cspDirectives = {
             "default-src": ["'self'"],
             "font-src": ["'self'", "https://fonts.gstatic.com", "https://b.stripecdn.com", "data:"],
@@ -31,9 +30,10 @@ async headers() {
                 "'unsafe-eval'",
                 "'unsafe-inline'",
                 "https://js.stripe.com",
-                "https://maps.googleapis.com", 
+                "https://maps.googleapis.com",
                 "https://*.sumup.com",
                 "https://cdn.scalapay.com",
+                "https://*.scalapay.com", // Agregado para scripts dinámicos de Scalapay
                 "https://*.googletagmanager.com",
                 "https://*.google-analytics.com",
                 "https://connect.facebook.net",
@@ -42,29 +42,32 @@ async headers() {
                 "https://cdn.optimizely.com",
                 "https://*.hcaptcha.com",
                 "https://googleads.g.doubleclick.net",
-                "https://*.doubleclick.net"
+                "https://*.doubleclick.net",
+                "https://pay.google.com",
+                "https://*.google.com"
             ],
             "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://*.hcaptcha.com"],
-            "img-src": ["'self'", "data:", "https:", "blob:", "https://b.stripecdn.com", "https://*.stripe.com"],
+            "img-src": ["'self'", "data:", "https:", "blob:", "https://b.stripecdn.com", "https://*.stripe.com", "https://*.google.com", "https://www.google.com"],
             "connect-src": [
                 "'self'",
                 "blob:",
                 "https://buscorepuesto-de461a6f006a.herokuapp.com",
                 "http://localhost:*",
                 "ws://localhost:*",
-                "https://api.stripe.com", // IMPORTANTE: API explícita
+                "https://api.stripe.com",
                 "https://*.stripe.com",
                 "https://m.stripe.network",
                 "https://*.sumup.com",
                 "https://*.scalapay.com",
-                "https://api.scalapay.com", // Agregado para el error de Scalapay
+                "https://api.scalapay.com",
+                "https://cdn.scalapay.com", // CRÍTICO: Scalapay intenta descargar JSONs de traducción de aquí
                 "https://*.googleapis.com",
                 "https://identitytoolkit.googleapis.com",
                 "https://nominatim.openstreetmap.org",
                 "https://vitals.vercel-insights.com",
                 "https://o4505238017015808.ingest.us.sentry.io",
                 "https://*.google.com",
-                "https://pay.google.com",
+                "https://pay.google.com", // CRÍTICO: Para el Payment Manifest
                 "https://*.google-analytics.com",
                 "https://*.googleadservices.com",
                 "https://*.facebook.com",
@@ -78,7 +81,7 @@ async headers() {
                 "'self'",
                 "https://js.stripe.com",
                 "https://hooks.stripe.com",
-                "https://checkout.stripe.com", // Necesario para elementos nuevos
+                "https://checkout.stripe.com",
                 "https://*.stripe.com",
                 "https://*.sumup.com",
                 "https://*.scalapay.com",
@@ -90,16 +93,15 @@ async headers() {
                 "https://*.google.com",
                 "https://*.doubleclick.net"
             ],
-            "worker-src": ["'self'", "blob:", "https://m.stripe.network", "https://cdnjs.cloudflare.com"],
+            "worker-src": ["'self'", "blob:", "https://m.stripe.network", "https://js.stripe.com", "https://cdnjs.cloudflare.com"],
             "child-src": ["'self'", "blob:", "https://js.stripe.com", "https://*.sumup.com", "https://www.google.com", "https://*.google.com", "https://pay.google.com"],
-            "manifest-src": ["'self'", "https://pay.google.com", "https://*.google.com"],
+            "manifest-src": ["'self'", "https://pay.google.com", "https://*.google.com"], // CRÍTICO
             "form-action": ["'self'", "https://*.facebook.com"],
             "base-uri": ["'self'"],
             "object-src": ["'none'"],
             "upgrade-insecure-requests": []
         };
 
-        // Convertimos el objeto a string CSP válido
         const cspString = Object.entries(cspDirectives)
             .map(([key, values]) => {
                 if (values.length === 0) return key;
@@ -115,6 +117,19 @@ async headers() {
                         key: 'Content-Security-Policy',
                         value: cspString,
                     },
+                    {
+                        key: 'Permissions-Policy',
+                        // Se agrega payment=* para evitar problemas de origen en iframes anidados
+                        value: 'camera=(), microphone=(), geolocation=(self "https://nominatim.openstreetmap.org"), payment=*' 
+                    },
+                    {
+                        key: 'X-Content-Type-Options',
+                        value: 'nosniff'
+                    },
+                    {
+                        key: 'Referrer-Policy',
+                        value: 'strict-origin-when-cross-origin'
+                    }
                 ],
             },
         ];
