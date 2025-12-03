@@ -80,6 +80,7 @@ describe('localStorageMiddleware', () => {
 				quantity: 1,
 				airtableId: 'airtableId1',
 				refLocal: 'refLocal1',
+				saveStatus: 'saving',
 				idEmpresa: 'idEmpresa1',
 				isMetasync: true,
 			},

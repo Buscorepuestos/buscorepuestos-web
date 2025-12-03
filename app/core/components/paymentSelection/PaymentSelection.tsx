@@ -409,7 +409,7 @@
 // 								? 'bg-secondary-blue text-white border-secondary-blue'
 // 								: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
 // 							} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
-				
+
 // 				`}
 // 					>
 // 						{selectedPaymentMethod === 'sumup' ? (
@@ -459,7 +459,7 @@
 // 								? 'bg-secondary-blue text-white border-secondary-blue'
 // 								: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
 // 							} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
-				
+
 // 				`}
 // 					>
 // 						{selectedPaymentMethod === 'transferencia' ? (
@@ -505,7 +505,7 @@
 // 								? 'bg-secondary-blue text-white border-secondary-blue'
 // 								: 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white'
 // 							} xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw] 
-						
+
 // 						`}
 // 					>
 // 						<div className={`flex gap-4`}>
@@ -794,108 +794,17 @@
 
 // export default PaymentSelection
 'use client'
-import React, { useState, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import StripeFormComponent from '../checkout/StripeFormComponent';
+import React, { useState, useEffect, useMemo } from 'react';
 import SumupPayment from '../sumupPayment/sumupPayment';
 import TransferPayment from '../transferPayment/transferPayment';
-import { createPaymentIntent } from '../../../services/checkout/stripe.service';
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service';
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget';
 import { FormsFields } from '../checkoutPage/CheckoutPage';
-import { environment } from '../../../environment/environment';
 import Image from 'next/image';
 import Swal from 'sweetalert2';
-import { CreateOrderPayload } from '../../../types/scalapay';
-
-const stripePromise = loadStripe(environment.stripe_publishable_key, {
-	locale: 'es',
-});
-
-// --- NUEVO Componente Interno para manejar Stripe ---
-const StripePaymentHandler = ({ purchaseIds, fieldsValue, items, userId }: {
-    purchaseIds: string[];
-    fieldsValue: FormsFields;
-    items: any[];
-    userId: string;
-}) => {
-    const [clientSecret, setClientSecret] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        // Usamos una variable para evitar condiciones de carrera si el componente se desmonta
-        let isMounted = true; 
-
-        const fetchClientSecret = async () => {
-            try {
-                const totalAmount = items.reduce((acc, item) => acc + item.buscorepuestosPrice, 0);
-                const res = await createPaymentIntent({
-                    amount: Math.round(totalAmount * 100),
-                    currency: 'eur',
-                    cartIDs: purchaseIds,
-                    userId: userId,
-                    fieldsValue: fieldsValue,
-                    automatic_payment_methods: { enabled: true },
-                });
-
-                if (isMounted) {
-                    if (res.data?.client_secret) {
-                        setClientSecret(res.data.client_secret);
-                    } else {
-                        throw new Error("No se recibió el client_secret de Stripe.");
-                    }
-                }
-            } catch (err) {
-                if (isMounted) {
-                    console.error("Error al crear PaymentIntent de Stripe:", err);
-                    setError("No se pudo iniciar el pago con tarjeta. Inténtalo de nuevo.");
-                }
-            } finally {
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        fetchClientSecret();
-
-        return () => {
-            isMounted = false; // Cleanup
-        };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // <-- EJECUTAR SOLO UNA VEZ AL MONTAR
-
-    if (isLoading) {
-        return (
-            <div className="flex justify-center my-4 items-center">
-                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-            </div>
-        );
-    }
-
-    if (error || !clientSecret) {
-        return <p style={{ color: 'red', marginTop: '10px' }}>{error || 'Error al cargar la pasarela de pago.'}</p>;
-    }
-
-    // --- LA SOLUCIÓN CLAVE ESTÁ AQUÍ ---
-    // Usamos el `clientSecret` como `key`. Cuando `clientSecret` cambia (aunque no debería en este nuevo flujo),
-    // React destruirá el componente <Elements> anterior y creará uno nuevo, que es lo que Stripe necesita.
-    return (
-        <Elements key={clientSecret} stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' }, locale: 'es' }}>
-            <StripeFormComponent
-                label={'Pagar ahora'}
-                purchaseIds={purchaseIds}
-                fieldsValues={fieldsValue}
-            />
-        </Elements>
-    );
-};
-
+import api from '../../../api/api';
 
 const PaymentSelection = ({
-	purchaseIds,
 	fieldsValue,
 	numberPriceRounded,
 	numberPrice,
@@ -940,11 +849,23 @@ const PaymentSelection = ({
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
 		'stripe' | 'sumup' | 'transferencia' | 'scalapay' | null
 	>(null)
-	const [clientSecret, setClientSecret] = useState<string | null>(null)
 	const [isProcessing, setIsProcessing] = useState(false)
 	const [isFormValid, setIsFormValid] = useState(false)
+	const [isCartReady, setIsCartReady] = useState(false);
 
 	const userId = typeof window !== 'undefined' ? localStorage.getItem('airtableUserId') : null
+
+	const { purchaseIds, isReady } = useMemo(() => {
+		const ids = items.map(item => item.purchaseId).filter(Boolean) as string[];
+		// El carrito está listo si TODOS los ítems tienen estado 'saved'
+		const allSaved = items.length > 0 && items.every(item => item.saveStatus === 'saved');
+		return { purchaseIds: ids, isReady: allSaved };
+	}, [items]);
+
+	// Actualizamos el estado local `isCartReady`
+	useEffect(() => {
+		setIsCartReady(isReady);
+	}, [isReady])
 
 	useEffect(() => {
 		const isFieldsComplete =
@@ -968,7 +889,7 @@ const PaymentSelection = ({
 
 	const prepareLocalStorageForRedirect = (paymentMethod: 'stripe' | 'scalapay' | 'sumup' | 'transferencia') => {
 		console.log(`Guardando datos del pedido en localStorage para ${paymentMethod}...`);
-		
+
 		const pendingOrder = {
 			paymentMethod,
 			billingData: {
@@ -985,7 +906,7 @@ const PaymentSelection = ({
 				phone: Number(fieldsValue.phoneNumber),
 				province: fieldsValue.province,
 			},
-			extraData: { 
+			extraData: {
 				email: fieldsValue.email,
 				billingAddress: fieldsValue.billingAddress,
 				billingAddressExtra: fieldsValue.billingAddressExtra,
@@ -994,11 +915,22 @@ const PaymentSelection = ({
 			},
 			cart: items,
 		};
-		
+
 		localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
 	};
 
 	const handlePaymentSelection = async (method: 'stripe' | 'sumup' | 'transferencia' | 'scalapay') => {
+		if (!isCartReady) {
+			Swal.fire({
+				icon: 'info',
+				title: 'Un momento...',
+				text: 'Estamos preparando tu carrito. Por favor, espera unos segundos.',
+				timer: 2000,
+				showConfirmButton: false,
+			});
+			return;
+		}
+
 		if (!isFormValid) {
 			backToInputRefWhenError();
 			Swal.fire({
@@ -1021,22 +953,56 @@ const PaymentSelection = ({
 			}));
 		}
 
-		if (method === 'stripe' && !clientSecret) {
+		if (method === 'stripe') {
+			const prepareLocalStorageForRedirect = () => {
+				const userId = localStorage.getItem('airtableUserId');
+				const pendingOrder = {
+					paymentMethod: 'stripe',
+					billingData: {
+						Compras: purchaseIds,
+						Usuarios: [userId!],
+						transfer: false,
+						address: fieldsValue.shippingAddress,
+						country: fieldsValue.country,
+						location: fieldsValue.city,
+						addressNumber: fieldsValue.addressExtra,
+						name: fieldsValue.name,
+						cp: fieldsValue.zip,
+						nif: fieldsValue.nif,
+						phone: Number(fieldsValue.phoneNumber),
+						province: fieldsValue.province,
+					},
+					extraData: {
+						email: fieldsValue.email,
+						billingAddress: fieldsValue.billingAddress,
+						billingAddressExtra: fieldsValue.billingAddressExtra,
+						billingProvince: fieldsValue.billingProvince,
+						billingZip: fieldsValue.billingZip,
+					},
+					cart: JSON.parse(localStorage.getItem('cart') || '[]'),
+				};
+				localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
+			};
+			prepareLocalStorageForRedirect();
 			setIsProcessing(true);
 			try {
-				const res = await createPaymentIntent({
-					amount: numberPriceRounded,
-					currency: 'eur',
-					cartIDs: purchaseIds,
-					userId: userId!,
+				const response = await api.post('/stripe/create-checkout-session', {
+					items,
+					userId,
+					purchaseIds,
 					fieldsValue,
-					automatic_payment_methods: { enabled: true },
 				});
-				setClientSecret(res.data.client_secret);
-			} catch (error) {
-				console.error("Error creando PaymentIntent de Stripe:", error);
-				Swal.fire('Error', 'No se pudo iniciar el pago con tarjeta. Inténtalo de nuevo.', 'error');
-				setSelectedPaymentMethod(null);
+
+				const { url } = response.data;
+				if (url) {
+					// Redirigir al usuario a la página de pago de Stripe
+					window.location.href = url;
+				} else {
+					throw new Error("No se recibió la URL de checkout de Stripe.");
+				}
+			} catch (error: any) {
+				console.error("Error al crear la sesión de checkout de Stripe:", error);
+				Swal.fire('Error', error.response?.data?.message || 'No se pudo iniciar el pago. Inténtalo de nuevo.', 'error');
 			} finally {
 				setIsProcessing(false);
 			}
@@ -1048,95 +1014,104 @@ const PaymentSelection = ({
 		prepareLocalStorageForRedirect('scalapay');
 
 		try {
-        // No guardamos en localStorage aquí, el backend se encarga de todo.
-        const response = await createScalapayOrder({
-            purchaseIds,
-            userId: userId!,
-            fieldsValue, // <-- Pasamos el objeto completo del formulario
-            items, // <-- Pasamos los items para calcular el total en el backend
-        });
+			// No guardamos en localStorage aquí, el backend se encarga de todo.
+			const response = await createScalapayOrder({
+				purchaseIds,
+				userId: userId!,
+				fieldsValue, // <-- Pasamos el objeto completo del formulario
+				items, // <-- Pasamos los items para calcular el total en el backend
+			});
 
-        if (response.checkoutUrl) {
-            window.location.href = response.checkoutUrl;
-        } else {
-            throw new Error('La respuesta del servidor no contenía una URL de checkout.');
-        }
-    } catch (error: any) {
-        console.error('Error al preparar el pago con Scalapay:', error);
-        Swal.fire('Error', error.message || 'No se pudo iniciar el pago con Scalapay.', 'error');
-		setIsProcessing(false);
-    } 
+			if (response.checkoutUrl) {
+				window.location.href = response.checkoutUrl;
+			} else {
+				throw new Error('La respuesta del servidor no contenía una URL de checkout.');
+			}
+		} catch (error: any) {
+			console.error('Error al preparar el pago con Scalapay:', error);
+			Swal.fire('Error', error.message || 'No se pudo iniciar el pago con Scalapay.', 'error');
+			setIsProcessing(false);
+		}
 	};
-	
-	const renderPaymentOptions = (enabled: boolean) => {
+
+	const renderPaymentOptions = (enabledForm: boolean, enabledCart: boolean) => {
 		const getButtonStyle = (method: string) => {
-			if (!enabled) {
+			if (!enabledForm || !enabledCart) {
 				return 'bg-light-grey text-alter-grey border-light-grey cursor-not-allowed';
 			}
-			
+
 			// Si está seleccionado, aplicamos el fondo azul directamente y quitamos el bg-white
 			if (selectedPaymentMethod === method) {
-				return 'bg-secondary-blue text-white border-secondary-blue'; 
+				return 'bg-secondary-blue text-white border-secondary-blue';
 			}
-			
+
 			// Si no está seleccionado pero está habilitado
 			return 'bg-white text-secondary-blue border-secondary-blue hover:bg-secondary-blue hover:text-white';
 		};
 
-        const iconSrc = (method: string, defaultSrc: string, selectedSrc: string) => selectedPaymentMethod === method ? selectedSrc : defaultSrc;
+		const iconSrc = (method: string, defaultSrc: string, selectedSrc: string) => selectedPaymentMethod === method ? selectedSrc : defaultSrc;
 
-        return (
-            <div className="flex mobile:flex-wrap justify-between mb-6 gap-3">
-                <button
-                    onClick={() => enabled && handlePaymentSelection('sumup')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
+		return (
+			<div>
+				{!isCartReady && items.length > 0 && (
+					<div className="flex justify-center items-center my-4 p-2 bg-yellow-100 border border-yellow-300 rounded-md">
+						<div className="w-5 h-5 border-2 border-yellow-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+						<p className="ml-3 text-sm text-yellow-800">Sincronizando carrito...</p>
+					</div>
+				)}
+
+				<div className="flex mobile:flex-wrap justify-between mb-6 gap-3">
+					<button
+						onClick={() => enabledForm && enabledCart && handlePaymentSelection('sumup')}
+						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
 					gap-3 items-center justify-center px-6 py-2 border-[1px] 
 					rounded-xl transition-all duration-300 ${getButtonStyle('sumup')}
 					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
 					`}
-                >
-                    <Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={46} height={46} className="w-14 h-14 rounded-md" />
-                    Pago con tarjeta
-                </button>
-                <button
-                    onClick={() => enabled && handlePaymentSelection('transferencia')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
+					>
+						<Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={46} height={46} className="w-14 h-14 rounded-md" />
+						Pago con tarjeta
+					</button>
+					<button
+						onClick={() => enabledForm && enabledCart && handlePaymentSelection('transferencia')}
+						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
 					gap-3 items-center justify-center px-6 py-2 border-[1px] 
 					rounded-xl transition-all duration-300 ${getButtonStyle('transferencia')}
 					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
 					`}
-                >
-                    <Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={46} height={46} className="w-14 h-14 rounded-md" />
-                    Transferencia
-                </button>
-                {/* <button
-                    onClick={() => enabled && handlePaymentSelection('stripe')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col gap-3' : 'gap-6'} 
+					>
+						<Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={46} height={46} className="w-14 h-14 rounded-md" />
+						Transferencia
+					</button>
+					<button
+						onClick={() => enabledForm && enabledCart && handlePaymentSelection('stripe')}
+						className={`w-full flex ${isProductPage ? 'sm:flex-col gap-3' : 'gap-6'} 
 					items-center justify-center px-4 py-2 border-[1px] rounded-xl transition-all 
 					duration-300 ${getButtonStyle('stripe')}
 					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
 					`}
-                >
-                    <div className="flex gap-4">
-                        <Image src="/klarna.png" alt="klarna" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
-                        <Image src="/paypal.png" alt="paypal" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
-                    </div>
-                    <span>En 3 plazos, Paypal</span>
-                </button> */}
-                <button
-                    onClick={() => enabled && handlePaymentSelection('scalapay')}
-                    className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} items-center 
+					>
+						<div className="flex gap-4">
+							<Image src="/klarna.png" alt="klarna" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
+							<Image src="/paypal.png" alt="paypal" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
+						</div>
+						<span>En 3 plazos, Paypal</span>
+					</button>
+					<button
+						onClick={() =>enabledForm && enabledCart && handlePaymentSelection('scalapay')}
+						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} items-center 
 					justify-center px-4 py-4 border-[1px] rounded-xl transition-all duration-300 
 					${getButtonStyle('scalapay')}
 					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw] gap-3
 					`}
-                >
-                    <Image src="/scalapay3.png" alt="scalapay" width={80} height={20} />
-                    <span>Paga en 3 o 4 plazos</span>
-                </button>
-            </div>
-        );
-    };
+					>
+						<Image src="/scalapay3.png" alt="scalapay" width={80} height={20} />
+						<span>Paga en 3 o 4 plazos</span>
+					</button>
+				</div>
+			</div>
+		);
+	};
 
 
 	return (
@@ -1144,14 +1119,14 @@ const PaymentSelection = ({
 			<div style={{ display: 'none' }}>
 				<span id="checkout-total-price-for-widget">{totalPrice}</span>
 			</div>
-			
-			{renderPaymentOptions(isFormValid)}
+
+			{renderPaymentOptions(isFormValid, isCartReady)}
 
 			{!isFormValid && (
-                <p className="text-center text-sm text-red-500 my-4">
-                    *Para activar los métodos de pago, todos los campos de envío deben estar completos.
-                </p>
-            )}
+				<p className="text-center text-sm text-red-500 my-4">
+					*Para activar los métodos de pago, todos los campos de envío deben estar completos.
+				</p>
+			)}
 
 			<div className="mt-8">
 				{selectedPaymentMethod === 'sumup' && (
@@ -1176,7 +1151,7 @@ const PaymentSelection = ({
 								phone: Number(fieldsValue.phoneNumber),
 								province: fieldsValue.billingProvince,
 							}}
-							extraData={{ 
+							extraData={{
 								email: fieldsValue.email,
 							}}
 						/>
@@ -1191,20 +1166,20 @@ const PaymentSelection = ({
 						/>
 					</div>
 				)}
-				{selectedPaymentMethod === 'stripe' ? (
+				{/* {selectedPaymentMethod === 'stripe' ? (
 					<div className="flex justify-center">
-					{isProcessing ? (
-						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-					) : (
-						<StripePaymentHandler
-							purchaseIds={purchaseIds}
-                        fieldsValue={fieldsValue}
-                        items={items}
-                        userId={userId!}
-						/>
-					)}
-				</div>
-				) : null}
+						{isProcessing ? (
+							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+						) : (
+							<StripePaymentHandler
+								purchaseIds={purchaseIds}
+								fieldsValue={fieldsValue}
+								items={items}
+								userId={userId!}
+							/>
+						)}
+					</div>
+				) : null} */}
 				{selectedPaymentMethod === 'scalapay' && (
 					<div className="flex flex-col justify-center items-center">
 						<ScalapayWidget amountSelector="#checkout-total-price-for-widget" type="checkout" />
