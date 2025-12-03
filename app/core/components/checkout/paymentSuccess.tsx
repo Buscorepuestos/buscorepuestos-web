@@ -468,11 +468,11 @@ const PaymentSuccess = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const paymentStatus = searchParams.get('redirect_status'); // Stripe
+       const sessionId = searchParams.get('session_id'); // Stripe
         const scalapayStatus = searchParams.get('status'); // Scalapay
         const isSumupSuccess = searchParams.get('pagoSumup') === 'true'; // SumUp
 
-        if (paymentStatus === 'succeeded' || scalapayStatus === 'SUCCESS' || isSumupSuccess) {
+        if (sessionId || scalapayStatus === 'SUCCESS' || isSumupSuccess) {
             console.log("Regreso exitoso del usuario a la página de confirmación.");
             const pendingOrderJSON = localStorage.getItem('pendingOrder');
 
