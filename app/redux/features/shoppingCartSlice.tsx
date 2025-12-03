@@ -44,6 +44,7 @@ export interface CartItem {
     stock: boolean;
     airtableId: string;
     purchaseId?: string;
+    saveStatus: 'idle' | 'saving' | 'saved' | 'error';
     refLocal?: string;
     idEmpresa?: string;
     isMetasync?: boolean;
@@ -93,6 +94,7 @@ export const cartSlice = createSlice({
                     refLocal: action.payload.refLocal || '',
                     idEmpresa: action.payload.idEmpresa || '',
                     isMetasync: action.payload.isMetasync || false,
+                    saveStatus: 'saving',
                 };
                 state.items.push(newItem);
             }
@@ -114,10 +116,15 @@ export const cartSlice = createSlice({
                 const item = state.items.find((item) => item._id === productId);
                 if (item) {
                     item.purchaseId = purchaseId;
+                    item.saveStatus = 'saved';
                 }
             })
             .addCase(savePurchaseAsync.rejected, (state, action) => {
                 console.error('Failed to save purchase');
+                const item = state.items.find(item => item._id === action.meta.arg.product._id);
+                if (item) {
+                    item.saveStatus = 'error'; // <-- CAMBIO: Marca el error
+                }
             })
             .addCase(removePurchaseAsync.fulfilled, (state, action: PayloadAction<string>) => {
                 state.items = state.items.filter(item => item._id !== action.payload);
