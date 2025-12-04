@@ -1,14 +1,25 @@
- import { FormsFields } from '../../../core/components/checkoutPage/CheckoutPage'
-declare namespace JSX {
-    interface IntrinsicElements {
-        'scalapay-widget': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-            'amount-selectors'?: string;
-            environment?: 'integration' | 'production';
-            'merchant-token'?: string;
-            type?: 'product' | 'cart' | 'checkout';
-            locale?: 'it' | 'fr' | 'es' | 'en';
-            // Puedes añadir más atributos aquí si los necesitas en el futuro
+import React from 'react';
+import { FormsFields } from '../../../core/components/checkoutPage/CheckoutPage'
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            'scalapay-widget': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+                'amount-selectors'?: string;
+                environment?: string; // Cambiado a string genérico para evitar conflictos, o usa 'integration' | 'production' si prefieres estricto
+                'merchant-token'?: string;
+                type?: string;
+                locale?: string;
+            };
+        }
+    }
+
+    // También añadimos la definición de Window aquí para que sea global
+    interface Window {
+        Scalapay?: {
+            init: (config?: any) => void;
         };
+        _scalapayScriptLoadingPromise?: Promise<void>;
     }
 }
 
