@@ -873,18 +873,6 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										fieldsValue={fieldsValue}
 										numberPriceRounded={numberPriceRounded}
 										numberPrice={numberPrice}
-										nameRef={nameRef}
-										emailRef={emailRef}
-										nifRef={nifRef}
-										phoneNumberRef={phoneNumberRef}
-										shippingAddressRef={
-											shippingAddressRef
-										}
-										addressExtraRef={addressExtraRef}
-										zipRef={zipRef}
-										cityRef={cityRef}
-										provinceRef={provinceRef}
-										countryRef={countryRef}
 										setIsScrolledInputs={
 											setIsScrolledInputs
 										}
