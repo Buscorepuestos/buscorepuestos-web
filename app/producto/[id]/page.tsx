@@ -67,8 +67,9 @@ const fetchDistributorData = async (id: string) => {
 	}
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-	const data = await fetchProductData(params.id)
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params
+	const data = await fetchProductData(id)
 
 	return {
 		title: `${data?.title}`,
@@ -96,8 +97,9 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 // 	}
 // }
 
-export default async function Product({ params }: { params: { id: string } }) {
-	const data = await fetchProductData(params.id)
+export default async function Product({ params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params
+	const data = await fetchProductData(id)
 	const distributorData = await fetchDistributorData(data?.distributor)
 	let metasyncProduct: AxiosResponse<PartInterface> | null = null
 
@@ -133,7 +135,7 @@ export default async function Product({ params }: { params: { id: string } }) {
 				)}
 				<meta
 					property="og:url"
-					content={`${environment.base_url}/producto/${params.id}`}
+					content={`${environment.base_url}/producto/${id}`}
 				/>
 				<meta property="og:type" content="product" />
 			</Head>
