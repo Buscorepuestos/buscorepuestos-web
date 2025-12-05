@@ -150,16 +150,13 @@ const SCRIPT_ID = "scalapay-widget-script";
 
 // --- Lógica de carga del script (Singleton) ---
 const loadScalapayScript = (): Promise<void> => {
-    if (typeof window === 'undefined') return Promise.resolve(); // Seguridad para SSR
+    if (typeof window === 'undefined') return Promise.resolve();
 
-    // Si ya se está cargando, devolver la promesa existente
     if (window._scalapayScriptLoadingPromise) {
         return window._scalapayScriptLoadingPromise;
     }
 
-    // Crear nueva promesa de carga
     window._scalapayScriptLoadingPromise = new Promise((resolve, reject) => {
-        // Verificar si ya existe en el DOM
         if (document.getElementById(SCRIPT_ID)) {
             if (window.Scalapay) {
                 resolve();
@@ -194,8 +191,11 @@ const loadScalapayScript = (): Promise<void> => {
 };
 
 // --- Componente Widget ---
-const ScalapayWidget: React.FC<ScalapayWidgetProps> = ({ amountSelector, type = 'product', locale = 'es' }) => {
-    // Serializar el selector para pasarlo al web component
+const ScalapayWidget: React.FC<ScalapayWidgetProps> = ({ 
+    amountSelector, 
+    type = 'product', 
+    locale = 'es' 
+}) => {
     const amountSelectorsString = JSON.stringify([amountSelector]);
 
     useEffect(() => {
@@ -222,15 +222,13 @@ const ScalapayWidget: React.FC<ScalapayWidgetProps> = ({ amountSelector, type = 
         return () => { isMounted = false; };
     }, [type, amountSelector]);
 
-    return (
-        <scalapay-widget
-            amount-selectors={amountSelectorsString}
-            environment={INTEGRATION_ENVIRONMENT}
-            merchant-token={INTEGRATION_MERCHANT_TOKEN}
-            type={type}
-            locale={locale}
-        />
-    );
+    return React.createElement('scalapay-widget', {
+        'amount-selectors': amountSelectorsString,
+        'environment': INTEGRATION_ENVIRONMENT,
+        'merchant-token': INTEGRATION_MERCHANT_TOKEN,
+        'type': type,
+        'locale': locale
+    });
 };
 
 export default ScalapayWidget;
