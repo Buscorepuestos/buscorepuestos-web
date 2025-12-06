@@ -1,8 +1,7 @@
-import { T } from 'vitest/dist/reporters-yx5ZTtEV.js'
 import api from '../../api/api'
 import { AxiosResponse } from 'axios'
 
-export const getProducts = async (size: number = 16, sort: string = 'created', order: string = 'desc'): Promise<AxiosResponse<T>> => {
+export const getProducts = async (size: number = 16, sort: string = 'created', order: string = 'desc'): Promise<AxiosResponse<any>> => {
 	try {
 		return await api.get(`/products/store?size=${size}&sort=${sort}&order=${order}`)
 	} catch (error) {
@@ -11,7 +10,7 @@ export const getProducts = async (size: number = 16, sort: string = 'created', o
 	}
 }
 
-export const updateMetasyncProduct = async (id: string, data: any): Promise<AxiosResponse<T>> => {
+export const updateMetasyncProduct = async (id: string, data: any): Promise<AxiosResponse<any>> => {
 	try {
 		return await api.patch(`/products/metasyncStock/${id}`, data)
 	} catch (error) {

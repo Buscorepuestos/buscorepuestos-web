@@ -2,7 +2,7 @@ import { expect, test, describe, afterEach, beforeEach } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import Banner from '../Banner'
 
-const mockUrl = 'https://picsum.photos/200/300'
+const mockUrl = '"https://picsum.photos/200/300"'
 const mockHeight = '300'
 const mockColor = 'grey'
 

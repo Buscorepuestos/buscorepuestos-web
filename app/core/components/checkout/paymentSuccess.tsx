@@ -468,41 +468,57 @@ const PaymentSuccess = () => {
     const router = useRouter();
 
     useEffect(() => {
-       const sessionId = searchParams.get('session_id'); // Stripe
-        const scalapayStatus = searchParams.get('status'); // Scalapay
-        const isSumupSuccess = searchParams.get('pagoSumup') === 'true'; // SumUp
+        const handlePaymentResult = async () => {
+            const sessionId = searchParams.get('session_id'); // Stripe
+            const scalapayStatus = searchParams.get('status'); // Scalapay
+            const isSumupSuccess = searchParams.get('pagoSumup') === 'true'; // SumUp
 
-        if (sessionId || scalapayStatus === 'SUCCESS' || isSumupSuccess) {
-            console.log("Regreso exitoso del usuario a la página de confirmación.");
-            const pendingOrderJSON = localStorage.getItem('pendingOrder');
+            if (sessionId || scalapayStatus === 'SUCCESS' || isSumupSuccess) {
+                console.log("Regreso exitoso del usuario a la página de confirmación.");
+                const pendingOrderJSON = localStorage.getItem('pendingOrder');
 
-            if (pendingOrderJSON) {
-                const pendingOrder = JSON.parse(pendingOrderJSON);
-                setOrderData(pendingOrder);
+                if (pendingOrderJSON) {
+                    const pendingOrder = JSON.parse(pendingOrderJSON);
+                    setOrderData(pendingOrder);
 
-                // Limpiar el estado del frontend
-                dispatch(clearCart());
-                localStorage.removeItem('pendingOrder');
-                localStorage.setItem('lastBillingSuccess', pendingOrderJSON); // Guardar por si el usuario recarga
+                    // Limpiar el estado del frontend
+                    dispatch(clearCart());
+                    localStorage.removeItem('pendingOrder');
+                    localStorage.setItem('lastBillingSuccess', pendingOrderJSON); // Guardar por si el usuario recarga
 
-                setStatus('success');
-            } else {
-                // Esto puede pasar si el usuario recarga la página. Buscamos el backup.
-                const lastBillingJSON = localStorage.getItem('lastBillingSuccess');
-                if (lastBillingJSON) {
-                    setOrderData(JSON.parse(lastBillingJSON));
                     setStatus('success');
                 } else {
-                    console.warn("No se encontró 'pendingOrder' ni 'lastBillingSuccess'. Mostrando éxito genérico.");
-                    // Asumimos éxito para no confundir al usuario. El webhook es la fuente de verdad.
-                    setStatus('success');
+                    // Esto puede pasar si el usuario recarga la página. Buscamos el backup.
+                    const lastBillingJSON = localStorage.getItem('lastBillingSuccess');
+                    if (lastBillingJSON) {
+                        setOrderData(JSON.parse(lastBillingJSON));
+                        setStatus('success');
+                    } else {
+                        console.warn("No se encontró 'pendingOrder' ni 'lastBillingSuccess'. Mostrando éxito genérico.");
+                        // Asumimos éxito para no confundir al usuario. El webhook es la fuente de verdad.
+                        setStatus('success');
+                    }
                 }
+            } else {
+                setErrorMessage('El pago fue cancelado o no se pudo completar.');
+                setStatus('error');
             }
-        } else {
-            setErrorMessage('El pago fue cancelado o no se pudo completar.');
-            setStatus('error');
-        }
+        };
+        handlePaymentResult();
     }, [searchParams, dispatch]);
+
+    useEffect(() => {
+        if (status === 'error') {
+            Swal.fire({
+                title: 'Pago no completado',
+                text: errorMessage || 'Por favor, inténtalo de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Volver al carrito',
+            }).then(() => {
+                router.push('/verificacion-pago');
+            });
+        }
+    }, [status, errorMessage, router])
 
     const {
         billingData, extraData, cart
@@ -518,13 +534,7 @@ const PaymentSuccess = () => {
     }
 
     if (status === 'error') {
-        Swal.fire({
-            title: 'Pago no completado',
-            text: errorMessage || 'Por favor, inténtalo de nuevo.',
-            icon: 'error',
-            confirmButtonText: 'Volver al carrito',
-        }).then(() => router.push('/verificacion-pago'));
-        return null;
+        return null; // El useEffect se encarga de mostrar el Swal y redirigir
     }
 
     // Renderizado de la página de éxito
@@ -595,14 +605,21 @@ const PaymentSuccess = () => {
                                 </p>
                                 <div className="space-y-5">
                                     {cart.map((product: any) => (
-                                        <div key={product.id} className="flex items-center gap-5">
-                                            <Image
-                                                src={product.images[0]}
-                                                alt={product.title}
-                                                width={90}
-                                                height={90}
-                                                className="rounded-lg object-cover flex-shrink-0"
-                                            />
+                                        <div key={product._id} className="flex items-center gap-5">
+                                            {product.images && product.images[0] ? (
+                                                <Image
+                                                    src={product.images[0]}
+                                                    alt={product.title}
+                                                    width={90}
+                                                    height={90}
+                                                    className="rounded-lg object-cover flex-shrink-0"
+                                                />
+                                            ) : (
+                                                <div className="w-[90px] h-[90px] bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500">
+                                                    Sin imagen
+                                                </div>
+                                            )}
+
                                             <p className='text-base md:text-lg text-dark-grey font-medium'>{product.title}</p>
                                         </div>
                                     ))}
@@ -630,7 +647,11 @@ const PaymentSuccess = () => {
 
 // Componente Wrapper para Suspense
 const PaymentSuccessContent = () => (
-    <Suspense fallback={<div>Cargando...</div>}>
+    <Suspense fallback={
+        <div className="flex flex-col items-center justify-center min-h-screen">
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+        </div>
+    }>
         <PaymentSuccess />
     </Suspense>
 );
