@@ -1,5 +1,5 @@
 'use client'
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState, use } from 'react'
 import CardPrice from '../../core/components/cards/CardPrice'
 import SearchBar from '../../core/components/SearchBar'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
@@ -13,9 +13,10 @@ import { fetchProducts, setCurrentPage } from '../../redux/features/productSearc
 import { useUserLocation } from '../../hooks/useUserLoaction'
 import FilterTag from '../../core/components/filterTag/FilterTag'
 
-export default function Store({ params }: { params: { search: string } }) {
+export default function Store({ params }: { params: Promise<{ search: string }> }) {
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const { search } = use(params)
 
     const {
         searchResults: products,
@@ -51,7 +52,7 @@ export default function Store({ params }: { params: { search: string } }) {
 
     // Efecto #2: Se ejecuta cuando el parámetro de la URL cambia (búsqueda inicial)
     useEffect(() => {
-        const searchQuery = decodeURIComponent(params.search || '');
+        const searchQuery = decodeURIComponent(search || '');
         setInputValue(searchQuery);
 
         // Una nueva búsqueda desde la URL debe ser una búsqueda "limpia"
@@ -62,7 +63,7 @@ export default function Store({ params }: { params: { search: string } }) {
 
         // Volvemos a la página 1 para la nueva búsqueda
         dispatch(setCurrentPage(1));
-    }, [params.search, dispatch]);
+    }, [search, dispatch]);
 
     // Efecto #2: El motor de búsqueda central. Se ejecuta cuando CUALQUIER filtro cambia.
     useEffect(() => {

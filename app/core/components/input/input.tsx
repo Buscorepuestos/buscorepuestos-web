@@ -6,7 +6,7 @@ interface InputProps {
 	value?: string
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	cssClass?: string
-	ref?: React.RefObject<HTMLInputElement>
+	ref?: React.RefObject<HTMLInputElement | null> 
 	isScrolled?: boolean
 	disabled?: boolean
 	buttonText?: string // Añadido para el texto del botón

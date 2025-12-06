@@ -818,16 +818,6 @@ const PaymentSelection = ({
 	fieldsValue: FormsFields
 	numberPriceRounded: number
 	numberPrice: number
-	nameRef: React.RefObject<HTMLInputElement>
-	emailRef: React.RefObject<HTMLInputElement>
-	nifRef: React.RefObject<HTMLInputElement>
-	phoneNumberRef: React.RefObject<HTMLInputElement>
-	shippingAddressRef: React.RefObject<HTMLInputElement>
-	addressExtraRef: React.RefObject<HTMLInputElement>
-	zipRef: React.RefObject<HTMLInputElement>
-	cityRef: React.RefObject<HTMLInputElement>
-	provinceRef: React.RefObject<HTMLInputElement>
-	countryRef: React.RefObject<HTMLInputElement>
 	setIsScrolledInputs: React.Dispatch<
 		React.SetStateAction<{
 			name: boolean; email: boolean; nif: boolean; phoneNumber: boolean;

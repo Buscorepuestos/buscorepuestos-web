@@ -20,6 +20,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({ options, placeholder, n
                 id={name}
                 name={name}
                 onChange={onChange}
+                defaultValue=""
                 className={`
                     appearance-none border-[1px] border-secondary-blue rounded-xl 
                     w-full text-custom-grey font-tertiary-font p-2 focus:border-secondary-blue 
@@ -27,7 +28,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({ options, placeholder, n
                     xl:text-[0.9vw] lg:text-[1vw] md:text-[1.4vw] sm:text-[1.6vw] mobile:text-[2.8vw]
                 `}
             >
-                <option selected hidden>{placeholder}</option>
+                <option value="" disabled hidden>{placeholder}</option>
                 {options.map((option, index) => (
                     <option key={index} value={option.value}>{option.label}</option>
                 ))}
