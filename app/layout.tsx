@@ -56,6 +56,19 @@ export default function RootLayout({
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center min-h-screen`}
 			>
+				<Script
+					src="https://www.googletagmanager.com/gtag/js?id=AW-16784645628"
+					strategy="afterInteractive"
+				/>
+				{/* Configuración de gtag */}
+				<Script id="google-ads-tag" strategy="afterInteractive">
+					{`
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', 'AW-16784645628');
+					`}
+				</Script>
 				{/* Google Tag Manager noscript (para casos donde JS está deshabilitado) */}
 				<noscript>
 					<iframe
