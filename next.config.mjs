@@ -9,6 +9,7 @@ const nextConfig = {
             { protocol: 'https', hostname: 'cdn15.metasync.com' },
             { protocol: 'https', hostname: 'cdn16.metasync.com' },
             { protocol: 'https', hostname: 'dl.airtable.com' },
+            { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
         ],
     },
     async rewrites() {

@@ -7,18 +7,16 @@ import SearchBar from '@/app/core/components/SearchBar'
 import Slider from '@/app/core/components/Slider'
 import CardPrice from '@/app/core/components/cards/CardPrice'
 import CardValoration from '@/app/core/components/cards/CardValoration'
+import CardReview from './core/components/cards/CardReview'
 import TagBanner from './core/components/tags/TagBanner'
 import Dropdown from './core/components/Dropdown'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from './redux/store'
 import { IProductMongoose } from './types/product'
-import { environment } from './environment/environment'
+import { getGoogleReviews } from './services/reviews/reviews.service'
 import api from './api/api'
-
-const appID = environment.algoliaAppID
-const apiKey = environment.algoliaAPIKey
-const indexName = environment.algoliaIndexName
+import Star from './core/components/svg/star'
 
 const cardInfoPropsArray = [
 	{
@@ -262,6 +260,7 @@ export default function Home() {
 	const [loadingLatest, setLoadingLatest] = useState(true);
 	const [loadingRandom, setLoadingRandom] = useState(true);
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null);
+	const [reviews, setReviews] = useState<any[]>([]);
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -281,15 +280,15 @@ export default function Home() {
 	}
 
 	const handleSearch = () => {
-        // Evita búsquedas vacías o dobles clics
+		// Evita búsquedas vacías o dobles clics
 		if (isSearching || !searchTerm) {
-            return;
-        }
-        
-        // Activa el loader
-        setIsSearching(true);
-        
-        // Navega a la página de resultados
+			return;
+		}
+
+		// Activa el loader
+		setIsSearching(true);
+
+		// Navega a la página de resultados
 		router.push(`/tienda/${searchTerm}`);
 	}
 
@@ -315,6 +314,12 @@ export default function Home() {
 			}
 			setLoadingRandom(false);
 		};
+
+		const fetchReviews = async () => {
+			const data = await getGoogleReviews();
+			setReviews(data);
+		}
+		fetchReviews();
 
 		fetchHomeProducts();
 		dispatch({ type: 'auth/checkUserStatus' });
@@ -614,34 +619,34 @@ export default function Home() {
 			</section>
 
 			<section className="pt-[30px]">
-                <div className="flex justify-start ml-36 mobile:ml-12">
-                    <h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
-                        Novedades
-                    </h2>
-                </div>
-                {loadingLatest ? (
-                    <div className="flex justify-center items-center h-48">
-                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-                    </div>
-                ) : (
-                    <Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
-                        {latestProducts.map((product, index) => (
-                            <SwiperSlide key={index} className="flex justify-center items-center">
-                                <CardPrice
-                                    title={product.title}
-                                    reference={product.mainReference || ''}
-                                    description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-                                    price={product.buscorepuestosPrice || 0}
-                                    image={product.images?.[0] || '/nodisponible.png'}
-                                    handle={() => handle(product._id)}
-                                    id={product._id}
-                                    loading={loadingPurchase === product._id}
-                                />
-                            </SwiperSlide>
-                        ))}
-                    </Slider>
-                )}
-            </section>
+				<div className="flex justify-start ml-36 mobile:ml-12">
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
+						Novedades
+					</h2>
+				</div>
+				{loadingLatest ? (
+					<div className="flex justify-center items-center h-48">
+						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+					</div>
+				) : (
+					<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+						{latestProducts.map((product, index) => (
+							<SwiperSlide key={index} className="flex justify-center items-center">
+								<CardPrice
+									title={product.title}
+									reference={product.mainReference || ''}
+									description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+									price={product.buscorepuestosPrice || 0}
+									image={product.images?.[0] || '/nodisponible.png'}
+									handle={() => handle(product._id)}
+									id={product._id}
+									loading={loadingPurchase === product._id}
+								/>
+							</SwiperSlide>
+						))}
+					</Slider>
+				)}
+			</section>
 
 			<Dropdown />
 
@@ -650,7 +655,7 @@ export default function Home() {
 				aligned="center"
 				color="blue"
 				position={''}
-				extraCss={'py-10 mobile:py-4 m-auto h-[800px] mobile:h-[900px]'}
+				extraCss={'py-10 mobile:py-4 m-auto h-[800px] mobile:h-[1000px]'}
 			>
 				<div className="flex flex-col items-center">
 					<div className="max-w-[70vw] mb-[40px] mobile:mb-[20px]">
@@ -665,51 +670,73 @@ export default function Home() {
 							</div>
 						))}
 					</div>
-					<Slider breakpoints={breakPointsCardValoration}>
-						{cardValorationPropsArray.map(
-							(cardValoration, index) => (
-								<SwiperSlide key={index}>
-									<CardValoration
-										title={cardValoration.title}
-										valoration={cardValoration.valoration}
-										comments={cardValoration.comments}
+					<div className="flex items-center gap-2 bg-white px-6 rounded-3xl shadow-md mb-5">
+						<span className="text-xl font-bold">4.8</span> {/* Puedes traer esto del back también si quieres */}
+						<div className="flex">
+							{Array.from({ length: 5 }).map((_, i) => <Star key={i} isFilled={true} className="w-5 h-5" />)}
+						</div>
+						<span className="text-sm text-gray-500">en Google Reviews</span>
+						<img src="/google-logo.png" alt="Google" width={40} height={40} />
+					</div>
+
+					{reviews.length > 0 ? (
+						<Slider
+							// Ajusta tus breakpoints aquí si es necesario
+							breakpoints={{
+								320: { slidesPerView: 1.2, spaceBetween: 20 },
+								768: { slidesPerView: 2.5, spaceBetween: 30 },
+								1024: { slidesPerView: 4, spaceBetween: 20 }
+							}}
+							isMobile={isMobile}
+							maxWidth={isMobile ? '100vw ' : '95vw '}
+						>
+							{reviews.map((review, index) => (
+								<SwiperSlide key={index} className="flex justify-center py-4">
+									<CardReview
+										author_name={review.author_name}
+										profile_photo_url={review.profile_photo_url}
+										rating={review.rating}
+										text={review.text}
+										relative_time_description={review.relative_time_description}
 									/>
 								</SwiperSlide>
-							)
-						)}
-					</Slider>
+							))}
+						</Slider>
+					) : (
+						<p className="text-custom-white mt-4">No hay reseñas disponibles en este momento.</p>
+					)}
 				</div>
 			</Banner>
 
 			<section className="pt-[72px]">
-                <div className="flex justify-start ml-36 mobile:ml-12">
-                    <h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
-                        Podría interesarte
-                    </h2>
-                </div>
-                {loadingRandom ? (
-                    <div className="flex justify-center items-center h-48">
-                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-                    </div>
-                ) : (
-                    <Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
-                        {randomProducts.map((product) => (
-                            <SwiperSlide key={product._id} className="flex justify-center items-center">
-                                <CardPrice
-                                    title={product.title}
-                                    reference={product.mainReference || ''}
-                                    description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
-                                    price={product.buscorepuestosPrice || 0}
-                                    image={product.images?.[0] || '/nodisponible.png'}
-                                    handle={() => handle(product._id)}
-                                    id={product._id}
-                                    loading={loadingPurchase === product._id}
-                                />
-                            </SwiperSlide>
-                        ))}
-                    </Slider>
-                )}
-            </section>
+				<div className="flex justify-start ml-36 mobile:ml-12">
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
+						Podría interesarte
+					</h2>
+				</div>
+				{loadingRandom ? (
+					<div className="flex justify-center items-center h-48">
+						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+					</div>
+				) : (
+					<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+						{randomProducts.map((product) => (
+							<SwiperSlide key={product._id} className="flex justify-center items-center">
+								<CardPrice
+									title={product.title}
+									reference={product.mainReference || ''}
+									description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+									price={product.buscorepuestosPrice || 0}
+									image={product.images?.[0] || '/nodisponible.png'}
+									handle={() => handle(product._id)}
+									id={product._id}
+									loading={loadingPurchase === product._id}
+								/>
+							</SwiperSlide>
+						))}
+					</Slider>
+				)}
+			</section>
 		</main>
 	)
 }
