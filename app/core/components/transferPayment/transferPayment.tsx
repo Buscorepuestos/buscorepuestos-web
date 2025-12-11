@@ -31,7 +31,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 }) => {
 	const transferDataCaixa: TransferData = {
 		banco: 'La Caixa',
-		beneficiario: 'DDM Recambios',
+		beneficiario: 'Finca DDM Canarias',
 		iban: 'ES12 2100 2005 2602 0010 7904',
 		bic: 'CAIXESBBXXX',
 	}
