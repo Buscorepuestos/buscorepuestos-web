@@ -263,7 +263,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                             )
                         }
                     </div>
-                    <div className="sm:hidden flex flex-wrap gap-2 mb-4 w-full mobile:px-6">
+                    <div className="flex flex-wrap gap-2 mb-4 w-full mobile:px-6">
                         {activeFilters.map((filter) => (
                             <FilterTag
                                 key={filter.type}
