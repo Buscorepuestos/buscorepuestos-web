@@ -154,72 +154,6 @@ const ValorationInfo = [
 	},
 ]
 
-const cardValorationPropsArray = [
-	{
-		title: 'Comentario',
-		valoration: 3,
-		comments:
-			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
-	},
-	{
-		title: 'Comentario',
-		valoration: 3,
-		comments:
-			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
-	},
-	{
-		title: 'Comentario',
-		valoration: 5,
-		comments:
-			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
-	},
-	{
-		title: 'Comentario',
-		valoration: 2,
-		comments:
-			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
-	},
-	{
-		title: 'Comentario',
-		valoration: 4,
-		comments:
-			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
-	},
-	{
-		title: 'Comentario',
-		valoration: 1,
-		comments:
-			'Atención muy buena, espero tener el piloto solicitado para confirmar mi impresión ha llegado en 24 horas es perfecto, ya lo he ',
-	},
-]
-
-const breakPointsCardValoration = {
-	300: {
-		slidesPerView: 1.2,
-		spaceBetween: 10,
-	},
-	550: {
-		slidesPerView: 1.5,
-		spaceBetween: 10,
-	},
-	716: {
-		slidesPerView: 2.2,
-		spaceBetween: 100,
-	},
-	900: {
-		slidesPerView: 2.5,
-		spaceBetween: 10,
-	},
-	1120: {
-		slidesPerView: 3,
-		spaceBetween: 10,
-	},
-	1524: {
-		slidesPerView: 4.5,
-		spaceBetween: 10,
-	},
-}
-
 const breakPointsCardPrices = {
 	375: {
 		slidesPerView: 2,
@@ -365,11 +299,10 @@ export default function Home() {
 		<main>
 			<Banner
 				imgUrl="/banner-motor.webp"
-				height={isMobile ? '400px' : '561px'}
 				aligned="center"
 				color="blue"
 				position=""
-				extraCss="m-auto"
+				extraCss="m-auto h-[561px] mobile:h-[400px]"
 			>
 				<div className="flex flex-col justify-center align-middle mt-[180px] mobile:mt-[100px]">
 					<h1 className="text-title-1 text-custom-white text-center max-w-[728px] mb-[35px] mobile:max-w-[350px] mobile:text-xl">
@@ -625,7 +558,10 @@ export default function Home() {
 					</h2>
 				</div>
 				{loadingLatest ? (
-					<div className="flex justify-center items-center h-48">
+					<div 
+						className="flex justify-center items-center w-full"
+						style={{ height: isMobile ? '450px' : '470px' }}
+					>
 						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 					</div>
 				) : (
@@ -715,7 +651,10 @@ export default function Home() {
 					</h2>
 				</div>
 				{loadingRandom ? (
-					<div className="flex justify-center items-center h-48">
+					<div 
+						className="flex justify-center items-center w-full"
+						style={{ height: isMobile ? '450px' : '470px' }}
+					>
 						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 					</div>
 				) : (

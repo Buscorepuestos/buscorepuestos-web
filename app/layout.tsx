@@ -15,16 +15,27 @@ import CookieConsentModalWrapper from './core/components/cookieConsentModal/Cook
 const workSans = localFont({
 	src: './fonts/WorkSans_wght.ttf',
 	variable: '--font-work-sans',
+	weight: '100 900',
+	display: 'swap', 
+	preload: true,
 })
 
+// Bebas Neue suele ser solo Regular (400)
 const bebasNeue = localFont({
 	src: './fonts/BebasNeue-Regular.ttf',
 	variable: '--font-bebas-neue',
+	weight: '400',
+	display: 'swap',
+	preload: true,
 })
 
+// Poppins Regular es peso 400
 const popins = localFont({
 	src: './fonts/Poppins-Regular.ttf',
 	variable: '--font-family-popins',
+	weight: '400',
+	display: 'swap',
+	preload: true,
 })
 
 export const metadata: Metadata = {
@@ -54,7 +65,7 @@ export default function RootLayout({
 				
 			</head>
 			<body
-				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center min-h-screen`}
+				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center min-h-screen font-primary-font`}
 			>
 				<Script
 					src="https://www.googletagmanager.com/gtag/js?id=AW-16784645628"
