@@ -367,6 +367,44 @@ export default function Home() {
 				</div>
 			</section>
 
+			<div className="flex items-center justify-center gap-2 bg-white px-6 rounded-3xl shadow-md mb-5 w-1/4 m-auto">
+				<span className="text-xl font-bold">4.8</span> {/* Puedes traer esto del back también si quieres */}
+				<div className="flex">
+					{Array.from({ length: 5 }).map((_, i) => <Star key={i} isFilled={true} className="w-5 h-5" />)}
+				</div>
+				<span className="text-sm text-gray-500">en Google Reviews</span>
+				<img src="/google-logo.png" alt="Google" width={40} height={40} />
+			</div>
+			<div className='h-[350px]'>
+				{reviews.length > 0 ? (
+					<Slider
+						// Ajusta tus breakpoints aquí si es necesario
+						breakpoints={{
+							320: { slidesPerView: 1.2, spaceBetween: 20 },
+							768: { slidesPerView: 2, spaceBetween: 30 },
+							1024: { slidesPerView: 3, spaceBetween: 10 },
+							1500: { slidesPerView: 4, spaceBetween: 20 },
+						}}
+						isMobile={isMobile}
+						maxWidth={isMobile ? '100vw ' : '95vw '}
+					>
+						{reviews.map((review, index) => (
+							<SwiperSlide key={index} className="flex justify-center py-4">
+								<CardReview
+									author_name={review.author_name}
+									profile_photo_url={review.profile_photo_url}
+									rating={review.rating}
+									text={review.text}
+									relative_time_description={review.relative_time_description}
+								/>
+							</SwiperSlide>
+						))}
+					</Slider>
+				) : (
+					<p className="text-custom-white mt-4">No hay reseñas disponibles en este momento.</p>
+				)}
+			</div>
+
 			<Banner
 				imgUrl="/banner-warehouse.webp"
 				height="305px"
@@ -554,11 +592,11 @@ export default function Home() {
 			<section className="pt-[30px]">
 				<div className="flex justify-start ml-36 mobile:ml-12">
 					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
-						Novedades
+						Últimos repuestos vendidos
 					</h2>
 				</div>
 				{loadingLatest ? (
-					<div 
+					<div
 						className="flex justify-center items-center w-full"
 						style={{ height: isMobile ? '450px' : '470px' }}
 					>
@@ -591,7 +629,7 @@ export default function Home() {
 				aligned="center"
 				color="blue"
 				position={''}
-				extraCss={'py-10 mobile:py-4 m-auto h-[800px] mobile:h-[1000px]'}
+				extraCss={'py-10 mobile:py-4 m-auto h-[400px] mobile:h-[600px]'}
 			>
 				<div className="flex flex-col items-center">
 					<div className="max-w-[70vw] mb-[40px] mobile:mb-[20px]">
@@ -606,8 +644,8 @@ export default function Home() {
 							</div>
 						))}
 					</div>
-					<div className="flex items-center gap-2 bg-white px-6 rounded-3xl shadow-md mb-5">
-						<span className="text-xl font-bold">4.8</span> {/* Puedes traer esto del back también si quieres */}
+					{/* <div className="flex items-center gap-2 bg-white px-6 rounded-3xl shadow-md mb-5">
+						<span className="text-xl font-bold">4.8</span>
 						<div className="flex">
 							{Array.from({ length: 5 }).map((_, i) => <Star key={i} isFilled={true} className="w-5 h-5" />)}
 						</div>
@@ -617,7 +655,6 @@ export default function Home() {
 
 					{reviews.length > 0 ? (
 						<Slider
-							// Ajusta tus breakpoints aquí si es necesario
 							breakpoints={{
 								320: { slidesPerView: 1.2, spaceBetween: 20 },
 								768: { slidesPerView: 2.5, spaceBetween: 30 },
@@ -640,18 +677,18 @@ export default function Home() {
 						</Slider>
 					) : (
 						<p className="text-custom-white mt-4">No hay reseñas disponibles en este momento.</p>
-					)}
+					)} */}
 				</div>
 			</Banner>
 
 			<section className="pt-[72px]">
 				<div className="flex justify-start ml-36 mobile:ml-12">
 					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
-						Podría interesarte
+						Novedades
 					</h2>
 				</div>
 				{loadingRandom ? (
-					<div 
+					<div
 						className="flex justify-center items-center w-full"
 						style={{ height: isMobile ? '450px' : '470px' }}
 					>
