@@ -55,7 +55,23 @@ const footerLinks = [
 
 export function Footer() {
 	return (
-		<section className="flex bg-primary-blue text-white w-full lg:h-[15vw] md:h-[22vw] ">
+		<section className="flex bg-primary-blue text-white w-full flex-col pb-10 mobile:py-6">
+			<div className="w-full bg-white/10 py-4">
+					<div className="max-w-screen-desktop mx-auto px-4 flex flex-wrap justify-center items-center gap-8">
+						<p className="text-[1.2rem] font-semibold text-white/70 uppercase tracking-widest mobile:w-full text-center">Pago Seguro Garantizado</p>
+						<div className="flex gap-8 items-center">
+							<Image src="/visa-logo.svg" alt="Visa" width={40} height={25} className="h-16 w-auto mobile:h-12" />
+							<Image src="/mastercard-logo.svg" alt="Visa" width={40} height={25} className="h-16 w-auto mobile:h-12" />
+							<Image src="/PayPal.svg" alt="PayPal" width={60} height={25} className="h-14 w-auto mobile:h-10" />
+							<Image src="/scalapay-png.png" alt="Scalapay" width={70} height={25} className="h-12 w-auto mobile:h-8" />
+							<div className="h-8 w-[1px] bg-white/20 mx-2 mobile:hidden" />
+							<div className="flex items-center gap-2 mobile:hidden">
+								<Image src="/padlock.svg" alt="SSL" width={20} height={20} className="h-10 w-auto invert" />
+								<span className="text-[1.1rem] font-bold font-tertiary-font">SSL 256-bit Encrypted</span>
+							</div>
+						</div>
+					</div>
+				</div>
 			<div className="my-0 mx-auto w-full max-w-screen-desktop gap-[1vw] grid grid-cols-2 mobile:flex mobile:flex-col-reverse self-center items-center">
 				<article className="self-center lg:mt-[1vw] md:mt-[5vw] sm:mt-[6vw]">
 					<div className="mobile:flex mobile:flex-col-reverse mb-7 pl-[1.5vw] mobile:pl-0">
