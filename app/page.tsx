@@ -367,7 +367,7 @@ export default function Home() {
 				</div>
 			</section>
 
-			<div className="flex items-center justify-center gap-2 bg-white px-6 rounded-3xl shadow-md mb-5 w-1/4 m-auto">
+			<div className="flex items-center justify-center gap-2 bg-white px-6 rounded-3xl shadow-md mb-5 w-1/4 m-auto mobile:w-3/4">
 				<span className="text-xl font-bold">4.8</span> {/* Puedes traer esto del back también si quieres */}
 				<div className="flex">
 					{Array.from({ length: 5 }).map((_, i) => <Star key={i} isFilled={true} className="w-5 h-5" />)}
@@ -396,6 +396,7 @@ export default function Home() {
 									rating={review.rating}
 									text={review.text}
 									relative_time_description={review.relative_time_description}
+									author_url={review.author_url}
 								/>
 							</SwiperSlide>
 						))}
@@ -507,7 +508,7 @@ export default function Home() {
 				</div>
 			</Banner>
 			<section
-				className="desktop:hidden flex justify-center absolute z-10 md:top-[180rem] sm:top-[230rem] mobile:top-[208rem]"
+				className="desktop:hidden flex justify-center absolute z-10 md:top-[180rem] sm:top-[230rem] mobile:top-[250rem]"
 				style={{ bottom: '700px' }}
 			>
 				<div className="flex flex-col align-end w-[100vw]">
