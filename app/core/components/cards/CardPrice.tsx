@@ -36,7 +36,7 @@ export default function CardPrice(props: {
 		setImgSrc(noDisponible.src);
 	};
 	return (
-		<>
+		<Link href={`/producto/${props.id}`}>
 			<div
 				className="max-w-[207px]
 					flex flex-col justify-between pb-[23px] m-6 gap-4 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl
@@ -54,11 +54,9 @@ export default function CardPrice(props: {
 				/>
 				<div className="flex flex-col items-start px-[0.5vw] mobile:px-4 w-full">
 					<div className="w-full h-auto mobile:h-auto">
-						<Link href={`/producto/${props.id}`}>
-							<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline">
-								{props.title}
-							</h4>
-						</Link>
+						<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline">
+							{props.title}
+						</h4>
 						<p className="text-sm">
 							<span className="font-bold">Ref. </span>
 							{props.reference}
@@ -116,6 +114,6 @@ export default function CardPrice(props: {
 					</div>
 				</div>
 			</div>
-		</>
+		</Link>
 	)
 }
