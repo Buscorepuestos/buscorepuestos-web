@@ -422,7 +422,7 @@ export default function Home() {
 					</h1>
 				</div>
 			</Banner>
-			<section className="flex flex-col items-end relative bottom-12 mobile:hidden tablet:hidden">
+			<section className="flex flex-col items-end relative bottom-8 mobile:hidden tablet:hidden">
 				<TagBanner
 					title={'Rapidez'}
 					flexDir={''}
@@ -493,13 +493,12 @@ export default function Home() {
 
 			<Banner
 				imgUrl="/mobile_banner_warehouse.webp"
-				height="920px"
 				aligned="center"
 				color="blue"
 				position=""
-				extraCss={'desktop:hidden m-auto items-start'}
+				extraCss={'desktop:hidden m-auto items-start h-[650px] sm:h-[750px] md:h-[750px] mobile:h-[920px]'}
 			>
-				<div className="flex justify-center">
+				<div className="flex justify-center"> 
 					<h1 className="content-center text-8xl text-custom-white text-left w-[65vw] mt-16 mobile:text-xl">
 						Busca repuestos inter
 						<span className="text-warning">nacionales</span> y
@@ -508,7 +507,7 @@ export default function Home() {
 				</div>
 			</Banner>
 			<section
-				className="desktop:hidden flex justify-center absolute z-10 md:top-[180rem] sm:top-[230rem] mobile:top-[250rem]"
+				className="desktop:hidden flex justify-center absolute z-10 md:top-[215rem] sm:top-[270rem] mobile:top-[250rem]"
 				style={{ bottom: '700px' }}
 			>
 				<div className="flex flex-col align-end w-[100vw]">
