@@ -6,7 +6,7 @@ interface InputProps {
 	value?: string
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	cssClass?: string
-	ref?: React.RefObject<HTMLInputElement | null> 
+	ref?: React.RefObject<HTMLInputElement | null>
 	isScrolled?: boolean
 	disabled?: boolean
 	buttonText?: string // Añadido para el texto del botón
@@ -14,6 +14,7 @@ interface InputProps {
 	type?: string
 	onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
 	isProductPage?: boolean
+	onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 }
 
 const Input: React.FC<InputProps> = ({
@@ -30,14 +31,16 @@ const Input: React.FC<InputProps> = ({
 	type = 'text',
 	onKeyDown,
 	isProductPage,
+	onBlur,
 }) => {
 	cssClass = cssClass ? cssClass : ''
 
 	const [error, setError] = useState(false)
 
-	const handleOnBlur = () => {
+	const handleOnBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 		if (value === '') setError(true)
 		else setError(false)
+		if (onBlur) onBlur(e)
 	}
 
 	useEffect(() => {
@@ -80,14 +83,14 @@ const Input: React.FC<InputProps> = ({
                     flex border-[1px] w-full rounded-xl text-gray-800 
                     p-2 font-tertiary-font focus:border-secondary-blue focus:outline-none
                     placeholder:text-custom-grey
-                    xl:text-[0.9vw] ${isProductPage ? 'lg:text-[1.1vw] md:text-[1.5vw] sm:text-[1.5vw]':'lg:text-[1.6vw] md:text-[1.7vw] sm:text-[2vw] mobile:text-[3vw]'}
+                    xl:text-[0.9vw] ${isProductPage ? 'lg:text-[1.1vw] md:text-[1.5vw] sm:text-[1.5vw]' : 'lg:text-[1.6vw] md:text-[1.7vw] sm:text-[2vw] mobile:text-[3vw]'}
 					${error || isScrolled ? 'border-red-500' : 'border-secondary-blue'}
 					
                 `}
 				placeholder={placeholder}
 				value={value}
 				onChange={(e) => handleChange(e)}
-				onBlur={() => handleOnBlur()}
+				onBlur={(e) => handleOnBlur(e)}
 				autoComplete="off"
 				ref={ref}
 				disabled={disabled}
@@ -95,7 +98,7 @@ const Input: React.FC<InputProps> = ({
 			/>
 			{buttonText && onButtonClick && (
 				<button
-					className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-primary-blue  ${isProductPage ? 'xl:text-sm lg:text-[1.2vw] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-sm':'text-sm'} underline cursor-pointer`}
+					className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-primary-blue  ${isProductPage ? 'xl:text-sm lg:text-[1.2vw] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-sm' : 'text-sm'} underline cursor-pointer`}
 					onClick={onButtonClick}
 				>
 					{buttonText}
