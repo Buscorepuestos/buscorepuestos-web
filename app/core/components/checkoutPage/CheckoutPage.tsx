@@ -114,20 +114,57 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 	const [emailError, setEmailError] = useState<string | null>(null)
 	const [isFormVisible, setIsFormVisible] = useState(false)
 	const [isSubscribing, setIsSubscribing] = useState(false);
+	const [lastSavedEmail, setLastSavedEmail] = useState('')
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+	// useEffect(() => {
+	// 	// Verificar si hay un correo almacenado en localStorage
+	// 	const storedEmail = localStorage.getItem('userEmail')
+	// 	if (storedEmail) {
+	// 		setFieldsValue((prevState) => ({
+	// 			...prevState,
+	// 			email: storedEmail,
+	// 		})) // Establecer el email en fieldsValue
+	// 		setIsFormVisible(true) // Si hay un correo, mostrar el siguiente formulario
+	// 	}
+	// }, [setFieldsValue])
 	useEffect(() => {
-		// Verificar si hay un correo almacenado en localStorage
 		const storedEmail = localStorage.getItem('userEmail')
 		if (storedEmail) {
-			setFieldsValue((prevState) => ({
-				...prevState,
-				email: storedEmail,
-			})) // Establecer el email en fieldsValue
-			setIsFormVisible(true) // Si hay un correo, mostrar el siguiente formulario
+			setFieldsValue(prev => ({ ...prev, email: storedEmail }))
+            setLastSavedEmail(storedEmail)
 		}
-	}, [setFieldsValue])
+	}, [])
+
+	const handleEmailAutoSave = async () => {
+        const email = fieldsValue.email.trim()
+        
+        // Solo guardamos si es un email válido y es diferente al último que guardamos
+        if (email && emailRegex.test(email) && email !== lastSavedEmail) {
+            setIsSubscribing(true)
+            try {
+                // 1. Guardar en LocalStorage
+                localStorage.setItem('userEmail', email)
+                
+                // 2. Suscribir en Mailchimp (Lead)
+                await subscribe(email)
+                
+                // 3. Actualizar en Airtable
+                await userService.updateUser({
+                    id: localStorage.getItem('airtableUserId'),
+                    ['correo electronico']: email,
+                })
+
+                setLastSavedEmail(email)
+                console.log("Lead capturado automáticamente:", email)
+            } catch (error) {
+                console.error("Error en auto-guardado de email:", error)
+            } finally {
+                setIsSubscribing(false)
+            }
+        }
+    }
 
 	const calculateTotal = useMemo(() => {
 		const stringPrice = items
@@ -405,9 +442,9 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 						{localDropdown()}
 					</article>
 				)}
+				{/* Pantalla de correo */}
 				<div className="relative overflow-hidden">
-					{/* Pantalla de correo */}
-					<div
+					{/* <div
 						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${isFormVisible
 								? '-translate-x-full opacity-0 absolute'
 								: 'translate-x-0 opacity-100'
@@ -466,14 +503,11 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								)
 							}
 						</div>
-					</div>
+					</div> */}
 
 					{/* Pantalla de formulario */}
 					<div
-						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${isFormVisible
-								? 'translate-x-0 opacity-100'
-								: 'translate-x-full opacity-0 absolute'
-							}`}
+						className={` inset-0 w-full transition-transform duration-500 ease-in-out`}
 					>
 						<article className={'mobile:p-6'}>
 							<div
@@ -529,14 +563,16 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										}
 										ref={emailRef}
 										isScrolled={isScrolledInputs.email}
-										disabled={!!userEmail}
-										buttonText="Modificar" // Texto del botón
-										onButtonClick={() => {
-											setIsFormVisible(false)
-											localStorage.removeItem('userEmail')
-										}}
+										// disabled={!!userEmail}
+										// buttonText="Modificar" // Texto del botón
+										// onButtonClick={() => {
+										// 	setIsFormVisible(false)
+										// 	localStorage.removeItem('userEmail')
+										// }}
+										onBlur={handleEmailAutoSave}
 										isProductPage={isProductPage}
 									/>
+									{isSubscribing && <p className="text-xs text-blue-500 mt-1">Sincronizando...</p>}
 									<Input
 										placeholder={'NIF / CIF'}
 										name={'company_id'}
