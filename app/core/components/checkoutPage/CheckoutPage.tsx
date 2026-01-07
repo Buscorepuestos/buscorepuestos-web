@@ -529,32 +529,10 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 									}
 								>
 									<Input
-										placeholder={'Nombre y apellidos'}
-										name={'name'}
-										value={fieldsValue.name}
-										onChange={(e) =>
-											setFieldsValue({
-												...fieldsValue,
-												name: e.target.value,
-											})
-										}
-										ref={nameRef}
-										isScrolled={isScrolledInputs.name}
-										isProductPage={isProductPage}
-									/>
-								</div>
-								<div
-									className={
-										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full mt-4 gap-4`
-									}
-								>
-									<Input
 										placeholder={'Email'}
 										name={'email'}
 										value={fieldsValue.email}
-										cssClass={
-											'desktop:col-span-2 tablet:col-span-2 mobile:col-span-1'
-										}
+										
 										onChange={(e) =>
 											setFieldsValue({
 												...fieldsValue,
@@ -571,6 +549,30 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										// }}
 										onBlur={handleEmailAutoSave}
 										isProductPage={isProductPage}
+									/>
+								</div>
+								<div
+									className={
+										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full mt-4 gap-4`
+									}
+								>
+									
+									<Input
+										placeholder={'Nombre y apellidos'}
+										name={'name'}
+										value={fieldsValue.name}
+										onChange={(e) =>
+											setFieldsValue({
+												...fieldsValue,
+												name: e.target.value,
+											})
+										}
+										ref={nameRef}
+										isScrolled={isScrolledInputs.name}
+										isProductPage={isProductPage}
+										cssClass={
+											'desktop:col-span-2 tablet:col-span-2 mobile:col-span-1'
+										}
 									/>
 									{isSubscribing && <p className="text-xs text-blue-500 mt-1">Sincronizando...</p>}
 									<Input
