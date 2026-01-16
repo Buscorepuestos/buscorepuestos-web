@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Button, { ButtonProps } from '../Button'
 import { ProductMongoInterface } from '../../../redux/interfaces/product.interface'
@@ -44,7 +45,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	stock,
 }) => {
 	const dispatch = useAppDispatch()
-	const router = useRouter()
+	const searchParams = useSearchParams()
 
 	let [globalStock, setGlobalStock] = useState<boolean>(true)
 
@@ -79,7 +80,8 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	const handleAddToCart = () => {
 		setIsProccesingAddToCart(true)
 		dispatch({ type: 'auth/checkUserStatus' })
-		dispatch(addItemToCart(data))
+		const origin = searchParams.get('origin') || undefined;
+		dispatch(addItemToCart({ ...data, origin }))
 		dispatch(
 			savePurchaseAsync({
 				product: data,
@@ -122,15 +124,15 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 		if (stock !== undefined) {
 			if (stock > 0) {
 				setGlobalStock(false)
-				;(async () => {
-					await updateMetasyncProduct(data._id, {
-						id: data._id,
-						data: {
-							stock: false,
-						},
-					})
-					await updateAlgoliaProductStock(data._id, false)
-				})()
+					; (async () => {
+						await updateMetasyncProduct(data._id, {
+							id: data._id,
+							data: {
+								stock: false,
+							},
+						})
+						await updateAlgoliaProductStock(data._id, false)
+					})()
 			}
 		}
 	}, [globalStock, stock, data._id, dispatch])
@@ -138,7 +140,8 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	const buynow = async () => {
 		dispatch({ type: 'auth/checkUserStatus' })
 		setIsProccesingBuyNow(true)
-		dispatch(addItemToCart(data))
+		const origin = searchParams.get('origin') || undefined;
+		dispatch(addItemToCart({ ...data, origin }))
 
 		setTimeout(() => {
 			dispatch(
@@ -174,11 +177,11 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 						{shippingInfo}
 					</p>
 					<div className="mt-4 flex justify-center w-full scalapay-widget-mobile-container">
-                        <ScalapayWidget
-                            amountSelector="#product-page-price"
-                            type="product"
-                        />
-                    </div>
+						<ScalapayWidget
+							amountSelector="#product-page-price"
+							type="product"
+						/>
+					</div>
 					<div className="text-custom-orange gap-3 flex items-center">
 						<Image
 							src={warningImgSrc}
@@ -203,7 +206,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 							{user ? (
 								<div className="flex gap-7 mt-7">
 									{data.stock === false ||
-									globalStock === false ? (
+										globalStock === false ? (
 										<Button
 											labelName="Producto no disponible"
 											type="secondary"
@@ -271,9 +274,8 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 			/>
 			<div>
 				<div
-					className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${
-						onePageIsOpen ? '' : 'max-h-0'
-					}`}
+					className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${onePageIsOpen ? '' : 'max-h-0'
+						}`}
 				>
 					<div className="py-8 sm:px-10 mobile:py-0">
 						<CheckoutPage isProductPage={true} />
