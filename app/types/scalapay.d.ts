@@ -46,6 +46,7 @@ export interface CreateOrderPayload {
     userId: string; // ID del usuario en tu sistema
     fieldsValue: FormsFields; // Valores del formulario de checkout
     items: any[]; 
+    isAssisted: boolean; // Indica si la compra es asistida
 }
 
 export interface ScalapayCreateOrderResponse {

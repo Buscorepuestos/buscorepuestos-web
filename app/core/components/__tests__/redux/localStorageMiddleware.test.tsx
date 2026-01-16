@@ -83,6 +83,7 @@ describe('localStorageMiddleware', () => {
 				saveStatus: 'saving',
 				idEmpresa: 'idEmpresa1',
 				isMetasync: true,
+				origin: ""
 			},
 		]
 

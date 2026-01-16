@@ -29,6 +29,7 @@ const StripeFormComponent = (props: {
 
 	const prepareLocalStorageForRedirect = () => {
         const userId = localStorage.getItem('airtableUserId');
+		
         const pendingOrder = {
             paymentMethod: 'stripe',
             billingData: {

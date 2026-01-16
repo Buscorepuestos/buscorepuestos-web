@@ -877,6 +877,8 @@ const PaymentSelection = ({
 		// Esta función se mantiene igual para guiar al usuario a campos vacíos.
 	};
 
+	const isAssisted = items.some(item => item.origin === 'kommo');
+
 	const prepareLocalStorageForRedirect = (paymentMethod: 'stripe' | 'scalapay' | 'sumup' | 'transferencia') => {
 		console.log(`Guardando datos del pedido en localStorage para ${paymentMethod}...`);
 
@@ -902,6 +904,7 @@ const PaymentSelection = ({
 				billingAddressExtra: fieldsValue.billingAddressExtra,
 				billingProvince: fieldsValue.billingProvince,
 				billingZip: fieldsValue.billingZip,
+				isAssisted: isAssisted,
 			},
 			cart: items,
 		};
@@ -945,6 +948,7 @@ const PaymentSelection = ({
 
 		if (method === 'stripe') {
 			const prepareLocalStorageForRedirect = () => {
+				const isAssisted = items.some(item => item.origin === 'kommo');
 				const userId = localStorage.getItem('airtableUserId');
 				const pendingOrder = {
 					paymentMethod: 'stripe',
@@ -968,6 +972,7 @@ const PaymentSelection = ({
 						billingAddressExtra: fieldsValue.billingAddressExtra,
 						billingProvince: fieldsValue.billingProvince,
 						billingZip: fieldsValue.billingZip,
+						isAssisted: isAssisted,
 					},
 					cart: JSON.parse(localStorage.getItem('cart') || '[]'),
 				};
@@ -981,6 +986,7 @@ const PaymentSelection = ({
 					userId,
 					purchaseIds,
 					fieldsValue,
+					isAssisted: isAssisted,
 				});
 
 				const { url } = response.data;
@@ -1010,6 +1016,7 @@ const PaymentSelection = ({
 				userId: userId!,
 				fieldsValue, // <-- Pasamos el objeto completo del formulario
 				items, // <-- Pasamos los items para calcular el total en el backend
+				isAssisted: isAssisted,
 			});
 
 			if (response.checkoutUrl) {
@@ -1143,6 +1150,7 @@ const PaymentSelection = ({
 							}}
 							extraData={{
 								email: fieldsValue.email,
+								isAssisted: isAssisted,
 							}}
 						/>
 					</div>
@@ -1153,6 +1161,7 @@ const PaymentSelection = ({
 							totalPrice={totalPrice}
 							purchaseIds={purchaseIds}
 							fieldsValue={fieldsValue}
+							isAssisted={isAssisted}
 						/>
 					</div>
 				)}

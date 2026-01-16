@@ -48,4 +48,5 @@ export interface ProductMongoInterface {
     endYear?: string | number;
     addedToBudget: boolean;
     inBudget: boolean;
+    origin?: string;
 }
