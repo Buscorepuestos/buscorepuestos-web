@@ -49,6 +49,7 @@ export interface CartItem {
     idEmpresa?: string;
     isMetasync?: boolean;
     subcategory?: string;
+    origin?: string;
 }
 
 export interface CartState {
@@ -95,6 +96,7 @@ export const cartSlice = createSlice({
                     idEmpresa: action.payload.idEmpresa || '',
                     isMetasync: action.payload.isMetasync || false,
                     saveStatus: 'saving',
+                    origin: action.payload.origin || '',
                 };
                 state.items.push(newItem);
             }

@@ -59,7 +59,7 @@ export const updatePurchase = async (purchaseId: string, metodo?: string): Promi
     }
 };
 
-export const updateTransferPurchase = async (purchaseId: string, imgTransfer: string): Promise<void> => {
+export const updateTransferPurchase = async (purchaseId: string, imgTransfer: string, isAssisted: boolean): Promise<void> => {
     
     console.log(imgTransfer);
 
@@ -67,8 +67,8 @@ export const updateTransferPurchase = async (purchaseId: string, imgTransfer: st
         id: purchaseId,
         "Estado": "Verificación de Pago",
         "Metodo": "transferencia",
-        "Transferencia": [{ url: imgTransfer }]
-
+        "Transferencia": [{ url: imgTransfer }],
+        "Compra web": isAssisted
     };
 
     try {

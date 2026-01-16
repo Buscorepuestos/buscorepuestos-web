@@ -22,12 +22,14 @@ interface TransferPaymentProps {
 	totalPrice: string
 	purchaseIds: string[]
 	fieldsValue: FormsFields
+	isAssisted: boolean
 }
 
 const TransferPayment: React.FC<TransferPaymentProps> = ({
 	totalPrice,
 	purchaseIds,
 	fieldsValue,
+	isAssisted,
 }) => {
 	const transferDataCaixa: TransferData = {
 		banco: 'La Caixa',
@@ -186,7 +188,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 			`billing-image_by_purchase/${userId}/${new Date().getTime()}.${fileType}`
 		)
 		purchaseIds.forEach(async (purchaseId) => {
-			await updateTransferPurchase(purchaseId, imgTransfer)
+			await updateTransferPurchase(purchaseId, imgTransfer, isAssisted)
 		})
 		router.push('/pago-exitoso?pagoSumup=true')
 	}
