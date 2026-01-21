@@ -140,6 +140,20 @@ const CheckIcon = () => (
 	</svg>
 )
 
+
+const TruckIcon = () => (
+	<svg 
+		xmlns="http://www.w3.org/2000/svg" 
+		fill="none" 
+		viewBox="0 0 24 24" 
+		strokeWidth={1.5} 
+		stroke="currentColor" 
+		className="w-8 h-8"
+	>
+		<path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+	</svg>
+)
+
 function PriceView(props: { price: string }) {
 	return (
 		<p className="text-title-3 font-bold text-dark-grey text-2xl">
@@ -171,7 +185,7 @@ export default function CardPrice(props: {
 	}
 
 	// Calculamos el precio de la cuota (dividiendo por 3)
-	const installmentPrice = (props.price / 3).toFixed(2).replace('.', ',')
+	const installmentPrice = (props.price / 4).toFixed(2).replace('.', ',')
 
 	return (
 		<Link href={`/producto/${props.id}`}>
@@ -221,9 +235,8 @@ export default function CardPrice(props: {
 							className="xl:w-[0.7vw] md:w-[1.7vw] md:h-[1.7vw] sm:w-[1.5vw] sm:h-[1.5vw] mobile:w-[3.5vw] mobile:h-[3.5vw]"
 						/>
 						<span
-							className={`text-sm mobile:text-[2.9vw] font-tertiary-font font-semibold uppercase ${
-								shippingIncluded ? 'text-[#00B4D8]' : 'text-secondary-blue'
-							}`}
+							className={`text-[1.3rem] mobile:text-[2.9vw] font-tertiary-font font-semibold uppercase ${shippingIncluded ? 'text-[#00B4D8]' : 'text-secondary-blue'
+								}`}
 						>
 							{props.location || 'Sin ubicación'}
 						</span>
@@ -236,11 +249,11 @@ export default function CardPrice(props: {
 								isFilled={true}
 								className="
                                     text-blue-600
-                                    xl:w-[1vw] xl:h-[1vw]
-                                    lg:w-[1.4vw] lg:h-[1.4vw]
-                                    md:w-[1.4vw] md:h-[1.4vw]
-                                    sm:w-[1.6vw] sm:h-[1.6vw]
-                                    mobile:w-[3.3vw] mobile:h-[3.3vw]
+                                    xl:w-[0.8vw] xl:h-[0.8vw]
+                                    lg:w-[1.2vw] lg:h-[1.2vw]
+                                    md:w-[1.2vw] md:h-[1.2vw]
+                                    sm:w-[1.4vw] sm:h-[1.4vw]
+                                    mobile:w-[3.1vw] mobile:h-[3.1vw]
                                 "
 							/>
 						))}
@@ -255,42 +268,45 @@ export default function CardPrice(props: {
 								<span className="text-green-600 font-semibold text-sm">
 									Envío incluido
 								</span>
+								<Image
+									src="/truck-green.png"
+									alt="truck green"
+									width={30}
+									height={30}
+								/>
 							</div>
 						)}
 					</div>
 
-					{/* NUEVO FEATURE: Métodos de pago (Caja de plazos) */}
 					{shippingIncluded && (
 						<div className="w-full border border-gray-300 rounded-lg p-2 mb-3 mt-1 bg-white">
 							<div className="flex items-center mb-1 justify-center text-center">
 								<div className="bg-[#333] text-white text-[13px] font-bold px-1.5 py-0.5 rounded-full flex items-center">
-									3x
+									4x
 								</div>
 								<p className="text-[13px] font-tertiary-font leading-tight text-gray-700 ">
-									Paga en 3 plazos de{' '}
+									Paga en 4 plazos de{' '}
 									<span className="font-bold">{installmentPrice}€</span>
 								</p>
 							</div>
 							<div className="flex gap-2 justify-center items-center mt-1">
-								{/* Placeholder para Klarna (o usa <Image /> si tienes el logo) */}
-								{/* <span className="bg-pink-100 text-pink-600 font-bold text-[10px] px-1 rounded">
-									Klarna.
-								</span> */}
 								<Image
 									src="/klarnap.png"
 									alt="Klarna"
 									width={40}
 									height={20}
 								/>
-								{/* Placeholder para PayPal (o usa <Image /> si tienes el logo) */}
-								{/* <span className="text-[#003087] font-bold italic text-[10px]">
-									PayPal
-								</span> */}
 								<Image
 									src="/paypalp.svg"
 									alt="PayPal"
 									width={50}
 									height={20}
+								/>
+								<Image
+									src="/scalapay-png.png"
+									alt="scalapay"
+									width={60}
+									height={30}
 								/>
 							</div>
 						</div>
