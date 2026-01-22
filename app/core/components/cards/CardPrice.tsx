@@ -156,7 +156,7 @@ const TruckIcon = () => (
 
 function PriceView(props: { price: string }) {
 	return (
-		<p className="text-title-3 font-bold text-dark-grey text-2xl">
+		<p className="text-[3rem] font-bold text-dark-grey text-2xl">
 			{props.price}€
 		</p>
 	)
@@ -242,7 +242,7 @@ export default function CardPrice(props: {
 						</span>
 					</div>
 
-					<div className="flex w-[100%] justify-center flex-row gap-4 mobile:gap-3 mb-2">
+					<div className="flex w-[100%] justify-center flex-row gap-1 mobile:gap-2 mb-2">
 						{Array.from({ length: MAX_VALORATION }, (_, index) => (
 							<Star
 								key={index}
@@ -279,7 +279,7 @@ export default function CardPrice(props: {
 					</div>
 
 					{shippingIncluded && (
-						<div className="w-full border border-gray-300 rounded-lg p-2 mb-3 mt-1 bg-white">
+						<div className="w-full p-2 mb-3 mt-1 bg-white">
 							<div className="flex items-center mb-1 justify-center text-center">
 								<div className="bg-[#333] text-white text-[13px] font-bold px-1.5 py-0.5 rounded-full flex items-center">
 									4x
