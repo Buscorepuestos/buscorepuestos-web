@@ -294,6 +294,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                                             id={product._id}
                                             loading={loadingPurchase === product._id}
                                             location={product.distributorProvince}
+                                            shippingIncluded={true}
                                         />
                                     ))}
                                 </section>
