@@ -311,6 +311,7 @@ export default function Store() {
 												loadingPurchase === product._id
 											}
 											location={product.distributorProvince}
+											shippingIncluded={true}
 										/>
 									))}
 								</section>
