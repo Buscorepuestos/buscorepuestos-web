@@ -164,7 +164,7 @@ export default function CardPrice(props: {
 									height={20}
 								/>
 								<Image
-									src="/paypalp.svg"
+									src="/PayPalp.svg"
 									alt="PayPal"
 									width={50}
 									height={20}
