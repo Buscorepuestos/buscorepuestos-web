@@ -75,13 +75,14 @@
 //         </div>
 //     )
 // }
-import Image from 'next/image'
+
+'use client'
 import { ChangeEvent, KeyboardEvent } from 'react'
 
 interface SearchBarProps {
     value: string;
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    onClear: () => void;
+    onClear?: () => void;
     isLoading?: boolean;
     height?: string;
     width?: string;
@@ -97,48 +98,26 @@ export default function SearchBar(props: SearchBarProps) {
         }
     };
 
-    // Función para detectar si es una búsqueda por referencia
     const isReferenceSearch = (term: string): boolean => {
         if (!term) return false;
         const trimmed = term.trim();
-        
-        // Debe tener al menos 6 caracteres para considerarse referencia
         if (trimmed.length < 6) return false;
-        
-        // Patrones comunes de referencias:
-        // 1. Solo números (ej: 9661087080, 123456)
+
         const onlyNumbers = /^\d{6,}$/;
-        
-        // 2. Mezcla de letras y números con predominancia de números
         const mixedWithNumbers = /^[A-Za-z0-9\-\.]+$/;
         const hasNumbers = /\d/;
         const hasLetters = /[A-Za-z]/;
-        
-        // 3. Patrones específicos con guiones/puntos
         const specificPatterns = /^[A-Za-z0-9]+[\-\.][A-Za-z0-9]+/;
-        
-        if (onlyNumbers.test(trimmed)) {
-            return true; // Solo números largos
-        }
-        
-        if (specificPatterns.test(trimmed)) {
-            return true; // Patrones con separadores
-        }
-        
-        // Para mezclas de letras y números, debe tener ambos y no ser solo una palabra
+
+        if (onlyNumbers.test(trimmed)) return true;
+        if (specificPatterns.test(trimmed)) return true;
         if (mixedWithNumbers.test(trimmed) && hasNumbers.test(trimmed) && hasLetters.test(trimmed)) {
-            // Verificar que no sea una palabra común (debe tener un buen balance de números)
             const numberCount = (trimmed.match(/\d/g) || []).length;
-            const letterCount = (trimmed.match(/[A-Za-z]/g) || []).length;
-            
-            // Al menos 30% deben ser números para considerarse referencia
             return (numberCount / trimmed.length) >= 0.3;
         }
-        
         return false;
     };
 
-    // Determinar el placeholder dinámico
     const getPlaceholder = (): string => {
         if (props.value && isReferenceSearch(props.value)) {
             return "Buscando por referencia...";
@@ -146,10 +125,9 @@ export default function SearchBar(props: SearchBarProps) {
         return "Escribe lo que necesitas";
     };
 
-    // Determinar el color del borde dinámicamente
     const getBorderColor = (): string => {
         if (props.value && isReferenceSearch(props.value)) {
-            return '#10B981'; // Verde para indicar búsqueda por referencia
+            return '#10B981';
         }
         return props.borderColor || '#12B1BB';
     };
@@ -157,27 +135,18 @@ export default function SearchBar(props: SearchBarProps) {
     return (
         <div
             className={`${props.width} relative flex items-center bg-custom-white
-                rounded-[34px] pl-8 self-center transition-all duration-200`}
+                rounded-[34px] self-center transition-all duration-200`}
             style={{
                 height: props.height,
                 borderColor: getBorderColor(),
                 borderWidth: props.borderWidth,
-                boxShadow: props.value && isReferenceSearch(props.value) 
-                    ? '0 0 0 1px rgba(16, 185, 129, 0.2)' 
+                boxShadow: props.value && isReferenceSearch(props.value)
+                    ? '0 0 0 1px rgba(16, 185, 129, 0.2)'
                     : 'none'
             }}
         >
-            <Image
-                src="/search-icon.svg"
-                alt="icon"
-                width={30}
-                height={30}
-                priority
-                className="mr-[20px] mobile:mr-[15px]"
-            />
-            
             <input
-                className="text-title-4 flex-grow bg-transparent outline-none font-semibold pr-16"
+                className="text-title-4 flex-grow bg-transparent outline-none font-semibold pl-6 pr-14 rounded-[34px]"
                 type="text"
                 placeholder={getPlaceholder()}
                 style={{
@@ -189,31 +158,50 @@ export default function SearchBar(props: SearchBarProps) {
                 disabled={props.isLoading}
             />
 
-            {/* Indicador de tipo de búsqueda */}
-            {props.value && !props.isLoading && (
-                <div className="absolute right-20 flex items-center">
-                    {isReferenceSearch(props.value) && (
-                        <span className="text-xs text-green-600 font-semibold bg-green-50 px-4 py-1 rounded-full">
-                            REF
-                        </span>
-                    )}
+            {/* Indicador de REF */}
+            {props.value && !props.isLoading && isReferenceSearch(props.value) && (
+                <div className="absolute right-14 flex items-center pointer-events-none">
+                    <span className="text-xs text-green-600 font-semibold bg-green-50 px-3 py-1 rounded-full whitespace-nowrap">
+                        REF
+                    </span>
                 </div>
             )}
 
-            {/* Loader o botón de borrar */}
-            <div className="absolute right-5 flex items-center justify-center">
+            {/* Área de acción a la derecha */}
+            <div className="absolute right-5 flex items-center justify-center w-10 h-10">
                 {props.isLoading ? (
-                    <div className="w-8 h-8 border-4 border-primary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
+                    <div className="w-6 h-6 border-4 border-primary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
                 ) : (
-                    props.value && (
-                        <button
-                            onClick={props.onClear}
-                            className="text-gray-500 hover:text-secondary-blue text-sm font-tertiary-font cursor-pointer z-10"
-                            type="button"
+                    <button
+                        onClick={props.onEnterPress}
+                        // Usamos 'group' aquí para controlar el SVG hijo al hacer hover en el botón
+                        className="group flex items-center justify-center w-full h-full focus:outline-none"
+                        aria-label="Buscar"
+                        type="button"
+                    >
+                        {/* 
+                            SVG INLINE REEMPLAZANDO A <Image />
+                            - 'stroke-current': Hace que el trazo use el color del texto actual.
+                            - 'text-[#A9A9A9]': Color base (gris).
+                            - 'group-hover:text-primary-blue': Cambia a azul cuando haces hover sobre el botón.
+                        */}
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="text-[#A9A9A9] transition-colors duration-200 group-hover:text-primary-blue"
                         >
-                            Borrar
-                        </button>
-                    )
+                            <path
+                                d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </button>
                 )}
             </div>
         </div>
