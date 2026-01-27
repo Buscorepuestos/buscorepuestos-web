@@ -590,7 +590,7 @@ export default function Home() {
 			</section>
 
 			<section className="pt-[30px]">
-				<div className="flex justify-start ml-36 mobile:ml-12">
+				<div className="flex text-center ml-36 mobile:ml-0">
 					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
 						Últimos repuestos vendidos
 					</h2>
