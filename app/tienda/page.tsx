@@ -1,7 +1,6 @@
 'use client'
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import CardPrice from '../core/components/cards/CardPrice'
-import { IProductMongoose } from '../types/product'
 import SearchBar from '../core/components/SearchBar'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { useRouter } from 'next/navigation'
