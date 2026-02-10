@@ -10,6 +10,8 @@ import { updateUser } from '../../../services/mailchimp/mailchimp'
 import Image from 'next/image'
 import PDFViewer from '@/app/lib/pdfviewer'
 import * as XLSX from 'xlsx'
+import { useDispatch } from 'react-redux'
+import { clearCart } from '../../../redux/features/shoppingCartSlice';
 
 interface TransferData {
 	banco: string
@@ -23,6 +25,7 @@ interface TransferPaymentProps {
 	purchaseIds: string[]
 	fieldsValue: FormsFields
 	isAssisted: boolean
+	onTransferPayment?: () => void
 }
 
 const TransferPayment: React.FC<TransferPaymentProps> = ({
@@ -30,6 +33,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 	purchaseIds,
 	fieldsValue,
 	isAssisted,
+	onTransferPayment,
 }) => {
 	const transferDataCaixa: TransferData = {
 		banco: 'La Caixa',
@@ -38,6 +42,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 		bic: 'CAIXESBBXXX',
 	}
 	const router = useRouter()
+	const dispatch = useDispatch()
 	const [copiedField, setCopiedField] = useState<string | null>(null)
 	const [selectedFile, setSelectedFile] = useState<File | null>(null)
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -150,11 +155,22 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 		}
 
 		setIsProcessing(true)
+		const fileType = selectedFile.type.split('/')[1]
+		const imgTransfer = await uploadFile(
+			selectedFile,
+			`billing-image_by_purchase/${userId}/${new Date().getTime()}.${fileType}`
+		)
+		purchaseIds.forEach(async (purchaseId) => {
+			await updateTransferPurchase(purchaseId, imgTransfer, isAssisted)
+		})
+		dispatch(clearCart())
 		await updateUser({
 			firstName: fieldsValue.name,
 			email: fieldsValue.email,
 		})
-		await createbilling()
+		if (onTransferPayment) {
+			onTransferPayment();
+		}
 		await createBill({
 			Compras: purchaseIds,
 			Usuarios: [userId!],
@@ -182,69 +198,9 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 			cp: fieldsValue.zip,
 			['Correo electrónico']: fieldsValue.email,
 		})
-		const fileType = selectedFile.type.split('/')[1]
-		const imgTransfer = await uploadFile(
-			selectedFile,
-			`billing-image_by_purchase/${userId}/${new Date().getTime()}.${fileType}`
-		)
-		purchaseIds.forEach(async (purchaseId) => {
-			await updateTransferPurchase(purchaseId, imgTransfer, isAssisted)
-		})
 		router.push('/pago-exitoso?pagoSumup=true')
 	}
 
-	const createbilling = async () => {
-		const billingData = {
-			Compras: purchaseIds,
-			Usuarios: [userId!],
-			transfer: false,
-			address: fieldsValue.shippingAddress,
-			country: fieldsValue.country,
-			location: fieldsValue.city,
-			addressNumber: fieldsValue.addressExtra,
-			name: fieldsValue.name,
-			cp: fieldsValue.zip,
-			nif: fieldsValue.nif,
-			phone: Number(fieldsValue.phoneNumber),
-			province: fieldsValue.province,
-		}
-
-		const extraData = {
-			email: fieldsValue.email,
-			billingAddress: fieldsValue.billingAddress,
-			billingAddressExtra: fieldsValue.billingAddressExtra,
-			billingProvince: fieldsValue.billingProvince,
-			billingZip: fieldsValue.billingZip,
-		}
-
-		try {
-			const storedBillingData = localStorage.getItem('billingData')
-			const storedEmailData = localStorage.getItem('extraData')
-			const cart = localStorage.getItem('cart')
-			const executedBill = localStorage.getItem('billingExecuted')
-			if (cart) {
-				const copyCartExist = localStorage.getItem('copyCart')
-				if (copyCartExist) {
-					localStorage.removeItem('copyCart')
-				}
-				const copyCart = JSON.parse(cart)
-				localStorage.setItem('copyCart', JSON.stringify(copyCart))
-			}
-			if (executedBill) {
-				localStorage.removeItem('billingExecuted')
-			}
-			if (storedBillingData) {
-				localStorage.removeItem('billingData')
-			}
-			if (storedEmailData) {
-				localStorage.removeItem('extraData')
-			}
-			localStorage.setItem('billingData', JSON.stringify(billingData))
-			localStorage.setItem('extraData', JSON.stringify(extraData))
-		} catch (error) {
-			console.error('Error saving billing data to localStorage:', error)
-		}
-	}
 
 	return (
 		<div className="font-tertiary-font text-custom-grey px-4 sm:px-6 lg:px-8">

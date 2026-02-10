@@ -1162,6 +1162,7 @@ const PaymentSelection = ({
 							purchaseIds={purchaseIds}
 							fieldsValue={fieldsValue}
 							isAssisted={isAssisted}
+							onTransferPayment={() => prepareLocalStorageForRedirect('transferencia')}
 						/>
 					</div>
 				)}
