@@ -68,7 +68,7 @@ export const updateTransferPurchase = async (purchaseId: string, imgTransfer: st
         "Estado": "Verificación de Pago",
         "Metodo": "transferencia",
         "Transferencia": [{ url: imgTransfer }],
-        "Compra web": isAssisted
+        "Compra web": !isAssisted
     };
 
     try {
