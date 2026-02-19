@@ -132,7 +132,7 @@ export default function CardPrice(props: {
 						{shippingIncluded && (
 							<div className="flex items-center gap-1 mt-1 mb-2">
 								<CheckIcon />
-								<span className="text-green-600 font-semibold text-sm">
+								<span className="text-green-600 font-semibold text-sm mobile:text-[3vw]">
 									Envío incluido
 								</span>
 								<Image
@@ -140,6 +140,7 @@ export default function CardPrice(props: {
 									alt="truck green"
 									width={30}
 									height={30}
+									className="mobile:w-[7vw] mobile:h-[7vw]"
 								/>
 							</div>
 						)}
