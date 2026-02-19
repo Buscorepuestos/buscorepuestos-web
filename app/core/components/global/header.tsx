@@ -66,7 +66,7 @@ export function Header() {
 	return (
 		<section
 			className={`lg:w-[95%] md:w-[90%] sm:w-[90%] max-w-[1213px] mobile:w-[100%] h-[122px] mobile:h-[14vw] sm:rounded-[21px] bg-custom-white sm:border-[2px] mobile:border-b-[2px]
-			border-secondary-blue ${isProductPage ? 'mt-[1vw] mobile:mt-0 mobile:relative' : 'absolute'} top-[32px] mobile:p-[7px] mobile:top-0 left-0 right-0 z-10 m-auto drop-shadow-lg`}
+			border-secondary-blue ${isProductPage ? 'mt-[1vw] mobile:mt-0 mobile:relative' : 'absolute'} top-[32px] mobile:p-[0px] mobile:top-0 left-0 right-0 z-10 m-auto drop-shadow-lg`}
 			role="region"
 		>
 			<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row justify-between items-center px-28 mobile:px-10 md:px-14 sm:px-12">
@@ -75,10 +75,10 @@ export function Header() {
 				{/* mobile:hidden lo oculta en móviles */}
 				<Link href="/" className="mobile:hidden">
 					<Image
-						src="/logo-br-desktop.svg"
+						src="/nuevo-logo-buscorepuestos.png"
 						alt="Header"
-						width={101}
-						height={71}
+						width={150}
+						height={50}
 						priority
 					/>
 				</Link>
@@ -98,11 +98,11 @@ export function Header() {
 				{/* hidden mobile:block lo muestra SOLO en móviles */}
 				<Link href="/" className="hidden mobile:block">
 					<Image
-						src="/buscorepuestos.svg"
+						src="/nuevo-logo-buscorepuestos.png"
 						alt="IconoMobile"
 						width={63}
 						height={63}
-						className="mobile:w-[11vw] mobile:h-[11vw] cursor-pointer"
+						className="mobile:w-[33vw] mobile:h-[14vw] cursor-pointer"
 					/>
 				</Link>
 
