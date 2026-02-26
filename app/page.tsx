@@ -295,6 +295,11 @@ export default function Home() {
 		dispatch({ type: 'SET_CURRENT_PAGE', payload: 1 })
 	}
 
+	const handleSuggestionSelect = (suggestion: string) => {
+		setSearchTerm(suggestion);       // actualiza el input
+		router.push(`/tienda/${suggestion}`); // navega directamente
+	};
+
 	return (
 		<main>
 			<Banner
@@ -304,23 +309,24 @@ export default function Home() {
 				position=""
 				extraCss="m-auto h-[561px] mobile:h-[400px]"
 			>
-				<div className="flex flex-col justify-center align-middle mt-[180px] mobile:mt-[100px]">
+				<div className="flex flex-col items-center justify-center mt-[180px] mobile:mt-[70px]">
 					<h1 className="text-title-1 text-custom-white text-center max-w-[728px] mb-[35px] mobile:max-w-[350px] mobile:text-xl">
-						Ponemos a tu alcance la mayor variedad de piezas de
-						coche <span className="text-warning">recuperadas</span>,
+						Ponemos a tu alcance la mayor variedad de piezas de coche{' '}
+						<span className="text-warning">recuperadas</span>,
 						<span className="text-warning"> reconstruidas</span> y
 						<span className="text-warning"> nuevas</span>.
 					</h1>
 					<SearchBar
-						value={searchTerm} // <-- AÑADIDO: El valor del input ahora es controlado por la pro
+						value={searchTerm}
 						onChange={handleInputChange}
 						onEnterPress={handleSearch}
-						isLoading={isSearching} // <-- NUEVO: Prop para mostrar el loader
+						isLoading={isSearching}
 						height={'52px'}
 						width={'w-[496px] mobile:w-[82vw]'}
 						borderColor={'#12B1BB'}
 						borderWidth={'2px'}
-						onClear={handleOnClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
+						onClear={handleOnClearSearch}
+						onSuggestionSelect={handleSuggestionSelect}
 					/>
 				</div>
 			</Banner>
@@ -498,7 +504,7 @@ export default function Home() {
 				position=""
 				extraCss={'desktop:hidden m-auto items-start h-[650px] sm:h-[750px] md:h-[750px] mobile:h-[920px]'}
 			>
-				<div className="flex justify-center"> 
+				<div className="flex justify-center">
 					<h1 className="content-center text-8xl text-custom-white text-left w-[65vw] mt-16 mobile:text-xl">
 						Busca repuestos inter
 						<span className="text-warning">nacionales</span> y

@@ -41,6 +41,12 @@ export default function Store() {
 
 	const { province: userProvince, requestLocation } = useUserLocation();
 
+	const handleSuggestionSelect = (suggestion: string) => {
+		setInputValue(suggestion);      // actualiza el input
+		dispatch(setCurrentPage(1));    // resetea paginación
+		// El useEffect con debounce se encargará de lanzar la búsqueda automáticamente
+	};
+
 	useEffect(() => {
 		// Pedir la ubicación una sola vez al cargar el componente
 		requestLocation();
@@ -219,6 +225,7 @@ export default function Store() {
 							borderColor={'#12B1BB'}
 							borderWidth={'2px'}
 							onClear={handleClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
+							onSuggestionSelect={handleSuggestionSelect} // <-- NUEVO: Prop para manejar la selección de sugerencias
 						/>
 					</div>
 					<div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>

@@ -187,6 +187,12 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
 
     const shouldShowFiltersAndSort = products.length > 0 || loadingSearch;
 
+    const handleSuggestionSelect = (suggestion: string) => {
+        setInputValue(suggestion);      // actualiza el input
+        dispatch(setCurrentPage(1));    // resetea paginación
+        // El useEffect con debounce se encargará de lanzar la búsqueda automáticamente
+    };
+
     return (
         <main className="m-auto max-w-[1170px] mt-80 mobile:mt-[18vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
             <div className={shouldShowFiltersAndSort ? 'sm:grid sm:grid-cols-custom-filters sm:gap-10 ' : ''}>
@@ -224,6 +230,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                             borderColor={'#12B1BB'}
                             borderWidth={'2px'}
                             onClear={handleClearSearch} // NUEVO: Función para limpiar la búsqueda
+                            onSuggestionSelect={handleSuggestionSelect} // NUEVO: Prop para manejar la selección de sugerencias
                         />
                     </div>
                     <div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
