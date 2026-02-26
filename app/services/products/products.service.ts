@@ -18,3 +18,9 @@ export const updateMetasyncProduct = async (id: string, data: any): Promise<Axio
 		throw error
 	}
 }
+
+export const getAutocomplete = async (query: string): Promise<string[]> => {
+	if (query.trim().length < 2) return [];
+	const res = await api.get(`/products/autocomplete?q=${encodeURIComponent(query)}`);
+	return res.data?.data ?? [];
+};

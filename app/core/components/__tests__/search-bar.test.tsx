@@ -8,7 +8,7 @@ describe('SearchBar component', () => {
 		cleanup()
 	})
 	test('Render Searchbar', () => {
-		render(<SearchBar />)
+		render(<SearchBar value="" onChange={() => {}} />)
 		expect(screen.getByPlaceholderText('Escribe lo que necesitas')).toBeDefined()
 	})
 })
