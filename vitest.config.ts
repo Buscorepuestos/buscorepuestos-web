@@ -63,6 +63,7 @@ export default defineConfig({
 				'app/core/components/scalapayWidget/ScalapayWiget.tsx',
 				'app/core/components/selectDropdown/SearchableSelect.tsx',
 				'app/core/components/Banner.tsx',
+				'app/hooks/useAutocomplete.ts',
 			],
 			reporter: ['text', 'html', 'json'],
 		},
