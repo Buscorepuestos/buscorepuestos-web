@@ -295,9 +295,12 @@ export default function Home() {
 		dispatch({ type: 'SET_CURRENT_PAGE', payload: 1 })
 	}
 
-	const handleSuggestionSelect = (suggestion: string) => {
-		setSearchTerm(suggestion);       // actualiza el input
-		router.push(`/tienda/${suggestion}`); // navega directamente
+	const handleSuggestionSelect = () => {
+		if (isSearching || !searchTerm) return
+		const term = searchTerm   // guardar el término antes de limpiar
+		setIsSearching(true)
+		setSearchTerm('')          // ← limpiar el input ANTES de navegar
+		router.push(`/tienda/${term}`)
 	};
 
 	return (
