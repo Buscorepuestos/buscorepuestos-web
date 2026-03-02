@@ -232,7 +232,7 @@ export default function SearchBar(props: SearchBarProps) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 })
     const [mounted, setMounted] = useState(false)
-
+    const [isFocused, setIsFocused] = useState(false)
     // Solo para saber que estamos en el cliente
     useEffect(() => { setMounted(true) }, [])
 
@@ -274,7 +274,10 @@ export default function SearchBar(props: SearchBarProps) {
     }
 
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') props.onEnterPress?.()
+        if (event.key === 'Enter') {
+            closeDropdown()   // ← AÑADIR ESTO
+            props.onEnterPress?.()
+        }
         if (event.key === 'Escape') closeDropdown()
     }
 
@@ -330,10 +333,12 @@ export default function SearchBar(props: SearchBarProps) {
                 onChange={props.onChange}
                 onKeyDown={handleKeyDown}
                 disabled={props.isLoading}
+                onFocus={() => setIsFocused(true)}   // ← AÑADIR
+                onBlur={() => setIsFocused(false)}   // ← AÑADIR
             />
 
             {/* PORTAL — flota encima de todo, fuera del DOM del Banner */}
-            {mounted && isOpen && suggestions.length > 0 && createPortal(
+            {mounted && isOpen && suggestions.length > 0 && isFocused && createPortal(
                 <ul style={{
                     position: 'fixed',
                     top: dropdownPos.top,
