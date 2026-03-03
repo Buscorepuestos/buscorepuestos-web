@@ -813,6 +813,8 @@ const PaymentSelection = ({
 	isSwitchOn,
 	setFieldsValue,
 	isProductPage,
+	isPhoneValid,
+	onPhoneValidationFail,
 }: {
 	purchaseIds: string[]
 	fieldsValue: FormsFields
@@ -835,6 +837,8 @@ const PaymentSelection = ({
 	isSwitchOn: boolean
 	setFieldsValue: React.Dispatch<React.SetStateAction<FormsFields>>
 	isProductPage: boolean
+	isPhoneValid: boolean
+	onPhoneValidationFail: () => void
 }) => {
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
 		'stripe' | 'sumup' | 'transferencia' | 'scalapay' | null
@@ -858,11 +862,12 @@ const PaymentSelection = ({
 	}, [isReady])
 
 	useEffect(() => {
+		const phoneDigits = fieldsValue.phoneNumber.replace(/\D/g, '');
 		const isFieldsComplete =
 			fieldsValue.shippingAddress && fieldsValue.country && fieldsValue.city &&
 			fieldsValue.addressExtra && fieldsValue.name && fieldsValue.email &&
 			fieldsValue.zip && fieldsValue.nif && fieldsValue.phoneNumber &&
-			fieldsValue.province;
+			fieldsValue.province && phoneDigits.length >= 9;;
 
 		setIsFormValid(!!isFieldsComplete);
 	}, [fieldsValue]);
@@ -930,6 +935,17 @@ const PaymentSelection = ({
 				icon: 'warning',
 				title: 'Faltan datos',
 				text: 'Por favor, completa todos los campos de envío antes de continuar.',
+			});
+			return;
+		}
+
+		const phoneDigits = fieldsValue.phoneNumber.replace(/\D/g, '');
+		if (phoneDigits.length < 9) {
+			onPhoneValidationFail(); // hace scroll + foco al campo en CheckoutPage
+			Swal.fire({
+				icon: 'warning',
+				title: 'Teléfono inválido',
+				text: 'Por favor, introduce un número de teléfono válido (mínimo 9 dígitos).',
 			});
 			return;
 		}
@@ -1095,7 +1111,7 @@ const PaymentSelection = ({
 						<span>En 3 plazos, Paypal</span>
 					</button>
 					<button
-						onClick={() =>enabledForm && enabledCart && handlePaymentSelection('scalapay')}
+						onClick={() => enabledForm && enabledCart && handlePaymentSelection('scalapay')}
 						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} items-center 
 					justify-center px-4 py-4 border-[1px] rounded-xl transition-all duration-300 
 					${getButtonStyle('scalapay')}
