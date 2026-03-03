@@ -7,49 +7,89 @@ const FaqAccordion = () => {
 	const faqItems = [
 		{
 			question: '¿Cuánto tiempo tarda el envío?',
-			answer: `Después de que el vendedor nos confirme que tiene la pieza preparada para su envío, recibirás el repuesto en tu domicilio entre 24 y 48h laborables.`,
+			answer: (
+				<div>
+					<p>El plazo de entrega depende de la ubicación del recambio:</p>
+					<ul className="list-disc ml-5 mt-2 space-y-1">
+						<li><strong>Tiendas Nacionales:</strong> Entre 24 y 48h laborables una vez que el vendedor confirme la preparación de la pieza.</li>
+						<li><strong>Tiendas Extranjeras:</strong> Al ser envíos internacionales, el plazo estimado es de entre 7 y 10 días.</li>
+					</ul>
+				</div>
+			),
+		},
+		{
+			question: '¿Qué métodos de pago aceptáis?',
+			answer: (
+				<div>
+					<ul className="list-disc ml-5 space-y-1">
+						<li><strong>Tarjeta de Crédito/Débito:</strong> Pago inmediato mediante pasarela cifrada.</li>
+						<li><strong>PayPal:</strong> Paga de forma segura con tu cuenta o tarjeta.</li>
+						<li><strong>Pago a Plazos:</strong> Financia tu compra cómodamente con Klarna o Scalapay.</li>
+						<li><strong>Bizum:</strong> Realiza tu pago al instante desde tu móvil.</li>
+						<li><strong>Transferencia Bancaria:</strong> Te facilitaremos los datos al confirmar tu pedido.</li>
+					</ul>
+					<p className="mt-2 text-sm text-gray-500">(Todos los pagos se realizan bajo protocolos de seguridad SSL para garantizar la protección de tus datos).</p>
+				</div>
+			),
 		},
 		{
 			question: '¿Dónde puedo consultar la política de devoluciones?',
 			answer: (
-				<>
-					Puedes consultar nuestra política de devoluciones completa en el
-					siguiente documento.
+				<span>
+					Puedes consultar nuestra política de devoluciones detallada y el protocolo de
+					garantías en el siguiente documento oficial:{' '}
 					<a
-						href="https://drive.google.com/file/d/1zPY7RIb_UwulVHyHNmlRI1X-dYnXVl-o/view?usp=drive_link"
+						href="https://drive.google.com/file/d/1j5i-9hI2HJJyBrpzBDA1BAr0YmImtf7v/view?usp=sharing"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-blue-500 hover:underline ml-1"
 					>
-						Haz clic aquí para verla.
+						Haz clic aquí para ver el PDF de Garantías.
 					</a>
-				</>
+				</span>
 			),
 		},
 		{
 			question: '¿Tengo que pagar algo por el servicio de búsqueda?',
-			answer: `No, nuestro servicio de búsqueda es totalmente gratuito. En el precio de los artículos ya encontrarás añadido el envío a domicilio.`,
+			answer: 'No, nuestro servicio de búsqueda es totalmente gratuito. En el precio de los artículos ya encontrarás añadido el envío a domicilio.',
 		},
 		{
 			question: '¿Qué garantía tienen los repuestos?',
-			answer: `
-                En el plazo de los primeros 14 días desde la recepción podrás desistir tu compra por cualquier motivo, no te preocupes que retiraremos el artículo en el lugar de entrega sin costes añadidos.
-                Después de los 14 días de desistimiento te acoges a la garantía del producto por su correcto funcionamiento. En nuestro portal ofrecemos 2 años de garantía en todos nuestros productos.
-                La garantía no cubrirá aquellos gastos de instalación o montaje de los artículos comprados.
-            `,
+			answer: (
+				<div>
+					<p>
+						Ofrecemos una garantía de 2 años en todos nuestros productos. Para hacerla
+						efectiva, es necesario presentar la factura de montaje de un taller
+						profesional 👨🏼‍🔧 que certifique la correcta instalación de la pieza.
+						En caso de que el recambio sea incorrecto o presente un fallo técnico,
+						la gestión de recogida y el nuevo envío son totalmente gratuitos.
+					</p>
+					<br />
+					<p className="text-sm">
+						<strong>Nota para pedidos internacionales:</strong> En el caso de piezas
+						provenientes de tiendas extranjeras, es fundamental que el cliente compruebe
+						el funcionamiento del recambio dentro de los primeros 14 días tras la
+						recepción. Por favor, coordina cualquier incidencia con nuestro equipo
+						lo antes posible dentro de este periodo.
+					</p>
+				</div>
+			),
 		},
 		{
-			question: 'Si el repuesto no me sirve. ¿Se podría devolver?',
-			answer: `
-                Sí, todos los artículos tienen la posibilidad de devolución en el caso de que se encuentre defectuoso o no reúna las mismas condiciones descritas por el vendedor.
-                Derecho de Desistimiento: El Usuario posee el derecho a desistir de dicha compra en un plazo máximo de 14 días naturales.
-            `,
+			question: '¿Si no quiero el repuesto, se podría devolver?',
+			answer: (
+				<div>
+					<p>Sí, dispones de 14 días naturales para desistir de tu compra:</p>
+					<ul className="list-disc ml-5 mt-2 space-y-1">
+						<li><strong>Por error técnico o de referencia:</strong> Retiramos la pieza sin costes añadidos para ti.</li>
+						<li><strong>Por otros motivos (Desistimiento voluntario):</strong> Al ser intermediarios de tiendas independientes, deberás gestionar el envío de vuelta al centro de origen. El abono se liberará una vez la tienda realice la validación técnica de la pieza.</li>
+					</ul>
+				</div>
+			),
 		},
 		{
 			question: '¿Cómo funciona vuestro negocio?',
-			answer: `
-                Buscamos tu repuesto entre cientos de tiendas profesionales en toda España y te enviamos una propuesta de los artículos que más se adecuan a tus necesidades para que puedas comparar y elegir entre varios con las mismas especificaciones. Una vez has realizado el pago gestionamos el envío a tu domicilio.
-            `,
+			answer: 'Buscorepuestos.com es una plataforma tecnológica que te conecta con una red de tiendas independientes y centros especializados de toda Europa. Nosotros gestionamos la búsqueda, la logística y la seguridad de tu compra, actuando como intermediarios para asegurar que recibes piezas certificadas y que tu dinero está protegido hasta que el proceso de validación técnica finaliza con éxito.',
 		},
 	]
 
@@ -75,9 +115,8 @@ const FaqAccordion = () => {
 										{item.question}
 									</span>
 									<ChevronRightIcon
-										className={`${
-											open ? 'transform rotate-90' : ''
-										} w-8 h-8 text-custom-grey`}
+										className={`${open ? 'transform rotate-90' : ''
+											} w-8 h-8 text-custom-grey`}
 									/>
 								</Disclosure.Button>
 								<Disclosure.Panel
@@ -86,7 +125,7 @@ const FaqAccordion = () => {
                                     "
 								>
 									{/* Se envuelve la respuesta en un div para manejar tanto strings como JSX */}
-                                    <div>{item.answer}</div>
+									<div>{item.answer}</div>
 								</Disclosure.Panel>
 							</>
 						)}
