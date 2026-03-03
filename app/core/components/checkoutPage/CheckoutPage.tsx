@@ -112,11 +112,27 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 	const { items, isLoaded, purchaseIds, userId } = useCartItems()
 
 	const [emailError, setEmailError] = useState<string | null>(null)
+	const [phoneError, setPhoneError] = useState<string | null>(null)
 	const [isFormVisible, setIsFormVisible] = useState(false)
 	const [isSubscribing, setIsSubscribing] = useState(false);
 	const [lastSavedEmail, setLastSavedEmail] = useState('')
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+	const validatePhone = (phone: string): boolean => {
+		const digits = phone.replace(/\D/g, '')
+		return digits.length >= 9
+	}
+
+	const handlePhoneBlur = () => {
+		if (!fieldsValue.phoneNumber) {
+			setPhoneError('Por favor, ingrese su número de teléfono.')
+		} else if (!validatePhone(fieldsValue.phoneNumber)) {
+			setPhoneError('El teléfono debe tener al menos 9 dígitos.')
+		} else {
+			setPhoneError(null)
+		}
+	}
 
 	// useEffect(() => {
 	// 	// Verificar si hay un correo almacenado en localStorage
@@ -133,38 +149,38 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 		const storedEmail = localStorage.getItem('userEmail')
 		if (storedEmail) {
 			setFieldsValue(prev => ({ ...prev, email: storedEmail }))
-            setLastSavedEmail(storedEmail)
+			setLastSavedEmail(storedEmail)
 		}
 	}, [])
 
 	const handleEmailAutoSave = async () => {
-        const email = fieldsValue.email.trim()
-        
-        // Solo guardamos si es un email válido y es diferente al último que guardamos
-        if (email && emailRegex.test(email) && email !== lastSavedEmail) {
-            setIsSubscribing(true)
-            try {
-                // 1. Guardar en LocalStorage
-                localStorage.setItem('userEmail', email)
-                
-                // 2. Suscribir en Mailchimp (Lead)
-                await subscribe(email)
-                
-                // 3. Actualizar en Airtable
-                await userService.updateUser({
-                    id: localStorage.getItem('airtableUserId'),
-                    ['correo electronico']: email,
-                })
+		const email = fieldsValue.email.trim()
 
-                setLastSavedEmail(email)
-                console.log("Lead capturado automáticamente:", email)
-            } catch (error) {
-                console.error("Error en auto-guardado de email:", error)
-            } finally {
-                setIsSubscribing(false)
-            }
-        }
-    }
+		// Solo guardamos si es un email válido y es diferente al último que guardamos
+		if (email && emailRegex.test(email) && email !== lastSavedEmail) {
+			setIsSubscribing(true)
+			try {
+				// 1. Guardar en LocalStorage
+				localStorage.setItem('userEmail', email)
+
+				// 2. Suscribir en Mailchimp (Lead)
+				await subscribe(email)
+
+				// 3. Actualizar en Airtable
+				await userService.updateUser({
+					id: localStorage.getItem('airtableUserId'),
+					['correo electronico']: email,
+				})
+
+				setLastSavedEmail(email)
+				console.log("Lead capturado automáticamente:", email)
+			} catch (error) {
+				console.error("Error en auto-guardado de email:", error)
+			} finally {
+				setIsSubscribing(false)
+			}
+		}
+	}
 
 	const calculateTotal = useMemo(() => {
 		const stringPrice = items
@@ -532,7 +548,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										placeholder={'Email'}
 										name={'email'}
 										value={fieldsValue.email}
-										
+
 										onChange={(e) =>
 											setFieldsValue({
 												...fieldsValue,
@@ -556,7 +572,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full'} mobile:w-full mt-4 gap-4`
 									}
 								>
-									
+
 									<Input
 										placeholder={'Nombre y apellidos'}
 										name={'name'}
@@ -599,20 +615,30 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										placeholder={'Número de teléfono'}
 										name={'phone'}
 										value={fieldsValue.phoneNumber}
-										onChange={(e) =>
+										onChange={(e) => {
 											setFieldsValue({
 												...fieldsValue,
 												phoneNumber: e.target.value,
 											})
-										}
+											// Limpia el error mientras escribe si ya es válido
+											if (validatePhone(e.target.value)) {
+												setPhoneError(null)
+											}
+										}}
 										ref={phoneNumberRef}
 										isScrolled={
 											isScrolledInputs.phoneNumber
 										}
 										type="number"
 										isProductPage={isProductPage}
+										onBlur={handlePhoneBlur}
 									/>
 								</div>
+								{phoneError && ( // ← NUEVO
+									<p className="text-red-500 text-sm mt-1">
+										{phoneError}
+									</p>
+								)}
 
 								{/*Shipping Address Information*/}
 								{/* <h1
@@ -920,6 +946,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										isSwitchOn={isSwitchOn}
 										setFieldsValue={setFieldsValue}
 										isProductPage={isProductPage}
+										isPhoneValid={validatePhone(fieldsValue.phoneNumber)} // ← NUEVO
+										onPhoneValidationFail={() => {           // ← NUEVO
+											setPhoneError('El teléfono debe tener al menos 9 dígitos.')
+											phoneNumberRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+											phoneNumberRef.current?.focus()
+										}}
 									/>
 								</div>
 								{/* )} */}
