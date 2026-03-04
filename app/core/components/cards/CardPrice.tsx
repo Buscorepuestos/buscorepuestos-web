@@ -67,7 +67,7 @@ export default function CardPrice(props: {
 					alt="card image"
 					width={205}
 					height={140}
-					className="rounded-t-[23px] w-[100%] h-[140px] mobile:h-[132px]"
+					className="rounded-t-[23px] w-[100%] h-[140px] mobile:h-[132px] object-cover object-center"
 					loading={'lazy'}
 					onError={handleImageError}
 				/>
@@ -132,7 +132,7 @@ export default function CardPrice(props: {
 						{shippingIncluded && (
 							<div className="flex items-center gap-1 mt-1 mb-2">
 								<CheckIcon />
-								<span className="text-green-600 font-semibold text-sm">
+								<span className="text-green-600 font-semibold text-sm mobile:text-[3vw]">
 									Envío incluido
 								</span>
 								<Image
@@ -140,6 +140,7 @@ export default function CardPrice(props: {
 									alt="truck green"
 									width={30}
 									height={30}
+									className="mobile:w-[7vw] mobile:h-[7vw]"
 								/>
 							</div>
 						)}
@@ -147,11 +148,11 @@ export default function CardPrice(props: {
 
 					{shippingIncluded && (
 						<div className="w-full p-2 mb-3 mt-1 bg-white">
-							<div className="flex items-center mb-1 justify-center text-center">
-								<div className="bg-[#333] text-white text-[13px] font-bold px-1.5 py-0.5 rounded-full flex items-center">
+							<div className="flex items-center mb-1 justify-center text-center gap-2">
+								<div className="bg-[#333] text-white text-[13px] mobile:text-[3vw] font-bold px-1.5 py-0.5 rounded-full flex items-center">
 									4x
 								</div>
-								<p className="text-[13px] font-tertiary-font leading-tight text-gray-700 ">
+								<p className="text-[13px] mobile:text-[3vw] font-tertiary-font leading-tight text-gray-700 ">
 									Paga en 4 plazos de{' '}
 									<span className="font-bold">{installmentPrice}€</span>
 								</p>

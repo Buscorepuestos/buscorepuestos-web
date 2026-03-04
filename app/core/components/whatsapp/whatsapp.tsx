@@ -1,27 +1,62 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 const WhatsAppIcon: React.FC = () => {
 	const pathname = usePathname()
-	const [isScrolled, setIsScrolled] = useState(false)
+	const [showBubble, setShowBubble] = useState(false)
+	
+	// Refs para la lógica de la tienda
+	const hasShownStoreBubble = useRef(false)
+	const storeTimerRef = useRef<NodeJS.Timeout | null>(null)
 
 	const hideOnPaths = ['/verificacion-pago', '/pago-exitoso']
 
+	// Reiniciar estados al cambiar de página
+	useEffect(() => {
+		setShowBubble(false)
+		hasShownStoreBubble.current = false
+		if (storeTimerRef.current) clearTimeout(storeTimerRef.current)
+	}, [pathname])
+
 	useEffect(() => {
 		const handleScroll = () => {
-			if (window.scrollY > 50) {
-				setIsScrolled(true)
-			} else {
-				setIsScrolled(false) 
+			const scrollY = window.scrollY
+
+			// --- HOME ---
+			if (pathname === '/') {
+				if (scrollY > 50) {
+					setShowBubble(true)
+				} else {
+					setShowBubble(false)
+				}
 			}
+
+			// --- TIENDA ---
+			else if (pathname.startsWith('/tienda')) {
+				// Scroll > 500px (aprox 4-5 tarjetas de producto en desktop, o un par en móvil)
+				if (scrollY > 500 && !hasShownStoreBubble.current) {
+					hasShownStoreBubble.current = true
+					setShowBubble(true)
+
+					// Desaparecer a los 5 segundos
+					storeTimerRef.current = setTimeout(() => {
+						setShowBubble(false)
+					}, 5000)
+				}
+			}
+			
+			// --- PRODUCTO ---
+			// Se mantiene oculto visualmente (showBubble = false por defecto)
 		}
+
 		window.addEventListener('scroll', handleScroll)
 		return () => {
 			window.removeEventListener('scroll', handleScroll)
+			if (storeTimerRef.current) clearTimeout(storeTimerRef.current)
 		}
-	}, [])
+	}, [pathname])
 
 	if (hideOnPaths.includes(pathname)) {
 		return null
@@ -31,9 +66,10 @@ const WhatsAppIcon: React.FC = () => {
 		if (pathname === '/') {
 			return 'Buscamos la referencia exacta que necesitas'
 		}
-		if (pathname.startsWith('/producto')) {
-			return 'Verifica si este repuesto es válido\npara tu coche'
+		if (pathname.startsWith('/tienda')) {
+			return 'Evita devoluciones encontrando la referencia correcta'
 		}
+		// En producto retornamos vacío para que no se renderice el globo
 		return ''
 	}
 
@@ -43,6 +79,7 @@ const WhatsAppIcon: React.FC = () => {
 		const phoneNumber = '34611537631'
 		let message = ''
 
+		// Mantenemos la funcionalidad de capturar URL en producto aunque no haya texto visual
 		if (pathname.startsWith('/producto')) {
 			const currentUrl = window.location.href
 			message = `${currentUrl}\n\nHola, estoy viendo este producto en la tienda`
@@ -55,7 +92,6 @@ const WhatsAppIcon: React.FC = () => {
 	}
 
 	return (
-        // El onClick se mantiene en el padre para gestionar el clic de ambos hijos.
 		<div
 			style={{
 				position: 'fixed',
@@ -63,26 +99,35 @@ const WhatsAppIcon: React.FC = () => {
 				right: '20px',
 				zIndex: 50,
 			}}
-            // <-- 1. El contenedor principal ignora los clics en su espacio vacío.
-			className="flex flex-col items-end gap-2 group pointer-events-none" 
+			className="flex flex-col items-end gap-2 group pointer-events-none"
 			onClick={handleClick}
 		>
 			{copy && (
 				<div
-                    // <-- 2. La burbuja de texto VUELVE a ser clickable.
 					className={`
                         relative mb-1 transition-opacity duration-500 ease-in-out cursor-pointer pointer-events-auto
-                        ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-                        md:opacity-100
+                        ${showBubble ? 'opacity-100' : 'opacity-0 pointer-events-none'}
                     `}
+					// Controlamos la opacidad directamente con inline style para asegurar que funciona en móvil y desktop
+					style={{ opacity: showBubble ? 1 : 0 }} 
 				>
-					{/* El cuadro de texto */}
-					<div className="bg-[#29A71A] p-3 rounded-xl shadow-lg">
-						<p className="text-sm text-center text-white font-semibold whitespace-pre-line">
+					{/* 
+                        CAMBIOS RESPONSIVE AQUÍ:
+                        1. mobile:p-2 -> Reduce el relleno en móvil.
+                        2. mobile:text-xs -> Reduce la fuente en móvil.
+                        3. mobile:max-w-[160px] -> Fuerza a que el texto haga salto de línea si es muy largo.
+                        4. leading-tight -> Mejora el espaciado entre líneas en textos largos.
+                    */}
+					<div className="bg-[#29A71A] p-3 mobile:p-2 rounded-xl shadow-lg">
+						<p className="
+                            text-sm mobile:text-xs 
+                            text-center text-white font-semibold 
+                            whitespace-pre-line 
+                            mobile:max-w-[160px] leading-tight
+                        ">
 							{copy}
 						</p>
 					</div>
-					{/* El puntero/flecha */}
 					<div
 						className="absolute right-5 -bottom-2 w-0 h-0 
                             border-l-[8px] border-l-transparent
@@ -92,13 +137,11 @@ const WhatsAppIcon: React.FC = () => {
 				</div>
 			)}
 
-			{/* El icono de WhatsApp */}
 			<Image
 				src="/whatsapp-icon.svg"
 				alt="WhatsApp"
 				width={60}
 				height={60}
-                // <-- 3. El icono VUELVE a ser clickable y mantiene el cursor.
 				className="drop-shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer pointer-events-auto"
 			/>
 		</div>

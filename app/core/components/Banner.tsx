@@ -11,6 +11,8 @@ interface BannerStyle {
 	height?: string
 	justifyContent: string
 	backgroundColor: string
+	overflowX: 'hidden'
+	overflowY: 'visible'
 }
 
 export default function Banner(props: {
@@ -26,6 +28,8 @@ export default function Banner(props: {
 		backgroundColor: props.color,
 		height: props.height,
 		justifyContent: getAligned(props.aligned),
+		overflowX: 'hidden',   // corta la imagen horizontalmente
+		overflowY: 'visible',  // deja salir el dropdown hacia abajo
 	}
 
 	return (
@@ -33,22 +37,21 @@ export default function Banner(props: {
 			className={`relative w-full mobile:w-[100vw] flex overflow-hidden ${props.position || ''} z-0 ${props.extraCss || ''}`}
 			style={styles}
 		>
-			{/* Renderizamos la imagen con Next/Image optimizada */}
 			{props.imgUrl && (
 				<Image
 					src={props.imgUrl}
 					alt="Banner background"
-					fill // Hace que la imagen ocupe todo el contenedor padre
-					priority={true} // ESTA ES LA CLAVE: Forza la carga inmediata (LCP)
-					className="object-cover object-center -z-10" // Se coloca detrás del contenido y cubre el área
-					quality={85} // Opcional: Ajusta calidad para mejorar velocidad
+					fill
+					priority={true}
+					className="object-cover object-center"
+					quality={85}
+					style={{ zIndex: 0 }}
 				/>
 			)}
-
-			{/* El contenido debe estar por encima de la imagen */}
-			{/* <div className="z-10 w-full flex h-full" style={{ justifyContent: getAligned(props.aligned) }}> */}
+			{/* Sin z-index, sin wrapper extra — el contenido va directo */}
+			<div className="w-full flex" style={{ justifyContent: getAligned(props.aligned), position: 'relative', zIndex: 1 }}>
 				{props.children}
-			{/* </div> */}
+			</div>
 		</section>
 	)
 }
