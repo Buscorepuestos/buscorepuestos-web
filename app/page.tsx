@@ -600,7 +600,7 @@ export default function Home() {
 
 			<section className="pt-[30px]">
 				<div className="flex text-center ml-36 mobile:ml-0">
-					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] mobile:mb-[7px] font-tertiary-font text-dark-grey">
 						Últimos repuestos vendidos
 					</h2>
 				</div>
@@ -624,6 +624,7 @@ export default function Home() {
 									handle={() => handle(product._id)}
 									id={product._id}
 									loading={loadingPurchase === product._id}
+									shippingIncluded={true}
 								/>
 							</SwiperSlide>
 						))}
@@ -631,7 +632,7 @@ export default function Home() {
 				)}
 			</section>
 
-			<Dropdown />
+			{/* <Dropdown /> */}
 
 			<Banner
 				imgUrl="/banner-truck.webp"
@@ -690,9 +691,9 @@ export default function Home() {
 				</div>
 			</Banner>
 
-			<section className="pt-[72px]">
+			<section className="pt-[72px] mobile:pt-[25px] ">
 				<div className="flex justify-start ml-36 mobile:ml-12">
-					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] font-tertiary-font text-dark-grey">
+					<h2 className="text-title-2 mobile:text-[10vw] mb-[46px] mobile:mb-[16px] font-tertiary-font text-dark-grey">
 						Novedades
 					</h2>
 				</div>
@@ -716,6 +717,7 @@ export default function Home() {
 									handle={() => handle(product._id)}
 									id={product._id}
 									loading={loadingPurchase === product._id}
+									shippingIncluded={true}
 								/>
 							</SwiperSlide>
 						))}
