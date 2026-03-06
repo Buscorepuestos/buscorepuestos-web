@@ -70,7 +70,7 @@ export function Header() {
 			role="region"
 		>
 			<div className="flex flex-col md:flex-row sm:flex-row mobile:flex-row justify-between items-center px-28 mobile:px-10 md:px-14 sm:px-12">
-				
+
 				{/* 1. LOGO DESKTOP (Izquierda en PC) */}
 				{/* mobile:hidden lo oculta en móviles */}
 				<Link href="/" className="mobile:hidden">
@@ -100,9 +100,11 @@ export function Header() {
 					<Image
 						src="/nuevo-logo-buscorepuestos.png"
 						alt="IconoMobile"
-						width={63}
-						height={63}
-						className="mobile:w-[33vw] mobile:h-[14vw] cursor-pointer"
+						width={390}   // ← ancho máximo real en móvil (33vw de ~390px = ~130px, x3 Retina = 390px)
+						height={163}  // ← proporcional
+						className="mobile:block mobile:w-[33vw] mobile:h-[14vw]"
+						priority
+						sizes="33vw"  // ← le indica al navegador que es 33% del viewport
 					/>
 				</Link>
 

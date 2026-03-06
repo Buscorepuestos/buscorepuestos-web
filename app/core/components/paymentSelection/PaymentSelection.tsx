@@ -5,7 +5,7 @@ import TransferPayment from '../transferPayment/transferPayment';
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service';
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget';
 import { FormsFields } from '../checkoutPage/CheckoutPage';
-import { useAppDispatch } from '../../../redux/hooks'; 
+import { useAppDispatch } from '../../../redux/hooks';
 import { savePurchaseAsync } from '../../../redux/features/shoppingCartSlice';
 import Image from 'next/image';
 import Swal from 'sweetalert2';
@@ -58,12 +58,12 @@ const PaymentSelection = ({
 	const userId = typeof window !== 'undefined' ? localStorage.getItem('airtableUserId') : null
 
 	const { purchaseIds, isReady, hasError } = useMemo(() => {
-        const ids = items.map(item => item.purchaseId).filter(Boolean) as string[];
-        const allSaved = items.length > 0 && items.every(item => item.saveStatus === 'saved');
-        // Detectamos si algún item falló
-        const anyError = items.some(item => item.saveStatus === 'error');
-        return { purchaseIds: ids, isReady: allSaved, hasError: anyError };
-    }, [items]);
+		const ids = items.map(item => item.purchaseId).filter(Boolean) as string[];
+		const allSaved = items.length > 0 && items.every(item => item.saveStatus === 'saved');
+		// Detectamos si algún item falló
+		const anyError = items.some(item => item.saveStatus === 'error');
+		return { purchaseIds: ids, isReady: allSaved, hasError: anyError };
+	}, [items]);
 
 	// Actualizamos el estado local `isCartReady`
 	useEffect(() => {
@@ -72,24 +72,24 @@ const PaymentSelection = ({
 
 	useEffect(() => {
 
-        if (items.length > 0) {
-            items.forEach(item => {
-                // Si el item no tiene ID de compra y no se está guardando actualmente, reintentamos
-                if (!item.purchaseId && item.saveStatus !== 'saved' && item.saveStatus !== 'saving') {
-                    console.log(`Reintentando sincronización para: ${item.title}`);
-                    const currentUserId = userId || localStorage.getItem('airtableUserId') || '';
-                    
-                    // Solo intentamos si tenemos usuario, si no, el authMiddleware debería encargarse
-                    if (currentUserId) {
-                        dispatch(savePurchaseAsync({
-                            product: { ...item } as any, // Cast necesario porque CartItem extiende ProductMongoInterface
-                            userId: currentUserId,
-                        }));
-                    }
-                }
-            });
-        }
-    }, [dispatch, items, userId]);
+		if (items.length > 0) {
+			items.forEach(item => {
+				// Si el item no tiene ID de compra y no se está guardando actualmente, reintentamos
+				if (!item.purchaseId && item.saveStatus !== 'saved' && item.saveStatus !== 'saving') {
+					console.log(`Reintentando sincronización para: ${item.title}`);
+					const currentUserId = userId || localStorage.getItem('airtableUserId') || '';
+
+					// Solo intentamos si tenemos usuario, si no, el authMiddleware debería encargarse
+					if (currentUserId) {
+						dispatch(savePurchaseAsync({
+							product: { ...item } as any, // Cast necesario porque CartItem extiende ProductMongoInterface
+							userId: currentUserId,
+						}));
+					}
+				}
+			});
+		}
+	}, [dispatch, items, userId]);
 
 	useEffect(() => {
 
@@ -198,6 +198,10 @@ const PaymentSelection = ({
 			const prepareLocalStorageForRedirect = () => {
 				const isAssisted = items.some(item => item.origin === 'kommo');
 				const userId = localStorage.getItem('airtableUserId');
+				const resolvedBillingAddress = isSwitchOn ? fieldsValue.shippingAddress : fieldsValue.billingAddress
+				const resolvedBillingAddressExtra = isSwitchOn ? fieldsValue.addressExtra : fieldsValue.billingAddressExtra
+				const resolvedBillingZip = isSwitchOn ? fieldsValue.zip : fieldsValue.billingZip
+				const resolvedBillingProvince = isSwitchOn ? fieldsValue.province : fieldsValue.billingProvince
 				const pendingOrder = {
 					paymentMethod: 'stripe',
 					billingData: {
@@ -216,10 +220,10 @@ const PaymentSelection = ({
 					},
 					extraData: {
 						email: fieldsValue.email,
-						billingAddress: fieldsValue.billingAddress,
-						billingAddressExtra: fieldsValue.billingAddressExtra,
-						billingProvince: fieldsValue.billingProvince,
-						billingZip: fieldsValue.billingZip,
+						billingAddress: resolvedBillingAddress,       
+						billingAddressExtra: resolvedBillingAddressExtra,
+						billingProvince: resolvedBillingProvince,  
+						billingZip: resolvedBillingZip,
 						isAssisted: isAssisted,
 					},
 					cart: JSON.parse(localStorage.getItem('cart') || '[]'),
@@ -299,22 +303,22 @@ const PaymentSelection = ({
 		return (
 			<div>
 				{!isCartReady && items.length > 0 && !hasError && (
-                    <div className="flex justify-center items-center my-4 p-2 bg-yellow-100 border border-yellow-300 rounded-md">
-                        <div className="w-5 h-5 border-2 border-yellow-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-                        <p className="ml-3 text-sm text-yellow-800">Sincronizando carrito...</p>
-                    </div>
-                )}
+					<div className="flex justify-center items-center my-4 p-2 bg-yellow-100 border border-yellow-300 rounded-md">
+						<div className="w-5 h-5 border-2 border-yellow-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+						<p className="ml-3 text-sm text-yellow-800">Sincronizando carrito...</p>
+					</div>
+				)}
 				{hasError && (
-                    <div className="flex flex-col justify-center items-center my-4 p-2 bg-red-100 border border-red-300 rounded-md">
-                        <p className="text-sm text-red-800 font-bold">Hubo un error sincronizando tu carrito.</p>
-                        <button 
-                            onClick={() => window.location.reload()} 
-                            className="mt-2 text-xs bg-red-600 text-white px-3 py-1 rounded-full hover:bg-red-700"
-                        >
-                            Reintentar
-                        </button>
-                    </div>
-                )}
+					<div className="flex flex-col justify-center items-center my-4 p-2 bg-red-100 border border-red-300 rounded-md">
+						<p className="text-sm text-red-800 font-bold">Hubo un error sincronizando tu carrito.</p>
+						<button
+							onClick={() => window.location.reload()}
+							className="mt-2 text-xs bg-red-600 text-white px-3 py-1 rounded-full hover:bg-red-700"
+						>
+							Reintentar
+						</button>
+					</div>
+				)}
 				<div className="flex mobile:flex-wrap justify-between mb-6 gap-3">
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('sumup')}
