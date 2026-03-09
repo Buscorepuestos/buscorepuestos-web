@@ -41,9 +41,10 @@ export default function CardPrice(props: {
 	id?: string
 	loading?: boolean
 	location?: string
-	shippingIncluded?: boolean // Nueva prop para activar el modo de la segunda imagen
+	shippingIncluded?: boolean
+	hideRating?: boolean
 }) {
-	const { image, loading, shippingIncluded } = props
+	const { image, loading, shippingIncluded, hideRating } = props
 
 	const [imgSrc, setImgSrc] = useState(image || noDisponible.src)
 
@@ -76,7 +77,7 @@ export default function CardPrice(props: {
 						<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline uppercase">
 							{props.title}
 						</h4>
-						<p className="text-sm text-gray-600">
+						<p className="text-sm text-gray-600 truncate w-full">
 							<span className="font-bold">Ref. </span>
 							{props.reference}
 						</p>
@@ -91,40 +92,43 @@ export default function CardPrice(props: {
 							Valoración del proveedor
 						</p>
 					)}
-
-					<div className="flex w-full justify-center items-center flex-row gap-2 mobile:gap-3 my-1">
-						{/* Si quieres mantener el icono de ubicación siempre, déjalo. Si en la versión 2 prefieres solo texto cyan, podrías añadir condicional */}
-						<Image
-							src="/ubication.svg"
-							alt="ubication"
-							width={22}
-							height={22}
-							className="xl:w-[0.7vw] md:w-[1.7vw] md:h-[1.7vw] sm:w-[1.5vw] sm:h-[1.5vw] mobile:w-[3.5vw] mobile:h-[3.5vw]"
-						/>
-						<span
-							className={`text-[1.3rem] mobile:text-[2.9vw] font-tertiary-font font-semibold uppercase ${shippingIncluded ? 'text-[#00B4D8]' : 'text-secondary-blue'
-								}`}
-						>
-							{props.location || 'Sin ubicación'}
-						</span>
-					</div>
-
-					<div className="flex w-[100%] justify-center flex-row gap-1 mobile:gap-2 mb-2">
-						{Array.from({ length: MAX_VALORATION }, (_, index) => (
-							<Star
-								key={index}
-								isFilled={true}
-								className="
-                                    text-blue-600
-                                    xl:w-[0.8vw] xl:h-[0.8vw]
-                                    lg:w-[1.2vw] lg:h-[1.2vw]
-                                    md:w-[1.2vw] md:h-[1.2vw]
-                                    sm:w-[1.4vw] sm:h-[1.4vw]
-                                    mobile:w-[3.1vw] mobile:h-[3.1vw]
-                                "
+					{!hideRating && (
+						<div className="flex w-full justify-center items-center flex-row gap-2 mobile:gap-3 my-1">
+							{/* Si quieres mantener el icono de ubicación siempre, déjalo. Si en la versión 2 prefieres solo texto cyan, podrías añadir condicional */}
+							<Image
+								src="/ubication.svg"
+								alt="ubication"
+								width={22}
+								height={22}
+								className="xl:w-[0.7vw] md:w-[1.7vw] md:h-[1.7vw] sm:w-[1.5vw] sm:h-[1.5vw] mobile:w-[3.5vw] mobile:h-[3.5vw]"
 							/>
-						))}
-					</div>
+							<span
+								className={`text-[1.3rem] mobile:text-[2.9vw] font-tertiary-font font-semibold uppercase ${shippingIncluded ? 'text-[#00B4D8]' : 'text-secondary-blue'
+									}`}
+							>
+								{props.location || 'Sin ubicación'}
+							</span>
+						</div>
+					)}
+
+					{!hideRating && (
+						<div className="flex w-[100%] justify-center flex-row gap-1 mobile:gap-2 mb-2">
+							{Array.from({ length: MAX_VALORATION }, (_, index) => (
+								<Star
+									key={index}
+									isFilled={true}
+									className="
+										text-blue-600
+										xl:w-[0.8vw] xl:h-[0.8vw]
+										lg:w-[1.2vw] lg:h-[1.2vw]
+										md:w-[1.2vw] md:h-[1.2vw]
+										sm:w-[1.4vw] sm:h-[1.4vw]
+										mobile:w-[3.1vw] mobile:h-[3.1vw]
+									"
+								/>
+							))}
+						</div>
+					)}
 
 					<div className="flex flex-col items-center w-[100%]">
 						<PriceView price={props.price.toFixed(2).replace('.', ',')} />
