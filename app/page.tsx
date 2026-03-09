@@ -625,6 +625,7 @@ export default function Home() {
 									id={product._id}
 									loading={loadingPurchase === product._id}
 									shippingIncluded={true}
+									hideRating={true}
 								/>
 							</SwiperSlide>
 						))}
@@ -718,6 +719,7 @@ export default function Home() {
 									id={product._id}
 									loading={loadingPurchase === product._id}
 									shippingIncluded={true}
+									hideRating={true}
 								/>
 							</SwiperSlide>
 						))}
