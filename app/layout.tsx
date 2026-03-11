@@ -16,7 +16,7 @@ const workSans = localFont({
 	src: './fonts/WorkSans_wght.ttf',
 	variable: '--font-work-sans',
 	weight: '100 900',
-	display: 'swap', 
+	display: 'swap',
 	preload: true,
 })
 
@@ -39,7 +39,15 @@ const popins = localFont({
 })
 
 export const metadata: Metadata = {
-	title: 'BUSCOREPUESTOS - tienda online de recambios con gran variedad de piezas de coche recuperada, reconstruidas y nuevas',
+	title: 'BUSCOREPUESTOS - Tienda Online de Repuestos de Coche',
+	description: 'Ponemos a tu alcance la mayor variedad de piezas de coche recuperadas, reconstruidas y nuevas. Busca repuestos en cientos de tiendas y compara precios. Envío incluido.',
+	openGraph: {
+		title: 'BUSCOREPUESTOS - Tienda Online de Repuestos de Coche',
+		description: 'Tienda online de recambios con gran variedad de piezas de coche recuperada, reconstruidas y nuevas',
+		url: 'https://www.buscorepuestos.com',
+		siteName: 'Buscorepuestos',
+		type: 'website',
+	},
 }
 
 export default function RootLayout({
@@ -62,7 +70,7 @@ export default function RootLayout({
 				})(window,document,'script','dataLayer','GTM-TPCVDD8');`,
 					}}
 				/>
-				
+
 			</head>
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center min-h-screen font-primary-font`}

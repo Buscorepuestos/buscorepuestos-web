@@ -8,6 +8,7 @@ interface GeocodingResponse {
         county: string;     // Suele ser la Provincia/Comarca (ej: "Barcelona", "Barcelonés")
         city: string;       // La ciudad (ej: "Barcelona")
         country_code: string; // El código del país (ej: "es", "cl")
+        province: string
     };
 }
 
@@ -38,9 +39,9 @@ export function useUserLocation() {
                 // 'county' puede ser "Barcelonés", "Madrid", etc.
                 // 'city' puede ser "Barcelona", "Madrid".
                 // 'state' puede ser "Catalonia", "Community of Madrid".
-                finalProvince = address.city || address.county || address.state || null;
+                finalProvince = address.province || address.county || address.city || address.state || null;
             } else {
-                finalProvince = address.county || address.state || address.city || null;
+                finalProvince = address.province || address.county || address.state || address.city || null;
             }
 
             // // === CONSOLE LOGS MEJORADOS PARA DEPURACIÓN ===
