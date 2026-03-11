@@ -1,4 +1,10 @@
 import React from 'react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Términos y Condiciones | Buscorepuestos',
+	description: 'Lee los términos y condiciones de uso del marketplace de repuestos Buscorepuestos.com.',
+}
 
 const page = () => {
 	return (
