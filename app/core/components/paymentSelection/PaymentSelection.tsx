@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import SumupPayment from '../sumupPayment/sumupPayment';
 import TransferPayment from '../transferPayment/transferPayment';
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service';
@@ -54,6 +54,7 @@ const PaymentSelection = ({
 	const [isProcessing, setIsProcessing] = useState(false)
 	const [isFormValid, setIsFormValid] = useState(false)
 	const [isCartReady, setIsCartReady] = useState(false);
+	const paymentDetailRef = useRef<HTMLDivElement>(null);
 
 	const userId = typeof window !== 'undefined' ? localStorage.getItem('airtableUserId') : null
 
@@ -150,6 +151,12 @@ const PaymentSelection = ({
 	};
 
 	const handlePaymentSelection = async (method: 'stripe' | 'sumup' | 'transferencia' | 'scalapay') => {
+		if (method === 'sumup' || method === 'transferencia') {
+			setTimeout(() => {
+				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}, 2000); // pequeño delay para que React termine de renderizar el componente
+		}
+
 		if (!isCartReady) {
 			Swal.fire({
 				icon: 'info',
@@ -220,9 +227,9 @@ const PaymentSelection = ({
 					},
 					extraData: {
 						email: fieldsValue.email,
-						billingAddress: resolvedBillingAddress,       
+						billingAddress: resolvedBillingAddress,
 						billingAddressExtra: resolvedBillingAddressExtra,
-						billingProvince: resolvedBillingProvince,  
+						billingProvince: resolvedBillingProvince,
 						billingZip: resolvedBillingZip,
 						isAssisted: isAssisted,
 					},
@@ -387,7 +394,7 @@ const PaymentSelection = ({
 				</p>
 			)}
 
-			<div className="mt-8">
+			<div className="mt-8" ref={paymentDetailRef}>
 				{selectedPaymentMethod === 'sumup' && (
 					<div className="flex justify-center">
 						<SumupPayment
