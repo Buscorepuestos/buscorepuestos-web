@@ -4,7 +4,7 @@ export const environment = {
     algoliaAppID: 'U141ZKH0I5',
     algoliaAPIKey: '598a2b322df8482e3a5ea7ddca74c02b',
     algoliaIndexName: 'dev_PRODUCTS',
-    stripe_publishable_key: 'pk_test_51P4jfZ01jERzk1YWCaZjfadeUUdmvdOxkfR9wmyqiEHpK7u7rhhdHoGT9HnUKSnhUeq15oXjHVQcwKdJC4SymqwL00SZF1AZdq',
+    stripe_publishable_key: 'pk_test_51TAThtPXf06v3SEhxZf3fQCeNUh5Uwa5N2nBVqaWAmqDHYMBxUwT8h1CATokUa0n1uPGbbPrrfNDJZ6t79yB4sTb00R7341GJi',
     firebase: {
         apiKey: "AIzaSyBeXMJKluL0E_pYLdmfMx_US1U-0nIv9zM",
         authDomain: "dev-web-buscorepuestos.firebaseapp.com",
