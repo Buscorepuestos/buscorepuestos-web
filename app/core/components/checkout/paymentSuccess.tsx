@@ -484,6 +484,7 @@ const PaymentSuccess = () => {
                     // Limpiar el estado del frontend
                     dispatch(clearCart());
                     localStorage.removeItem('pendingOrder');
+                    localStorage.removeItem('checkoutFormData')
                     localStorage.setItem('lastBillingSuccess', pendingOrderJSON); // Guardar por si el usuario recarga
 
                     setStatus('success');
