@@ -60,7 +60,7 @@ export default function CardPrice(props: {
 			<div
 				className="max-w-[207px]
                     flex flex-col justify-between pb-[23px] m-6 gap-2 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl
-                    transition duration-300 ease-in-out border border-gray-100"
+                    transition duration-300 ease-in-out border border-gray-100 "
 			>
 				<Image
 					unoptimized={true}
@@ -74,7 +74,7 @@ export default function CardPrice(props: {
 				/>
 				<div className="flex flex-col items-start px-[0.5vw] mobile:px-4 w-full h-full justify-between">
 					<div className="w-full h-auto mobile:h-auto mb-2">
-						<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline uppercase">
+						<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline uppercase h-[3rem] leading-6 ">
 							{props.title}
 						</h4>
 						<p className="text-sm text-gray-600 truncate w-full">

@@ -295,7 +295,7 @@ export default function Store() {
 							{searchResults.length > 0 ? (
 								<section
 									className={
-										'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'
+										'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2 items-stretch'
 									}
 								>
 									{searchResults.map((product: any, index) => (
