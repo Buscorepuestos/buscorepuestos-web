@@ -74,6 +74,7 @@ interface checkoutPageProps {
 
 const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 	const dispatch = useDispatch()
+	const CHECKOUT_FORM_KEY = 'checkoutFormData'
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [isSwitchOn, setIsSwitchOn] = useState(true)
 	const [error, setError] = useState<string | null>(null)
@@ -92,21 +93,27 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 		province: false,
 		country: false,
 	})
-	const [fieldsValue, setFieldsValue] = useState<FormsFields>({
-		name: '',
-		email: '',
-		nif: '',
-		phoneNumber: '',
-		shippingAddress: '',
-		addressExtra: '',
-		zip: '',
-		city: '',
-		province: '',
-		country: 'España',
-		billingAddress: '',
-		billingAddressExtra: '',
-		billingZip: '',
-		billingProvince: '',
+	const [fieldsValue, setFieldsValue] = useState<FormsFields>(() => {
+		const defaults: FormsFields = {
+			name: '', email: '', nif: '', phoneNumber: '',
+			shippingAddress: '', addressExtra: '', zip: '',
+			city: '', province: '', country: 'España',
+			billingAddress: '', billingAddressExtra: '',
+			billingZip: '', billingProvince: '',
+		}
+
+		if (typeof window === 'undefined') return defaults
+
+		const saved = localStorage.getItem(CHECKOUT_FORM_KEY)
+		if (saved) {
+			try {
+				return JSON.parse(saved)
+			} catch {
+				return defaults 
+			}
+		}
+
+		return defaults
 	})
 
 	const { items, isLoaded, purchaseIds, userId } = useCartItems()
@@ -267,6 +274,10 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 
 		fetchUser()
 	}, [userId])
+
+	useEffect(() => {
+		localStorage.setItem(CHECKOUT_FORM_KEY, JSON.stringify(fieldsValue))
+	}, [fieldsValue])
 
 	const shippingOptions = userAddresses.map((address) => ({
 		value: address.id,
