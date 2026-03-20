@@ -15,6 +15,7 @@ interface InputProps {
 	onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
 	isProductPage?: boolean
 	onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
+	required?: boolean
 }
 
 const Input: React.FC<InputProps> = ({
@@ -32,6 +33,7 @@ const Input: React.FC<InputProps> = ({
 	onKeyDown,
 	isProductPage,
 	onBlur,
+	required = false,
 }) => {
 	cssClass = cssClass ? cssClass : ''
 
@@ -96,6 +98,18 @@ const Input: React.FC<InputProps> = ({
 				disabled={disabled}
 				onKeyDown={handleKeyDown}
 			/>
+			{required && !value && (
+				<span className="
+					absolute right-2 top-1/2 -translate-y-1/2
+					text-[11px] font-semibold
+					bg-orange-50 text-orange-500 border border-orange-300
+					px-2 py-0.5 rounded-full
+					pointer-events-none select-none
+					transition-all duration-300
+				">
+					Obligatorio
+				</span>
+			)}
 			{buttonText && onButtonClick && (
 				<button
 					className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-primary-blue  ${isProductPage ? 'xl:text-sm lg:text-[1.2vw] md:text-[1.1vw] sm:text-[1.2vw] mobile:text-sm' : 'text-sm'} underline cursor-pointer`}
@@ -104,11 +118,11 @@ const Input: React.FC<InputProps> = ({
 					{buttonText}
 				</button>
 			)}
-			{error && (
+			{/* {error && (
 				<span className={'text-red-500 text-xs font-semibold'}>
 					Campo requerido
 				</span>
-			)}
+			)} */}
 		</div>
 	)
 }
