@@ -576,6 +576,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										// }}
 										onBlur={handleEmailAutoSave}
 										isProductPage={isProductPage}
+										required
 									/>
 								</div>
 								<div
@@ -600,6 +601,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										cssClass={
 											'desktop:col-span-2 tablet:col-span-2 mobile:col-span-1'
 										}
+										required
 									/>
 									{isSubscribing && <p className="text-xs text-blue-500 mt-1">Sincronizando...</p>}
 									<Input
@@ -615,6 +617,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										ref={nifRef}
 										isScrolled={isScrolledInputs.nif}
 										isProductPage={isProductPage}
+										required
 									/>
 								</div>
 								<div
@@ -643,6 +646,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										type="number"
 										isProductPage={isProductPage}
 										onBlur={handlePhoneBlur}
+										required
 									/>
 								</div>
 								{phoneError && ( // ← NUEVO
@@ -708,6 +712,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 											isScrolledInputs.shippingAddress
 										}
 										isProductPage={isProductPage}
+										required
 									/>
 								</div>
 								<div
@@ -732,6 +737,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 											isScrolledInputs.addressExtra
 										}
 										isProductPage={isProductPage}
+										required
 									/>
 								</div>
 								<div
@@ -740,7 +746,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 									}
 								>
 									<Input
-										placeholder={'Código postal'}
+										placeholder={isMobile ? 'C.P.' : 'Código postal'}
 										name={'zip'}
 										value={fieldsValue.zip}
 										onChange={(e) =>
@@ -752,6 +758,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										ref={zipRef}
 										isScrolled={isScrolledInputs.zip}
 										isProductPage={isProductPage}
+										required
 									/>
 									<Input
 										placeholder={'Ciudad'}
@@ -766,6 +773,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										ref={cityRef}
 										isScrolled={isScrolledInputs.city}
 										isProductPage={isProductPage}
+										required
 									/>
 								</div>
 								<div
@@ -786,6 +794,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										ref={provinceRef}
 										isScrolled={isScrolledInputs.province}
 										isProductPage={isProductPage}
+										required
 									/>
 									<Input
 										placeholder={'País'}
@@ -801,6 +810,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										ref={countryRef}
 										disabled
 										isProductPage={isProductPage}
+										required
 									/>
 								</div>
 							</div>
