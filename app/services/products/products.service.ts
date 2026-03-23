@@ -24,3 +24,13 @@ export const getAutocomplete = async (query: string): Promise<string[]> => {
 	const res = await api.get(`/products/autocomplete?q=${encodeURIComponent(query)}`);
 	return res.data?.data ?? [];
 };
+
+export const getCatalogCount = async (): Promise<number> => {
+    try {
+        const res = await api.get('products/catalog-count');
+        return res.data?.count ?? 0;
+    } catch {
+        return 0;
+    }
+};
+

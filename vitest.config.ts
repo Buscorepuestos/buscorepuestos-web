@@ -69,6 +69,7 @@ export default defineConfig({
 				'app/tienda/**/StoreClientParam.tsx',
 				'app/tienda/StoreClient.tsx',
 				'app/ayuda/AyudaClient.tsx',
+				'app/core/components/catalogCounter/CatalogCounter.tsx'
 			],
 			reporter: ['text', 'html', 'json'],
 		},
