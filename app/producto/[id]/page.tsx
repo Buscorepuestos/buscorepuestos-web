@@ -211,8 +211,9 @@ export default async function Product({ params }: { params: Promise<{ id: string
 									labelName: 'Comprar',
 									bg: 'bg-primary-blue',
 									hoverBg: 'hover:bg-primary-lila',
+									hoverBc: 'hover:border-primary-lila',
 									hoverText: 'hover:text-white',
-									borderColor: 'border-pprimary-lila',
+									borderColor: 'border-primary-blue',
 								}}
 								data={data}
 								stock={
