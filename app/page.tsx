@@ -10,6 +10,7 @@ import CardValoration from '@/app/core/components/cards/CardValoration'
 import CardReview from './core/components/cards/CardReview'
 import TagBanner from './core/components/tags/TagBanner'
 import Dropdown from './core/components/Dropdown'
+import CatalogCounter from './core/components/catalogCounter/CatalogCounter'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from './redux/store'
@@ -349,7 +350,7 @@ export default function Home() {
 				<div className="flex justify-center items-center">
 					<h2 className="text-title-2 text-dark-grey text-center max-w-[505px] mb-[31px] mobile:text-[40px]">
 						Disponemos del catálogo de
-						<span className="text-primary-blue">15.435.468</span>
+						<CatalogCounter />
 						piezas diferentes
 					</h2>
 				</div>
