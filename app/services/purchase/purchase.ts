@@ -16,7 +16,7 @@ export const savePurchase = async (product: ProductMongoInterface, userId: strin
         "código postal": "",
         "dirección de envío misma a dirección de facturación": false,
         "Quantity": "1",
-        "Usuarios": [userId] 
+        "Usuarios": [userId]
     };
 
     try {
@@ -59,8 +59,13 @@ export const updatePurchase = async (purchaseId: string, metodo?: string): Promi
     }
 };
 
-export const updateTransferPurchase = async (purchaseId: string, imgTransfer: string, isAssisted: boolean): Promise<void> => {
-    
+export const updateTransferPurchase = async (
+    purchaseId: string,
+    imgTransfer: string,
+    isAssisted: boolean,
+    matricula?: string
+): Promise<void> => {
+
     console.log(imgTransfer);
 
     const purchase = {
@@ -68,7 +73,8 @@ export const updateTransferPurchase = async (purchaseId: string, imgTransfer: st
         "Estado": "Verificación de Pago",
         "Metodo": "transferencia",
         "Transferencia": [{ url: imgTransfer }],
-        "Compra web": !isAssisted
+        "Compra web": !isAssisted,
+        "matricula": matricula || ""
     };
 
     try {
