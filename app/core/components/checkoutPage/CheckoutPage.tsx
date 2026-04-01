@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useSearchParams } from 'next/navigation'
 import { RootState } from '../../../redux/store'
 import ShoppingBasket from '../../../core/components/shopping-cart/ShoppingBasket'
 import SelectDropdown from '../../../core/components/selectDropdown/selectDropdown'
@@ -76,7 +75,6 @@ interface checkoutPageProps {
 
 const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 	const dispatch = useDispatch()
-	const searchParams = useSearchParams()
 	const CHECKOUT_FORM_KEY = 'checkoutFormData'
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [isSwitchOn, setIsSwitchOn] = useState(true)
@@ -96,7 +94,9 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 		province: false,
 		country: false,
 	})
-	const isWebPurchase = searchParams.get('origin') !== 'kommo'
+	const isWebPurchase = typeof window !== 'undefined'
+		? new URLSearchParams(window.location.search).get('origin') !== 'kommo'
+		: true
 	const [fieldsValue, setFieldsValue] = useState<FormsFields>(() => {
 		const defaults: FormsFields = {
 			name: '', email: '', nif: '', phoneNumber: '',
