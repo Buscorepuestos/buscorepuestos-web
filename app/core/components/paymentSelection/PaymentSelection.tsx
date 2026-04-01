@@ -143,6 +143,7 @@ const PaymentSelection = ({
 				billingProvince: fieldsValue.billingProvince,
 				billingZip: fieldsValue.billingZip,
 				isAssisted: isAssisted,
+				matricula: fieldsValue.matricula,
 			},
 			cart: items,
 		};
@@ -232,6 +233,7 @@ const PaymentSelection = ({
 						billingProvince: resolvedBillingProvince,
 						billingZip: resolvedBillingZip,
 						isAssisted: isAssisted,
+						matricula: fieldsValue.matricula,
 					},
 					cart: JSON.parse(localStorage.getItem('cart') || '[]'),
 				};
@@ -420,6 +422,7 @@ const PaymentSelection = ({
 							extraData={{
 								email: fieldsValue.email,
 								isAssisted: isAssisted,
+								matricula: fieldsValue.matricula,
 							}}
 						/>
 					</div>
@@ -432,6 +435,7 @@ const PaymentSelection = ({
 							fieldsValue={fieldsValue}
 							isAssisted={isAssisted}
 							onTransferPayment={() => prepareLocalStorageForRedirect('transferencia')}
+							matricula={fieldsValue.matricula}
 						/>
 					</div>
 				)}

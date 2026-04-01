@@ -25,6 +25,7 @@ interface TransferPaymentProps {
 	purchaseIds: string[]
 	fieldsValue: FormsFields
 	isAssisted: boolean
+	matricula?: string
 	onTransferPayment?: () => void
 }
 
@@ -33,6 +34,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 	purchaseIds,
 	fieldsValue,
 	isAssisted,
+	matricula,
 	onTransferPayment,
 }) => {
 	const transferDataCaixa: TransferData = {
@@ -161,7 +163,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 			`billing-image_by_purchase/${userId}/${new Date().getTime()}.${fileType}`
 		)
 		purchaseIds.forEach(async (purchaseId) => {
-			await updateTransferPurchase(purchaseId, imgTransfer, isAssisted)
+			await updateTransferPurchase(purchaseId, imgTransfer, isAssisted, matricula)
 		})
 		dispatch(clearCart())
 		await updateUser({

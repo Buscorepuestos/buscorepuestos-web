@@ -10,7 +10,6 @@ export interface ScalapayCaptureResponse {
         currency: string;
     };
     merchantReference: string;
-    // ... otros campos que pueda devolver
 }
 
 /**
