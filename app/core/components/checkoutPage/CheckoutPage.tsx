@@ -10,7 +10,6 @@ import Input from '../../../core/components/input/input'
 import { userService } from '../../../services/user/userService'
 import { subscribe } from '../../../services/mailchimp/mailchimp'
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
-import InfoTooltip from '../../../core/components/infoTooltip/InfoTooltip'
 import Image from 'next/image'
 import './stripe.css'
 
