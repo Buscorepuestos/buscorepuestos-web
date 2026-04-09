@@ -626,7 +626,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 								</div>
 								<div
 									className={
-										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%]' : 'md:w-[95%] lg-[w-75%] sm:w-full sm:grid-cols-1 md:grid-cols-2'} mobile:w-full mt-4 gap-4`
+										`grid grid-cols-3 mobile:grid-cols-1 ${!isProductPage ? 'w-[60%] sm:grid-cols-1 md:grid-cols-2' : 'md:w-[95%] lg-[w-75%] sm:w-full sm:grid-cols-1 md:grid-cols-2'} mobile:w-full mt-4 gap-4`
 									}
 								>
 									<Input
@@ -653,47 +653,47 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 										required
 									/>
 									{isWebPurchase && (
-										<>
-											<div className="relative">
+										<div className="flex items-center gap-2 w-full">
+											{/* Input ocupa todo el espacio disponible */}
+											<div className="flex-1 min-w-0">
 												<Input
-													placeholder="Matrícula del vehículo (opcional)"
+													placeholder="Matrícula del vehículo o VIN"
 													name="matricula"
 													value={fieldsValue.matricula || ''}
 													onChange={e => setFieldsValue({ ...fieldsValue, matricula: e.target.value })}
 													isProductPage={isProductPage}
 												/>
+											</div>
 
-												{/* Ícono info dentro del input, pegado a la derecha */}
-												<div className="absolute right-3 top-1/2 -translate-y-1/2 group">
-													<button
-														type="button"
-														aria-label="Más información"
-														className="w-7 h-7 rounded-full border border-orange-500 text-orange-500
-														hover:border-blue-500 hover:text-blue-500
-														flex items-center justify-center text-xs font-bold
-														transition duration-200 cursor-default focus:outline-none"
-													>
-														i
-													</button>
+											{/* Ícono info FUERA del input, a la derecha */}
+											<div className="relative flex-shrink-0 group">
+												<button
+													type="button"
+													aria-label="Más información"
+													className="w-7 h-7 rounded-full border border-orange-500 text-orange-500
+													hover:border-blue-500 hover:text-blue-500
+													flex items-center justify-center text-xs font-bold
+													transition duration-200 cursor-default focus:outline-none"
+												>
+													i
+												</button>
 
-													{/* Tooltip */}
-													<div className="absolute bottom-full right-0 mb-2 z-50
-														w-72 px-3 py-2 rounded-lg shadow-md
-														bg-gray-800 text-white text-xs leading-snug
-														opacity-0 pointer-events-none
-														group-hover:opacity-100 group-hover:pointer-events-auto
-														group-focus-within:opacity-100
-														transition-opacity duration-200"
-													>
-														En caso de devolución sin verificar la matrícula, no nos hacemos cargo de los gastos
-														de devolución en caso de que la pieza no sea compatible con tu vehículo.
-														{/* Flecha */}
-														<div className="absolute top-full right-3
-                                    					border-4 border-transparent border-t-gray-800" />
-													</div>
+												{/* Tooltip */}
+												<div className="absolute bottom-full right-0 mb-2 z-50
+													w-96 sm:w-72 px-3 py-2 rounded-lg shadow-md
+													bg-gray-800 text-white mobile:text-xs text-[1rem]  leading-snug
+													opacity-0 pointer-events-none
+													group-hover:opacity-100 group-hover:pointer-events-auto
+													group-focus-within:opacity-100
+													transition-opacity duration-200"
+												>
+													En caso de devolución sin verificar la matrícula, no nos hacemos cargo de los gastos de envío si la pieza no es compatible con tu vehículo. Recomendamos comprobarlo antes de enviarla.
+													{/* Flecha */}
+													<div className="absolute top-full right-3
+                    border-4 border-transparent border-t-gray-800" />
 												</div>
 											</div>
-										</>
+										</div>
 									)}
 								</div>
 								{phoneError && ( // ← NUEVO

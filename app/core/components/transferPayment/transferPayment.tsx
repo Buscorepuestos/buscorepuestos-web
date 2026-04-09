@@ -115,7 +115,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 
 	const renderTransferOption = (data: TransferData, option: number) => (
 		<div className="my-4 p-4 border rounded shadow-sm">
-			<p className="font-bold mb-2">Opción {option}</p>
+			{/* <p className="font-bold mb-2">Opción {option}</p> */}
 			<div className="space-y-2">
 				{Object.entries(data).map(([key, value]) => {
 					const displayKey = key === 'iban' ? 'IBAN' : key.charAt(0).toUpperCase() + key.slice(1);
@@ -217,7 +217,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 				<p className="mt-4 text-sm sm:text-base">
 					Para adjuntar el comprobante usa el campo de &apos;adjuntar
 					archivo&apos;
-					<br />o envíanos un email, admin@buscorepuestos.com
+					<br />o envíanos un email, buscorepuestosoficial@recambiosbr.com
 				</p>
 			</div>
 			<div className="my-6 flex flex-col gap-4">
