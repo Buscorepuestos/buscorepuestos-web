@@ -123,9 +123,16 @@ export default function Store() {
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setInputValue(event.target.value)
-		dispatch(setCurrentPage(1))
-	}
+		const newValue = event.target.value;
+		setInputValue(newValue);
+		dispatch(setCurrentPage(1));
+
+		// ✅ FIX: Redirigir a la ruta con parámetro para que la búsqueda
+		// quede en la URL y se preserve al navegar hacia atrás.
+		if (newValue.trim()) {
+			router.replace(`/tienda/${encodeURIComponent(newValue.trim())}`, { scroll: false });
+		}
+	};
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
 		setSelectedSubcategory(subcategory);

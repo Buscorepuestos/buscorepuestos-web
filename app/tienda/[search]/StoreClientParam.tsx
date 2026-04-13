@@ -112,14 +112,16 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     };
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
-        // Cuando el usuario escribe, la búsqueda se vuelve por texto, reseteamos filtros
-        // y volvemos a la página 1. Esta es una decisión de UX, puedes ajustarla.
+        const newValue = event.target.value;
+        setInputValue(newValue);
         setSelectedSubcategory(null);
         setSelectedBrand(null);
         setSelectedModel(null);
         setSelectedYear(null);
         dispatch(setCurrentPage(1));
+        if (newValue.trim()) {
+            router.replace(`/tienda/${encodeURIComponent(newValue.trim())}`, { scroll: false });
+        }
     };
 
     // Al seleccionar un filtro, limpiamos el input de texto para evitar conflictos

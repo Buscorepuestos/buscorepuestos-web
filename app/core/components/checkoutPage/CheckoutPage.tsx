@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState, useRef, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from '../../../redux/hooks'
 import { RootState } from '../../../redux/store'
 import ShoppingBasket from '../../../core/components/shopping-cart/ShoppingBasket'
 import SelectDropdown from '../../../core/components/selectDropdown/selectDropdown'
@@ -9,6 +10,7 @@ import Input from '../../../core/components/input/input'
 import { userService } from '../../../services/user/userService'
 import { subscribe } from '../../../services/mailchimp/mailchimp'
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
+import { removeItemFromCart, removePurchaseAsync } from '../../../redux/features/shoppingCartSlice'
 import Image from 'next/image'
 import './stripe.css'
 
@@ -74,7 +76,7 @@ interface checkoutPageProps {
 }
 
 const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const CHECKOUT_FORM_KEY = 'checkoutFormData'
 	const [sameBillAddress, setSameBillAddress] = useState<boolean>(false)
 	const [isSwitchOn, setIsSwitchOn] = useState(true)
@@ -394,6 +396,18 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 		}))
 	}
 
+	const handleRemoveFromBanner = (item: any) => {
+		dispatch(removeItemFromCart(item._id));
+		if (item.purchaseId) {
+			dispatch(
+				removePurchaseAsync({
+					productId: item._id,
+					purchaseId: item.purchaseId,
+				})
+			);
+		}
+	};
+
 	let userEmail: string | null = null
 	if (typeof window !== 'undefined') {
 		userEmail = localStorage.getItem('airtableUserId')
@@ -403,6 +417,83 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 		return <div>Loading...</div>
 	}
 
+	const CartSummaryBanner: React.FC<{
+		items: any[];
+		onRemove: (item: any) => void;
+	}> = ({ items, onRemove }) => {
+		const [isOpen, setIsOpen] = useState(true);
+
+		const total = items.reduce((acc, item) => acc + item.buscorepuestosPrice, 0);
+
+		return (
+			<div className="w-full mb-6 border border-secondary-blue rounded-xl overflow-hidden font-tertiary-font">
+				{/* Header del banner */}
+				<button
+					onClick={() => setIsOpen(!isOpen)}
+					className="w-full flex items-center justify-between px-5 py-3 bg-primary-blue text-white text-sm font-semibold"
+				>
+					<span className="flex items-center gap-2">
+						🛒 Tu cesta ({items.length} {items.length === 1 ? 'artículo' : 'artículos'}) — Total: {total.toFixed(2)}€
+					</span>
+					<span>{isOpen ? '▲' : '▼'}</span>
+				</button>
+
+				{/* Lista de artículos */}
+				{isOpen && (
+					<ul className="divide-y divide-gray-100 bg-white">
+						{items.map((item) => (
+							<li
+								key={item._id}
+								className="flex items-center gap-3 px-5 py-3"
+							>
+								{/* Imagen */}
+								{item.images?.[0] && (
+									<img
+										src={item.images[0]}
+										alt={item.productName ?? item.subcategory}
+										className="w-14 h-14 object-cover rounded-lg flex-shrink-0"
+									/>
+								)}
+
+								{/* Info */}
+								<div className="flex-1 min-w-0">
+									<p className="text-sm font-semibold text-gray-800 truncate">
+										{item.productName ?? item.subcategory}
+									</p>
+									<p className="text-xs text-gray-500">
+										{item.brand?.toUpperCase()} {item.articleModel}
+									</p>
+									<p className="text-xs text-gray-400">Ref. {item.mainReference}</p>
+								</div>
+
+								{/* Precio + Eliminar */}
+								<div className="flex flex-col items-end gap-1 flex-shrink-0">
+									<span className="text-sm font-bold text-primary-blue">
+										{item.buscorepuestosPrice?.toFixed(2)}€
+									</span>
+									<button
+										onClick={() => onRemove(item)}
+										className="text-xs text-red-500 hover:text-red-700 underline"
+									>
+										Eliminar
+									</button>
+								</div>
+							</li>
+						))}
+
+						{/* Total */}
+						<li className="flex justify-between items-center px-5 py-3 bg-gray-50">
+							<span className="text-sm font-semibold text-gray-700">Total a pagar</span>
+							<span className="text-base font-bold text-primary-blue">
+								{total.toFixed(2)}€
+							</span>
+						</li>
+					</ul>
+				)}
+			</div>
+		);
+	};
+
 	return (
 		<div className={`flex justify-center ${isProductPage && 'flex-col mobile:mt-[4vw]'}  ${!isProductPage && 'mt-[22rem] mb-[10rem] mobile:mt-[12vw]'}`}>
 			<section
@@ -410,6 +501,12 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 					`w-max-[750px] ${!isProductPage && 'mobile:w-[100vw] bg-custom-white rounded-[10px] shadow-lg p-6'} mobile:rounded-bl-[5rem] mobile:rounded-br-[5rem]`
 				}
 			>
+				{isProductPage && items.length > 0 && (
+					<CartSummaryBanner
+						items={items}
+						onRemove={handleRemoveFromBanner}
+					/>
+				)}
 				{!isMobile && !isProductPage && (
 					<article>
 						<ShoppingBasket products={items} isMobile={isMobile} />
