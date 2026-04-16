@@ -9,11 +9,12 @@ import Facilities from '../../core/components/facilities/Facilities'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import NotFoundInStore from '../../core/components/notFound/NotFoundInStore' // Importado para el caso de no encontrar resultados
 import '../tienda.css'
-import { fetchProducts, setCurrentPage } from '../../redux/features/productSearchSlice'
+import { fetchProducts, setCurrentPage, restoreSearchResults } from '../../redux/features/productSearchSlice'
 import { useUserLocation } from '../../hooks/useUserLoaction'
 import FilterTag from '../../core/components/filterTag/FilterTag'
 
 export default function Store({ params }: { params: Promise<{ search: string }> }) {
+    const skipNextFetch = useRef(false);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { search } = use(params)
@@ -27,7 +28,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     } = useAppSelector(state => state.productSearch);
 
     // --- ESTADOS LOCALES ---
-    const [inputValue, setInputValue] = useState<string>('');
+    const [inputValue, setInputValue] = useState<string>(() => decodeURIComponent(search || ''));
     const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -65,35 +66,49 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
         dispatch(setCurrentPage(1));
     }, [search, dispatch]);
 
+    useEffect(() => {
+        const savedResults = sessionStorage.getItem('storeParamSearchResults');
+        if (savedResults) {
+            dispatch(restoreSearchResults(JSON.parse(savedResults)));
+            skipNextFetch.current = true;
+            sessionStorage.removeItem('storeParamSearchResults');
+        }
+    }, []);
+
     // Efecto #2: El motor de búsqueda central. Se ejecuta cuando CUALQUIER filtro cambia.
     useEffect(() => {
+        if (skipNextFetch.current) {
+            skipNextFetch.current = false;
+            return;
+        }
         // Cancelamos el debounce anterior si existe
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
         // Establecemos un nuevo debounce para evitar llamadas excesivas a la API
         debounceTimer.current = setTimeout(() => {
-            // Solo buscamos si hay algún filtro activo (texto o de faceta)
-            if (inputValue.trim() || selectedSubcategory) {
-                dispatch(fetchProducts({
-                    // Pasamos TODOS los filtros actuales al thunk de Redux
-                    searchTerm: inputValue.trim(),
-                    page: currentPage,
-                    sortOrder,
-                    userProvince: sortOrder === 'proximity' ? userProvince : null,
-                    subcategory: selectedSubcategory,
-                    brand: selectedBrand,
-                    model: selectedModel,
-                    year: selectedYear,
-                }));
+            dispatch(fetchProducts({
+                searchTerm: inputValue.trim(),
+                page: currentPage,
+                sortOrder,
+                userProvince: sortOrder === 'proximity' ? userProvince : null,
+                subcategory: selectedSubcategory,
+                brand: selectedBrand,
+                model: selectedModel,
+                year: selectedYear,
+            }));
+
+            // Resetear URL a /tienda cuando el input queda vacío
+            if (!inputValue.trim()) {
+                window.history.replaceState(null, '', '/tienda');
             }
-        }, 500); // 500ms de espera
+        }, 500);
 
         // Función de limpieza para cancelar el timer si el componente se desmonta
         return () => {
             if (debounceTimer.current) clearTimeout(debounceTimer.current);
         };
-        // Este efecto depende de todos los estados que pueden modificar la búsqueda
     }, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
+
 
     // --- HANDLERS ---
 
@@ -120,7 +135,9 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
         setSelectedYear(null);
         dispatch(setCurrentPage(1));
         if (newValue.trim()) {
-            router.replace(`/tienda/${encodeURIComponent(newValue.trim())}`, { scroll: false });
+            window.history.replaceState(null, '', `/tienda/${encodeURIComponent(newValue.trim())}`);
+        } else {
+            window.history.replaceState(null, '', '/tienda');
         }
     };
 
@@ -160,6 +177,11 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     };
 
     const handleProductClick = (productId: string) => {
+        sessionStorage.setItem('storeParamSearchResults', JSON.stringify({
+            results: products,
+            totalPages,
+            currentPage,
+        }));
         setLoadingPurchase(productId);
         router.push(`/producto/${productId}`);
     };
