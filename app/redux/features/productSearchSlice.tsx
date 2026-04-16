@@ -41,7 +41,7 @@ export const fetchProducts = createAsyncThunk(
         if (sortOrder === 'proximity' && userProvince) {
             queryParams.append('userProvince', userProvince);
         }
-        
+
         // Añadir los nuevos filtros a la URL
         if (subcategory) queryParams.append('subcategory', subcategory);
         if (brand) queryParams.append('brand', brand);
@@ -51,7 +51,7 @@ export const fetchProducts = createAsyncThunk(
         const response = await api.get(`/products/search?${queryParams.toString()}`);
         return response.data;
     }
-); 
+);
 
 const productSearchSlice = createSlice({
     name: 'productSearch',
@@ -66,6 +66,12 @@ const productSearchSlice = createSlice({
         },
         setCurrentPage: (state, action) => {
             state.currentPage = action.payload;
+        },
+        restoreSearchResults: (state, action) => {
+            state.searchResults = action.payload.results;
+            state.totalPages = action.payload.totalPages;
+            state.currentPage = action.payload.currentPage;
+            state.loading = false;
         },
     },
     extraReducers: (builder) => {
@@ -88,5 +94,5 @@ const productSearchSlice = createSlice({
     },
 });
 
-export const { clearSearchResults, setCurrentPage } = productSearchSlice.actions;
+export const { clearSearchResults, setCurrentPage, restoreSearchResults } = productSearchSlice.actions;
 export default productSearchSlice.reducer;
