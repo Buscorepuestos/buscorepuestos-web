@@ -12,6 +12,7 @@ import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import {
 	fetchProducts,
 	setCurrentPage,
+	restoreSearchResults
 } from '../redux/features/productSearchSlice'
 import { useUserLocation } from '../hooks/useUserLoaction'
 import './tienda.css'
@@ -26,7 +27,7 @@ export default function Store() {
 		totalPages,
 	} = useAppSelector((state) => state.productSearch)
 	const router = useRouter()
-
+	const skipNextFetch = useRef(false);
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
@@ -47,6 +48,34 @@ export default function Store() {
 		// El useEffect con debounce se encargará de lanzar la búsqueda automáticamente
 	};
 
+	// Restaurar búsqueda al volver atrás (antes del resto de useEffects)
+	useEffect(() => {
+		const saved = sessionStorage.getItem('storeSearchTerm');
+		const savedResults = sessionStorage.getItem('storeSearchResults');
+		if (saved && savedResults) {
+			setInputValue(saved);
+			dispatch(restoreSearchResults(JSON.parse(savedResults)));
+			skipNextFetch.current = true; // evitar que el efecto de búsqueda vuelva a llamar la API
+			sessionStorage.removeItem('storeSearchTerm');
+			sessionStorage.removeItem('storeSearchResults');
+		}
+	}, [
+		dispatch
+	]);
+
+	// Guardar búsqueda cuando el usuario navega a un producto
+	const handleProductClick = (productId: string) => {
+		if (inputValue.trim()) {
+			sessionStorage.setItem('storeSearchTerm', inputValue);
+			sessionStorage.setItem('storeSearchResults', JSON.stringify({
+				results: searchResults,
+				totalPages,
+				currentPage,
+			}));
+		}
+		setLoadingPurchase(productId);
+		router.push(`/producto/${productId}`);
+	};
 	useEffect(() => {
 		// Pedir la ubicación una sola vez al cargar el componente
 		requestLocation();
@@ -55,6 +84,7 @@ export default function Store() {
 
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
+		if (skipNextFetch.current) return;
 		const debounceTimer = setTimeout(() => {
 			setLoading(true);
 			dispatch(
@@ -80,6 +110,11 @@ export default function Store() {
 			clearTimeout(debounceTimer.current)
 		}
 
+		if (skipNextFetch.current) {
+			skipNextFetch.current = false; // ← resetear aquí, solo en el último efecto que corre
+			return;
+		}
+
 		if (inputValue.trim() !== '') {
 			setIsTyping(true)
 			debounceTimer.current = setTimeout(() => {
@@ -94,6 +129,13 @@ export default function Store() {
 					})
 				).finally(() => setLoading(false))
 			}, 1000)
+		} else {
+			// ✅ Input vacío → cancelar isTyping, buscar productos por defecto
+			setIsTyping(false)
+			setLoading(true)
+			dispatch(fetchProducts({ page: currentPage, sortOrder, userProvince: sortOrder === 'proximity' ? userProvince : null }))
+				.finally(() => setLoading(false))
+			window.history.replaceState(null, '', '/tienda')
 		}
 
 		return () => {
@@ -126,12 +168,6 @@ export default function Store() {
 		const newValue = event.target.value;
 		setInputValue(newValue);
 		dispatch(setCurrentPage(1));
-
-		// ✅ FIX: Redirigir a la ruta con parámetro para que la búsqueda
-		// quede en la URL y se preserve al navegar hacia atrás.
-		if (newValue.trim()) {
-			router.replace(`/tienda/${encodeURIComponent(newValue.trim())}`, { scroll: false });
-		}
 	};
 
 	const handleSubcategoryChange = (subcategory: string | null) => {
@@ -161,11 +197,6 @@ export default function Store() {
 	const handleYearChange = (year: number | null) => {
 		setSelectedYear(year)
 		dispatch(setCurrentPage(1))
-	}
-
-	const handle = (productId: string) => {
-		setLoadingPurchase(productId)
-		router.push(`/producto/${productId}`)
 	}
 
 	const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -319,7 +350,7 @@ export default function Store() {
 													? product.images[0]
 													: '/nodisponible.png'
 											}
-											handle={() => handle(product._id)}
+											handle={() => handleProductClick(product._id)}
 											id={product._id}
 											loading={
 												loadingPurchase === product._id
