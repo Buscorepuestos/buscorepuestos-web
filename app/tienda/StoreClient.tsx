@@ -78,31 +78,32 @@ export default function Store() {
 	};
 	useEffect(() => {
 		// Pedir la ubicación una sola vez al cargar el componente
+		dispatch({ type: 'auth/checkUserStatus' })
 		requestLocation();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	useEffect(() => {
-		dispatch({ type: 'auth/checkUserStatus' })
-		if (skipNextFetch.current) return;
-		const debounceTimer = setTimeout(() => {
-			setLoading(true);
-			dispatch(
-				fetchProducts({
-					searchTerm: inputValue.trim(),
-					page: currentPage,
-					sortOrder,
-					userProvince: sortOrder === 'proximity' ? userProvince : null,
-					// Pasamos todos los filtros seleccionados
-					subcategory: selectedSubcategory,
-					brand: selectedBrand,
-					model: selectedModel,
-					year: selectedYear,
-				})
-			).finally(() => setLoading(false));
-		}, 500); // 500ms de 
-		return () => clearTimeout(debounceTimer);
-	}, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
+	// useEffect(() => {
+		
+	// 	if (skipNextFetch.current) return;
+	// 	const debounceTimer = setTimeout(() => {
+	// 		setLoading(true);
+	// 		dispatch(
+	// 			fetchProducts({
+	// 				searchTerm: inputValue.trim(),
+	// 				page: currentPage,
+	// 				sortOrder,
+	// 				userProvince: sortOrder === 'proximity' ? userProvince : null,
+	// 				// Pasamos todos los filtros seleccionados
+	// 				subcategory: selectedSubcategory,
+	// 				brand: selectedBrand,
+	// 				model: selectedModel,
+	// 				year: selectedYear,
+	// 			})
+	// 		).finally(() => setLoading(false));
+	// 	}, 500); // 500ms de 
+	// 	return () => clearTimeout(debounceTimer);
+	// }, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
 
 
 	useEffect(() => {
@@ -144,7 +145,7 @@ export default function Store() {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [inputValue, sortOrder, userProvince])
+	}, [inputValue, sortOrder])
 
 	const handleNextPage = () => {
 		if (currentPage < totalPages) {
