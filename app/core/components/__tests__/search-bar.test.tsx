@@ -9,6 +9,6 @@ describe('SearchBar component', () => {
 	})
 	test('Render Searchbar', () => {
 		render(<SearchBar value="" onChange={() => {}} />)
-		expect(screen.getByPlaceholderText('Escribe lo que necesitas')).toBeDefined()
+		expect(screen.getByPlaceholderText('Busca piezas, referencias, marcas...')).toBeDefined()
 	})
 })
