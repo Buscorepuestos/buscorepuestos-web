@@ -143,7 +143,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 				<div className="w-full mobile:w-[100vw] mt-[4vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]">
 					<div>
 						{data && (
-							<div className="mobile:mb-10 hidden mobile:block">
+							<div className="hidden mobile:block">
 								<ProductTitle
 									title={data.title}
 									refNumber={data.mainReference}
@@ -157,16 +157,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								data?.images.map((image) => ({ image })) || []
 							}
 						/>
-						<Facilities
-							classNamePrincipal="
-								grid grid-cols-2 gap-4 mobile:grid-cols-1 mobile:gap-4 mt-16
-								font-tertiary-font text-secondary-blue font-semibold
-								justify-center pl-[6vw] pr-[5vw]
-								mobile:flex mobile:mt-2 mobile:pl-0 mobile:pr-0 mobile:mb-4
-							"
-							classNameImg="lg:w-[2.5vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
-							isProductPage={true}
-						/>
+						<Facilities isProductPage={true} />
 						<div className=" mobile:hidden flex justify-center mobile:justify-center mobile:px-[3vw] mt-8">
 							<div className="flex mobile:justify-center mb-6">
 								<PaymentMethod
@@ -175,7 +166,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 							</div>
 						</div>
 					</div>
-					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
+					{/* <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" /> */}
 					<div className="bg-neutro-grey">
 						{data && (
 							<div className="block mobile:hidden">
@@ -187,7 +178,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							</div>
 						)}
-						<div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
+						<div className="mt-[1.5vw] ml-10 mobile:hidden">
 							<SupplierRating
 								valoration={5}
 								location={Provincia || ''}
