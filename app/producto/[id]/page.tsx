@@ -122,6 +122,14 @@ export default async function Product({ params }: { params: Promise<{ id: string
 	const { 'Media de valoración': valoracion, Provincia } =
 		distributorData?.data?.fields || {}
 
+	const brandLabel = data.brand
+		? data.brand.charAt(0).toUpperCase() + data.brand.slice(1).toLowerCase()
+		: 'Vehículo'
+
+	const ArticleModelLabel = data.articleModel
+		? data.articleModel.charAt(0).toUpperCase() + data.articleModel.slice(1).toLowerCase()
+		: 'Vehículo'
+
 	return (
 		<>
 			<Head>
@@ -152,12 +160,37 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							</div>
 						)}
+						<div className="w-full px-[4vw] py-[2.5vw] bg-[#f0fbfc] sm:hidden">
+							<p className="font-tertiary-font text-[3.2vw] text-dark-grey leading-snug">
+								<span className="font-semibold">Compatible con: </span>
+								<span className="text-secondary-blue font-bold">
+									{brandLabel}
+									{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
+								</span>
+							</p>
+						</div>
 						<Carousel
 							images={
 								data?.images.map((image) => ({ image })) || []
 							}
 						/>
+						<div className="px-[4vw] mb-[3vw] sm:hidden">
+							<Warranties compact />
+						</div>
 						<Facilities isProductPage={true} />
+						<div className='sm:hidden'>
+							{data && (
+								<ProductInfo
+									vehicleVersion={data.version}
+									engine={data.engine}
+									engineCode={data.engineCode}
+									oemReference={data.mainReference}
+									observations={data.observations}
+									vehicleBrand={data.brand}
+									articleModel={data.articleModel}
+								/>
+							)}
+						</div>
 						<div className=" mobile:hidden flex justify-center mobile:justify-center mobile:px-[3vw] mt-8">
 							<div className="flex mobile:justify-center mb-6">
 								<PaymentMethod
@@ -215,7 +248,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								}
 							/>
 						</div>
-						<div>
+						<div className='mobile:hidden'>
 							{data && (
 								<ProductInfo
 									vehicleVersion={data.version}
@@ -223,6 +256,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 									engineCode={data.engineCode}
 									oemReference={data.mainReference}
 									observations={data.observations}
+									vehicleBrand={data.brand}
 								/>
 							)}
 						</div>
@@ -234,7 +268,6 @@ export default async function Product({ params }: { params: Promise<{ id: string
 						</div>
 					</div>
 				</div>
-				<Warranties />
 			</div>
 		</>
 	)

@@ -12,6 +12,7 @@ const WhatsAppIcon: React.FC = () => {
 	const storeTimerRef = useRef<NodeJS.Timeout | null>(null)
 
 	const hideOnPaths = ['/verificacion-pago', '/pago-exitoso']
+	const isProductPage = pathname.startsWith('/producto')
 
 	// Reiniciar estados al cambiar de página
 	useEffect(() => {
@@ -93,13 +94,12 @@ const WhatsAppIcon: React.FC = () => {
 
 	return (
 		<div
-			style={{
-				position: 'fixed',
-				bottom: '20px',
-				right: '20px',
-				zIndex: 50,
-			}}
-			className="flex flex-col items-end gap-2 group pointer-events-none"
+			className={`
+				fixed z-50
+				flex flex-col items-end gap-2
+				group pointer-events-none
+				${isProductPage ? 'right-5 bottom-[123vw] items-start' : 'right-5 bottom-5 items-end'}
+			`}
 			onClick={handleClick}
 		>
 			{copy && (
