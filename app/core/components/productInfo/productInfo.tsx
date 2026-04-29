@@ -106,8 +106,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                             <line x1="3" y1="12" x2="3.01" y2="12" />
                             <line x1="3" y1="18" x2="3.01" y2="18" />
                         </svg>
-                        <span className="font-tertiary-font font-bold text-[3.5vw] text-secondary-blue">
-                            Ver especificaciones técnicas
+                        <span className="font-tertiary-font font-bold text-[3.3vw] text-secondary-blue">
+                            Ver especificaciones técnicas y referencias
                         </span>
                     </div>
 

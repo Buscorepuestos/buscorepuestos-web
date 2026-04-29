@@ -160,7 +160,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							</div>
 						)}
-						<div className="w-full px-[4vw] py-[2.5vw] bg-[#f0fbfc] sm:hidden">
+						{/* <div className="w-full px-[4vw] py-[2.5vw] bg-[#f0fbfc] sm:hidden">
 							<p className="font-tertiary-font text-[3.2vw] text-dark-grey leading-snug">
 								<span className="font-semibold">Compatible con: </span>
 								<span className="text-secondary-blue font-bold">
@@ -168,16 +168,41 @@ export default async function Product({ params }: { params: Promise<{ id: string
 									{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
 								</span>
 							</p>
+						</div> */}
+						<div className="w-full px-[2vw] py-[2vw] h-[2.2rem] bg-white">
+							<div className="inline-flex items-center gap-[2vw] bg-green-50 border border-green-200 rounded-full px-[3vw] py-[1.5vw]">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="14" height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="#16a34a"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									className="flex-shrink-0"
+								>
+									<polyline points="20 6 9 17 4 12" />
+								</svg>
+								<p className="font-tertiary-font text-[3vw] text-green-700 font-semibold leading-snug">
+									Compatible con:{' '}
+									<span className="text-green-800 font-bold">
+										{brandLabel}
+										{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
+									</span>
+								</p>
+							</div>
 						</div>
 						<Carousel
 							images={
 								data?.images.map((image) => ({ image })) || []
 							}
 						/>
-						<div className="px-[4vw] mb-[3vw] sm:hidden">
+						
+						<Facilities isProductPage={true} />
+						<div className="px-[4vw] mb-[1vw] mt-[3vw] sm:hidden">
 							<Warranties compact />
 						</div>
-						<Facilities isProductPage={true} />
 						<div className='sm:hidden'>
 							{data && (
 								<ProductInfo

@@ -476,7 +476,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 										</button>
 										<button
 											onClick={buynow}
-											className="flex-1 py-[1.8vw] rounded-3xl border-2 border-primary-blue bg-primary-blue text-custom-white font-bold text-[3.8vw] hover:bg-primary-lila hover:border-primary-lila transition-colors"
+											className="flex-1 py-[1.8vw] rounded-3xl border-2 border-custom-orange bg-custom-orange text-white font-bold text-[3.8vw] hover:opacity-90 transition-opacity"
 										>
 											Comprar ahora
 										</button>

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 const WhatsAppIcon: React.FC = () => {
 	const pathname = usePathname()
 	const [showBubble, setShowBubble] = useState(false)
-	
+
 	// Refs para la lógica de la tienda
 	const hasShownStoreBubble = useRef(false)
 	const storeTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -47,7 +47,7 @@ const WhatsAppIcon: React.FC = () => {
 					}, 5000)
 				}
 			}
-			
+
 			// --- PRODUCTO ---
 			// Se mantiene oculto visualmente (showBubble = false por defecto)
 		}
@@ -95,10 +95,13 @@ const WhatsAppIcon: React.FC = () => {
 	return (
 		<div
 			className={`
-				fixed z-50
-				flex flex-col items-end gap-2
+				fixed z-40
+				flex flex-col gap-2
+				${isProductPage
+								? 'bottom-24 right-5 items-end'  // encima de la sticky bar
+								: 'bottom-5 right-5 items-end'
+							}
 				group pointer-events-none
-				${isProductPage ? 'right-5 bottom-[123vw] items-start' : 'right-5 bottom-5 items-end'}
 			`}
 			onClick={handleClick}
 		>
@@ -109,7 +112,7 @@ const WhatsAppIcon: React.FC = () => {
                         ${showBubble ? 'opacity-100' : 'opacity-0 pointer-events-none'}
                     `}
 					// Controlamos la opacidad directamente con inline style para asegurar que funciona en móvil y desktop
-					style={{ opacity: showBubble ? 1 : 0 }} 
+					style={{ opacity: showBubble ? 1 : 0 }}
 				>
 					{/* 
                         CAMBIOS RESPONSIVE AQUÍ:
