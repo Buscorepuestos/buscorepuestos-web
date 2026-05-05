@@ -13,6 +13,8 @@ import { PartInterface } from '../../types/metasync/product'
 import { AxiosResponse } from 'axios'
 import axios from 'axios'
 import Warranties from '../../core/components/warranties/Warranties'
+import RelatedProducts from '../../core/components/relatedProducts/RelatedProducts'
+import ValidadorMatricula from '../../core/components/matriculaInput/MatriculaInput'
 import '../product.css'
 const paymentOptions = [
 	{
@@ -101,6 +103,12 @@ export default async function Product({ params }: { params: Promise<{ id: string
 	const { id } = await params
 	const data = await fetchProductData(id)
 	const distributorData = await fetchDistributorData(data?.distributor)
+	const relatedRes = await fetch(
+		`${environment.api.url}/products/related/${id}?limit=8`,
+		{ cache: 'no-store' }
+	).then(r => r.json()).catch(() => ({ data: [] }))
+
+	const relatedProducts = relatedRes.data || []
 	let metasyncProduct: AxiosResponse<PartInterface> | null = null
 
 	// if (data.isMetasync) {
@@ -169,7 +177,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								</span>
 							</p>
 						</div> */}
-						<div className="w-full px-[2vw] py-[2vw] h-[2.2rem] bg-white">
+						<div className="w-full px-[2vw] py-[2vw] h-[2.2rem] bg-white sm:hidden">
 							<div className="inline-flex items-center gap-[2vw] bg-green-50 border border-green-200 rounded-full px-[3vw] py-[1.5vw]">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +206,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								data?.images.map((image) => ({ image })) || []
 							}
 						/>
-						
+
 						<Facilities isProductPage={true} />
 						<div className="px-[4vw] mb-[1vw] mt-[3vw] sm:hidden">
 							<Warranties compact />
@@ -273,6 +281,11 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								}
 							/>
 						</div>
+						
+						<ValidadorMatricula productTitle={data?.title || data?.subcategory || 'Repuesto'} />
+
+						{/* ── CROSS-SELL — mobile ── */}
+						<RelatedProducts productId={id} brand={data.brand} />
 						<div className='mobile:hidden'>
 							{data && (
 								<ProductInfo

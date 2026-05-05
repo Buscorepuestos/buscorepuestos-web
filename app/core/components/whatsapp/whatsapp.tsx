@@ -98,7 +98,7 @@ const WhatsAppIcon: React.FC = () => {
 				fixed z-40
 				flex flex-col gap-2
 				${isProductPage
-								? 'bottom-24 right-5 items-end'  // encima de la sticky bar
+								? 'bottom-24 right-5 items-end mobile:bottom-[10.5rem] mobile:right-1'  // encima de la sticky bar
 								: 'bottom-5 right-5 items-end'
 							}
 				group pointer-events-none
@@ -145,7 +145,7 @@ const WhatsAppIcon: React.FC = () => {
 				alt="WhatsApp"
 				width={60}
 				height={60}
-				className="drop-shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer pointer-events-auto"
+				className="drop-shadow-lg mobile:w-[4.5rem] mobile:h-[4.5rem] transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer pointer-events-auto"
 			/>
 		</div>
 	)
