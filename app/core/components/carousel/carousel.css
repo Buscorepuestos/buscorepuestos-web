@@ -14,7 +14,7 @@
 
 	@media (max-width: 640px) {
 		.mySwiper2 {
-			height: 75vw;
+			height: 54vw;
 		}
 	}
 
@@ -24,7 +24,7 @@
 
 	@media (max-width: 640px) {
 		.mySwiper2 .swiper-zoom-container img {
-			margin-bottom: 4rem;
+			margin-bottom: 1rem;
 		}
 	}
 
@@ -72,7 +72,7 @@
 	}
 
 	@media (max-width: 640px) {
-		height: 65vw;
+		height: 40vw;
 	}
 }
 
@@ -101,7 +101,7 @@
 		height: 30vw;
 	}
 	@media (max-width: 640px) {
-		width: 100%;
+		width: 97%;
 	}
 }
 

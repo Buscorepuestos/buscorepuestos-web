@@ -33,6 +33,16 @@ export const EMPTY_AUTOCOMPLETE: AutocompleteResults = {
 	references: [],
 };
 
+export interface RelatedProduct {
+	_id: string;
+	title: string;
+	buscorepuestosPrice: number;
+	images: string[];
+	brand: string;
+	articleModel: string;
+	subcategory: string;
+}
+
 export const getProducts = async (size: number = 16, sort: string = 'created', order: string = 'desc'): Promise<AxiosResponse<any>> => {
 	try {
 		return await api.get(`/products/store?size=${size}&sort=${sort}&order=${order}`)
@@ -68,6 +78,19 @@ export const getCatalogCount = async (): Promise<number> => {
 		return res.data?.count ?? 0;
 	} catch {
 		return 0;
+	}
+};
+
+export const getRelatedProducts = async (
+	productId: string,
+	limit: number = 8
+): Promise<RelatedProduct[]> => {
+	try {
+		const res = await api.get(`/products/related/${productId}?limit=${limit}`);
+		return res.data?.data || [];
+	} catch (error) {
+		console.error('Error fetching related products:', error);
+		return [];
 	}
 };
 
