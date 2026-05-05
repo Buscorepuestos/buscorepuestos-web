@@ -6,12 +6,13 @@ import { usePathname } from 'next/navigation'
 const WhatsAppIcon: React.FC = () => {
 	const pathname = usePathname()
 	const [showBubble, setShowBubble] = useState(false)
-	
+
 	// Refs para la lógica de la tienda
 	const hasShownStoreBubble = useRef(false)
 	const storeTimerRef = useRef<NodeJS.Timeout | null>(null)
 
 	const hideOnPaths = ['/verificacion-pago', '/pago-exitoso']
+	const isProductPage = pathname.startsWith('/producto')
 
 	// Reiniciar estados al cambiar de página
 	useEffect(() => {
@@ -46,7 +47,7 @@ const WhatsAppIcon: React.FC = () => {
 					}, 5000)
 				}
 			}
-			
+
 			// --- PRODUCTO ---
 			// Se mantiene oculto visualmente (showBubble = false por defecto)
 		}
@@ -93,13 +94,15 @@ const WhatsAppIcon: React.FC = () => {
 
 	return (
 		<div
-			style={{
-				position: 'fixed',
-				bottom: '20px',
-				right: '20px',
-				zIndex: 50,
-			}}
-			className="flex flex-col items-end gap-2 group pointer-events-none"
+			className={`
+				fixed z-40
+				flex flex-col gap-2
+				${isProductPage
+								? 'bottom-24 right-5 items-end mobile:bottom-[10.5rem] mobile:right-1'  // encima de la sticky bar
+								: 'bottom-5 right-5 items-end'
+							}
+				group pointer-events-none
+			`}
 			onClick={handleClick}
 		>
 			{copy && (
@@ -109,7 +112,7 @@ const WhatsAppIcon: React.FC = () => {
                         ${showBubble ? 'opacity-100' : 'opacity-0 pointer-events-none'}
                     `}
 					// Controlamos la opacidad directamente con inline style para asegurar que funciona en móvil y desktop
-					style={{ opacity: showBubble ? 1 : 0 }} 
+					style={{ opacity: showBubble ? 1 : 0 }}
 				>
 					{/* 
                         CAMBIOS RESPONSIVE AQUÍ:
@@ -142,7 +145,7 @@ const WhatsAppIcon: React.FC = () => {
 				alt="WhatsApp"
 				width={60}
 				height={60}
-				className="drop-shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer pointer-events-auto"
+				className="drop-shadow-lg mobile:w-[4.5rem] mobile:h-[4.5rem] transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer pointer-events-auto"
 			/>
 		</div>
 	)

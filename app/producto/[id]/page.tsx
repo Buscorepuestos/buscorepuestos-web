@@ -13,6 +13,8 @@ import { PartInterface } from '../../types/metasync/product'
 import { AxiosResponse } from 'axios'
 import axios from 'axios'
 import Warranties from '../../core/components/warranties/Warranties'
+import RelatedProducts from '../../core/components/relatedProducts/RelatedProducts'
+import ValidadorMatricula from '../../core/components/matriculaInput/MatriculaInput'
 import '../product.css'
 const paymentOptions = [
 	{
@@ -101,6 +103,12 @@ export default async function Product({ params }: { params: Promise<{ id: string
 	const { id } = await params
 	const data = await fetchProductData(id)
 	const distributorData = await fetchDistributorData(data?.distributor)
+	const relatedRes = await fetch(
+		`${environment.api.url}/products/related/${id}?limit=8`,
+		{ cache: 'no-store' }
+	).then(r => r.json()).catch(() => ({ data: [] }))
+
+	const relatedProducts = relatedRes.data || []
 	let metasyncProduct: AxiosResponse<PartInterface> | null = null
 
 	// if (data.isMetasync) {
@@ -121,6 +129,14 @@ export default async function Product({ params }: { params: Promise<{ id: string
 	const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2)
 	const { 'Media de valoración': valoracion, Provincia } =
 		distributorData?.data?.fields || {}
+
+	const brandLabel = data.brand
+		? data.brand.charAt(0).toUpperCase() + data.brand.slice(1).toLowerCase()
+		: 'Vehículo'
+
+	const ArticleModelLabel = data.articleModel
+		? data.articleModel.charAt(0).toUpperCase() + data.articleModel.slice(1).toLowerCase()
+		: 'Vehículo'
 
 	return (
 		<>
@@ -143,7 +159,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 				<div className="w-full mobile:w-[100vw] mt-[4vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]">
 					<div>
 						{data && (
-							<div className="mobile:mb-10 hidden mobile:block">
+							<div className="hidden mobile:block">
 								<ProductTitle
 									title={data.title}
 									refNumber={data.mainReference}
@@ -152,21 +168,62 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							</div>
 						)}
+						{/* <div className="w-full px-[4vw] py-[2.5vw] bg-[#f0fbfc] sm:hidden">
+							<p className="font-tertiary-font text-[3.2vw] text-dark-grey leading-snug">
+								<span className="font-semibold">Compatible con: </span>
+								<span className="text-secondary-blue font-bold">
+									{brandLabel}
+									{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
+								</span>
+							</p>
+						</div> */}
+						<div className="w-full px-[2vw] py-[2vw] h-[2.2rem] bg-white sm:hidden">
+							<div className="inline-flex items-center gap-[2vw] bg-green-50 border border-green-200 rounded-full px-[3vw] py-[1.5vw]">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="14" height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="#16a34a"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									className="flex-shrink-0"
+								>
+									<polyline points="20 6 9 17 4 12" />
+								</svg>
+								<p className="font-tertiary-font text-[3vw] text-green-700 font-semibold leading-snug">
+									Compatible con:{' '}
+									<span className="text-green-800 font-bold">
+										{brandLabel}
+										{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
+									</span>
+								</p>
+							</div>
+						</div>
 						<Carousel
 							images={
 								data?.images.map((image) => ({ image })) || []
 							}
 						/>
-						<Facilities
-							classNamePrincipal="
-								grid grid-cols-2 gap-4 mobile:grid-cols-1 mobile:gap-4 mt-16
-								font-tertiary-font text-secondary-blue font-semibold
-								justify-center pl-[6vw] pr-[5vw]
-								mobile:flex mobile:mt-2 mobile:pl-0 mobile:pr-0 mobile:mb-4
-							"
-							classNameImg="lg:w-[2.5vw] md:w-[2.5vw] sm:w-[3vw] mobile:w-[10vw]"
-							isProductPage={true}
-						/>
+
+						<Facilities isProductPage={true} />
+						<div className="px-[4vw] mb-[1vw] mt-[3vw] sm:hidden">
+							<Warranties compact />
+						</div>
+						<div className='sm:hidden'>
+							{data && (
+								<ProductInfo
+									vehicleVersion={data.version}
+									engine={data.engine}
+									engineCode={data.engineCode}
+									oemReference={data.mainReference}
+									observations={data.observations}
+									vehicleBrand={data.brand}
+									articleModel={data.articleModel}
+								/>
+							)}
+						</div>
 						<div className=" mobile:hidden flex justify-center mobile:justify-center mobile:px-[3vw] mt-8">
 							<div className="flex mobile:justify-center mb-6">
 								<PaymentMethod
@@ -175,7 +232,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 							</div>
 						</div>
 					</div>
-					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" />
+					{/* <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" /> */}
 					<div className="bg-neutro-grey">
 						{data && (
 							<div className="block mobile:hidden">
@@ -187,7 +244,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							</div>
 						)}
-						<div className="mt-[1.5vw] ml-10 mobile:mt-[4vw]">
+						<div className="mt-[1.5vw] ml-10 mobile:hidden">
 							<SupplierRating
 								valoration={5}
 								location={Provincia || ''}
@@ -224,7 +281,12 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								}
 							/>
 						</div>
-						<div>
+						
+						<ValidadorMatricula productTitle={data?.title || data?.subcategory || 'Repuesto'} />
+
+						{/* ── CROSS-SELL — mobile ── */}
+						<RelatedProducts productId={id} brand={data.brand} />
+						<div className='mobile:hidden'>
 							{data && (
 								<ProductInfo
 									vehicleVersion={data.version}
@@ -232,6 +294,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 									engineCode={data.engineCode}
 									oemReference={data.mainReference}
 									observations={data.observations}
+									vehicleBrand={data.brand}
 								/>
 							)}
 						</div>
@@ -243,7 +306,6 @@ export default async function Product({ params }: { params: Promise<{ id: string
 						</div>
 					</div>
 				</div>
-				<Warranties />
 			</div>
 		</>
 	)
