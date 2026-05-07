@@ -13,7 +13,7 @@ const page = () => {
 				Domicilio social: C/ Valladolid 25 , 35110 Vecindario, Las
 				Palmas <br />
 				CIF: B09876293 <br />
-				Teléfono: <a href="tell:611537631" className='text-primary-blue'>611 53 76 31</a> <br />
+				Teléfono: <a href="tell:+34643470856" className='text-primary-blue'>+34643470856</a> <br />
 				Correo Electrónico: &nbsp;
 				<a href="mailto:admin@buscorepuestos.com" className='text-primary-blue'>
 					admin@buscorepuestos.com

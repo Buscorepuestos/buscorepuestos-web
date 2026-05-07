@@ -13,7 +13,7 @@ const socialMediaLinks = [
 	{ 
         imgUrl: 'whatsapp.svg', 
         // Se usa el formato wa.me para abrir WhatsApp directamente
-        href: 'https://wa.me/34611537631' 
+        href: 'https://wa.me/34643470856'
     },
 	// { imgUrl: 'linkedin.svg', href: '#' }, // <-- Ícono de LinkedIn eliminado
 	{ 
