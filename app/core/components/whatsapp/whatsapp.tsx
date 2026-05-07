@@ -77,7 +77,7 @@ const WhatsAppIcon: React.FC = () => {
 	const copy = getWhatsAppCopy()
 
 	const handleClick = () => {
-		const phoneNumber = '34611537631'
+		const phoneNumber = '34643470856'
 		let message = ''
 
 		// Mantenemos la funcionalidad de capturar URL en producto aunque no haya texto visual

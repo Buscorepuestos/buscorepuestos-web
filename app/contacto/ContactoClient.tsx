@@ -5,7 +5,7 @@ import './contacto.css'
 const page = () => {
 
     const handleClick = () => {
-        const phoneNumber = '34611537631' // Número de teléfono de WhatsApp
+        const phoneNumber = '34643470856' // Número de teléfono de WhatsApp
         const message = '' // Mensaje predeterminado
         const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
         window.open(whatsappURL, '_blank')
@@ -29,7 +29,7 @@ const page = () => {
                     <div className='flex items-center mt-8'>
                         <button className='flex items-center' onClick={handleClick}>
                             <img src="/telefono-azul-buscorepuestos.svg" alt="Telefono" className='w-11 h-11' />
-                            <p className='ml-4 text-[1.7rem] mobile:text-[1.5rem] font-bold text-primary-blue'>+34 611 53 76 31</p>
+                            <p className='ml-4 text-[1.7rem] mobile:text-[1.5rem] font-bold text-primary-blue'>+34643470856</p>
                         </button>
                     </div>
                     <div className='flex items-center mt-4 mobile:mb-4 mobile:pl-1 mobile:gap-3'>

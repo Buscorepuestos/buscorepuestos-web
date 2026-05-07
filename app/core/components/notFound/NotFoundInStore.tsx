@@ -12,7 +12,7 @@ const NotFoundInStore = () => {
 			return
 		}
 
-		const phoneNumber = '34611537631'
+		const phoneNumber = '34643470856'
 		const message = `Hola, necesito ayuda para encontrar un repuesto que no encontré en la tienda online.\n\n📌 Matrícula: ${matricula}\n🔧 Repuesto / Referencia: ${repuesto}\n\n¿Me podrían ayudar a conseguirlo? ¡Gracias!`
 
 		const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
