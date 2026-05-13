@@ -14,6 +14,9 @@ import { useAutocomplete } from '../../hooks/useAutocomplete'
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 
 interface SearchBarProps {
+    inputId?: string
+    analyticsLocation?: string
+    analyticsEventName?: string
     value: string
     onChange: (event: ChangeEvent<HTMLInputElement>) => void
     onClear?: () => void
@@ -87,12 +90,37 @@ export default function SearchBar(props: SearchBarProps) {
 
     const containerRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
+    const hasTrackedInteraction = useRef(false)
     const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 })
     const [mounted, setMounted] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
     const [activeIndex, setActiveIndex] = useState(-1)
 
     useEffect(() => { setMounted(true) }, [])
+
+    const trackSearchInteraction = useCallback(() => {
+        if (!props.analyticsEventName || hasTrackedInteraction.current) return
+        hasTrackedInteraction.current = true
+
+        if (typeof window === 'undefined') return
+
+        const eventPayload = {
+            event: props.analyticsEventName,
+            search_bar_location: props.analyticsLocation ?? 'unknown',
+        }
+
+        const win = window as typeof window & {
+            dataLayer?: Array<Record<string, unknown>>
+            gtag?: (...args: unknown[]) => void
+        }
+
+        win.dataLayer = win.dataLayer || []
+        win.dataLayer.push(eventPayload)
+        win.gtag?.('event', props.analyticsEventName, {
+            event_category: 'engagement',
+            event_label: props.analyticsLocation ?? 'unknown',
+        })
+    }, [props.analyticsEventName, props.analyticsLocation])
 
     // Resetear selección cuando cambian los resultados
     useEffect(() => { setActiveIndex(-1) }, [results, isOpen])
@@ -243,6 +271,8 @@ export default function SearchBar(props: SearchBarProps) {
         >
             {/* ── Input ──────────────────────────────────────────────────── */}
             <input
+                id={props.inputId}
+                data-analytics-location={props.analyticsLocation}
                 ref={inputRef}
                 className="text-title-4 flex-grow bg-transparent outline-none font-semibold pl-6 pr-14 rounded-[34px]"
                 type="text"
@@ -253,9 +283,11 @@ export default function SearchBar(props: SearchBarProps) {
                 onKeyDown={handleKeyDown}
                 disabled={props.isLoading}
                 onFocus={() => {
+                    trackSearchInteraction()
                     setIsFocused(true)
                     openDropdown()
                 }}
+                onClick={trackSearchInteraction}
                 onBlur={() => setTimeout(() => setIsFocused(false), 150)}
                 autoComplete="off"
             />
