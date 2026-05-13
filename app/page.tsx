@@ -321,6 +321,9 @@ export default function Home() {
 						<span className="text-warning"> nuevas</span>.
 					</h1>
 					<SearchBar
+						inputId="home-search-bar"
+						analyticsLocation="home_hero"
+						analyticsEventName="home_search_bar_interaction"
 						value={searchTerm}
 						onChange={handleInputChange}
 						onEnterPress={handleSearch}
