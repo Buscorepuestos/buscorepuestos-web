@@ -17,6 +17,7 @@ interface SearchBarProps {
     inputId?: string
     analyticsLocation?: string
     analyticsEventName?: string
+    googleAdsConversionSendTo?: string
     value: string
     onChange: (event: ChangeEvent<HTMLInputElement>) => void
     onClear?: () => void
@@ -120,7 +121,13 @@ export default function SearchBar(props: SearchBarProps) {
             event_category: 'engagement',
             event_label: props.analyticsLocation ?? 'unknown',
         })
-    }, [props.analyticsEventName, props.analyticsLocation])
+
+        if (props.googleAdsConversionSendTo) {
+            win.gtag?.('event', 'conversion', {
+                send_to: props.googleAdsConversionSendTo,
+            })
+        }
+    }, [props.analyticsEventName, props.analyticsLocation, props.googleAdsConversionSendTo])
 
     // Resetear selección cuando cambian los resultados
     useEffect(() => { setActiveIndex(-1) }, [results, isOpen])

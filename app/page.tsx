@@ -324,6 +324,7 @@ export default function Home() {
 						inputId="home-search-bar"
 						analyticsLocation="home_hero"
 						analyticsEventName="home_search_bar_interaction"
+						googleAdsConversionSendTo="AW-16784645628/2Cm7CJnn2q0bEPy7xcM-"
 						value={searchTerm}
 						onChange={handleInputChange}
 						onEnterPress={handleSearch}
