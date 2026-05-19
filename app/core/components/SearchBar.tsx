@@ -92,7 +92,7 @@ export default function SearchBar(props: SearchBarProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const hasTrackedInteraction = useRef(false)
-    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 })
+    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0, maxHeight: 480 })
     const [mounted, setMounted] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
     const [activeIndex, setActiveIndex] = useState(-1)
@@ -152,7 +152,19 @@ export default function SearchBar(props: SearchBarProps) {
                 closeDropdown()
                 return
             }
-            setDropdownPos({ top: rect.bottom + 8, left: rect.left, width: rect.width })
+            const top = rect.bottom + 8
+            const isMobileViewport = window.innerWidth <= 639
+            const reservedSpaceBelow = isMobileViewport ? 240 : 24
+            const maxDropdownHeight = isMobileViewport
+                ? Math.max(180, Math.min(240, window.innerHeight - top - reservedSpaceBelow))
+                : Math.max(260, Math.min(520, window.innerHeight - top - reservedSpaceBelow))
+
+            setDropdownPos({
+                top,
+                left: rect.left,
+                width: rect.width,
+                maxHeight: maxDropdownHeight,
+            })
         }
 
         const shouldShow = isOpen || (isFocused && recentSearches.length > 0)
@@ -352,9 +364,10 @@ export default function SearchBar(props: SearchBarProps) {
                         top: dropdownPos.top,
                         left: dropdownPos.left,
                         width: dropdownPos.width,
+                        maxHeight: dropdownPos.maxHeight,
                         zIndex: 99999,
                     }}
-                    className="bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
+                    className="bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-y-auto overscroll-contain"
                 >
                     {/* ── Panel de búsquedas recientes ─────────────────── */}
                     {showRecents && !showResults && (
@@ -484,7 +497,7 @@ export default function SearchBar(props: SearchBarProps) {
                             )}
 
                             {/* Footer con atajos */}
-                            <div className="flex items-center justify-between px-4 py-2 border-t border-gray-100 bg-gray-50">
+                            <div className="flex items-center justify-between px-4 py-2 border-t border-gray-100 bg-gray-50 mobile:hidden">
                                 <span className="text-[10px] text-gray-400">
                                     <kbd className="bg-white border border-gray-200 rounded px-1 text-[9px] font-mono">↑↓</kbd>{' '}
                                     navegar &nbsp;
