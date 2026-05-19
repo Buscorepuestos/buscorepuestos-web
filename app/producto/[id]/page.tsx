@@ -177,8 +177,8 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								</span>
 							</p>
 						</div> */}
-						<div className="w-full px-[2vw] py-[2vw] h-[2.2rem] bg-white sm:hidden">
-							<div className="inline-flex items-center gap-[2vw] bg-green-50 border border-green-200 rounded-full px-[3vw] py-[1.5vw]">
+						<div className="w-full px-[2vw] pt-[2vw] mb-[0.5vw] bg-white sm:hidden">
+							<div className="inline-flex max-w-full items-center gap-[2vw] bg-green-50 border border-green-200 rounded-full px-[3vw] py-[1.5vw]">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									width="14" height="14"
@@ -192,7 +192,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								>
 									<polyline points="20 6 9 17 4 12" />
 								</svg>
-								<p className="font-tertiary-font text-[3vw] text-green-700 font-semibold leading-snug">
+								<p className="font-tertiary-font text-[2.8vw] text-green-700 font-semibold leading-snug">
 									Compatible con:{' '}
 									<span className="text-green-800 font-bold">
 										{brandLabel}

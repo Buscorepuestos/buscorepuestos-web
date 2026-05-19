@@ -161,24 +161,27 @@ export default function CardPrice(props: {
 									<span className="font-bold">{installmentPrice}€</span>
 								</p>
 							</div>
-							<div className="flex gap-2 justify-center items-center mt-1">
+							<div className="flex w-full max-w-full gap-1.5 justify-center items-center mt-1 overflow-hidden">
 								<Image
 									src="/klarnap.png"
 									alt="Klarna"
 									width={40}
 									height={20}
+									className="h-auto max-w-[28%] object-contain"
 								/>
 								<Image
 									src="/PayPalp.svg"
 									alt="PayPal"
 									width={50}
 									height={20}
+									className="h-auto max-w-[32%] object-contain"
 								/>
 								<Image
 									src="/scalapay-png.png"
 									alt="scalapay"
 									width={60}
 									height={30}
+									className="h-auto max-w-[36%] object-contain"
 								/>
 							</div>
 						</div>
