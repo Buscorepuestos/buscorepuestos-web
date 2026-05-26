@@ -40,6 +40,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
 
     // Estados de UI
     const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null);
+    const [isPreparingSearch, setIsPreparingSearch] = useState(true);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
     // --- EFECTOS ---
@@ -55,6 +56,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     useEffect(() => {
         const searchQuery = decodeURIComponent(search || '');
         setInputValue(searchQuery);
+        setIsPreparingSearch(Boolean(searchQuery.trim()));
 
         // Una nueva búsqueda desde la URL debe ser una búsqueda "limpia"
         setSelectedSubcategory(null);
@@ -71,6 +73,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
         if (savedResults) {
             dispatch(restoreSearchResults(JSON.parse(savedResults)));
             skipNextFetch.current = true;
+            setIsPreparingSearch(false);
             sessionStorage.removeItem('storeParamSearchResults');
         }
     }, []);
@@ -95,11 +98,12 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                 brand: selectedBrand,
                 model: selectedModel,
                 year: selectedYear,
-            }));
+            })).finally(() => setIsPreparingSearch(false));
 
             // Resetear URL a /tienda cuando el input queda vacío
             if (!inputValue.trim()) {
                 window.history.replaceState(null, '', '/tienda');
+                setIsPreparingSearch(false);
             }
         }, 500);
 
@@ -209,7 +213,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
         else if (filterType === 'year') handleYearChange(null)
     };
 
-    const shouldShowFiltersAndSort = products.length > 0 || loadingSearch;
+    const shouldShowFiltersAndSort = products.length > 0 || loadingSearch || isPreparingSearch;
 
     const handleSuggestionSelect = (suggestion: string) => {
         setInputValue(suggestion);      // actualiza el input
@@ -303,7 +307,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                             />
                         ))}
                     </div>
-                    {loadingSearch ? (
+                    {loadingSearch || isPreparingSearch ? (
                         <div className="flex justify-center my-4">
                             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
                         </div>

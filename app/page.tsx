@@ -215,8 +215,9 @@ export default function Home() {
 	}
 
 	const handleSearch = () => {
+		const term = searchTerm.trim()
 		// Evita búsquedas vacías o dobles clics
-		if (isSearching || !searchTerm) {
+		if (isSearching || !term) {
 			return;
 		}
 
@@ -224,7 +225,7 @@ export default function Home() {
 		setIsSearching(true);
 
 		// Navega a la página de resultados
-		router.push(`/tienda/${searchTerm}`);
+		router.push(`/tienda/${encodeURIComponent(term)}`);
 	}
 
 	useEffect(() => {
@@ -296,12 +297,12 @@ export default function Home() {
 		dispatch({ type: 'SET_CURRENT_PAGE', payload: 1 })
 	}
 
-	const handleSuggestionSelect = () => {
-		if (isSearching || !searchTerm) return
-		const term = searchTerm   // guardar el término antes de limpiar
+	const handleSuggestionSelect = (suggestion: string) => {
+		const term = suggestion.trim()
+		if (isSearching || !term) return
 		setIsSearching(true)
-		setSearchTerm('')          // ← limpiar el input ANTES de navegar
-		router.push(`/tienda/${term}`)
+		setSearchTerm(term)
+		router.push(`/tienda/${encodeURIComponent(term)}`)
 	};
 
 	return (
