@@ -152,12 +152,32 @@ export default function SearchBar(props: SearchBarProps) {
                 closeDropdown()
                 return
             }
-            const top = rect.bottom + 8
             const isMobileViewport = window.innerWidth <= 639
-            const reservedSpaceBelow = isMobileViewport ? 240 : 24
-            const maxDropdownHeight = isMobileViewport
-                ? Math.max(180, Math.min(240, window.innerHeight - top - reservedSpaceBelow))
-                : Math.max(260, Math.min(520, window.innerHeight - top - reservedSpaceBelow))
+            const visualViewport = window.visualViewport
+            const viewportTop = visualViewport?.offsetTop ?? 0
+            const viewportHeight = visualViewport?.height ?? window.innerHeight
+            const viewportBottom = viewportTop + viewportHeight
+            const gap = 8
+            const preferredMobileHeight = 240
+            const minMobileHeight = 180
+
+            let top = rect.bottom + gap
+            let maxDropdownHeight = isMobileViewport
+                ? Math.max(minMobileHeight, Math.min(preferredMobileHeight, viewportBottom - top - 16))
+                : Math.max(260, Math.min(520, viewportBottom - top - 24))
+
+            if (isMobileViewport && props.value.trim()) {
+                const spaceBelow = viewportBottom - top - 16
+                const spaceAbove = rect.top - viewportTop - gap
+
+                if (spaceBelow < minMobileHeight && spaceAbove > spaceBelow) {
+                    maxDropdownHeight = Math.max(
+                        minMobileHeight,
+                        Math.min(preferredMobileHeight, spaceAbove - 16)
+                    )
+                    top = Math.max(viewportTop + 12, rect.top - gap - maxDropdownHeight)
+                }
+            }
 
             setDropdownPos({
                 top,
@@ -173,11 +193,15 @@ export default function SearchBar(props: SearchBarProps) {
         updatePosition()
         window.addEventListener('scroll', updatePosition, true)
         window.addEventListener('resize', updatePosition)
+        window.visualViewport?.addEventListener('resize', updatePosition)
+        window.visualViewport?.addEventListener('scroll', updatePosition)
         return () => {
             window.removeEventListener('scroll', updatePosition, true)
             window.removeEventListener('resize', updatePosition)
+            window.visualViewport?.removeEventListener('resize', updatePosition)
+            window.visualViewport?.removeEventListener('scroll', updatePosition)
         }
-    }, [isOpen, isFocused, recentSearches.length, closeDropdown])
+    }, [isOpen, isFocused, recentSearches.length, closeDropdown, props.value])
 
     // ── Lista plana para navegación por teclado ───────────────────────────────
     const flatList = useMemo<FlatSuggestion[]>(() => {
@@ -222,6 +246,7 @@ export default function SearchBar(props: SearchBarProps) {
         addRecentSearch(label)
         onSuggestionSelect?.(label)
         closeDropdown()
+        inputRef.current?.blur()
     }, [addRecentSearch, onSuggestionSelect, closeDropdown])
 
     // ── Navegación teclado ────────────────────────────────────────────────────
@@ -267,7 +292,7 @@ export default function SearchBar(props: SearchBarProps) {
     const showRecents = isFocused && !props.value.trim() && recentSearches.length > 0
 
     // ¿Mostrar el dropdown de resultados?
-    const showResults = mounted && isOpen && flatList.length > 0
+    const showResults = mounted && isFocused && isOpen && flatList.length > 0
 
     // Índice de inicio de cada grupo dentro del flatList (solo cuando hay resultados)
     const partsEnd = results.parts.length
@@ -386,7 +411,7 @@ export default function SearchBar(props: SearchBarProps) {
                             {recentSearches.map((term, i) => (
                                 <div
                                     key={term}
-                                    onMouseDown={() => selectSuggestion(term)}
+                                    onPointerDown={(e) => { e.preventDefault(); selectSuggestion(term) }}
                                     className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors ${activeIndex === i ? 'bg-blue-50' : 'hover:bg-gray-50'
                                         }`}
                                 >
@@ -425,8 +450,7 @@ export default function SearchBar(props: SearchBarProps) {
                                         label={`Ver ${results.categories[0]?.count ?? ''} resultados en ${results.parts[0]?.subcategory ?? 'esta categoría'} →`}
                                         query={props.value}
                                         onSelect={selectSuggestion}
-                                        onSearch={props.onEnterPress}
-                                    />
+                                        />
                                     <Divider />
                                 </>
                             )}
@@ -458,7 +482,8 @@ export default function SearchBar(props: SearchBarProps) {
                                         {results.brands.map((brand, i) => (
                                             <button
                                                 key={`brand-${i}`}
-                                                onMouseDown={() => {
+                                                onPointerDown={(e) => {
+                                                    e.preventDefault()
                                                     // Combina la query actual con la marca:
                                                     // "faro derecho" + "Renault" → "faro derecho Renault"
                                                     const combined = `${props.value.trim()} ${brand.name}`.trim()
@@ -546,7 +571,7 @@ interface SuggestionRowProps {
 function SuggestionRow({ icon, iconBg, label, sublabel, badge, isActive, onSelect }: SuggestionRowProps) {
     return (
         <div
-            onMouseDown={onSelect}
+            onPointerDown={(e) => { e.preventDefault(); onSelect() }}
             className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer transition-colors ${isActive ? 'bg-blue-50' : 'hover:bg-gray-50'
                 }`}
         >
@@ -566,10 +591,10 @@ function SuggestionRow({ icon, iconBg, label, sublabel, badge, isActive, onSelec
     )
 }
 
-function SeeMoreLink({ label, query, onSelect, onSearch }: { label: string; query: string; onSelect: (s: string) => void; onSearch?: () => void }) {
+function SeeMoreLink({ label, query, onSelect }: { label: string; query: string; onSelect: (s: string) => void }) {
     return (
         <div
-            onMouseDown={() => { onSelect(query); onSearch?.() }}
+            onPointerDown={(e) => { e.preventDefault(); onSelect(query) }}
             className="px-4 py-1.5 text-[11px] text-[#12B1BB] cursor-pointer hover:text-[#0e9aa3] transition-colors"
         >
             {label}

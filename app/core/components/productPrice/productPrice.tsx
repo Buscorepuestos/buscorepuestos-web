@@ -71,6 +71,10 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	)
 
 	const [onePageIsOpen, setOnePageIsOpen] = useState<boolean>(false)
+	const numericPrice = Number(price.replace(',', '.'))
+	const installmentPrice = Number.isFinite(numericPrice)
+		? (numericPrice / 4).toFixed(2).replace('.', ',')
+		: '0,00'
 
 	// console.log(
 	// 	'Redux state:',
@@ -360,72 +364,75 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 			{/* ── MOBILE: nuevo diseño ─────────────────────────────────────── */}
 			<div className="hidden mobile:block px-[2vw] pt-[1.2vw] pb-[4vw] font-tertiary-font">
 
-				{/* Fila envío con camión */}
-				<div className="flex justify-center gap-[2.5vw] mb-[1vw] px-[1vw]">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="20" height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="#12B1BB"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						className="flex-shrink-0"
-					>
-						<rect x="1" y="3" width="15" height="13" rx="1" />
-						<path d="M16 8h4l3 5v3h-7V8z" />
-						<circle cx="5.5" cy="18.5" r="2.5" />
-						<circle cx="18.5" cy="18.5" r="2.5" />
-					</svg>
-					<p className="text-[3.2vw] text-dark-grey">
-						<span className="font-bold text-secondary-blue">Envío incluido</span>
-						{' '}(24/72h)
-						{/* {' '}<span className="text-dark-grey">| 2 años de garantía</span> */}
-					</p>
-				</div>
-
-				{/* Precio total */}
-				<div className="flex justify-center text-center mb-[1vw] gap-3">
-					<p
-						id="product-page-price"
-						className="text-[8vw] text-primary-blue font-bold leading-none"
-					>
-						Total {price}€
-					</p>
-					<p className="text-[3.2vw] text-dark-grey font-semibold mt-[2.5vw]">
-						(IVA incluido)
-					</p>
-				</div>
-
-				{/* Scalapay + PayPal — card blanca */}
-				<div className="mb-[2vw] px-[1vw]">
-					<div className="flex items-center gap-[3vw] bg-white rounded-2xl px-[4vw] py-[2.5vw] shadow-sm">
-						{/* Logo Scalapay */}
-						<Image 
-							src="/scalapay3.png" 
-							alt="scalapay" 
-							width={60} 
-							height={20}
-							className="flex-shrink-0 object-contain"
-						/>
-
-						{/* Logo PayPal */}
-						<Image
-							src="/PayPalp.svg"
-							alt="paypal"
-							width={60}
-							height={16}
-							className="flex-shrink-0 object-contain"
-						/>
-
-						{/* Texto cuota */}
-						<p className="text-[2.5vw] text-dark-grey font-tertiary-font leading-snug">
-							Paga en 3 o 4* plazos de{' '}
-							<span className="font-bold">
-								{(parseFloat(price) / 4).toFixed(2)}€
-							</span>
+				<div className="mb-[2vw] rounded-[18px] bg-white px-[3.2vw] py-[2.4vw] shadow-sm ring-1 ring-[#E8F6F7]">
+					<div className="flex items-center justify-center gap-[2vw] text-[3vw] text-dark-grey">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="18" height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#12B1BB"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							className="flex-shrink-0"
+						>
+							<rect x="1" y="3" width="15" height="13" rx="1" />
+							<path d="M16 8h4l3 5v3h-7V8z" />
+							<circle cx="5.5" cy="18.5" r="2.5" />
+							<circle cx="18.5" cy="18.5" r="2.5" />
+						</svg>
+						<p>
+							<span className="font-bold text-secondary-blue">Envío incluido</span>
+							{' '}(24/72h)
 						</p>
+					</div>
+
+					<div className="mt-[1vw] flex items-center justify-center gap-[2vw]">
+						<p className="text-[3vw] text-dark-grey font-semibold">
+							IVA incluido
+						</p>
+						<p
+							id="product-page-price"
+							className="text-[8.2vw] text-primary-blue font-bold leading-none pb-[0.5vw]"
+						>
+							{price}€
+						</p>
+
+
+						<div className="w-[32vw] shrink-0">
+							<p className="whitespace-nowrap text-[3.1vw] font-semibold text-secondary-blue">
+								3 o 4 plazos de{' '}
+								<span className="font-bold text-dark-grey">{installmentPrice}€</span>
+							</p>
+						</div>
+
+					</div>
+
+					<div className="mt-[2vw] flex items-center justify-center gap-[2.4vw]">
+						<div className="flex shrink-0 items-center gap-[1.5vw]">
+							<Image
+								src="/klarnap.png"
+								alt="Klarna"
+								width={46}
+								height={18}
+								className="h-auto max-w-[15vw] object-contain"
+							/>
+							<Image
+								src="/PayPalp.svg"
+								alt="PayPal"
+								width={52}
+								height={18}
+								className="h-auto max-w-[16vw] object-contain"
+							/>
+							<Image
+								src="/scalapay-png.png"
+								alt="Scalapay"
+								width={64}
+								height={22}
+								className="h-auto max-w-[18vw] object-contain"
+							/>
+						</div>
 					</div>
 				</div>
 
