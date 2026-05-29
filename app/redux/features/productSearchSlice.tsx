@@ -84,6 +84,7 @@ const productSearchSlice = createSlice({
                 state.loading = false;
                 state.searchResults = action.payload.data;
                 state.totalPages = action.payload.totalPages || 1;
+                state.currentPage = action.payload.currentPage || 1;
             })
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.loading = false;

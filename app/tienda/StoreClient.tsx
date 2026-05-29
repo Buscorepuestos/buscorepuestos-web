@@ -124,9 +124,13 @@ export default function Store() {
 				dispatch(
 					fetchProducts({
 						searchTerm: inputValue.trim(),
-						page: 1,
+						page: currentPage,
 						sortOrder,
 						userProvince: sortOrder === 'proximity' ? userProvince : null,
+						subcategory: selectedSubcategory,
+						brand: selectedBrand,
+						model: selectedModel,
+						year: selectedYear,
 					})
 				).finally(() => setLoading(false))
 			}, 1000)
@@ -145,7 +149,7 @@ export default function Store() {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [inputValue, sortOrder])
+	}, [inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear])
 
 	const handleNextPage = () => {
 		if (currentPage < totalPages) {
@@ -177,6 +181,7 @@ export default function Store() {
 		setSelectedBrand(null);
 		setSelectedModel(null);
 		setSelectedYear(null);
+		setInputValue('');
 		dispatch(setCurrentPage(1));
 	};
 
@@ -185,6 +190,7 @@ export default function Store() {
 		// Reseteamos los filtros dependientes
 		setSelectedModel(null)
 		setSelectedYear(null)
+		setInputValue('')
 		dispatch(setCurrentPage(1))
 	}
 
@@ -192,11 +198,13 @@ export default function Store() {
 		setSelectedModel(model)
 		// Reseteamos el filtro de año
 		setSelectedYear(null)
+		setInputValue('')
 		dispatch(setCurrentPage(1))
 	}
 
 	const handleYearChange = (year: number | null) => {
 		setSelectedYear(year)
+		setInputValue('')
 		dispatch(setCurrentPage(1))
 	}
 
@@ -371,14 +379,14 @@ export default function Store() {
 							<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
 								<button
 									onClick={handlePrevPage}
-									disabled={currentPage === 0}
+									disabled={currentPage <= 1}
 								>
 									<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 								</button>
 								<span>{`Página ${currentPage} de ${totalPages}`}</span>
 								<button
 									onClick={handleNextPage}
-									disabled={currentPage === totalPages - 1}
+									disabled={currentPage >= totalPages}
 								>
 									<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 								</button>

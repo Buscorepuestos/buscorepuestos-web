@@ -49,7 +49,7 @@ const PaymentSelection = ({
 }) => {
 	const dispatch = useAppDispatch();
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-		'stripe' | 'sumup' | 'transferencia' | 'scalapay' | null
+		'stripe' | 'sumup' | 'transferencia' | 'scalapay' | 'bizum' | null
 	>(null)
 	const [isProcessing, setIsProcessing] = useState(false)
 	const [isFormValid, setIsFormValid] = useState(false)
@@ -117,7 +117,7 @@ const PaymentSelection = ({
 
 	const isAssisted = items.some(item => item.origin === 'kommo');
 
-	const prepareLocalStorageForRedirect = (paymentMethod: 'stripe' | 'scalapay' | 'sumup' | 'transferencia') => {
+	const prepareLocalStorageForRedirect = (paymentMethod: 'stripe' | 'scalapay' | 'sumup' | 'transferencia' | 'bizum') => {
 		console.log(`Guardando datos del pedido en localStorage para ${paymentMethod}...`);
 
 		const pendingOrder = {
@@ -151,8 +151,8 @@ const PaymentSelection = ({
 		localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
 	};
 
-	const handlePaymentSelection = async (method: 'stripe' | 'sumup' | 'transferencia' | 'scalapay') => {
-		if (method === 'sumup' || method === 'transferencia') {
+	const handlePaymentSelection = async (method: 'stripe' | 'sumup' | 'transferencia' | 'scalapay' | 'bizum') => {
+		if (method === 'sumup' || method === 'transferencia' || method === 'bizum') {
 			setTimeout(() => {
 				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}, 2000); // pequeño delay para que React termine de renderizar el componente
@@ -266,6 +266,73 @@ const PaymentSelection = ({
 		}
 	};
 
+	const submitRedsysForm = (url: string, fields: Record<string, string>) => {
+		const form = document.createElement('form');
+		form.method = 'POST';
+		form.action = url;
+		form.style.display = 'none';
+
+		Object.entries(fields).forEach(([name, value]) => {
+			const input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = name;
+			input.value = value;
+			form.appendChild(input);
+		});
+
+		document.body.appendChild(form);
+		form.submit();
+	};
+
+	const handleBizumPayment = async () => {
+		setIsProcessing(true);
+		prepareLocalStorageForRedirect('bizum');
+
+		const resolvedBillingAddress = isSwitchOn ? fieldsValue.shippingAddress : fieldsValue.billingAddress;
+		const resolvedBillingAddressExtra = isSwitchOn ? fieldsValue.addressExtra : fieldsValue.billingAddressExtra;
+		const resolvedBillingZip = isSwitchOn ? fieldsValue.zip : fieldsValue.billingZip;
+		const resolvedBillingProvince = isSwitchOn ? fieldsValue.province : fieldsValue.billingProvince;
+
+		try {
+			const response = await api.post('/payments', {
+				cartDataIDs: purchaseIds,
+				price: numberPrice,
+				userID: userId,
+				method: 'bizum',
+				address: {
+					user: [userId!],
+					name: fieldsValue.name,
+					nif: fieldsValue.nif,
+					address: resolvedBillingAddress,
+					addressNumber: resolvedBillingAddressExtra,
+					country: fieldsValue.country,
+					location: fieldsValue.city,
+					phone: Number(fieldsValue.phoneNumber),
+					province: resolvedBillingProvince,
+					cp: resolvedBillingZip,
+					'Correo electrónico': fieldsValue.email,
+					additionalInformation: '',
+					default: false,
+				},
+			});
+
+			const { url, Ds_SignatureVersion, Ds_MerchantParameters, Ds_Signature } = response.data;
+			if (!url || !Ds_SignatureVersion || !Ds_MerchantParameters || !Ds_Signature) {
+				throw new Error('La respuesta de Redsys no contenía todos los datos necesarios.');
+			}
+
+			submitRedsysForm(url, {
+				Ds_SignatureVersion,
+				Ds_MerchantParameters,
+				Ds_Signature,
+			});
+		} catch (error: any) {
+			console.error('Error al preparar el pago con Bizum:', error);
+			Swal.fire('Error', error.response?.data?.message || error.message || 'No se pudo iniciar el pago con Bizum.', 'error');
+			setIsProcessing(false);
+		}
+	};
+
 	const handleScalapayPayment = async () => {
 		setIsProcessing(true);
 		prepareLocalStorageForRedirect('scalapay');
@@ -339,6 +406,17 @@ const PaymentSelection = ({
 					>
 						<Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={46} height={46} className="w-14 h-14 rounded-md" />
 						Pago con tarjeta
+					</button>
+					<button
+						onClick={() => enabledForm && enabledCart && handlePaymentSelection('bizum')}
+						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
+					gap-3 items-center justify-center px-6 py-2 border-[1px] 
+					rounded-xl transition-all duration-300 ${getButtonStyle('bizum')}
+					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
+					`}
+					>
+						<Image src="/bizum.svg" alt="bizum" width={62} height={46} className="w-16 h-14 rounded-md" />
+						Bizum
 					</button>
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('transferencia')}
@@ -437,6 +515,23 @@ const PaymentSelection = ({
 							onTransferPayment={() => prepareLocalStorageForRedirect('transferencia')}
 							matricula={fieldsValue.matricula}
 						/>
+					</div>
+				)}
+				{selectedPaymentMethod === 'bizum' && (
+					<div className="flex flex-col justify-center items-center">
+						{!isProcessing ? (
+							<button
+								onClick={handleBizumPayment}
+								className="w-1/2 mt-4 bg-secondary-blue font-tertiary-font text-custom-white font-bold py-3 px-4 rounded-3xl flex items-center justify-center gap-3 hover:bg-custom-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								<Image src="/bizum.svg" alt="bizum" width={72} height={30} className="h-8 w-auto" />
+								<p className='text-[1.8rem] mobile:text-[1.3rem]'>Pagar con Bizum</p>
+							</button>
+						) : (
+							<div className="w-full flex justify-center mt-4">
+								<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+							</div>
+						)}
 					</div>
 				)}
 				{/* {selectedPaymentMethod === 'stripe' ? (
