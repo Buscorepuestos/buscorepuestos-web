@@ -177,7 +177,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								</span>
 							</p>
 						</div> */}
-						<div className="w-full px-[2vw] pt-[2vw] mb-[0.5vw] bg-white sm:hidden">
+						<div className="w-full px-[2vw] pt-[2vw] mb-[0.1vw] bg-white sm:hidden">
 							<div className="inline-flex max-w-full items-center gap-[2vw] bg-green-50 border border-green-200 rounded-full px-[3vw] py-[1.5vw]">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
