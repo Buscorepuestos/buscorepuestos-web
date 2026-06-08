@@ -364,8 +364,8 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 			{/* ── MOBILE: nuevo diseño ─────────────────────────────────────── */}
 			<div className="hidden mobile:block px-[2vw] pt-[1.2vw] pb-[4vw] font-tertiary-font">
 
-				<div className="mb-[2vw] rounded-[18px] bg-white px-[3.2vw] py-[2.4vw] shadow-sm ring-1 ring-[#E8F6F7]">
-					<div className="flex items-center justify-center gap-[2vw] text-[3vw] text-dark-grey">
+				<div className="mb-[2vw] rounded-[18px] bg-white px-[3vw] py-[1.7vw] shadow-sm ring-1 ring-[#E8F6F7]">
+					<div className="flex items-center justify-center gap-[1.6vw] text-[2.8vw] text-dark-grey">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							width="18" height="18"
@@ -388,49 +388,62 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 						</p>
 					</div>
 
-					<div className="mt-[1vw] flex items-center justify-center gap-[2vw]">
-						<p className="text-[3vw] text-dark-grey font-semibold">
-							IVA incluido
-						</p>
-						<p
-							id="product-page-price"
-							className="text-[8.2vw] text-primary-blue font-bold leading-none pb-[0.5vw]"
-						>
-							{price}€
-						</p>
-
-
-						<div className="w-[32vw] shrink-0">
-							<p className="whitespace-nowrap text-[3.1vw] font-semibold text-secondary-blue">
-								3 o 4 plazos de{' '}
-								<span className="font-bold text-dark-grey">{installmentPrice}€</span>
+					<div className="mt-[0.6vw] flex items-center justify-center gap-[2vw]">
+						<div className="min-w-0 text-center">
+							<p
+								id="product-page-price"
+								className="max-w-full break-words text-center text-[7.1vw] text-primary-blue font-bold leading-none"
+							>
+								{price}€
+							</p>
+							<p className="mt-[0.4vw] text-[2.55vw] text-dark-grey font-semibold leading-none">
+								IVA incluido
 							</p>
 						</div>
-
+						<div className="shrink-0 rounded-full bg-secondary-blue px-[2.5vw] py-[1.15vw] text-center shadow-[0_5px_14px_rgba(18,177,187,0.28)]">
+							<p className="whitespace-nowrap text-[2.75vw] font-extrabold leading-tight text-white">
+								3 o 4 plazos de{' '}
+								<span className="text-[3vw]">{installmentPrice}€</span>
+							</p>
+						</div>
 					</div>
 
-					<div className="mt-[2vw] flex items-center justify-center gap-[2.4vw]">
-						<div className="flex shrink-0 items-center gap-[1.5vw]">
+					<div className="mt-[1.4vw] flex items-center justify-center">
+						<div className="flex max-w-full flex-wrap items-center justify-center gap-x-[1.7vw] gap-y-[0.6vw] rounded-full bg-white px-[2vw] py-[0.8vw] shadow-[0_2px_8px_rgba(18,177,187,0.12)] ring-1 ring-[#E8F6F7]">
+							<Image
+								src="/visa-logo.svg"
+								alt="Visa"
+								width={40}
+								height={25}
+								className="h-auto max-w-[11vw] object-contain"
+							/>
+							<Image
+								src="/mastercard-logo.svg"
+								alt="Mastercard"
+								width={40}
+								height={25}
+								className="h-auto max-w-[9vw] object-contain"
+							/>
 							<Image
 								src="/klarnap.png"
 								alt="Klarna"
 								width={46}
 								height={18}
-								className="h-auto max-w-[15vw] object-contain"
+								className="h-auto max-w-[13vw] object-contain"
 							/>
 							<Image
 								src="/PayPalp.svg"
 								alt="PayPal"
 								width={52}
 								height={18}
-								className="h-auto max-w-[16vw] object-contain"
+								className="h-auto max-w-[14vw] object-contain"
 							/>
 							<Image
 								src="/scalapay-png.png"
 								alt="Scalapay"
 								width={64}
 								height={22}
-								className="h-auto max-w-[18vw] object-contain"
+								className="h-auto max-w-[16vw] object-contain"
 							/>
 						</div>
 					</div>

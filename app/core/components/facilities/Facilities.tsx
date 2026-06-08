@@ -12,7 +12,7 @@ const Facilities: React.FC<FacilitiesProps> = ({ classNamePrincipal, classNameIm
     // ── PRODUCTO PAGE: nuevo diseño 3 columnas ──────────────────────────────
     if (isProductPage) {
         return (
-            <div className="w-full border-y border-secondary-blue bg-[#f0fbfc] sm:mt-8">
+            <div className="w-full border-y border-secondary-blue bg-[#f0fbfc] sm:mt-[0.5rem]">
                 <div className="
                 grid grid-cols-3
                 divide-x divide-secondary-blue
