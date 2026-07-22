@@ -45,8 +45,11 @@ export interface CreateOrderPayload {
     purchaseIds: string[]; // IDs de las compras en Airtable/Mongo
     userId: string; // ID del usuario en tu sistema
     fieldsValue: FormsFields; // Valores del formulario de checkout
+    matricula?: string; // Matrícula/VIN del formulario de checkout
     items: any[]; 
     isAssisted: boolean; // Indica si la compra es asistida
+    isWebPurchase?: boolean; // Indica si la compra viene directamente de la web
+    isWeb?: boolean; // Alias compatible para backends que esperan esta propiedad
 }
 
 export interface ScalapayCreateOrderResponse {

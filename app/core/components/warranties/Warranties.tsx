@@ -74,12 +74,12 @@ const Warranties = ({ compact = false }: WarrantiesProps) => {
                     onClick={handleOpenModal}
                     className="
                         w-full flex items-center justify-between
-                        px-[2vw] py-[1vw]
+                        px-4 py-3 mobile:px-[2vw] mobile:py-[1vw]
                         bg-white border border-secondary-blue rounded-xl
                         active:bg-gray-50
                     "
                 >
-                    <div className="flex items-center gap-[2.5vw]">
+                    <div className="flex items-center gap-3 mobile:gap-[2.5vw]">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="17"
@@ -94,7 +94,7 @@ const Warranties = ({ compact = false }: WarrantiesProps) => {
                         >
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                         </svg>
-                        <span className="font-tertiary-font font-semibold text-[3.5vw] text-secondary-blue">
+                        <span className="font-tertiary-font font-semibold text-[15px] mobile:text-[3.5vw] text-secondary-blue">
                             Ver condiciones de garantía
                         </span>
                     </div>

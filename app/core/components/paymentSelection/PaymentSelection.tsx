@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service';
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget';
+import TransferPayment from '../transferPayment/transferPayment';
 import { FormsFields } from '../checkoutPage/CheckoutPage';
 import { useAppDispatch } from '../../../redux/hooks';
 import { savePurchaseAsync } from '../../../redux/features/shoppingCartSlice';
@@ -9,7 +10,7 @@ import Image from 'next/image';
 import Swal from 'sweetalert2';
 import api from '../../../api/api';
 
-type PaymentMethod = 'caixa_card' | 'bizum' | 'stripe' | 'scalapay';
+type PaymentMethod = 'caixa_card' | 'bizum' | 'transferencia' | 'stripe' | 'scalapay';
 type DelayedProviderMethod = 'stripe' | 'scalapay';
 
 const PaymentSelection = ({
@@ -114,7 +115,9 @@ const PaymentSelection = ({
 		// Esta función se mantiene igual para guiar al usuario a campos vacíos.
 	};
 
-	const isAssisted = items.some(item => item.origin === 'kommo');
+	const assistedOrigins = ['kommo', 'chatwoot'];
+	const isAssisted = items.some(item => assistedOrigins.includes(item.origin));
+	const isWebPurchase = !isAssisted;
 
 	const prepareLocalStorageForRedirect = (paymentMethod: PaymentMethod) => {
 		console.log(`Guardando datos del pedido en localStorage para ${paymentMethod}...`);
@@ -126,10 +129,11 @@ const PaymentSelection = ({
 
 		const pendingOrder = {
 			paymentMethod,
+			matricula: fieldsValue.matricula,
 			billingData: {
 				Compras: purchaseIds,
 				Usuarios: [userId!],
-				transfer: false,
+				transfer: paymentMethod === 'transferencia',
 				address: fieldsValue.shippingAddress,
 				country: fieldsValue.country,
 				location: fieldsValue.city,
@@ -147,6 +151,8 @@ const PaymentSelection = ({
 				billingProvince: resolvedBillingProvince,
 				billingZip: resolvedBillingZip,
 				isAssisted: isAssisted,
+				isWebPurchase,
+				isWeb: isWebPurchase,
 				matricula: fieldsValue.matricula,
 			},
 			cart: JSON.parse(localStorage.getItem('cart') || JSON.stringify(items)),
@@ -239,7 +245,10 @@ const PaymentSelection = ({
 		userId,
 		purchaseIds,
 		fieldsValue,
+		matricula: fieldsValue.matricula,
 		isAssisted,
+		isWebPurchase,
+		isWeb: isWebPurchase,
 	});
 
 	const startRedsysPayment = async (method: 'caixa_card' | 'bizum') => {
@@ -268,7 +277,10 @@ const PaymentSelection = ({
 				userId,
 				purchaseIds,
 				fieldsValue,
+				matricula: fieldsValue.matricula,
 				isAssisted: isAssisted,
+				isWebPurchase,
+				isWeb: isWebPurchase,
 			});
 
 			redirectToPaymentGateway(response.data);
@@ -315,6 +327,14 @@ const PaymentSelection = ({
 			return;
 		}
 
+		if (method === 'transferencia') {
+			setSelectedPaymentMethod(method);
+			setTimeout(() => {
+				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}, 200);
+			return;
+		}
+
 		if (method === 'caixa_card' || method === 'bizum') {
 			await startRedsysPayment(method);
 			return;
@@ -333,8 +353,11 @@ const PaymentSelection = ({
 				purchaseIds,
 				userId: userId!,
 				fieldsValue, // <-- Pasamos el objeto completo del formulario
+				matricula: fieldsValue.matricula,
 				items, // <-- Pasamos los items para calcular el total en el backend
 				isAssisted: isAssisted,
+				isWebPurchase,
+				isWeb: isWebPurchase,
 			});
 
 			if (response.checkoutUrl) {
@@ -366,7 +389,10 @@ const PaymentSelection = ({
 
 		const iconSrc = (method: string, defaultSrc: string, selectedSrc: string) => selectedPaymentMethod === method ? selectedSrc : defaultSrc;
 		const isButtonBusy = (method: PaymentMethod) => isProcessing && selectedPaymentMethod === method;
-		const baseButtonClass = `w-full flex ${isProductPage ? 'sm:flex-col' : ''} gap-3 items-center justify-center px-4 py-3 border-[1px] rounded-xl transition-all duration-300 xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]`;
+		const baseButtonClass = `w-full flex ${isProductPage ? 'sm:flex-col min-h-[104px] px-5 py-3 text-[15px]' : 'px-4 py-3 xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw]'} gap-3 items-center justify-center border-[1px] rounded-xl transition-all duration-300 mobile:text-[3vw]`;
+		const paymentGridClass = isProductPage
+			? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 mb-6 gap-4'
+			: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 mb-6 gap-3';
 
 		return (
 			<div>
@@ -387,7 +413,7 @@ const PaymentSelection = ({
 						</button>
 					</div>
 				)}
-				<div className="flex mobile:flex-wrap justify-between mb-6 gap-3">
+				<div className={paymentGridClass}>
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('caixa_card')}
 						disabled={!enabledForm || !enabledCart || isProcessing}
@@ -405,11 +431,19 @@ const PaymentSelection = ({
 						<span>{isButtonBusy('bizum') ? 'Conectando...' : 'Bizum'}</span>
 					</button>
 					<button
+						onClick={() => enabledForm && enabledCart && handlePaymentSelection('transferencia')}
+						disabled={!enabledForm || !enabledCart || isProcessing}
+						className={`${baseButtonClass} ${getButtonStyle('transferencia')}`}
+					>
+						<Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={46} height={46} className="w-12 h-12 rounded-md" />
+						<span>Transferencia</span>
+					</button>
+					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('stripe')}
 						disabled={!enabledForm || !enabledCart || isProcessing}
-						className={`${baseButtonClass} ${isProductPage ? 'sm:gap-3' : 'gap-5'} ${getButtonStyle('stripe')}`}
+						className={`${baseButtonClass} ${isProductPage ? 'sm:gap-4' : 'gap-5'} ${getButtonStyle('stripe')}`}
 					>
-						<div className="flex gap-3">
+						<div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
 							<Image src="/PayPal.svg" alt="paypal" width={56} height={28} className="h-8 w-auto rounded-md" />
 							<Image src="/klarna.png" alt="klarna" width={56} height={56} className="w-9 h-9 rounded-md" />
 						</div>
@@ -444,6 +478,18 @@ const PaymentSelection = ({
 			)}
 
 			<div className="mt-8" ref={paymentDetailRef}>
+				{selectedPaymentMethod === 'transferencia' && (
+					<div className="flex justify-center">
+						<TransferPayment
+							totalPrice={totalPrice}
+							purchaseIds={purchaseIds}
+							fieldsValue={fieldsValue}
+							isAssisted={isAssisted}
+							onTransferPayment={() => prepareLocalStorageForRedirect('transferencia')}
+							matricula={fieldsValue.matricula}
+						/>
+					</div>
+				)}
 				{/* {selectedPaymentMethod === 'stripe' ? (
 					<div className="flex justify-center">
 						{isProcessing ? (

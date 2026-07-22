@@ -2,7 +2,6 @@ import React from 'react'
 import Head from 'next/head'
 import Carousel from '../../core/components/carousel/carousel'
 import ProductTitle from '../../core/components/productTitle/productTitle'
-import SupplierRating from '../../core/components/supplierRating/supplierRating'
 import ProductInfo from '../../core/components/productInfo/productInfo'
 import PaymentMethod from '../../core/components/paymentMethod/paymentMethod'
 import ProductPrice from '../../core/components/productPrice/productPrice'
@@ -58,17 +57,6 @@ const fetchProductData = async (id: string): Promise<ProductMongoInterface> => {
 	return response.data.data
 }
 
-const fetchDistributorData = async (id: string) => {
-	try {
-		const response = await axios.get(
-			`${environment.api.url}/distributors/${id}?populate=true`
-		)
-		return response.data
-	} catch (error) {
-		console.error('Error fetching distributor data:', error)
-	}
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
 	const data = await fetchProductData(id)
@@ -102,7 +90,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function Product({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
 	const data = await fetchProductData(id)
-	const distributorData = await fetchDistributorData(data?.distributor)
 	const relatedRes = await fetch(
 		`${environment.api.url}/products/related/${id}?limit=8`,
 		{ cache: 'no-store' }
@@ -127,8 +114,6 @@ export default async function Product({ params }: { params: Promise<{ id: string
 	}
 	const discountRounded = Math.ceil(data?.discount || 0)
 	const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2)
-	const { 'Media de valoración': valoracion, Provincia } =
-		distributorData?.data?.fields || {}
 
 	const brandLabel = data.brand
 		? data.brand.charAt(0).toUpperCase() + data.brand.slice(1).toLowerCase()
@@ -156,8 +141,8 @@ export default async function Product({ params }: { params: Promise<{ id: string
 				<meta property="og:type" content="product" />
 			</Head>
 			<div>
-				<div className="w-full mobile:w-[100vw] mt-[4vw] grid grid-cols-2 mobile:flex mobile:flex-col gap-10 mobile:gap-0 px-[5vw] xl:px-[10vw] mobile:px-[3vw]">
-					<div>
+				<div className="w-full max-w-[1540px] mx-auto mt-[3vw] grid grid-cols-[minmax(0,1.08fr)_minmax(460px,0.92fr)] mobile:flex mobile:flex-col gap-6 mobile:gap-0 px-[2vw] mobile:px-[3vw] items-start">
+					<div className="w-full bg-white">
 						{data && (
 							<div className="hidden mobile:block">
 								<ProductTitle
@@ -224,7 +209,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							)}
 						</div>
-						<div className=" mobile:hidden flex justify-center mobile:justify-center mobile:px-[3vw] mt-8">
+						<div className="mobile:hidden flex justify-center mobile:justify-center mobile:px-[3vw] mt-6">
 							<div className="flex mobile:justify-center mb-6">
 								<PaymentMethod
 									paymentOptions={paymentOptions}
@@ -233,7 +218,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 						</div>
 					</div>
 					{/* <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" /> */}
-					<div className="bg-neutro-grey">
+					<div className="w-full bg-white border border-[#dff5f7] rounded-[18px] overflow-hidden shadow-[0_8px_24px_rgba(18,177,187,0.08)] mobile:border-0 mobile:rounded-none mobile:shadow-none">
 						{data && (
 							<div className="block mobile:hidden">
 								<ProductTitle
@@ -244,12 +229,29 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							</div>
 						)}
-						<div className="mt-[1.5vw] ml-10 mobile:hidden">
-							<SupplierRating
-								valoration={5}
-								location={Provincia || ''}
-								title="Valoración del proveedor"
-							/>
+						<div className="mobile:hidden px-6 pt-5">
+							<div className="inline-flex max-w-full items-center gap-3 bg-green-50 border border-green-200 rounded-full px-4 py-2">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="16" height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="#16a34a"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									className="flex-shrink-0"
+								>
+									<polyline points="20 6 9 17 4 12" />
+								</svg>
+								<p className="font-tertiary-font text-[14px] text-green-700 font-semibold leading-snug">
+									Compatible con:{' '}
+									<span className="text-green-800 font-bold">
+										{brandLabel}
+										{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
+									</span>
+								</p>
+							</div>
 						</div>
 						<div>
 							<ProductPrice
@@ -281,12 +283,7 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								}
 							/>
 						</div>
-						
-						<ValidadorMatricula productTitle={data?.title || data?.subcategory || 'Repuesto'} />
-
-						{/* ── CROSS-SELL — mobile ── */}
-						<RelatedProducts productId={id} brand={data.brand} />
-						<div className='mobile:hidden'>
+						<div className='mobile:hidden mt-4'>
 							{data && (
 								<ProductInfo
 									vehicleVersion={data.version}
@@ -298,6 +295,13 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							)}
 						</div>
+						<div className="mobile:hidden px-6 mt-4">
+							<Warranties compact />
+						</div>
+
+						{/* ── CROSS-SELL — mobile ── */}
+						<RelatedProducts productId={id} brand={data.brand} />
+						<ValidadorMatricula productTitle={data?.title || data?.subcategory || 'Repuesto'} />
 					</div>
 					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
 					<div className="hidden mobile:block justify-center mobile:justify-center mobile:px-[3vw] mt-8">

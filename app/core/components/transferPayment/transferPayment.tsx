@@ -186,6 +186,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 			nif: fieldsValue.nif,
 			phone: Number(fieldsValue.phoneNumber),
 			province: fieldsValue.province,
+			matricula,
 		})
 		await userService.createUserAddresses({
 			user: [userId!],
