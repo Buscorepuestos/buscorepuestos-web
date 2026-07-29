@@ -531,7 +531,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 								) : existingItem ? (
 									<button
 										onClick={handleRemoveFromCart}
-										className="w-full py-[3.5vw] rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[4vw]"
+										className="mx-auto block w-[72%] max-w-[260px] py-[2.4vw] rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[3.6vw]"
 									>
 										Quitar del carrito
 									</button>
