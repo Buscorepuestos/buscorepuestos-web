@@ -277,16 +277,24 @@ const PaymentSelection = ({
 		}
 	};
 
+	const selectSumupPayment = () => {
+		setSelectedPaymentMethod('sumup');
+		prepareLocalStorageForRedirect('sumup');
+		setTimeout(() => {
+			paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}, 200);
+	};
+
 	const showProviderDelayModal = async (method: DelayedProviderMethod) => {
 		const result = await Swal.fire({
 			icon: 'warning',
 			title: 'Aviso sobre este método de pago',
-			text: 'Si selecciona este método de pago, la compra podría sufrir retrasos entre 3-5 días por procedimientos de validaciones internas del proveedor de pago.',
+			text: 'Si selecciona este método de pago, la compra podría sufrir retrasos entre 3-5 días por procedimientos de validaciones internas del proveedor de pago. El pago más rápido para recibir la pieza es el pago con tarjeta.',
 			showCancelButton: true,
-			confirmButtonText: 'Aceptar',
-			cancelButtonText: 'Cancelar',
+			confirmButtonText: 'Continuar',
+			cancelButtonText: 'Pagar con tarjeta',
 			confirmButtonColor: '#1D4ED8',
-			cancelButtonColor: '#111827',
+			cancelButtonColor: '#10B8C4',
 			reverseButtons: true,
 		});
 
@@ -303,6 +311,10 @@ const PaymentSelection = ({
 			return;
 		}
 
+		if (result.dismiss === Swal.DismissReason.cancel) {
+			selectSumupPayment();
+		}
+
 	};
 
 	const handlePaymentSelection = async (method: PaymentMethod) => {
@@ -311,8 +323,13 @@ const PaymentSelection = ({
 		}
 
 		if (method === 'sumup' || method === 'transferencia') {
-			setSelectedPaymentMethod(method);
-			prepareLocalStorageForRedirect(method);
+			if (method === 'sumup') {
+				selectSumupPayment();
+				return;
+			}
+
+			setSelectedPaymentMethod('transferencia');
+			prepareLocalStorageForRedirect('transferencia');
 			setTimeout(() => {
 				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}, 200);
