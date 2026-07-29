@@ -136,9 +136,37 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                 </div>
             </div>
 
-            {/* ── DESKTOP/TABLET: Layout original ─────────────────────────── */}
-            <div className="mobile:hidden flex flex-col mt-6 text-dark-grey font-tertiary-font text-[0.9vw] xl:text-[1vw] sm:text-[1.5vw] px-10">
-                {specsContent}
+            {/* ── DESKTOP/TABLET: especificaciones siempre abiertas ─────── */}
+            <div className="mobile:hidden w-full px-6 mb-2">
+                <div className="rounded-xl border border-secondary-blue bg-[#f9fefe] overflow-hidden">
+                    <div className="flex items-center gap-3 px-4 py-3 border-b border-secondary-blue bg-white">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#12B1BB"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="flex-shrink-0"
+                        >
+                            <line x1="8" y1="6" x2="21" y2="6" />
+                            <line x1="8" y1="12" x2="21" y2="12" />
+                            <line x1="8" y1="18" x2="21" y2="18" />
+                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                            <line x1="3" y1="18" x2="3.01" y2="18" />
+                        </svg>
+                        <span className="font-tertiary-font font-bold text-[15px] text-secondary-blue">
+                            Especificaciones técnicas y referencias
+                        </span>
+                    </div>
+                    <div className="px-4 py-4 text-[14px] leading-snug">
+                        {specsContent}
+                    </div>
+                </div>
             </div>
         </>
     )

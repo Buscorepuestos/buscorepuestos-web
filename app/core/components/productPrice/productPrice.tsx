@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Button, { ButtonProps } from '../Button'
@@ -35,12 +35,6 @@ interface ProductPriceProps {
 
 const ProductPrice: React.FC<ProductPriceProps> = ({
 	price,
-	shippingInfo,
-	warningImgSrc,
-	originalPrice,
-	discount,
-	button1Props,
-	button2Props,
 	data,
 	stock,
 }) => {
@@ -71,6 +65,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	)
 
 	const [onePageIsOpen, setOnePageIsOpen] = useState<boolean>(false)
+	const checkoutSectionRef = useRef<HTMLDivElement>(null)
 	const numericPrice = Number(price.replace(',', '.'))
 	const installmentPrice = Number.isFinite(numericPrice)
 		? (numericPrice / 4).toFixed(2).replace('.', ',')
@@ -123,6 +118,26 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 			dispatch({ type: 'auth/checkUserStatus' })
 		}
 	}, [dispatch])
+
+	useEffect(() => {
+		if (!onePageIsOpen || typeof window === 'undefined') {
+			return
+		}
+
+		const isMobileViewport = window.matchMedia('(max-width: 639px)').matches
+		if (!isMobileViewport) {
+			return
+		}
+
+		const scrollTimer = window.setTimeout(() => {
+			checkoutSectionRef.current?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			})
+		}, 120)
+
+		return () => window.clearTimeout(scrollTimer)
+	}, [onePageIsOpen])
 
 	useEffect(() => {
 		if (stock !== undefined) {
@@ -294,41 +309,69 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	return (
 		<div className="relative overflow-hidden">
 
-			{/* ── DESKTOP/TABLET: layout original ─────────────────────────── */}
+			{/* ── DESKTOP/TABLET: card basada en el diseño mobile ─────────── */}
 			<div className="mobile:hidden">
-				<div className="mt-[1.5vw] ml-10 flex justify-center">
-					<div className="flex flex-col justify-center items-center font-tertiary-font">
+				<div className="px-6 pt-5 flex justify-center">
+					<div className="w-full max-w-[460px] rounded-[20px] bg-white px-6 py-5 shadow-[0_10px_24px_rgba(18,177,187,0.13)] ring-1 ring-[#cceff2] flex flex-col justify-center items-center font-tertiary-font">
+						<div className="flex items-center justify-center gap-2 text-[15px] text-dark-grey">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="18" height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="#12B1BB"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								className="flex-shrink-0"
+							>
+								<rect x="1" y="3" width="15" height="13" rx="1" />
+								<path d="M16 8h4l3 5v3h-7V8z" />
+								<circle cx="5.5" cy="18.5" r="2.5" />
+								<circle cx="18.5" cy="18.5" r="2.5" />
+							</svg>
+							<p>
+								<span className="font-bold text-secondary-blue">Envío incluido</span>
+								{' '}(24/72h)
+							</p>
+						</div>
 						<div className="relative flex items-center">
-							<p id="product-page-price" className="text-[32px] xl:text-[2.5vw] lg:text-[2.8vw] md:text-[3.2vw] sm:text-[3.5vw] text-primary-blue font-semibold">
+							<p id="product-page-price" className="text-[48px] text-primary-blue font-bold leading-none mt-1">
 								{price}€
 							</p>
 						</div>
-						<p className="mt-[-1.3rem] font-semibold text-dark-grey xl:text-[1vw] md:text-[1.2vw] sm:text-[1.7vw]">
-							{shippingInfo}
+						<p className="mt-1 font-semibold text-dark-grey text-[14px] leading-none">
+							IVA incluido
 						</p>
-						<div className="mt-4 flex justify-center w-full scalapay-widget-mobile-container">
-							<ScalapayWidget amountSelector="#product-page-price" type="product" />
+						<div className="mt-4 rounded-full bg-secondary-blue px-6 py-2 text-center shadow-[0_5px_14px_rgba(18,177,187,0.28)]">
+							<p className="whitespace-nowrap text-[14px] font-extrabold leading-tight text-white">
+								3 o 4 plazos de <span className="text-[15px]">{installmentPrice}€</span>
+							</p>
 						</div>
-						<div className="text-custom-orange gap-3 flex items-center">
-							<Image src={warningImgSrc} alt="warning" width={20} height={20} className="sm:w-[15px] md:w-[12px] lg:w-[15px]" />
-							<p className="xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw]">
-								Precio medio pieza original nueva:
-								<span className="font-extrabold line-through"> {originalPrice}€ </span>
-							</p>
-							<p className="xl:text-[1vw] md:text-[1.3vw] sm:text-[1.4vw] bg-custom-orange text-custom-white rounded-2xl px-1 flex items-center">
-								{"-"}{discount}
-							</p>
+						<div className="mt-3 flex max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-full bg-white px-5 py-2 shadow-[0_2px_8px_rgba(18,177,187,0.12)] ring-1 ring-[#E8F6F7]">
+							<Image src="/visa-logo.svg" alt="Visa" width={38} height={24} className="h-auto max-w-[42px] object-contain" />
+							<Image src="/mastercard-logo.svg" alt="Mastercard" width={36} height={24} className="h-auto max-w-[36px] object-contain" />
+							<Image src="/klarnap.png" alt="Klarna" width={44} height={18} className="h-auto max-w-[48px] object-contain" />
+							<Image src="/PayPalp.svg" alt="PayPal" width={50} height={18} className="h-auto max-w-[58px] object-contain" />
+							<Image src="/scalapay-png.png" alt="Scalapay" width={62} height={22} className="h-auto max-w-[70px] object-contain" />
 						</div>
 						{!onePageIsOpen && (
-							<div>
+							<div className="w-full">
 								{user ? (
-									<div className="flex gap-7 mt-7">
+									<div className="flex gap-4 mt-5 w-full">
 										{data.stock === false || globalStock === false ? (
 											<Button labelName="Producto no disponible" type="secondary" bg="bg-alter-grey" borderColor="border-alter-grey" hoverBg="hover:bg-alter-grey" hoverText="white" cursor="cursor-not-allowed" />
 										) : (
 											<>
 												{existingItem ? (
-													<Button labelName="Quitar de la cesta" type="secondary" bg="bg-secondary-blue" borderColor="border-secondary-blue" hoverBg="hover:bg-custom-white" hoverText="hover:text-secondary-blue" cursor="cursor-pointer" onClick={handleRemoveFromCart} />
+													<div className="flex w-full justify-center">
+														<button
+															onClick={handleRemoveFromCart}
+															className="min-w-[230px] rounded-3xl border-2 border-secondary-blue bg-secondary-blue px-7 py-2.5 text-[18px] font-bold text-custom-white shadow-lg transition-colors hover:bg-white hover:text-secondary-blue"
+														>
+															Quitar de la cesta
+														</button>
+													</div>
 												) : (
 													<>
 														{isProccesingAddToCart ? (
@@ -341,8 +384,18 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 															</div>
 														) : (
 															<>
-																<Button {...button1Props} onClick={handleAddToCart} />
-																<Button {...button2Props} onClick={buynow} />
+																<button
+																	onClick={handleAddToCart}
+																	className="flex-1 py-3 rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[18px] hover:bg-white hover:text-secondary-blue transition-colors"
+																>
+																	Añadir al carrito
+																</button>
+																<button
+																	onClick={buynow}
+																	className="flex-1 py-3 rounded-3xl border-2 border-custom-orange bg-custom-orange text-white font-bold text-[18px] hover:opacity-90 transition-opacity"
+																>
+																	Comprar ahora
+																</button>
 															</>
 														)}
 													</>
@@ -478,7 +531,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 								) : existingItem ? (
 									<button
 										onClick={handleRemoveFromCart}
-										className="w-full py-[3.5vw] rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[4vw]"
+										className="mx-auto block w-[72%] max-w-[260px] py-[2.4vw] rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[3.6vw]"
 									>
 										Quitar del carrito
 									</button>
@@ -514,7 +567,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
 			{/* Separador y checkout (compartido ambos) */}
 			{/* <div className={`w-[93%] m-auto h-[2px] bg-secondary-blue mt-[1.5vw] mobile:mt-[3vw]`} /> */}
-			<div>
+			<div ref={checkoutSectionRef}>
 				<div className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${onePageIsOpen ? '' : 'max-h-0'}`}>
 					<div className="py-8 sm:px-10 mobile:py-0">
 						<CheckoutPage isProductPage={true} />

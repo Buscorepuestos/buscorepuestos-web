@@ -19,27 +19,27 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ productId, brand }) =
     if (!loading && related.length === 0) return null
 
     return (
-        <div className="hidden mobile:block mt-[2vw] mb-[10vw]">
+        <div className="mt-5 mobile:mt-[2vw] mb-5 mobile:mb-[10vw]">
             {/* Título */}
-            <div className="px-[4vw] mb-[3vw]">
-                <p className="font-tertiary-font font-bold text-[4.5vw] text-dark-grey">
+            <div className="px-6 mobile:px-[4vw] mb-3 mobile:mb-[3vw]">
+                <p className="font-tertiary-font font-bold text-[20px] mobile:text-[4.5vw] text-dark-grey">
                     Otras piezas para tu{' '}
                     <span className="text-secondary-blue">{brandLabel}</span>
                 </p>
             </div>
 
             {/* Carrusel horizontal */}
-            <div className="flex gap-[3vw] overflow-x-auto px-[4vw] pb-[2vw] scrollbar-hide">
+            <div className="flex gap-3 mobile:gap-[3vw] overflow-x-auto px-6 mobile:px-[4vw] pb-2 mobile:pb-[2vw] scrollbar-hide">
 
                 {/* Skeleton loader */}
                 {loading && [1, 2, 3].map(i => (
                     <div
                         key={i}
-                        className="flex-shrink-0 w-[42vw] bg-white rounded-2xl border border-gray-200 p-[3vw] animate-pulse"
+                        className="flex-shrink-0 w-[180px] mobile:w-[42vw] bg-white rounded-2xl border border-gray-200 p-3 mobile:p-[3vw] animate-pulse"
                     >
-                        <div className="w-full h-[30vw] bg-gray-200 rounded-xl mb-[2vw]" />
-                        <div className="h-[3vw] bg-gray-200 rounded mb-[2vw] w-3/4" />
-                        <div className="h-[4vw] bg-gray-200 rounded w-1/3" />
+                        <div className="w-full h-[120px] mobile:h-[30vw] bg-gray-200 rounded-xl mb-2 mobile:mb-[2vw]" />
+                        <div className="h-3 mobile:h-[3vw] bg-gray-200 rounded mb-2 mobile:mb-[2vw] w-3/4" />
+                        <div className="h-4 mobile:h-[4vw] bg-gray-200 rounded w-1/3" />
                     </div>
                 ))}
 
@@ -48,10 +48,10 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ productId, brand }) =
                     <Link
                         key={item._id}
                         href={`/producto/${item._id}`}
-                        className="flex-shrink-0 w-[42vw] bg-white rounded-2xl border border-gray-200 p-[3vw] active:scale-95 transition-transform"
+                        className="flex-shrink-0 w-[180px] mobile:w-[42vw] bg-white rounded-2xl border border-gray-200 p-3 mobile:p-[3vw] active:scale-95 transition-transform"
                     >
                         {/* Imagen */}
-                        <div className="w-full h-[30vw] bg-gray-100 rounded-xl mb-[2vw] overflow-hidden relative">
+                        <div className="w-full h-[120px] mobile:h-[30vw] bg-gray-100 rounded-xl mb-2 mobile:mb-[2vw] overflow-hidden relative">
                             {item.images?.[0] ? (
                                 <Image
                                     src={item.images[0]}
@@ -73,18 +73,18 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ productId, brand }) =
 
                         {/* Subcategoría */}
                         {item.subcategory && (
-                            <p className="text-[2.5vw] text-secondary-blue font-semibold uppercase tracking-wide mb-[1vw]">
+                            <p className="text-[11px] mobile:text-[2.5vw] text-secondary-blue font-semibold uppercase tracking-wide mb-1 mobile:mb-[1vw]">
                                 {item.subcategory}
                             </p>
                         )}
 
                         {/* Título */}
-                        <p className="text-[2.8vw] font-semibold text-dark-grey leading-tight line-clamp-2 mb-[2vw]">
+                        <p className="text-[13px] mobile:text-[2.8vw] font-semibold text-dark-grey leading-tight line-clamp-2 mb-2 mobile:mb-[2vw]">
                             {item.title}
                         </p>
 
                         {/* Precio */}
-                        <p className="text-[4.5vw] text-primary-blue font-bold">
+                        <p className="text-[18px] mobile:text-[4.5vw] text-primary-blue font-bold">
                             {item.buscorepuestosPrice?.toFixed(2)}€
                         </p>
                     </Link>

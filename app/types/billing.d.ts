@@ -32,4 +32,5 @@ export interface BillingModel {
 	"Id Pago Stripe"?: string;
 	"Id Pago Summup"?: string;
 	"Id Pago Scalapay"?: string;
+	matricula?: string;
 }

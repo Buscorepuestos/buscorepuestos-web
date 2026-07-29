@@ -1,15 +1,18 @@
 'use client'
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import SumupPayment from '../sumupPayment/sumupPayment';
-import TransferPayment from '../transferPayment/transferPayment';
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service';
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget';
+import TransferPayment from '../transferPayment/transferPayment';
 import { FormsFields } from '../checkoutPage/CheckoutPage';
 import { useAppDispatch } from '../../../redux/hooks';
 import { savePurchaseAsync } from '../../../redux/features/shoppingCartSlice';
 import Image from 'next/image';
 import Swal from 'sweetalert2';
 import api from '../../../api/api';
+
+type PaymentMethod = 'sumup' | 'transferencia' | 'stripe' | 'scalapay';
+type DelayedProviderMethod = 'stripe' | 'scalapay';
 
 const PaymentSelection = ({
 	fieldsValue,
@@ -48,9 +51,7 @@ const PaymentSelection = ({
 	onPhoneValidationFail: () => void
 }) => {
 	const dispatch = useAppDispatch();
-	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-		'stripe' | 'sumup' | 'transferencia' | 'scalapay' | null
-	>(null)
+	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null)
 	const [isProcessing, setIsProcessing] = useState(false)
 	const [isFormValid, setIsFormValid] = useState(false)
 	const [isCartReady, setIsCartReady] = useState(false);
@@ -115,13 +116,21 @@ const PaymentSelection = ({
 		// Esta función se mantiene igual para guiar al usuario a campos vacíos.
 	};
 
-	const isAssisted = items.some(item => item.origin === 'kommo');
+	const assistedOrigins = ['kommo', 'chatwoot'];
+	const isAssisted = items.some(item => assistedOrigins.includes(item.origin));
+	const isWebPurchase = !isAssisted;
 
-	const prepareLocalStorageForRedirect = (paymentMethod: 'stripe' | 'scalapay' | 'sumup' | 'transferencia') => {
+	const prepareLocalStorageForRedirect = (paymentMethod: PaymentMethod) => {
 		console.log(`Guardando datos del pedido en localStorage para ${paymentMethod}...`);
+
+		const resolvedBillingAddress = isSwitchOn ? fieldsValue.shippingAddress : fieldsValue.billingAddress
+		const resolvedBillingAddressExtra = isSwitchOn ? fieldsValue.addressExtra : fieldsValue.billingAddressExtra
+		const resolvedBillingZip = isSwitchOn ? fieldsValue.zip : fieldsValue.billingZip
+		const resolvedBillingProvince = isSwitchOn ? fieldsValue.province : fieldsValue.billingProvince
 
 		const pendingOrder = {
 			paymentMethod,
+			matricula: fieldsValue.matricula,
 			billingData: {
 				Compras: purchaseIds,
 				Usuarios: [userId!],
@@ -138,26 +147,22 @@ const PaymentSelection = ({
 			},
 			extraData: {
 				email: fieldsValue.email,
-				billingAddress: fieldsValue.billingAddress,
-				billingAddressExtra: fieldsValue.billingAddressExtra,
-				billingProvince: fieldsValue.billingProvince,
-				billingZip: fieldsValue.billingZip,
+				billingAddress: resolvedBillingAddress,
+				billingAddressExtra: resolvedBillingAddressExtra,
+				billingProvince: resolvedBillingProvince,
+				billingZip: resolvedBillingZip,
 				isAssisted: isAssisted,
+				isWebPurchase,
+				isWeb: isWebPurchase,
 				matricula: fieldsValue.matricula,
 			},
-			cart: items,
+			cart: JSON.parse(localStorage.getItem('cart') || JSON.stringify(items)),
 		};
 
 		localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
 	};
 
-	const handlePaymentSelection = async (method: 'stripe' | 'sumup' | 'transferencia' | 'scalapay') => {
-		if (method === 'sumup' || method === 'transferencia') {
-			setTimeout(() => {
-				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-			}, 2000); // pequeño delay para que React termine de renderizar el componente
-		}
-
+	const validateCheckoutReady = () => {
 		if (!isCartReady) {
 			Swal.fire({
 				icon: 'info',
@@ -166,7 +171,7 @@ const PaymentSelection = ({
 				timer: 2000,
 				showConfirmButton: false,
 			});
-			return;
+			return false;
 		}
 
 		if (!isFormValid) {
@@ -176,7 +181,7 @@ const PaymentSelection = ({
 				title: 'Faltan datos',
 				text: 'Por favor, completa todos los campos de envío antes de continuar.',
 			});
-			return;
+			return false;
 		}
 
 		const phoneDigits = fieldsValue.phoneNumber.replace(/\D/g, '');
@@ -187,10 +192,8 @@ const PaymentSelection = ({
 				title: 'Teléfono inválido',
 				text: 'Por favor, introduce un número de teléfono válido (mínimo 9 dígitos).',
 			});
-			return;
+			return false;
 		}
-
-		setSelectedPaymentMethod(method);
 
 		if (isSwitchOn) {
 			setFieldsValue((prevState) => ({
@@ -202,68 +205,138 @@ const PaymentSelection = ({
 			}));
 		}
 
-		if (method === 'stripe') {
-			const prepareLocalStorageForRedirect = () => {
-				const isAssisted = items.some(item => item.origin === 'kommo');
-				const userId = localStorage.getItem('airtableUserId');
-				const resolvedBillingAddress = isSwitchOn ? fieldsValue.shippingAddress : fieldsValue.billingAddress
-				const resolvedBillingAddressExtra = isSwitchOn ? fieldsValue.addressExtra : fieldsValue.billingAddressExtra
-				const resolvedBillingZip = isSwitchOn ? fieldsValue.zip : fieldsValue.billingZip
-				const resolvedBillingProvince = isSwitchOn ? fieldsValue.province : fieldsValue.billingProvince
-				const pendingOrder = {
-					paymentMethod: 'stripe',
-					billingData: {
-						Compras: purchaseIds,
-						Usuarios: [userId!],
-						transfer: false,
-						address: fieldsValue.shippingAddress,
-						country: fieldsValue.country,
-						location: fieldsValue.city,
-						addressNumber: fieldsValue.addressExtra,
-						name: fieldsValue.name,
-						cp: fieldsValue.zip,
-						nif: fieldsValue.nif,
-						phone: Number(fieldsValue.phoneNumber),
-						province: fieldsValue.province,
-					},
-					extraData: {
-						email: fieldsValue.email,
-						billingAddress: resolvedBillingAddress,
-						billingAddressExtra: resolvedBillingAddressExtra,
-						billingProvince: resolvedBillingProvince,
-						billingZip: resolvedBillingZip,
-						isAssisted: isAssisted,
-						matricula: fieldsValue.matricula,
-					},
-					cart: JSON.parse(localStorage.getItem('cart') || '[]'),
-				};
-				localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
-			};
-			prepareLocalStorageForRedirect();
-			setIsProcessing(true);
-			try {
-				const response = await api.post('/stripe/create-checkout-session', {
-					items,
-					userId,
-					purchaseIds,
-					fieldsValue,
-					isAssisted: isAssisted,
-				});
+		return true;
+	};
 
-				const { url } = response.data;
-				if (url) {
-					// Redirigir al usuario a la página de pago de Stripe
-					window.location.href = url;
-				} else {
-					throw new Error("No se recibió la URL de checkout de Stripe.");
-				}
-			} catch (error: any) {
-				console.error("Error al crear la sesión de checkout de Stripe:", error);
-				Swal.fire('Error', error.response?.data?.message || 'No se pudo iniciar el pago. Inténtalo de nuevo.', 'error');
-			} finally {
-				setIsProcessing(false);
-			}
+	const submitRedirectForm = (html: string) => {
+		const container = document.createElement('div');
+		container.style.display = 'none';
+		container.innerHTML = html;
+		document.body.appendChild(container);
+		const form = container.querySelector('form');
+
+		if (!form) {
+			document.body.removeChild(container);
+			throw new Error('La respuesta del servidor no contenía un formulario de pago válido.');
 		}
+
+		form.submit();
+	};
+
+	const redirectToPaymentGateway = (data: any) => {
+		const url = data?.url || data?.checkoutUrl || data?.redirectUrl || data?.paymentUrl;
+		const html = data?.html || data?.formHtml || data?.redirectForm || data?.form;
+
+		if (url) {
+			window.location.href = url;
+			return;
+		}
+
+		if (html) {
+			submitRedirectForm(html);
+			return;
+		}
+
+		throw new Error('No se recibió la URL o formulario de pago.');
+	};
+
+	const createPaymentPayload = (method: PaymentMethod) => ({
+		method,
+		items,
+		userId,
+		purchaseIds,
+		fieldsValue,
+		matricula: fieldsValue.matricula,
+		isAssisted,
+		isWebPurchase,
+		isWeb: isWebPurchase,
+	});
+
+	const startStripePayment = async () => {
+		setSelectedPaymentMethod('stripe');
+		prepareLocalStorageForRedirect('stripe');
+		setIsProcessing(true);
+
+		try {
+			const response = await api.post('/stripe/create-checkout-session', {
+				items,
+				userId,
+				purchaseIds,
+				fieldsValue,
+				matricula: fieldsValue.matricula,
+				isAssisted: isAssisted,
+				isWebPurchase,
+				isWeb: isWebPurchase,
+			});
+
+			redirectToPaymentGateway(response.data);
+		} catch (error: any) {
+			console.error("Error al crear la sesión de checkout de Stripe:", error);
+			Swal.fire('Error', error.response?.data?.message || 'No se pudo iniciar el pago. Inténtalo de nuevo.', 'error');
+			setIsProcessing(false);
+		}
+	};
+
+	const selectSumupPayment = () => {
+		setSelectedPaymentMethod('sumup');
+		prepareLocalStorageForRedirect('sumup');
+		setTimeout(() => {
+			paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}, 200);
+	};
+
+	const showProviderDelayModal = async (method: DelayedProviderMethod) => {
+		const result = await Swal.fire({
+			icon: 'warning',
+			title: 'Aviso sobre este método de pago',
+			text: 'Si selecciona este método de pago, la compra podría sufrir retrasos entre 3-5 días por procedimientos de validaciones internas del proveedor de pago. El pago más rápido para recibir la pieza es el pago con tarjeta.',
+			showCancelButton: true,
+			confirmButtonText: 'Continuar',
+			cancelButtonText: 'Pagar con tarjeta',
+			confirmButtonColor: '#1D4ED8',
+			cancelButtonColor: '#10B8C4',
+			reverseButtons: true,
+		});
+
+		if (result.isConfirmed) {
+			if (method === 'stripe') {
+				await startStripePayment();
+				return;
+			}
+
+			setSelectedPaymentMethod('scalapay');
+			setTimeout(() => {
+				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}, 200);
+			return;
+		}
+
+		if (result.dismiss === Swal.DismissReason.cancel) {
+			selectSumupPayment();
+		}
+
+	};
+
+	const handlePaymentSelection = async (method: PaymentMethod) => {
+		if (!validateCheckoutReady()) {
+			return;
+		}
+
+		if (method === 'sumup' || method === 'transferencia') {
+			if (method === 'sumup') {
+				selectSumupPayment();
+				return;
+			}
+
+			setSelectedPaymentMethod('transferencia');
+			prepareLocalStorageForRedirect('transferencia');
+			setTimeout(() => {
+				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}, 200);
+			return;
+		}
+
+		await showProviderDelayModal(method);
 	};
 
 	const handleScalapayPayment = async () => {
@@ -276,8 +349,11 @@ const PaymentSelection = ({
 				purchaseIds,
 				userId: userId!,
 				fieldsValue, // <-- Pasamos el objeto completo del formulario
+				matricula: fieldsValue.matricula,
 				items, // <-- Pasamos los items para calcular el total en el backend
 				isAssisted: isAssisted,
+				isWebPurchase,
+				isWeb: isWebPurchase,
 			});
 
 			if (response.checkoutUrl) {
@@ -308,6 +384,11 @@ const PaymentSelection = ({
 		};
 
 		const iconSrc = (method: string, defaultSrc: string, selectedSrc: string) => selectedPaymentMethod === method ? selectedSrc : defaultSrc;
+		const isButtonBusy = (method: PaymentMethod) => isProcessing && selectedPaymentMethod === method;
+		const baseButtonClass = `w-full flex ${isProductPage ? 'sm:flex-col min-h-[86px] px-3 py-2 text-[14px] text-center leading-tight' : 'px-4 py-3 xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw]'} gap-2 items-center justify-center border-[1px] rounded-xl transition-all duration-300 mobile:text-[3vw]`;
+		const paymentGridClass = isProductPage
+			? 'grid grid-cols-1 sm:grid-cols-4 mb-6 gap-2'
+			: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 mb-6 gap-3';
 
 		return (
 			<div>
@@ -328,52 +409,40 @@ const PaymentSelection = ({
 						</button>
 					</div>
 				)}
-				<div className="flex mobile:flex-wrap justify-between mb-6 gap-3">
+				<div className={paymentGridClass}>
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('sumup')}
-						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
-					gap-3 items-center justify-center px-6 py-2 border-[1px] 
-					rounded-xl transition-all duration-300 ${getButtonStyle('sumup')}
-					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
-					`}
+						disabled={!enabledForm || !enabledCart || isProcessing}
+						className={`${baseButtonClass} ${getButtonStyle('sumup')}`}
 					>
-						<Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={46} height={46} className="w-14 h-14 rounded-md" />
-						Pago con tarjeta
+						<Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={40} height={40} className="w-9 h-9 rounded-md" />
+						<span>Pago con tarjeta</span>
 					</button>
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('transferencia')}
-						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} 
-					gap-3 items-center justify-center px-6 py-2 border-[1px] 
-					rounded-xl transition-all duration-300 ${getButtonStyle('transferencia')}
-					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
-					`}
+						disabled={!enabledForm || !enabledCart || isProcessing}
+						className={`${baseButtonClass} ${getButtonStyle('transferencia')}`}
 					>
-						<Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={46} height={46} className="w-14 h-14 rounded-md" />
-						Transferencia
+						<Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={40} height={40} className="w-9 h-9 rounded-md" />
+						<span>Transferencia</span>
 					</button>
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('stripe')}
-						className={`w-full flex ${isProductPage ? 'sm:flex-col gap-3' : 'gap-6'} 
-					items-center justify-center px-4 py-2 border-[1px] rounded-xl transition-all 
-					duration-300 ${getButtonStyle('stripe')}
-					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw]
-					`}
+						disabled={!enabledForm || !enabledCart || isProcessing}
+						className={`${baseButtonClass} ${isProductPage ? 'sm:gap-2' : 'gap-5'} ${getButtonStyle('stripe')}`}
 					>
-						<div className="flex gap-4">
-							<Image src="/klarna.png" alt="klarna" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
-							<Image src="/paypal.png" alt="paypal" width={56} height={56} className={`w-10 h-10 rounded-md ${isProductPage && 'xl:w-10 xl:h-10 lg:w-10 lg:h-10 md:w-8 md:h-8 sm:w-10 sm:h-10'}`} />
+						<div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 min-h-[36px]">
+							<Image src="/PayPal.svg" alt="paypal" width={50} height={24} className="h-7 w-auto rounded-md" />
+							<Image src="/klarna.png" alt="klarna" width={44} height={44} className="w-7 h-7 rounded-md" />
 						</div>
-						<span>En 3 plazos, Paypal</span>
+						<span>{isButtonBusy('stripe') ? 'Conectando...' : 'PayPal / Klarna'}</span>
 					</button>
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('scalapay')}
-						className={`w-full flex ${isProductPage ? 'sm:flex-col' : ''} items-center 
-					justify-center px-4 py-4 border-[1px] rounded-xl transition-all duration-300 
-					${getButtonStyle('scalapay')}
-					xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw] mobile:text-[3vw] gap-3
-					`}
+						disabled={!enabledForm || !enabledCart || isProcessing}
+						className={`${baseButtonClass} ${getButtonStyle('scalapay')}`}
 					>
-						<Image src="/scalapay3.png" alt="scalapay" width={80} height={20} />
+						<Image src="/scalapay3.png" alt="scalapay" width={86} height={22} className="min-h-[24px] object-contain" />
 						<span>Paga en 3 o 4 plazos</span>
 					</button>
 				</div>
@@ -409,19 +478,25 @@ const PaymentSelection = ({
 								Compras: purchaseIds,
 								Usuarios: [userId!],
 								transfer: false,
-								address: fieldsValue.billingAddress,
+								address: fieldsValue.shippingAddress,
 								country: fieldsValue.country,
 								location: fieldsValue.city,
-								addressNumber: fieldsValue.billingAddressExtra,
+								addressNumber: fieldsValue.addressExtra,
 								name: fieldsValue.name,
-								cp: fieldsValue.billingZip,
+								cp: fieldsValue.zip,
 								nif: fieldsValue.nif,
 								phone: Number(fieldsValue.phoneNumber),
-								province: fieldsValue.billingProvince,
+								province: fieldsValue.province,
 							}}
 							extraData={{
 								email: fieldsValue.email,
-								isAssisted: isAssisted,
+								billingAddress: isSwitchOn ? fieldsValue.shippingAddress : fieldsValue.billingAddress,
+								billingAddressExtra: isSwitchOn ? fieldsValue.addressExtra : fieldsValue.billingAddressExtra,
+								billingProvince: isSwitchOn ? fieldsValue.province : fieldsValue.billingProvince,
+								billingZip: isSwitchOn ? fieldsValue.zip : fieldsValue.billingZip,
+								isAssisted,
+								isWebPurchase,
+								isWeb: isWebPurchase,
 								matricula: fieldsValue.matricula,
 							}}
 						/>
