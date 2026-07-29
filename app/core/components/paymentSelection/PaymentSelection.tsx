@@ -10,7 +10,7 @@ import Image from 'next/image';
 import Swal from 'sweetalert2';
 import api from '../../../api/api';
 
-type PaymentMethod = 'caixa_card' | 'bizum' | 'transferencia' | 'stripe' | 'scalapay';
+type PaymentMethod = 'transferencia' | 'stripe' | 'scalapay';
 type DelayedProviderMethod = 'stripe' | 'scalapay';
 
 const PaymentSelection = ({
@@ -251,21 +251,6 @@ const PaymentSelection = ({
 		isWeb: isWebPurchase,
 	});
 
-	const startRedsysPayment = async (method: 'caixa_card' | 'bizum') => {
-		setSelectedPaymentMethod(method);
-		prepareLocalStorageForRedirect(method);
-		setIsProcessing(true);
-
-		try {
-			const response = await api.post('/payments', createPaymentPayload(method));
-			redirectToPaymentGateway(response.data);
-		} catch (error: any) {
-			console.error(`Error al iniciar el pago con ${method}:`, error);
-			Swal.fire('Error', error.response?.data?.message || 'No se pudo iniciar el pago. Inténtalo de nuevo.', 'error');
-			setIsProcessing(false);
-		}
-	};
-
 	const startStripePayment = async () => {
 		setSelectedPaymentMethod('stripe');
 		prepareLocalStorageForRedirect('stripe');
@@ -298,7 +283,7 @@ const PaymentSelection = ({
 			text: 'Si selecciona este método de pago, la compra podría sufrir retrasos entre 3-5 días por procedimientos de validaciones internas del proveedor de pago.',
 			showCancelButton: true,
 			confirmButtonText: 'Aceptar',
-			cancelButtonText: 'Pagar con tarjeta',
+			cancelButtonText: 'Cancelar',
 			confirmButtonColor: '#1D4ED8',
 			cancelButtonColor: '#111827',
 			reverseButtons: true,
@@ -317,9 +302,6 @@ const PaymentSelection = ({
 			return;
 		}
 
-		if (result.dismiss === Swal.DismissReason.cancel) {
-			await startRedsysPayment('caixa_card');
-		}
 	};
 
 	const handlePaymentSelection = async (method: PaymentMethod) => {
@@ -332,11 +314,6 @@ const PaymentSelection = ({
 			setTimeout(() => {
 				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}, 200);
-			return;
-		}
-
-		if (method === 'caixa_card' || method === 'bizum') {
-			await startRedsysPayment(method);
 			return;
 		}
 
@@ -414,22 +391,6 @@ const PaymentSelection = ({
 					</div>
 				)}
 				<div className={paymentGridClass}>
-					<button
-						onClick={() => enabledForm && enabledCart && handlePaymentSelection('caixa_card')}
-						disabled={!enabledForm || !enabledCart || isProcessing}
-						className={`${baseButtonClass} ${getButtonStyle('caixa_card')}`}
-					>
-						<Image src={iconSrc('caixa_card', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={46} height={46} className="w-12 h-12 rounded-md" />
-						<span>{isButtonBusy('caixa_card') ? 'Conectando...' : 'Tarjeta Caixa'}</span>
-					</button>
-					<button
-						onClick={() => enabledForm && enabledCart && handlePaymentSelection('bizum')}
-						disabled={!enabledForm || !enabledCart || isProcessing}
-						className={`${baseButtonClass} ${getButtonStyle('bizum')}`}
-					>
-						<Image src="/bizum.svg" alt="bizum" width={64} height={32} className="h-10 w-auto rounded-md" />
-						<span>{isButtonBusy('bizum') ? 'Conectando...' : 'Bizum'}</span>
-					</button>
 					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('transferencia')}
 						disabled={!enabledForm || !enabledCart || isProcessing}

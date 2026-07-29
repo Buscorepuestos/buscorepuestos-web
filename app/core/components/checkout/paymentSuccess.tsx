@@ -7,16 +7,6 @@ import Swal from 'sweetalert2';
 import Image from 'next/image';
 import './success.css';
 
-const parseStoredOrder = (storedOrder: string | null) => {
-    if (!storedOrder) return null;
-
-    try {
-        return JSON.parse(storedOrder);
-    } catch {
-        return null;
-    }
-};
-
 const PaymentSuccess = () => {
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
     const [orderData, setOrderData] = useState<any>(null);
@@ -30,28 +20,14 @@ const PaymentSuccess = () => {
             const sessionId = searchParams.get('session_id'); // Stripe
             const scalapayStatus = searchParams.get('status'); // Scalapay
             const isSumupSuccess = searchParams.get('pagoSumup') === 'true'; // SumUp
-            const source = (searchParams.get('source') || '').toLowerCase();
-            const billingId = searchParams.get('billingId');
-            const isRedsysRedirect = source === 'redsys';
-            const isRedsysPending = searchParams.get('pending') === 'true';
-            const redsysResponse = searchParams.get('Ds_Response') || searchParams.get('ds_response');
-            const paymentResult = (searchParams.get('payment') || searchParams.get('result') || '').toLowerCase();
-            const redsysResponseCode = redsysResponse ? Number(redsysResponse) : Number.NaN;
-            const isRedsysSuccess = Number.isInteger(redsysResponseCode) && redsysResponseCode >= 0 && redsysResponseCode <= 99;
-            const pendingOrderJSON = localStorage.getItem('pendingOrder');
-            const pendingOrder = parseStoredOrder(pendingOrderJSON);
-            const isRedsysPendingOrder = pendingOrder?.paymentMethod === 'caixa_card' || pendingOrder?.paymentMethod === 'bizum';
-            const isNamedPaymentSuccess = isRedsysPendingOrder && ['success', 'paid', 'ok'].includes(paymentResult);
-            const isRedsysConfirmedByBackend = isRedsysRedirect && (!!billingId || isRedsysPending);
 
-            if (sessionId || scalapayStatus === 'SUCCESS' || isSumupSuccess || isRedsysSuccess || isNamedPaymentSuccess || isRedsysConfirmedByBackend) {
+            if (sessionId || scalapayStatus === 'SUCCESS' || isSumupSuccess) {
                 console.log("Regreso exitoso del usuario a la página de confirmación.");
+                const pendingOrderJSON = localStorage.getItem('pendingOrder');
 
-                if (pendingOrderJSON && pendingOrder) {
-                    setOrderData({
-                        ...pendingOrder,
-                        billingId: billingId || pendingOrder.billingId,
-                    });
+                if (pendingOrderJSON) {
+                    const pendingOrder = JSON.parse(pendingOrderJSON);
+                    setOrderData(pendingOrder);
 
                     // Limpiar el estado del frontend
                     dispatch(clearCart());
@@ -64,16 +40,11 @@ const PaymentSuccess = () => {
                     // Esto puede pasar si el usuario recarga la página. Buscamos el backup.
                     const lastBillingJSON = localStorage.getItem('lastBillingSuccess');
                     if (lastBillingJSON) {
-                        const lastBilling = parseStoredOrder(lastBillingJSON);
-                        setOrderData(lastBilling ? {
-                            ...lastBilling,
-                            billingId: billingId || lastBilling.billingId,
-                        } : null);
+                        setOrderData(JSON.parse(lastBillingJSON));
                         setStatus('success');
                     } else {
                         console.warn("No se encontró 'pendingOrder' ni 'lastBillingSuccess'. Mostrando éxito genérico.");
                         // Asumimos éxito para no confundir al usuario. El webhook es la fuente de verdad.
-                        setOrderData(billingId ? { billingId } : null);
                         setStatus('success');
                     }
                 }
@@ -101,7 +72,6 @@ const PaymentSuccess = () => {
     const {
         billingData, extraData, cart
     } = orderData || {};
-    const products = Array.isArray(cart) ? cart : [];
 
     if (status === 'loading') {
         return (
@@ -183,7 +153,7 @@ const PaymentSuccess = () => {
                                     Productos
                                 </p>
                                 <div className="space-y-5">
-                                    {products.map((product: any) => (
+                                    {cart.map((product: any) => (
                                         <div key={product._id} className="flex items-center gap-5">
                                             {product.images && product.images[0] ? (
                                                 <Image
@@ -215,14 +185,9 @@ const PaymentSuccess = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="text-center text-lg text-dark-grey space-y-3">
-                        <p>Tu pago se ha confirmado correctamente.</p>
-                        {orderData?.billingId && (
-                            <p className="text-sm text-secondary-blue">
-                                Referencia del pedido: {orderData.billingId}
-                            </p>
-                        )}
-                    </div>
+                    <p className="text-center text-lg">
+                        Cargando detalles de facturación...
+                    </p>
                 )}
             </div>
         </div>
