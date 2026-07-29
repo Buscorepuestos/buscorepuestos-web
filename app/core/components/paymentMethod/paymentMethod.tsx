@@ -16,7 +16,7 @@ interface Props {
 
 const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
 	return (
-		<div className="w-full border-y border-secondary-blue bg-[#f0fbfc] font-tertiary-font text-custom-grey mobile:rounded-[20px] mobile:border-[2px] mobile:px-8">
+		<div className="w-full border-y border-secondary-blue bg-white font-tertiary-font text-custom-grey mobile:rounded-[20px] mobile:border-[2px] mobile:px-8">
 			<div className="pt-3 mobile:pt-4 flex justify-center text-secondary-blue font-semibold text-[18px] mobile:text-[3vw]">
 				<p>Paga con la mayor comodidad</p>
 			</div>
