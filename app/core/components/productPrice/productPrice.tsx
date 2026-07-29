@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Button, { ButtonProps } from '../Button'
@@ -65,6 +65,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 	)
 
 	const [onePageIsOpen, setOnePageIsOpen] = useState<boolean>(false)
+	const checkoutSectionRef = useRef<HTMLDivElement>(null)
 	const numericPrice = Number(price.replace(',', '.'))
 	const installmentPrice = Number.isFinite(numericPrice)
 		? (numericPrice / 4).toFixed(2).replace('.', ',')
@@ -117,6 +118,26 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 			dispatch({ type: 'auth/checkUserStatus' })
 		}
 	}, [dispatch])
+
+	useEffect(() => {
+		if (!onePageIsOpen || typeof window === 'undefined') {
+			return
+		}
+
+		const isMobileViewport = window.matchMedia('(max-width: 639px)').matches
+		if (!isMobileViewport) {
+			return
+		}
+
+		const scrollTimer = window.setTimeout(() => {
+			checkoutSectionRef.current?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			})
+		}, 120)
+
+		return () => window.clearTimeout(scrollTimer)
+	}, [onePageIsOpen])
 
 	useEffect(() => {
 		if (stock !== undefined) {
@@ -546,7 +567,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
 			{/* Separador y checkout (compartido ambos) */}
 			{/* <div className={`w-[93%] m-auto h-[2px] bg-secondary-blue mt-[1.5vw] mobile:mt-[3vw]`} /> */}
-			<div>
+			<div ref={checkoutSectionRef}>
 				<div className={`overflow-hidden transition-[max-height] duration-500 ease-in-out ${onePageIsOpen ? '' : 'max-h-0'}`}>
 					<div className="py-8 sm:px-10 mobile:py-0">
 						<CheckoutPage isProductPage={true} />
