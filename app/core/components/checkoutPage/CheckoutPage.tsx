@@ -12,6 +12,7 @@ import { subscribe } from '../../../services/mailchimp/mailchimp'
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
 import { removeItemFromCart, removePurchaseAsync } from '../../../redux/features/shoppingCartSlice'
 import Image from 'next/image'
+import Swal from 'sweetalert2'
 import './stripe.css'
 
 export interface FormsFields {
@@ -97,7 +98,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 		country: false,
 	})
 	const isWebPurchase = typeof window !== 'undefined'
-		? new URLSearchParams(window.location.search).get('origin') !== 'kommo'
+		? !['kommo', 'chatwoot'].includes(new URLSearchParams(window.location.search).get('origin') || '')
 		: true
 	const [fieldsValue, setFieldsValue] = useState<FormsFields>(() => {
 		const defaults: FormsFields = {
@@ -232,6 +233,24 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 	useEffect(() => {
 		dispatch({ type: 'auth/checkUserStatus' })
 	}, [dispatch])
+
+	useEffect(() => {
+		if (typeof window === 'undefined') return
+
+		const url = new URL(window.location.href)
+		if (url.searchParams.get('error') !== 'true') return
+
+		Swal.fire({
+			icon: 'error',
+			title: 'Pago no completado',
+			text: 'La transacción no se ha completado. Puedes revisar los datos e intentarlo de nuevo o elegir otro método de pago.',
+			confirmButtonText: 'Aceptar',
+		})
+
+		url.searchParams.delete('error')
+		const nextUrl = `${url.pathname}${url.search}${url.hash}`
+		window.history.replaceState({}, '', nextUrl)
+	}, [])
 
 	useEffect(() => {
 		if (sameBillAddress) {
