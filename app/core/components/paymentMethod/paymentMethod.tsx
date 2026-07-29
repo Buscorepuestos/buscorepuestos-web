@@ -16,19 +16,19 @@ interface Props {
 
 const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
 	return (
-		<div className="font-tertiary-font text-custom-grey rounded-[20px] border-[2px] border-secondary-blue px-6 mobile:px-8 max-w-[540px] mobile:max-w-none">
-			<div className="pt-4 flex justify-center text-secondary-blue font-semibold text-[18px] mobile:text-[3vw]">
+		<div className="w-full border-y border-secondary-blue bg-[#f0fbfc] font-tertiary-font text-custom-grey mobile:rounded-[20px] mobile:border-[2px] mobile:px-8">
+			<div className="pt-3 mobile:pt-4 flex justify-center text-secondary-blue font-semibold text-[18px] mobile:text-[3vw]">
 				<p>Paga con la mayor comodidad</p>
 			</div>
-			<div className="w-[95%] m-auto h-[1.5px] mobile:h-[2px] bg-secondary-blue separator" />
+			<div className="w-[92%] m-auto h-[1.5px] mobile:h-[2px] bg-secondary-blue separator" />
 			<div
 				className="
                     flex mobile:flex-col justify-items-center 
-                    items-center mt-4 mb-4 gap-0 text-[15px] mobile:text-[3vw]
+                    items-stretch mt-3 mb-4 gap-0 text-[15px] mobile:text-[3vw]
                 "
 			>
                 <div className='flex w-full justify-center'>
-                    <div className="flex flex-col items-center gap-2 px-5 mobile:px-6 border-r-[2px] border-secondary-blue mobile:justify-center min-w-[120px] mobile:min-w-0">
+                    <div className="flex flex-1 flex-col items-center justify-center gap-2 px-4 py-2 mobile:px-6 border-r-[2px] border-secondary-blue mobile:justify-center min-w-0">
                         <Image
                             src={paymentOptions[0].src}
                             alt={paymentOptions[0].alt}
@@ -38,7 +38,7 @@ const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
                         />
                         <p>{paymentOptions[0].subtitle}</p>
                     </div>
-                    <div className="flex flex-col items-center gap-2 px-5 mobile:px-6 border-r-[2px] border-secondary-blue mobile:border-r-0 min-w-[120px] mobile:min-w-0">
+                    <div className="flex flex-1 flex-col items-center justify-center gap-2 px-4 py-2 mobile:px-6 border-r-[2px] border-secondary-blue mobile:border-r-0 min-w-0">
                         <Image
                             src={paymentOptions[1].src}
                             alt={paymentOptions[1].alt}
@@ -51,7 +51,7 @@ const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
                 </div>
                 <div className="hidden mobile:block w-[95%] m-auto h-[1.5px] bg-secondary-blue separator" />
                 <div className='flex w-full justify-center'>
-                    <div className="flex flex-col items-center gap-2 px-5 mobile:px-[3.4rem] border-r-[2px] border-secondary-blue min-w-[120px] mobile:min-w-0">
+                    <div className="flex flex-1 flex-col items-center justify-center gap-2 px-4 py-2 mobile:px-[3.4rem] border-r-[2px] border-secondary-blue min-w-0">
                         <Image
                             src={paymentOptions[2].src}
                             alt={paymentOptions[2].alt}
@@ -61,7 +61,7 @@ const PaymentMethods: React.FC<Props> = ({ paymentOptions }) => {
                         />
                         <p>{paymentOptions[2].subtitle}</p>
                     </div>
-                    <div className="flex flex-col items-center gap-2 px-5 mobile:px-6 min-w-[120px] mobile:min-w-0">
+                    <div className="flex flex-1 flex-col items-center justify-center gap-2 px-4 py-2 mobile:px-6 min-w-0">
                         <Image
                             src={paymentOptions[3].src}
                             alt={paymentOptions[3].alt}

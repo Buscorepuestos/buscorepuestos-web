@@ -209,12 +209,13 @@ export default async function Product({ params }: { params: Promise<{ id: string
 								/>
 							)}
 						</div>
-						<div className="mobile:hidden flex justify-center mobile:justify-center mobile:px-[3vw] mt-6">
-							<div className="flex mobile:justify-center mb-6">
+						<div className="mobile:hidden mt-0">
+							<div className="mb-4">
 								<PaymentMethod
 									paymentOptions={paymentOptions}
 								/>
 							</div>
+							<ValidadorMatricula productTitle={data?.title || data?.subcategory || 'Repuesto'} />
 						</div>
 					</div>
 					{/* <div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mobile:mb-[2vw]" /> */}
@@ -301,7 +302,9 @@ export default async function Product({ params }: { params: Promise<{ id: string
 
 						{/* ── CROSS-SELL — mobile ── */}
 						<RelatedProducts productId={id} brand={data.brand} />
-						<ValidadorMatricula productTitle={data?.title || data?.subcategory || 'Repuesto'} />
+						<div className="sm:hidden">
+							<ValidadorMatricula productTitle={data?.title || data?.subcategory || 'Repuesto'} />
+						</div>
 					</div>
 					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
 					<div className="hidden mobile:block justify-center mobile:justify-center mobile:px-[3vw] mt-8">
