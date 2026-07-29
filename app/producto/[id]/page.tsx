@@ -307,8 +307,8 @@ export default async function Product({ params }: { params: Promise<{ id: string
 						</div>
 					</div>
 					<div className="hidden mobile:block w-full h-[2px] bg-secondary-blue mb-6 mt-[1.5vw] mobile:mt-[3vw]" />
-					<div className="hidden mobile:block justify-center mobile:justify-center mobile:px-[3vw] mt-8">
-						<div className="flex mobile:justify-center mb-6">
+					<div className="hidden mobile:flex mobile:w-full mobile:justify-center mobile:px-0 mt-8">
+						<div className="flex w-full justify-center mb-6">
 							<PaymentMethod paymentOptions={paymentOptions} />
 						</div>
 					</div>
