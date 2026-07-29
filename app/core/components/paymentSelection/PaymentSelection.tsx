@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import SumupPayment from '../sumupPayment/sumupPayment';
 import { createScalapayOrder } from '../../../services/checkout/scalapay.service';
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget';
 import TransferPayment from '../transferPayment/transferPayment';
@@ -10,7 +11,7 @@ import Image from 'next/image';
 import Swal from 'sweetalert2';
 import api from '../../../api/api';
 
-type PaymentMethod = 'transferencia' | 'stripe' | 'scalapay';
+type PaymentMethod = 'sumup' | 'transferencia' | 'stripe' | 'scalapay';
 type DelayedProviderMethod = 'stripe' | 'scalapay';
 
 const PaymentSelection = ({
@@ -309,8 +310,9 @@ const PaymentSelection = ({
 			return;
 		}
 
-		if (method === 'transferencia') {
+		if (method === 'sumup' || method === 'transferencia') {
 			setSelectedPaymentMethod(method);
+			prepareLocalStorageForRedirect(method);
 			setTimeout(() => {
 				paymentDetailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}, 200);
@@ -392,6 +394,14 @@ const PaymentSelection = ({
 				)}
 				<div className={paymentGridClass}>
 					<button
+						onClick={() => enabledForm && enabledCart && handlePaymentSelection('sumup')}
+						disabled={!enabledForm || !enabledCart || isProcessing}
+						className={`${baseButtonClass} ${getButtonStyle('sumup')}`}
+					>
+						<Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={46} height={46} className="w-12 h-12 rounded-md" />
+						<span>Pago con tarjeta</span>
+					</button>
+					<button
 						onClick={() => enabledForm && enabledCart && handlePaymentSelection('transferencia')}
 						disabled={!enabledForm || !enabledCart || isProcessing}
 						className={`${baseButtonClass} ${getButtonStyle('transferencia')}`}
@@ -439,6 +449,42 @@ const PaymentSelection = ({
 			)}
 
 			<div className="mt-8" ref={paymentDetailRef}>
+				{selectedPaymentMethod === 'sumup' && (
+					<div className="flex justify-center">
+						<SumupPayment
+							purchaseIds={purchaseIds}
+							fieldsValue={fieldsValue}
+							numberPriceRounded={numberPrice}
+							items={items}
+							userId={userId}
+							billingData={{
+								Compras: purchaseIds,
+								Usuarios: [userId!],
+								transfer: false,
+								address: fieldsValue.shippingAddress,
+								country: fieldsValue.country,
+								location: fieldsValue.city,
+								addressNumber: fieldsValue.addressExtra,
+								name: fieldsValue.name,
+								cp: fieldsValue.zip,
+								nif: fieldsValue.nif,
+								phone: Number(fieldsValue.phoneNumber),
+								province: fieldsValue.province,
+							}}
+							extraData={{
+								email: fieldsValue.email,
+								billingAddress: isSwitchOn ? fieldsValue.shippingAddress : fieldsValue.billingAddress,
+								billingAddressExtra: isSwitchOn ? fieldsValue.addressExtra : fieldsValue.billingAddressExtra,
+								billingProvince: isSwitchOn ? fieldsValue.province : fieldsValue.billingProvince,
+								billingZip: isSwitchOn ? fieldsValue.zip : fieldsValue.billingZip,
+								isAssisted,
+								isWebPurchase,
+								isWeb: isWebPurchase,
+								matricula: fieldsValue.matricula,
+							}}
+						/>
+					</div>
+				)}
 				{selectedPaymentMethod === 'transferencia' && (
 					<div className="flex justify-center">
 						<TransferPayment
