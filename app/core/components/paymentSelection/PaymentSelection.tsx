@@ -368,7 +368,7 @@ const PaymentSelection = ({
 
 		const iconSrc = (method: string, defaultSrc: string, selectedSrc: string) => selectedPaymentMethod === method ? selectedSrc : defaultSrc;
 		const isButtonBusy = (method: PaymentMethod) => isProcessing && selectedPaymentMethod === method;
-		const baseButtonClass = `w-full flex ${isProductPage ? 'sm:flex-row min-h-[64px] px-3 py-2 text-[14px]' : 'px-4 py-3 xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw]'} gap-2 items-center justify-center border-[1px] rounded-xl transition-all duration-300 mobile:text-[3vw]`;
+		const baseButtonClass = `w-full flex ${isProductPage ? 'sm:flex-col min-h-[86px] px-3 py-2 text-[14px] text-center leading-tight' : 'px-4 py-3 xl:text-[0.8vw] lg:text-[1.1vw] md:text-[1.4vw] sm:text-[1.8vw]'} gap-2 items-center justify-center border-[1px] rounded-xl transition-all duration-300 mobile:text-[3vw]`;
 		const paymentGridClass = isProductPage
 			? 'grid grid-cols-1 sm:grid-cols-4 mb-6 gap-2'
 			: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 mb-6 gap-3';
@@ -398,7 +398,7 @@ const PaymentSelection = ({
 						disabled={!enabledForm || !enabledCart || isProcessing}
 						className={`${baseButtonClass} ${getButtonStyle('sumup')}`}
 					>
-						<Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={40} height={40} className="w-8 h-8 rounded-md" />
+						<Image src={iconSrc('sumup', '/tarjeta.svg', '/tarjeta-blanca.svg')} alt="tarjeta" width={40} height={40} className="w-9 h-9 rounded-md" />
 						<span>Pago con tarjeta</span>
 					</button>
 					<button
@@ -406,7 +406,7 @@ const PaymentSelection = ({
 						disabled={!enabledForm || !enabledCart || isProcessing}
 						className={`${baseButtonClass} ${getButtonStyle('transferencia')}`}
 					>
-						<Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={40} height={40} className="w-8 h-8 rounded-md" />
+						<Image src={iconSrc('transferencia', '/transferencia.svg', '/Transferencia-white.svg')} alt="transferencia" width={40} height={40} className="w-9 h-9 rounded-md" />
 						<span>Transferencia</span>
 					</button>
 					<button
@@ -414,8 +414,8 @@ const PaymentSelection = ({
 						disabled={!enabledForm || !enabledCart || isProcessing}
 						className={`${baseButtonClass} ${isProductPage ? 'sm:gap-2' : 'gap-5'} ${getButtonStyle('stripe')}`}
 					>
-						<div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-							<Image src="/PayPal.svg" alt="paypal" width={50} height={24} className="h-6 w-auto rounded-md" />
+						<div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 min-h-[36px]">
+							<Image src="/PayPal.svg" alt="paypal" width={50} height={24} className="h-7 w-auto rounded-md" />
 							<Image src="/klarna.png" alt="klarna" width={44} height={44} className="w-7 h-7 rounded-md" />
 						</div>
 						<span>{isButtonBusy('stripe') ? 'Conectando...' : 'PayPal / Klarna'}</span>
@@ -425,7 +425,7 @@ const PaymentSelection = ({
 						disabled={!enabledForm || !enabledCart || isProcessing}
 						className={`${baseButtonClass} ${getButtonStyle('scalapay')}`}
 					>
-						<Image src="/scalapay3.png" alt="scalapay" width={76} height={20} />
+						<Image src="/scalapay3.png" alt="scalapay" width={86} height={22} className="min-h-[24px] object-contain" />
 						<span>Paga en 3 o 4 plazos</span>
 					</button>
 				</div>
