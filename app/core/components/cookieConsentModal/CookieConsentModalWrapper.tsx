@@ -2,16 +2,32 @@
 
 import React, { useState, useEffect } from 'react';
 import CookieConsentModal from './CookieConsentModal';
+import {
+	VACATION_NOTICE_DISMISSED_EVENT,
+	VACATION_NOTICE_SESSION_KEY,
+} from '../vacationNotice/vacationNoticeContent';
 
 export default function CookieConsentModalWrapper() {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
-		// Mostrar el modal si no se han aceptado o rechazado las cookies
-		const hasConsented = localStorage.getItem('cookie-consent');
-		if (!hasConsented) {
-			setIsVisible(true);
+		const showCookieModal = () => {
+			const hasConsented = localStorage.getItem('cookie-consent');
+			if (!hasConsented) {
+				setIsVisible(true);
+			}
+		};
+
+		if (sessionStorage.getItem(VACATION_NOTICE_SESSION_KEY)) {
+			showCookieModal();
+			return;
 		}
+
+		window.addEventListener(VACATION_NOTICE_DISMISSED_EVENT, showCookieModal);
+
+		return () => {
+			window.removeEventListener(VACATION_NOTICE_DISMISSED_EVENT, showCookieModal);
+		};
 	}, []);
 
 	const handleAcceptCookies = () => {
