@@ -14,6 +14,9 @@ import { removeItemFromCart, removePurchaseAsync } from '../../../redux/features
 import Image from 'next/image'
 import Swal from 'sweetalert2'
 import './stripe.css'
+import VacationPurchasePause from '../vacationNotice/VacationPurchasePause'
+
+const STORE_PURCHASES_PAUSED = true
 
 export interface FormsFields {
 	name: string
@@ -589,7 +592,11 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 						{localDropdown()}
 					</article>
 				)}
-				{/* Pantalla de correo */}
+				<div className={`${!isProductPage ? 'mx-auto mt-8 w-[60%] mobile:w-full' : 'mt-4 w-full'}`}>
+					<VacationPurchasePause />
+				</div>
+				{!STORE_PURCHASES_PAUSED && (
+				/* Pantalla de correo */
 				<div className="relative overflow-hidden">
 					{/* <div
 						className={` inset-0 w-full transition-transform duration-500 ease-in-out ${isFormVisible
@@ -1143,6 +1150,7 @@ const CheckoutPage: React.FC<checkoutPageProps> = ({ isProductPage }) => {
 						</article>
 					</div>
 				</div>
+				)}
 			</section>
 		</div>
 	)
