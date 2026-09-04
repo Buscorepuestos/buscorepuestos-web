@@ -11,7 +11,6 @@ import { Footer } from '@/app/core/components/global/footer'
 import Script from 'next/script'
 import FacebookPixel from './core/components/facebookPixel/FacebookPixel'
 import CookieConsentModalWrapper from './core/components/cookieConsentModal/CookieConsentModalWrapper'
-import VacationNoticeModalWrapper from './core/components/vacationNotice/VacationNoticeModalWrapper'
 
 const workSans = localFont({
 	src: './fonts/WorkSans_wght.ttf',
@@ -108,7 +107,7 @@ export default function RootLayout({
 					<Footer />
 					<SpeedInsights />
 
-					<VacationNoticeModalWrapper />
+					{/* Envoltorio del modal */}
 					<CookieConsentModalWrapper />
 					<FacebookPixel />
 				</StoreProvider>
