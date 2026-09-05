@@ -20,7 +20,6 @@ import { updateMetasyncProduct } from '../../../services/products/products.servi
 import { updateAlgoliaProductStock } from '../../../services/algolia/updateStock.service'
 import CheckoutPage from '../checkoutPage/CheckoutPage'
 import ScalapayWidget from '../scalapayWidget/ScalapayWiget'
-import VacationPurchasePause from '../vacationNotice/VacationPurchasePause'
 
 interface ProductPriceProps {
 	price: string
@@ -356,9 +355,61 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 							<Image src="/PayPalp.svg" alt="PayPal" width={50} height={18} className="h-auto max-w-[58px] object-contain" />
 							<Image src="/scalapay-png.png" alt="Scalapay" width={62} height={22} className="h-auto max-w-[70px] object-contain" />
 						</div>
-						<div className="mt-5 w-full">
-							<VacationPurchasePause />
-						</div>
+						{!onePageIsOpen && (
+							<div className="w-full">
+								{user ? (
+									<div className="flex gap-4 mt-5 w-full">
+										{data.stock === false || globalStock === false ? (
+											<Button labelName="Producto no disponible" type="secondary" bg="bg-alter-grey" borderColor="border-alter-grey" hoverBg="hover:bg-alter-grey" hoverText="white" cursor="cursor-not-allowed" />
+										) : (
+											<>
+												{existingItem ? (
+													<div className="flex w-full justify-center">
+														<button
+															onClick={handleRemoveFromCart}
+															className="min-w-[230px] rounded-3xl border-2 border-secondary-blue bg-secondary-blue px-7 py-2.5 text-[18px] font-bold text-custom-white shadow-lg transition-colors hover:bg-white hover:text-secondary-blue"
+														>
+															Quitar de la cesta
+														</button>
+													</div>
+												) : (
+													<>
+														{isProccesingAddToCart ? (
+															<div className="flex justify-start my-4">
+																<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
+															</div>
+														) : isProccesingBuyNow ? (
+															<div className="flex justify-center my-4">
+																<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+															</div>
+														) : (
+															<>
+																<button
+																	onClick={handleAddToCart}
+																	className="flex-1 py-3 rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[18px] hover:bg-white hover:text-secondary-blue transition-colors"
+																>
+																	Añadir al carrito
+																</button>
+																<button
+																	onClick={buynow}
+																	className="flex-1 py-3 rounded-3xl border-2 border-custom-orange bg-custom-orange text-white font-bold text-[18px] hover:opacity-90 transition-opacity"
+																>
+																	Comprar ahora
+																</button>
+															</>
+														)}
+													</>
+												)}
+											</>
+										)}
+									</div>
+								) : (
+									<div className="flex justify-center my-4">
+										<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -465,9 +516,53 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 					</div>
 				)} */}
 
-				<div className="mt-[2vw]">
-					<VacationPurchasePause />
-				</div>
+				{/* Botones CTA */}
+				{!onePageIsOpen && (
+					<>
+						{user ? (
+							<>
+								{data.stock === false || globalStock === false ? (
+									<button
+										disabled
+										className="w-full py-[3.5vw] rounded-3xl bg-alter-grey text-custom-white font-bold text-[4vw] cursor-not-allowed"
+									>
+										Producto no disponible
+									</button>
+								) : existingItem ? (
+									<button
+										onClick={handleRemoveFromCart}
+										className="mx-auto block w-[72%] max-w-[260px] py-[2.4vw] rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[3.6vw]"
+									>
+										Quitar del carrito
+									</button>
+								) : isProccesingAddToCart || isProccesingBuyNow ? (
+									<div className="flex justify-center my-4">
+										<div className="w-8 h-8 border-4 border-secondary-blue border-t-transparent border-solid rounded-full animate-spin"></div>
+									</div>
+								) : (
+									<div className="flex gap-[3vw]">
+										<button
+											onClick={handleAddToCart}
+											className="flex-1 py-[1.8vw] rounded-3xl border-2 border-secondary-blue bg-secondary-blue text-custom-white font-bold text-[3.8vw] hover:bg-white hover:text-secondary-blue transition-colors"
+										>
+											Añadir al carrito
+										</button>
+										<button
+											onClick={buynow}
+											className="flex-1 py-[1.8vw] rounded-3xl border-2 border-custom-orange bg-custom-orange text-white font-bold text-[3.8vw] hover:opacity-90 transition-opacity"
+										>
+											Comprar ahora
+										</button>
+									</div>
+								)}
+							</>
+						) : (
+							<div className="flex justify-center my-4">
+								<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+							</div>
+						)}
+					</>
+				)}
 			</div>
 
 			{/* Separador y checkout (compartido ambos) */}
