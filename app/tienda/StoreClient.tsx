@@ -16,7 +16,7 @@ import {
 } from '../redux/features/productSearchSlice'
 import { useUserLocation } from '../hooks/useUserLoaction'
 import './tienda.css'
-import { shouldShowSearchFallback } from './searchUiState'
+import { parseProductSortOrder, ProductSortOrder, shouldShowSearchFallback } from './searchUiState'
 
 export default function Store() {
 	const dispatch = useAppDispatch()
@@ -37,7 +37,7 @@ export default function Store() {
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'proximity' | null>(null);
+	const [sortOrder, setSortOrder] = useState<ProductSortOrder>(null);
 	const [isTyping, setIsTyping] = useState(false)
 	const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 	const activeSearchRequest = useRef<{ abort: () => void } | null>(null)
@@ -203,7 +203,7 @@ export default function Store() {
 	}
 
 	const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-		setSortOrder(event.target.value as 'asc' | 'desc' | 'proximity' | null);
+		setSortOrder(parseProductSortOrder(event.target.value));
 		dispatch(setCurrentPage(1))
 	}
 
@@ -303,8 +303,8 @@ export default function Store() {
 										value={sortOrder || ''}
 										onChange={handleSortOrderChange}
 									>
-										<option disabled value="">
-											Ordenar por
+									<option value="">
+										Relevancia
 										</option>
 										{/* NUEVA OPCIÓN */}
 										<option value="proximity" disabled={!userProvince}>

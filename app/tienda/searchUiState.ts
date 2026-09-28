@@ -5,6 +5,13 @@ export interface SearchFallbackState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
+export type ProductSortOrder = 'asc' | 'desc' | 'proximity' | null;
+
+export const parseProductSortOrder = (value: string): ProductSortOrder => {
+    if (value === 'asc' || value === 'desc' || value === 'proximity') return value;
+    return null;
+};
+
 export const shouldShowSearchFallback = ({
     hasCompletedSearch,
     isSearching,

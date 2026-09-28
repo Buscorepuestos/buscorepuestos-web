@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import reducer, { fetchProducts } from '../../../redux/features/productSearchSlice'
-import { shouldShowSearchFallback } from '../../../tienda/searchUiState'
+import { parseProductSortOrder, shouldShowSearchFallback } from '../../../tienda/searchUiState'
 
 const pending = (requestId: string, searchTerm: string) => ({
     type: fetchProducts.pending.type,
@@ -57,5 +57,17 @@ describe('search fallback visibility', () => {
             resultCount,
             status,
         })).toBe(expected)
+    })
+})
+
+describe('product result ordering', () => {
+    test.each([
+        ['', null],
+        ['unknown', null],
+        ['asc', 'asc'],
+        ['desc', 'desc'],
+        ['proximity', 'proximity'],
+    ] as const)('maps %s to a supported sort order', (value, expected) => {
+        expect(parseProductSortOrder(value)).toBe(expected)
     })
 })

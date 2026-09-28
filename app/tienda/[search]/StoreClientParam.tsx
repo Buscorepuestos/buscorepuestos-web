@@ -12,7 +12,7 @@ import '../tienda.css'
 import { fetchProducts, setCurrentPage, restoreSearchResults } from '../../redux/features/productSearchSlice'
 import { useUserLocation } from '../../hooks/useUserLoaction'
 import FilterTag from '../../core/components/filterTag/FilterTag'
-import { shouldShowSearchFallback } from '../searchUiState'
+import { parseProductSortOrder, ProductSortOrder, shouldShowSearchFallback } from '../searchUiState'
 
 export default function Store({ params }: { params: Promise<{ search: string }> }) {
     const skipNextFetch = useRef(false);
@@ -38,7 +38,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
 
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'proximity' | null>(null);
+    const [sortOrder, setSortOrder] = useState<ProductSortOrder>(null);
     const { province: userProvince, requestLocation } = useUserLocation();
 
     // Estados de UI
@@ -191,7 +191,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     };
 
     const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSortOrder(event.target.value as 'asc' | 'desc' | 'proximity' | null);
+        setSortOrder(parseProductSortOrder(event.target.value));
         dispatch(setCurrentPage(1));
     };
 
@@ -308,7 +308,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                                         value={sortOrder || ''}
                                         onChange={handleSortOrderChange}
                                     >
-                                        <option disabled value="">Ordenar por</option>
+                                        <option value="">Relevancia</option>
                                         <option value="proximity" disabled={!userProvince}>
                                             Proximidad (más cercanos)
                                         </option>
