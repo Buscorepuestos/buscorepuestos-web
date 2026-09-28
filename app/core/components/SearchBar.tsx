@@ -325,7 +325,7 @@ export default function SearchBar(props: SearchBarProps) {
                 value={props.value}
                 onChange={props.onChange}
                 onKeyDown={handleKeyDown}
-                disabled={props.isLoading}
+                aria-busy={props.isLoading || undefined}
                 onFocus={() => {
                     trackSearchInteraction()
                     setIsFocused(true)

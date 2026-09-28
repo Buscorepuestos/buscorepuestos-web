@@ -1,0 +1,61 @@
+import { describe, expect, test } from 'vitest'
+import reducer, { fetchProducts } from '../../../redux/features/productSearchSlice'
+import { shouldShowSearchFallback } from '../../../tienda/searchUiState'
+
+const pending = (requestId: string, searchTerm: string) => ({
+    type: fetchProducts.pending.type,
+    meta: { requestId, arg: { searchTerm } },
+})
+
+const fulfilled = (requestId: string, searchTerm: string, data: unknown[]) => ({
+    type: fetchProducts.fulfilled.type,
+    payload: { data, totalPages: data.length > 0 ? 1 : 0 },
+    meta: { requestId, arg: { searchTerm } },
+})
+
+describe('product search request state', () => {
+    test('ignores a stale response when a newer search is active', () => {
+        let state = reducer(undefined, { type: '@@init' })
+
+        state = reducer(state, pending('old-request', 'faro'))
+        state = reducer(state, pending('new-request', 'alternador'))
+        state = reducer(state, fulfilled('old-request', 'faro', [{ _id: 'old' }]))
+
+        expect(state.loading).toBe(true)
+        expect(state.searchResults).toEqual([])
+        expect(state.currentRequestId).toBe('new-request')
+
+        state = reducer(state, fulfilled('new-request', 'alternador', [{ _id: 'new' }]))
+
+        expect(state.loading).toBe(false)
+        expect(state.status).toBe('succeeded')
+        expect(state.hasCompletedSearch).toBe(true)
+        expect(state.searchResults).toEqual([{ _id: 'new' }])
+    })
+
+    test('marks an empty explicit search as completed', () => {
+        let state = reducer(undefined, pending('request', 'referencia inexistente'))
+        state = reducer(state, fulfilled('request', 'referencia inexistente', []))
+
+        expect(state.status).toBe('succeeded')
+        expect(state.hasCompletedSearch).toBe(true)
+        expect(state.searchResults).toEqual([])
+    })
+})
+
+describe('search fallback visibility', () => {
+    test.each([
+        ['before searching', false, false, 'idle', 0],
+        ['while searching', false, true, 'loading', 0],
+        ['when the request fails', false, false, 'failed', 0],
+        ['when results exist', false, false, 'succeeded', 1],
+        ['after a confirmed empty search', true, false, 'succeeded', 0],
+    ] as const)('%s', (_label, expected, isSearching, status, resultCount) => {
+        expect(shouldShowSearchFallback({
+            hasCompletedSearch: status === 'succeeded',
+            isSearching,
+            resultCount,
+            status,
+        })).toBe(expected)
+    })
+})

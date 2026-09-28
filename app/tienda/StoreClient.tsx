@@ -16,20 +16,21 @@ import {
 } from '../redux/features/productSearchSlice'
 import { useUserLocation } from '../hooks/useUserLoaction'
 import './tienda.css'
+import { shouldShowSearchFallback } from './searchUiState'
 
 export default function Store() {
 	const dispatch = useAppDispatch()
 	const {
 		error: searchError,
 		loading: searchLoading,
+		status: searchStatus,
+		hasCompletedSearch,
 		searchResults,
 		currentPage,
 		totalPages,
 	} = useAppSelector((state) => state.productSearch)
 	const router = useRouter()
 	const skipNextFetch = useRef(false);
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
 	const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
@@ -39,6 +40,7 @@ export default function Store() {
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'proximity' | null>(null);
 	const [isTyping, setIsTyping] = useState(false)
 	const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+	const activeSearchRequest = useRef<{ abort: () => void } | null>(null)
 
 	const { province: userProvince, requestLocation } = useUserLocation();
 
@@ -120,22 +122,21 @@ export default function Store() {
 			setIsTyping(true)
 			debounceTimer.current = setTimeout(() => {
 				setIsTyping(false)
-				setLoading(true)
-				dispatch(
+				activeSearchRequest.current?.abort()
+				activeSearchRequest.current = dispatch(
 					fetchProducts({
 						searchTerm: inputValue.trim(),
 						page: 1,
 						sortOrder,
 						userProvince: sortOrder === 'proximity' ? userProvince : null,
 					})
-				).finally(() => setLoading(false))
-			}, 1000)
+				)
+			}, 500)
 		} else {
 			// ✅ Input vacío → cancelar isTyping, buscar productos por defecto
 			setIsTyping(false)
-			setLoading(true)
-			dispatch(fetchProducts({ page: currentPage, sortOrder, userProvince: sortOrder === 'proximity' ? userProvince : null }))
-				.finally(() => setLoading(false))
+			activeSearchRequest.current?.abort()
+			activeSearchRequest.current = dispatch(fetchProducts({ page: currentPage, sortOrder, userProvince: sortOrder === 'proximity' ? userProvince : null }))
 			window.history.replaceState(null, '', '/tienda')
 		}
 
@@ -143,6 +144,7 @@ export default function Store() {
 			if (debounceTimer.current) {
 				clearTimeout(debounceTimer.current)
 			}
+			activeSearchRequest.current?.abort()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [inputValue, sortOrder])
@@ -224,7 +226,14 @@ export default function Store() {
 		else if (filterType === 'year') handleYearChange(null)
 	}
 
-	const shouldShowFiltersAndSort = searchResults.length > 0 || loading || isTyping;
+	const isSearching = isTyping || searchLoading
+	const showSearchFallback = shouldShowSearchFallback({
+		hasCompletedSearch,
+		isSearching,
+		resultCount: searchResults.length,
+		status: searchStatus,
+	})
+	const shouldShowFiltersAndSort = searchResults.length > 0 || isSearching;
 
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[15vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
@@ -266,6 +275,7 @@ export default function Store() {
 							borderWidth={'2px'}
 							onClear={handleClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
 							onSuggestionSelect={handleSuggestionSelect} // <-- NUEVO: Prop para manejar la selección de sugerencias
+							isLoading={isSearching}
 						/>
 					</div>
 					<div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
@@ -318,17 +328,13 @@ export default function Store() {
 							/>
 						))}
 					</div>
-					{isTyping ? (
+					{isSearching ? (
 						<div className="flex justify-center my-4">
 							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 							<span className="ml-2">Buscando...</span>
 						</div>
-					) : loading ? (
-						<div className="flex justify-center my-4">
-							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-						</div>
-					) : error ? (
-						<p>Error</p>
+					) : searchStatus === 'failed' ? (
+						<p className="text-center text-red-500">Error: {searchError}</p>
 					) : (
 						<>
 							{searchResults.length > 0 ? (
@@ -361,13 +367,13 @@ export default function Store() {
 										/>
 									))}
 								</section>
-							) : (
+							) : showSearchFallback ? (
 								<NotFoundInStore />
-							)}
+							) : null}
 						</>
 					)}
 					{
-						searchResults.length > 0 && !loading && !isTyping && (
+						searchResults.length > 0 && !isSearching && (
 							<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
 								<button
 									onClick={handlePrevPage}
