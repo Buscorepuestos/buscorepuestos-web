@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { useAutocomplete } from '../../hooks/useAutocomplete'
+import { isReferenceSearch } from '../../lib/searchQuery'
 
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 
@@ -53,27 +54,6 @@ function Highlight({ text, query }: { text: string; query: string }) {
             {text.slice(idx + query.length)}
         </>
     )
-}
-
-// ── Helper: detección de referencia técnica ───────────────────────────────────
-
-function isReferenceSearch(term: string): boolean {
-    if (!term || term.trim().length < 6) return false
-    const t = term.trim()
-    const onlyNumbers = /^\d{6,}$/
-    const specificPattern = /^[A-Za-z0-9]+[\-\.][A-Za-z0-9]+/
-    const mixedPattern = /^[A-Za-z0-9\-\.]+$/
-    const hasNumbers = /\d/
-    const hasLetters = /[A-Za-z]/
-    if (onlyNumbers.test(t)) return true
-    if (specificPattern.test(t)) return true
-    if (
-        mixedPattern.test(t) &&
-        hasNumbers.test(t) &&
-        hasLetters.test(t) &&
-        (t.match(/\d/g) || []).length / t.length >= 0.3
-    ) return true
-    return false
 }
 
 // ── Componente principal ──────────────────────────────────────────────────────
