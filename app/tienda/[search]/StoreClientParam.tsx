@@ -13,6 +13,7 @@ import { fetchProducts, setCurrentPage, restoreSearchResults } from '../../redux
 import { useUserLocation } from '../../hooks/useUserLoaction'
 import FilterTag from '../../core/components/filterTag/FilterTag'
 import { parseProductSortOrder, ProductSortOrder, shouldShowSearchFallback } from '../searchUiState'
+import { formatVehicleDescription, getProductAvailability, getProductCondition } from '../../lib/productPresentation'
 
 export default function Store({ params }: { params: Promise<{ search: string }> }) {
     const skipNextFetch = useRef(false);
@@ -205,10 +206,6 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
         router.push(`/producto/${productId}`);
     };
 
-    const cleanValue = (text: string) => {
-        return text ? ` ${text.replace('-', '')}` : '';
-    };
-
     const handleClearSearch = () => {
         setInputValue('');
         dispatch(setCurrentPage(1));
@@ -345,13 +342,15 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                                             key={product._id}
                                             title={product.title}
                                             reference={product.mainReference || ''}
-                                            description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+                                            description={formatVehicleDescription({ brand: product.brand, model: product.articleModel, year: product.year })}
                                             price={product?.buscorepuestosPrice || 0}
                                             image={product.images?.[0] || '/nodisponible.png'}
                                             handle={() => handleProductClick(product._id)}
                                             id={product._id}
                                             loading={loadingPurchase === product._id}
                                             location={product.distributorProvince}
+                                            condition={product.condition || getProductCondition(product.isNewProduct)}
+                                            availability={getProductAvailability(product.stock)}
                                             shippingIncluded={true}
                                         />
                                     ))}

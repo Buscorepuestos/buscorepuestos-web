@@ -17,6 +17,7 @@ import {
 import { useUserLocation } from '../hooks/useUserLoaction'
 import './tienda.css'
 import { parseProductSortOrder, ProductSortOrder, shouldShowSearchFallback } from './searchUiState'
+import { formatVehicleDescription, getProductAvailability, getProductCondition } from '../lib/productPresentation'
 
 export default function Store() {
 	const dispatch = useAppDispatch()
@@ -161,10 +162,6 @@ export default function Store() {
 			dispatch(setCurrentPage(currentPage - 1))
 			window.scrollTo({ top: 0, behavior: 'smooth' })
 		}
-	}
-
-	const cleanValue = (text: string) => {
-		return `${' ' + text.replace('-', '')}`
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -348,7 +345,7 @@ export default function Store() {
 											key={index}
 											title={product.title}
 											reference={product.mainReference!}
-											description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+										description={formatVehicleDescription({ brand: product.brand, model: product.articleModel, year: product.year })}
 											price={
 												product?.buscorepuestosPrice || 0
 											}
@@ -363,6 +360,8 @@ export default function Store() {
 												loadingPurchase === product._id
 											}
 											location={product.distributorProvince}
+										condition={product.condition || getProductCondition(product.isNewProduct)}
+										availability={getProductAvailability(product.stock)}
 											shippingIncluded={true}
 										/>
 									))}

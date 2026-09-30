@@ -42,6 +42,7 @@ export interface ProductMongoInterface {
     brand: string;
     articleModel: string;
     isNewProduct: boolean;
+    condition?: string;
     rating?: number;
     distributorProvince?: string;
     startYear?: string | number;
