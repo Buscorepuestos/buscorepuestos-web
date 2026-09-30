@@ -39,6 +39,12 @@ describe('CardPrice component', () => {
         expect(screen.getByRole('button', { name: 'Ver producto' })).toBeDefined()
     })
 
+    test('always shows a location row when the backend has no province', () => {
+        render(<CardPrice title="Alternador" reference="06H903017" price={500} image="/alternador.jpg" />)
+
+        expect(screen.getByText('Ubicación por confirmar')).toBeDefined()
+    })
+
     test('preserves the familiar card order while adding status information', () => {
         const { container } = renderCard()
         const content = container.textContent || ''

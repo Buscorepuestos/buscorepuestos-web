@@ -41,7 +41,7 @@ export default function CardPrice(props: CardPriceProps) {
 
 	return (
 		<Link href={props.id ? `/producto/${props.id}` : '#'} className="block h-full" aria-label={`Ver ${props.title}`}>
-			<article className="max-w-[207px] min-h-full flex flex-col justify-between pb-[23px] m-6 gap-2 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl transition duration-300 ease-in-out border border-gray-100">
+			<article className="w-full max-w-[207px] h-full flex flex-col pb-[18px] gap-1 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl transition duration-300 ease-in-out border border-gray-100">
 				<Image
 					unoptimized
 					src={imgSrc}
@@ -53,8 +53,8 @@ export default function CardPrice(props: CardPriceProps) {
 					onError={() => setImgSrc(noDisponible.src)}
 				/>
 
-				<div className="flex flex-1 flex-col items-start px-[0.5vw] mobile:px-4 w-full h-full justify-between">
-					<div className="w-full h-auto mb-2">
+				<div className="flex flex-1 flex-col items-start px-3 mobile:px-3 w-full">
+					<div className="w-full h-auto mb-1">
 						<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline uppercase h-[3rem] leading-6">
 							{props.title}
 						</h4>
@@ -70,7 +70,7 @@ export default function CardPrice(props: CardPriceProps) {
 						)}
 
 						{(props.condition || props.availability) && (
-							<div className="flex flex-wrap gap-1.5 mt-2 text-[11px] font-semibold">
+							<div className="flex flex-wrap gap-1 mt-1.5 text-[10px] font-semibold">
 								{props.condition && <span className="rounded-full bg-blue-50 text-blue-700 px-2 py-0.5">{props.condition}</span>}
 							{props.availability && (
 								<span className={`rounded-full px-2 py-0.5 ${isAvailable ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
@@ -81,15 +81,15 @@ export default function CardPrice(props: CardPriceProps) {
 						)}
 						</div>
 
-					{props.location && (
-						<div className="flex w-full justify-center items-center gap-2 my-1 text-secondary-blue font-semibold uppercase">
-							<Image src="/ubication.svg" alt="" aria-hidden="true" width={22} height={22} />
-							<span>{props.location}</span>
-						</div>
-					)}
+					<div className="flex w-full items-center justify-center gap-1.5 mt-1 mb-0.5 text-[#0e9aa3] uppercase">
+						<Image src="/ubication.svg" alt="" aria-hidden="true" width={18} height={18} className="w-[18px] h-[18px] shrink-0 opacity-85" />
+						<span className="text-xs leading-none font-semibold tracking-wide truncate" title={props.location || 'Ubicación por confirmar'}>
+							{props.location || 'Ubicación por confirmar'}
+						</span>
+					</div>
 
 					{!props.hideRating && (
-						<div className="flex w-full justify-center flex-row gap-1 mobile:gap-2 mb-2">
+						<div className="flex w-full justify-center flex-row gap-1 mobile:gap-2 mb-1">
 							{Array.from({ length: MAX_VALORATION }, (_, index) => (
 								<Star key={index} isFilled className="text-blue-600 xl:w-[0.8vw] xl:h-[0.8vw] lg:w-[1.2vw] lg:h-[1.2vw] md:w-[1.2vw] md:h-[1.2vw] sm:w-[1.4vw] sm:h-[1.4vw] mobile:w-[3.1vw] mobile:h-[3.1vw]" />
 							))}
@@ -102,7 +102,7 @@ export default function CardPrice(props: CardPriceProps) {
 						</p>
 
 						{props.shippingIncluded && (
-							<div className="flex items-center gap-1 mt-1 mb-2">
+							<div className="flex items-center gap-1 mt-0.5 mb-1">
 								<CheckIcon />
 								<span className="text-green-600 font-semibold text-sm mobile:text-[3vw]">Envío incluido</span>
 								<Image src="/truck-green.png" alt="" aria-hidden="true" width={30} height={30} className="mobile:w-[7vw] mobile:h-[7vw]" />
@@ -111,7 +111,7 @@ export default function CardPrice(props: CardPriceProps) {
 					</div>
 
 					{props.shippingIncluded && (
-						<div className="w-full p-2 mb-3 mt-1 bg-white text-center">
+						<div className="w-full p-1.5 mb-2 bg-white text-center">
 							<p className="text-[13px] mobile:text-[3vw] text-gray-700">
 								<span className="bg-[#333] text-white font-bold px-1.5 py-0.5 rounded-full mr-1">4x</span>
 								Paga en 4 plazos de <span className="font-bold">{installmentPrice}€</span>
@@ -124,7 +124,7 @@ export default function CardPrice(props: CardPriceProps) {
 						</div>
 					)}
 
-					<div className="flex justify-center w-full mt-2 mobile:mb-0">
+					<div className="flex justify-center w-full mt-auto pt-1 mobile:mb-0">
 						{props.loading ? (
 							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin" aria-label="Abriendo producto" />
 						) : (
