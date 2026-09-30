@@ -119,25 +119,29 @@ export default function Store() {
 			return;
 		}
 
+		const requestParams = {
+			searchTerm: inputValue.trim() || undefined,
+			page: currentPage,
+			sortOrder,
+			userProvince: sortOrder === 'proximity' ? userProvince : null,
+			subcategory: selectedSubcategory,
+			brand: selectedBrand,
+			model: selectedModel,
+			year: selectedYear,
+		}
+
 		if (inputValue.trim() !== '') {
 			setIsTyping(true)
 			debounceTimer.current = setTimeout(() => {
 				setIsTyping(false)
 				activeSearchRequest.current?.abort()
-				activeSearchRequest.current = dispatch(
-					fetchProducts({
-						searchTerm: inputValue.trim(),
-						page: 1,
-						sortOrder,
-						userProvince: sortOrder === 'proximity' ? userProvince : null,
-					})
-				)
+				activeSearchRequest.current = dispatch(fetchProducts(requestParams))
 			}, 500)
 		} else {
 			// ✅ Input vacío → cancelar isTyping, buscar productos por defecto
 			setIsTyping(false)
 			activeSearchRequest.current?.abort()
-			activeSearchRequest.current = dispatch(fetchProducts({ page: currentPage, sortOrder, userProvince: sortOrder === 'proximity' ? userProvince : null }))
+			activeSearchRequest.current = dispatch(fetchProducts(requestParams))
 			window.history.replaceState(null, '', '/tienda')
 		}
 
@@ -147,8 +151,7 @@ export default function Store() {
 			}
 			activeSearchRequest.current?.abort()
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [inputValue, sortOrder])
+	}, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear])
 
 	const handleNextPage = () => {
 		if (currentPage < totalPages) {
@@ -372,18 +375,18 @@ export default function Store() {
 						</>
 					)}
 					{
-						searchResults.length > 0 && !isSearching && (
+						searchResults.length > 0 && !isSearching && totalPages > 1 && (
 							<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
 								<button
 									onClick={handlePrevPage}
-									disabled={currentPage === 0}
+									disabled={currentPage <= 1}
 								>
 									<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 								</button>
 								<span>{`Página ${currentPage} de ${totalPages}`}</span>
 								<button
 									onClick={handleNextPage}
-									disabled={currentPage === totalPages - 1}
+									disabled={currentPage >= totalPages}
 								>
 									<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 								</button>

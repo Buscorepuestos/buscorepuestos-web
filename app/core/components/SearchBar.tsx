@@ -61,6 +61,7 @@ function Highlight({ text, query }: { text: string; query: string }) {
 export default function SearchBar(props: SearchBarProps) {
     const {
         results,
+        isLoading: isAutocompleteLoading,
         isOpen,
         closeDropdown,
         openDropdown,
@@ -273,6 +274,7 @@ export default function SearchBar(props: SearchBarProps) {
 
     // ¿Mostrar el dropdown de resultados?
     const showResults = mounted && isFocused && isOpen && flatList.length > 0
+    const showAutocompleteLoading = mounted && isFocused && isAutocompleteLoading && props.value.trim().length >= 2
 
     // Índice de inicio de cada grupo dentro del flatList (solo cuando hay resultados)
     const partsEnd = results.parts.length
@@ -362,7 +364,7 @@ export default function SearchBar(props: SearchBarProps) {
             {/* ══════════════════════════════════════════════════════════════
                 PORTAL — dropdown flotante (resultados O recientes)
             ══════════════════════════════════════════════════════════════ */}
-            {mounted && (showResults || showRecents) && createPortal(
+            {mounted && (showResults || showRecents || showAutocompleteLoading) && createPortal(
                 <div
                     style={{
                         position: 'fixed',
@@ -374,8 +376,19 @@ export default function SearchBar(props: SearchBarProps) {
                     }}
                     className="bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-y-auto overscroll-contain"
                 >
+                    {showAutocompleteLoading && !showResults && (
+                        <div
+                            className="flex items-center gap-3 px-4 py-3 text-sm text-gray-500"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#12B1BB] border-t-transparent" />
+                            Buscando sugerencias…
+                        </div>
+                    )}
+
                     {/* ── Panel de búsquedas recientes ─────────────────── */}
-                    {showRecents && !showResults && (
+                    {showRecents && !showResults && !showAutocompleteLoading && (
                         <>
                             <div className="flex items-center justify-between px-4 pt-3 pb-1">
                                 <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">

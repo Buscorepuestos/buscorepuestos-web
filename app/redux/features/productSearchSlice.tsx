@@ -23,7 +23,7 @@ const initialState: ProductSearchState = {
     currentRequestId: null,
 };
 
-interface FetchProductsParams {
+export interface FetchProductsParams {
     searchTerm?: string;
     page?: number;
     sortOrder?: 'asc' | 'desc' | 'proximity' | null;
@@ -34,25 +34,26 @@ interface FetchProductsParams {
     year?: number | null;
 }
 
+export const buildProductSearchParams = (params: FetchProductsParams = {}): URLSearchParams => {
+    const { searchTerm, page, sortOrder, subcategory, brand, model, year, userProvince } = params;
+    const queryParams = new URLSearchParams();
+
+    if (searchTerm) queryParams.append('q', searchTerm);
+    if (page) queryParams.append('page', String(page));
+    if (sortOrder) queryParams.append('sortOrder', sortOrder);
+    if (sortOrder === 'proximity' && userProvince) queryParams.append('userProvince', userProvince);
+    if (subcategory) queryParams.append('subcategory', subcategory);
+    if (brand) queryParams.append('brand', brand);
+    if (model) queryParams.append('model', model);
+    if (year) queryParams.append('year', String(year));
+
+    return queryParams;
+};
+
 export const fetchProducts = createAsyncThunk(
     'productSearch/fetchProducts',
     async (params: FetchProductsParams = {}, { signal }) => {
-        const { searchTerm, page, sortOrder, subcategory, brand, model, year, userProvince } = params;
-        const queryParams = new URLSearchParams();
-
-        if (searchTerm) queryParams.append('q', searchTerm);
-        if (page) queryParams.append('page', String(page));
-        if (sortOrder) queryParams.append('sortOrder', sortOrder);
-
-        if (sortOrder === 'proximity' && userProvince) {
-            queryParams.append('userProvince', userProvince);
-        }
-
-        // Añadir los nuevos filtros a la URL
-        if (subcategory) queryParams.append('subcategory', subcategory);
-        if (brand) queryParams.append('brand', brand);
-        if (model) queryParams.append('model', model);
-        if (year) queryParams.append('year', String(year));
+        const queryParams = buildProductSearchParams(params);
 
         const response = await api.get(`/products/search?${queryParams.toString()}`, { signal });
         return response.data;

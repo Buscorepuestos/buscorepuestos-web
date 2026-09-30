@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import reducer, { fetchProducts } from '../../../redux/features/productSearchSlice'
+import reducer, { buildProductSearchParams, fetchProducts } from '../../../redux/features/productSearchSlice'
 import { parseProductSortOrder, shouldShowSearchFallback } from '../../../tienda/searchUiState'
 
 const pending = (requestId: string, searchTerm: string) => ({
@@ -69,5 +69,42 @@ describe('product result ordering', () => {
         ['proximity', 'proximity'],
     ] as const)('maps %s to a supported sort order', (value, expected) => {
         expect(parseProductSortOrder(value)).toBe(expected)
+    })
+})
+
+describe('product search pagination', () => {
+    test('sends the selected page together with the active search and filters', () => {
+        const params = buildProductSearchParams({
+            searchTerm: 'faro',
+            page: 3,
+            subcategory: 'faro derecho',
+            brand: 'BMW',
+            model: 'E87',
+            year: 2010,
+        })
+
+        expect(params.get('q')).toBe('faro')
+        expect(params.get('page')).toBe('3')
+        expect(params.get('subcategory')).toBe('faro derecho')
+        expect(params.get('brand')).toBe('BMW')
+        expect(params.get('model')).toBe('E87')
+        expect(params.get('year')).toBe('2010')
+    })
+
+    test('sends active filters when browsing the catalog without a search term', () => {
+        const params = buildProductSearchParams({
+            page: 2,
+            subcategory: 'Alumbrado',
+            brand: 'BMW',
+            model: 'E87',
+            year: 2008,
+        })
+
+        expect(params.get('q')).toBeNull()
+        expect(params.get('page')).toBe('2')
+        expect(params.get('subcategory')).toBe('Alumbrado')
+        expect(params.get('brand')).toBe('BMW')
+        expect(params.get('model')).toBe('E87')
+        expect(params.get('year')).toBe('2008')
     })
 })
