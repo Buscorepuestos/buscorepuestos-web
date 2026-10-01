@@ -16,29 +16,32 @@ import {
 } from '../redux/features/productSearchSlice'
 import { useUserLocation } from '../hooks/useUserLoaction'
 import './tienda.css'
+import { parseProductSortOrder, ProductSortOrder, shouldShowSearchFallback } from './searchUiState'
+import { formatVehicleDescription, getProductAvailability, getProductCondition } from '../lib/productPresentation'
 
 export default function Store() {
 	const dispatch = useAppDispatch()
 	const {
 		error: searchError,
 		loading: searchLoading,
+		status: searchStatus,
+		hasCompletedSearch,
 		searchResults,
 		currentPage,
 		totalPages,
 	} = useAppSelector((state) => state.productSearch)
 	const router = useRouter()
 	const skipNextFetch = useRef(false);
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState<string | null>(null)
 	const [inputValue, setInputValue] = useState<string>('')
 	const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
 	const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
 	const [selectedModel, setSelectedModel] = useState<string | null>(null)
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null)
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'proximity' | null>(null);
+	const [sortOrder, setSortOrder] = useState<ProductSortOrder>(null);
 	const [isTyping, setIsTyping] = useState(false)
 	const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+	const activeSearchRequest = useRef<{ abort: () => void } | null>(null)
 
 	const { province: userProvince, requestLocation } = useUserLocation();
 
@@ -116,26 +119,29 @@ export default function Store() {
 			return;
 		}
 
+		const requestParams = {
+			searchTerm: inputValue.trim() || undefined,
+			page: currentPage,
+			sortOrder,
+			userProvince: sortOrder === 'proximity' ? userProvince : null,
+			subcategory: selectedSubcategory,
+			brand: selectedBrand,
+			model: selectedModel,
+			year: selectedYear,
+		}
+
 		if (inputValue.trim() !== '') {
 			setIsTyping(true)
 			debounceTimer.current = setTimeout(() => {
 				setIsTyping(false)
-				setLoading(true)
-				dispatch(
-					fetchProducts({
-						searchTerm: inputValue.trim(),
-						page: 1,
-						sortOrder,
-						userProvince: sortOrder === 'proximity' ? userProvince : null,
-					})
-				).finally(() => setLoading(false))
-			}, 1000)
+				activeSearchRequest.current?.abort()
+				activeSearchRequest.current = dispatch(fetchProducts(requestParams))
+			}, 500)
 		} else {
 			// ✅ Input vacío → cancelar isTyping, buscar productos por defecto
 			setIsTyping(false)
-			setLoading(true)
-			dispatch(fetchProducts({ page: currentPage, sortOrder, userProvince: sortOrder === 'proximity' ? userProvince : null }))
-				.finally(() => setLoading(false))
+			activeSearchRequest.current?.abort()
+			activeSearchRequest.current = dispatch(fetchProducts(requestParams))
 			window.history.replaceState(null, '', '/tienda')
 		}
 
@@ -143,9 +149,9 @@ export default function Store() {
 			if (debounceTimer.current) {
 				clearTimeout(debounceTimer.current)
 			}
+			activeSearchRequest.current?.abort()
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [inputValue, sortOrder])
+	}, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear])
 
 	const handleNextPage = () => {
 		if (currentPage < totalPages) {
@@ -159,10 +165,6 @@ export default function Store() {
 			dispatch(setCurrentPage(currentPage - 1))
 			window.scrollTo({ top: 0, behavior: 'smooth' })
 		}
-	}
-
-	const cleanValue = (text: string) => {
-		return `${' ' + text.replace('-', '')}`
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -201,7 +203,7 @@ export default function Store() {
 	}
 
 	const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-		setSortOrder(event.target.value as 'asc' | 'desc' | 'proximity' | null);
+		setSortOrder(parseProductSortOrder(event.target.value));
 		dispatch(setCurrentPage(1))
 	}
 
@@ -224,7 +226,14 @@ export default function Store() {
 		else if (filterType === 'year') handleYearChange(null)
 	}
 
-	const shouldShowFiltersAndSort = searchResults.length > 0 || loading || isTyping;
+	const isSearching = isTyping || searchLoading
+	const showSearchFallback = shouldShowSearchFallback({
+		hasCompletedSearch,
+		isSearching,
+		resultCount: searchResults.length,
+		status: searchStatus,
+	})
+	const shouldShowFiltersAndSort = searchResults.length > 0 || isSearching;
 
 	return (
 		<main className="m-auto max-w-[1170px] mt-80 mobile:mt-[15vw] xl:w-[95%] lg:w-[90%] md:w-[85%] sm:w-[82%]">
@@ -266,6 +275,7 @@ export default function Store() {
 							borderWidth={'2px'}
 							onClear={handleClearSearch} // <-- NUEVO: Función para limpiar la búsqueda
 							onSuggestionSelect={handleSuggestionSelect} // <-- NUEVO: Prop para manejar la selección de sugerencias
+							isLoading={isSearching}
 						/>
 					</div>
 					<div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
@@ -293,8 +303,8 @@ export default function Store() {
 										value={sortOrder || ''}
 										onChange={handleSortOrderChange}
 									>
-										<option disabled value="">
-											Ordenar por
+									<option value="">
+										Relevancia
 										</option>
 										{/* NUEVA OPCIÓN */}
 										<option value="proximity" disabled={!userProvince}>
@@ -318,23 +328,19 @@ export default function Store() {
 							/>
 						))}
 					</div>
-					{isTyping ? (
+					{isSearching ? (
 						<div className="flex justify-center my-4">
 							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 							<span className="ml-2">Buscando...</span>
 						</div>
-					) : loading ? (
-						<div className="flex justify-center my-4">
-							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
-						</div>
-					) : error ? (
-						<p>Error</p>
+					) : searchStatus === 'failed' ? (
+						<p className="text-center text-red-500">Error: {searchError}</p>
 					) : (
 						<>
 							{searchResults.length > 0 ? (
 								<section
 									className={
-										'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2 items-stretch'
+										'grid grid-cols-4 tablet:grid-cols-3 mobile:grid-cols-2 gap-x-6 gap-y-8 mobile:gap-x-3 mobile:gap-y-5 items-stretch justify-items-center'
 									}
 								>
 									{searchResults.map((product: any, index) => (
@@ -342,7 +348,7 @@ export default function Store() {
 											key={index}
 											title={product.title}
 											reference={product.mainReference!}
-											description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+										description={formatVehicleDescription({ brand: product.brand, model: product.articleModel, year: product.year })}
 											price={
 												product?.buscorepuestosPrice || 0
 											}
@@ -357,28 +363,30 @@ export default function Store() {
 												loadingPurchase === product._id
 											}
 											location={product.distributorProvince}
+										condition={product.condition || getProductCondition(product.isNewProduct)}
+										availability={getProductAvailability(product.stock)}
 											shippingIncluded={true}
 										/>
 									))}
 								</section>
-							) : (
+							) : showSearchFallback ? (
 								<NotFoundInStore />
-							)}
+							) : null}
 						</>
 					)}
 					{
-						searchResults.length > 0 && !loading && !isTyping && (
+						searchResults.length > 0 && !isSearching && totalPages > 1 && (
 							<div className="pagination-controls flex justify-center items-center gap-4 mt-4 mb-4">
 								<button
 									onClick={handlePrevPage}
-									disabled={currentPage === 0}
+									disabled={currentPage <= 1}
 								>
 									<ChevronLeftIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 								</button>
 								<span>{`Página ${currentPage} de ${totalPages}`}</span>
 								<button
 									onClick={handleNextPage}
-									disabled={currentPage === totalPages - 1}
+									disabled={currentPage >= totalPages}
 								>
 									<ChevronRightIcon className="w-8 h-8 text-primary-blue hover:text-primary-lila" />
 								</button>

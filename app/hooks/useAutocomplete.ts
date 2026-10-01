@@ -37,6 +37,8 @@ export function useAutocomplete(query: string) {
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
+    const requestRef = useRef<AbortController | null>(null);
+    const requestIdRef = useRef(0);
 
     // Cargar recientes una sola vez en cliente
     useEffect(() => {
@@ -46,12 +48,15 @@ export function useAutocomplete(query: string) {
     // ── Fetch con debounce adaptativo ─────────────────────────────────────────
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
+        requestRef.current?.abort();
+        const requestId = ++requestIdRef.current;
 
         const trimmed = query.trim();
 
         if (trimmed.length < 2) {
             setResults(EMPTY_AUTOCOMPLETE);
             setIsOpen(false);
+            setIsLoading(false);
             return;
         }
 
@@ -59,9 +64,12 @@ export function useAutocomplete(query: string) {
         const delay = trimmed.length > 4 ? DEBOUNCE_SHORT : DEBOUNCE_LONG;
 
         debounceRef.current = setTimeout(async () => {
+            const controller = new AbortController();
+            requestRef.current = controller;
             setIsLoading(true);
             try {
-                const data = await getAutocomplete(trimmed);
+                const data = await getAutocomplete(trimmed, controller.signal);
+                if (controller.signal.aborted || requestId !== requestIdRef.current) return;
                 const hasResults =
                     data.parts.length > 0 ||
                     data.categories.length > 0 ||
@@ -71,15 +79,17 @@ export function useAutocomplete(query: string) {
                 setResults(data);
                 setIsOpen(hasResults);
             } catch {
+                if (controller.signal.aborted || requestId !== requestIdRef.current) return;
                 setResults(EMPTY_AUTOCOMPLETE);
                 setIsOpen(false);
             } finally {
-                setIsLoading(false);
+                if (requestId === requestIdRef.current) setIsLoading(false);
             }
         }, delay);
 
         return () => {
             if (debounceRef.current) clearTimeout(debounceRef.current);
+            requestRef.current?.abort();
         };
     }, [query]);
 
