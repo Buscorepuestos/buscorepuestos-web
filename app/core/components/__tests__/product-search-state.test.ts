@@ -73,6 +73,15 @@ describe('product result ordering', () => {
 })
 
 describe('product search pagination', () => {
+	test('removes separators from references only in the API query', () => {
+		const params = buildProductSearchParams({
+			searchTerm: 'SLV77 00110 484',
+			page: 1,
+		})
+
+		expect(params.get('q')).toBe('SLV7700110484')
+	})
+
     test('sends the selected page together with the active search and filters', () => {
         const params = buildProductSearchParams({
             searchTerm: 'faro',

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/api';
+import { normalizeSearchQuery } from '../../lib/searchQuery';
 
 interface ProductSearchState {
     searchResults: any[];
@@ -38,7 +39,7 @@ export const buildProductSearchParams = (params: FetchProductsParams = {}): URLS
     const { searchTerm, page, sortOrder, subcategory, brand, model, year, userProvince } = params;
     const queryParams = new URLSearchParams();
 
-    if (searchTerm) queryParams.append('q', searchTerm);
+    if (searchTerm) queryParams.append('q', normalizeSearchQuery(searchTerm));
     if (page) queryParams.append('page', String(page));
     if (sortOrder) queryParams.append('sortOrder', sortOrder);
     if (sortOrder === 'proximity' && userProvince) queryParams.append('userProvince', userProvince);
