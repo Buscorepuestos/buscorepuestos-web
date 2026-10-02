@@ -33,6 +33,61 @@ export const EMPTY_AUTOCOMPLETE: AutocompleteResults = {
 	references: [],
 };
 
+const toAutocompleteText = (value: unknown): string => {
+	if (typeof value === 'string') return value;
+	if (typeof value === 'number' || typeof value === 'bigint') return String(value);
+	return '';
+};
+
+const toAutocompleteCount = (value: unknown): number => {
+	const count = Number(value);
+	return Number.isFinite(count) ? count : 0;
+};
+
+export const normalizeAutocompleteResults = (value: unknown): AutocompleteResults => {
+	const data = value && typeof value === 'object'
+		? value as Record<string, unknown>
+		: {};
+	const parts = Array.isArray(data.parts) ? data.parts : [];
+	const categories = Array.isArray(data.categories) ? data.categories : [];
+	const brands = Array.isArray(data.brands) ? data.brands : [];
+	const references = Array.isArray(data.references) ? data.references : [];
+
+	return {
+		parts: parts.map((part) => {
+			const item = part && typeof part === 'object'
+				? part as Record<string, unknown>
+				: {};
+			return {
+				title: toAutocompleteText(item.title),
+				subcategory: toAutocompleteText(item.subcategory),
+				brand: toAutocompleteText(item.brand),
+				year: typeof item.year === 'number' ? item.year : null,
+				count: toAutocompleteCount(item.count),
+			};
+		}).filter((part) => part.title),
+		categories: categories.map((category) => {
+			const item = category && typeof category === 'object'
+				? category as Record<string, unknown>
+				: {};
+			return {
+				name: toAutocompleteText(item.name),
+				count: toAutocompleteCount(item.count),
+			};
+		}).filter((category) => category.name),
+		brands: brands.map((brand) => {
+			const item = brand && typeof brand === 'object'
+				? brand as Record<string, unknown>
+				: {};
+			return {
+				name: toAutocompleteText(item.name),
+				count: toAutocompleteCount(item.count),
+			};
+		}).filter((brand) => brand.name),
+		references: references.map(toAutocompleteText).filter(Boolean),
+	};
+};
+
 export interface RelatedProduct {
 	_id: string;
 	title: string;
@@ -70,7 +125,7 @@ export const getAutocomplete = async (
 		const res = await api.get(`/products/autocomplete?q=${encodeURIComponent(query)}`, {
 			signal,
 		});
-		return res.data ?? EMPTY_AUTOCOMPLETE;
+		return normalizeAutocompleteResults(res.data);
 	} catch (error) {
 		if (signal?.aborted) throw error;
 		return EMPTY_AUTOCOMPLETE;
