@@ -73,4 +73,27 @@ describe('SearchBar component', () => {
 		expect(screen.queryByText('5 disponibles')).toBeNull()
 		expect(screen.queryByText('27 piezas disponibles')).toBeNull()
 	})
+
+	test('does not crash when the API provides a numeric reference', () => {
+		useAutocompleteMock.mockReturnValue({
+			results: {
+				parts: [],
+				categories: [],
+				brands: [],
+				references: [89004686],
+			},
+			isLoading: false,
+			isOpen: true,
+			closeDropdown: vi.fn(),
+			openDropdown: vi.fn(),
+			recentSearches: [],
+			addRecentSearch: vi.fn(),
+			clearRecentSearches: vi.fn(),
+		})
+
+		render(<SearchBar value="89004686" onChange={() => {}} />)
+		fireEvent.focus(screen.getByRole('textbox'))
+
+		expect(screen.getByText('89004686')).toBeDefined()
+	})
 })
