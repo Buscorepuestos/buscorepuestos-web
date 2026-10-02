@@ -1,4 +1,19 @@
 const REFERENCE_SEPARATORS = /[\s._\-/]+/g;
+const DIACRITICS = /[\u0300-\u036f]/g;
+
+function normalizeTextSearch(term: string): string {
+    return term
+        .normalize('NFD')
+        .replace(DIACRITICS, '')
+        .toLocaleLowerCase('es-ES')
+        .replace(/[_/\\-]+/g, ' ')
+        .replace(/[^a-z0-9.\s]+/g, ' ')
+        .split(/\s+/)
+        .map(token => /[a-z]/.test(token) ? token.replace(/\./g, '') : token)
+        .map(token => token.replace(/^\.+|\.+$/g, ''))
+        .filter(Boolean)
+        .join(' ');
+}
 
 export function isReferenceSearch(term: string): boolean {
     const trimmed = term.trim();
@@ -35,6 +50,6 @@ export function isReferenceSearch(term: string): boolean {
 export function normalizeSearchQuery(term: string): string {
     const trimmed = term.trim();
     return isReferenceSearch(trimmed)
-        ? trimmed.replace(REFERENCE_SEPARATORS, '')
-        : trimmed;
+        ? trimmed.replace(REFERENCE_SEPARATORS, '').toUpperCase()
+        : normalizeTextSearch(trimmed);
 }

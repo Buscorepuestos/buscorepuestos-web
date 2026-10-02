@@ -38,9 +38,14 @@ describe('reference query normalization', () => {
     })
 
     test.each([
-        'faro BMW E87',
-        'alternador Audi A4 2.0 TDI',
-    ])('preserves regular text searches such as %s', (query) => {
-        expect(normalizeSearchQuery(query)).toBe(query)
+        ['faro BMW E87', 'faro bmw e87'],
+        ['alternador Audi A4 2.0 TDI', 'alternador audi a4 2.0 tdi'],
+        ['mo.tor BMW', 'motor bmw'],
+        ['  MOTOR---BMW  ', 'motor bmw'],
+        ['válvula / presión', 'valvula presion'],
+        ['motor,,, BMW!!!', 'motor bmw'],
+        ['motor___BMW', 'motor bmw'],
+    ])('normalizes text search %s as %s', (query, expected) => {
+        expect(normalizeSearchQuery(query)).toBe(expected)
     })
 })
