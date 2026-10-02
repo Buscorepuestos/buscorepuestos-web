@@ -203,13 +203,13 @@ export default function SearchBar(props: SearchBarProps) {
         }))
         const categories: FlatSuggestion[] = results.categories.map(c => ({
             label: c.name,
-            sublabel: `${c.count} piezas`,
+            sublabel: 'Buscar por categoría',
             type: 'category' as const,
             count: c.count,
         }))
         const brands: FlatSuggestion[] = results.brands.map(b => ({
             label: `${props.value.trim()} ${b.name}`.trim(),
-            sublabel: `${b.count} productos`,
+            sublabel: 'Buscar con esta marca',
             type: 'brand' as const,
             count: b.count,
         }))
@@ -434,13 +434,12 @@ export default function SearchBar(props: SearchBarProps) {
                                             iconBg="bg-blue-50"
                                             label={<Highlight text={part.title} query={props.value} />}
                                             sublabel={[part.subcategory, part.brand].filter(Boolean).join(' · ')}
-                                            badge={part.count > 1 ? `${part.count} disponibles` : '1 disponible'}
                                             isActive={activeIndex === i}
                                             onSelect={() => selectSuggestion(part.title)}
                                         />
                                     ))}
                                     <SeeMoreLink
-                                        label={`Ver ${results.categories[0]?.count ?? ''} resultados en ${results.parts[0]?.subcategory ?? 'esta categoría'} →`}
+                                        label={`Ver resultados para “${props.value.trim()}” →`}
                                         query={props.value}
                                         onSelect={selectSuggestion}
                                         />
@@ -458,7 +457,7 @@ export default function SearchBar(props: SearchBarProps) {
                                             icon={<CategoryIcon />}
                                             iconBg="bg-gray-100"
                                             label={<Highlight text={cat.name} query={props.value} />}
-                                            sublabel={`${cat.count} piezas disponibles`}
+                                            sublabel="Buscar por categoría"
                                             isActive={activeIndex === partsEnd + i}
                                             onSelect={() => selectSuggestion(cat.name)}
                                         />
@@ -488,7 +487,6 @@ export default function SearchBar(props: SearchBarProps) {
                                                     }`}
                                             >
                                                 <Highlight text={brand.name} query={props.value} />
-                                                <span className="text-gray-400 ml-1">· {brand.count}</span>
                                             </button>
                                         ))}
                                     </div>

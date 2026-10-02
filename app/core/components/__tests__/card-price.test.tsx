@@ -55,4 +55,18 @@ describe('CardPrice component', () => {
         expect(positions.every(position => position >= 0)).toBe(true)
         expect(positions).toEqual([...positions].sort((a, b) => a - b))
     })
+
+    test('uses a compact fixed height only when rendered in a carousel', () => {
+        const props = { title: 'Alternador', reference: '06H903017', price: 500, image: '/alternador.jpg' }
+        const { rerender } = render(<CardPrice {...props} compact />)
+        let article = screen.getByRole('article')
+
+        expect(article.className).toContain('h-[470px]')
+        expect(screen.getByRole('link').className).toContain('h-auto')
+
+        rerender(<CardPrice {...props} />)
+        article = screen.getByRole('article')
+        expect(article.className).toContain('h-full')
+        expect(article.className).not.toContain('h-[470px]')
+    })
 })

@@ -615,9 +615,14 @@ export default function Home() {
 						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 					</div>
 				) : (
-					<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+					<Slider
+						breakpoints={breakPointsCardPrices}
+						isMobile={isMobile}
+						height={isMobile ? 500 : 510}
+						maxWidth={isMobile ? 'calc(100vw - 24px)' : 'calc(100vw - 96px)'}
+					>
 						{latestProducts.map((product, index) => (
-							<SwiperSlide key={index} className="flex justify-center items-center">
+							<SwiperSlide key={index} className="flex justify-center items-start pt-1">
 								<CardPrice
 									title={product.title}
 									reference={product.mainReference || ''}
@@ -632,6 +637,7 @@ export default function Home() {
 									location={product.distributorProvince}
 									condition={product.condition || getProductCondition(product.isNewProduct)}
 									availability={getProductAvailability(product.stock)}
+									compact
 								/>
 							</SwiperSlide>
 						))}
@@ -712,9 +718,14 @@ export default function Home() {
 						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 					</div>
 				) : (
-					<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+					<Slider
+						breakpoints={breakPointsCardPrices}
+						isMobile={isMobile}
+						height={isMobile ? 500 : 510}
+						maxWidth={isMobile ? 'calc(100vw - 24px)' : 'calc(100vw - 96px)'}
+					>
 						{randomProducts.map((product) => (
-							<SwiperSlide key={product._id} className="flex justify-center items-center">
+							<SwiperSlide key={product._id} className="flex justify-center items-start pt-1">
 								<CardPrice
 									title={product.title}
 									reference={product.mainReference || ''}
@@ -729,6 +740,7 @@ export default function Home() {
 									location={product.distributorProvince}
 									condition={product.condition || getProductCondition(product.isNewProduct)}
 									availability={getProductAvailability(product.stock)}
+									compact
 								/>
 							</SwiperSlide>
 						))}

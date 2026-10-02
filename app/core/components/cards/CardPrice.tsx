@@ -27,6 +27,7 @@ export interface CardPriceProps {
 	availability?: string
 	shippingIncluded?: boolean
 	hideRating?: boolean
+	compact?: boolean
 }
 
 export default function CardPrice(props: CardPriceProps) {
@@ -40,8 +41,12 @@ export default function CardPrice(props: CardPriceProps) {
 	const isAvailable = props.availability === 'Disponible'
 
 	return (
-		<Link href={props.id ? `/producto/${props.id}` : '#'} className="block h-full" aria-label={`Ver ${props.title}`}>
-			<article className="w-full max-w-[207px] h-full flex flex-col pb-[18px] gap-1 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl transition duration-300 ease-in-out border border-gray-100">
+		<Link
+			href={props.id ? `/producto/${props.id}` : '#'}
+			className={`block ${props.compact ? 'h-auto' : 'h-full'}`}
+			aria-label={`Ver ${props.title}`}
+		>
+			<article className={`w-full max-w-[207px] flex flex-col pb-[18px] gap-1 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl transition duration-300 ease-in-out border border-gray-100 ${props.compact ? 'h-[470px] mobile:h-[465px]' : 'h-full'}`}>
 				<Image
 					unoptimized
 					src={imgSrc}
