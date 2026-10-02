@@ -112,6 +112,19 @@ describe('getAutocomplete', () => {
 		)
 	})
 
+	test('normalizes punctuation and casing in text autocomplete requests', async () => {
+		(api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+			data: { parts: [], categories: [], brands: [], references: [] },
+		})
+
+		await getAutocomplete('  mo.tor---BMW  ')
+
+		expect(api.get).toHaveBeenCalledWith(
+			'/products/autocomplete?q=motor%20bmw',
+			expect.objectContaining({ signal: undefined }),
+		)
+	})
+
 	test('returns safe empty collections for a malformed payload', async () => {
 		(api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
 			data: { references: null },
