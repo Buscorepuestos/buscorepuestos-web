@@ -12,6 +12,8 @@ import '../tienda.css'
 import { fetchProducts, setCurrentPage, restoreSearchResults } from '../../redux/features/productSearchSlice'
 import { useUserLocation } from '../../hooks/useUserLoaction'
 import FilterTag from '../../core/components/filterTag/FilterTag'
+import { parseProductSortOrder, ProductSortOrder, shouldShowSearchFallback } from '../searchUiState'
+import { formatVehicleDescription, getProductAvailability, getProductCondition } from '../../lib/productPresentation'
 
 export default function Store({ params }: { params: Promise<{ search: string }> }) {
     const skipNextFetch = useRef(false);
@@ -23,6 +25,8 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
         searchResults: products,
         loading: loadingSearch, // Renombrado para evitar conflicto con el estado local 'loading'
         error,
+        status: searchStatus,
+        hasCompletedSearch,
         currentPage,
         totalPages
     } = useAppSelector(state => state.productSearch);
@@ -35,13 +39,14 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
 
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'proximity' | null>(null);
+    const [sortOrder, setSortOrder] = useState<ProductSortOrder>(null);
     const { province: userProvince, requestLocation } = useUserLocation();
 
     // Estados de UI
     const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null);
     const [isPreparingSearch, setIsPreparingSearch] = useState(true);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+    const activeSearchRequest = useRef<{ abort: () => void } | null>(null);
 
     // --- EFECTOS ---
 
@@ -76,20 +81,25 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
             setIsPreparingSearch(false);
             sessionStorage.removeItem('storeParamSearchResults');
         }
-    }, []);
+    }, [dispatch]);
 
     // Efecto #2: El motor de búsqueda central. Se ejecuta cuando CUALQUIER filtro cambia.
     useEffect(() => {
+        let shouldUpdatePreparingState = true;
+
         if (skipNextFetch.current) {
             skipNextFetch.current = false;
             return;
         }
+
+        setIsPreparingSearch(true);
         // Cancelamos el debounce anterior si existe
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
         // Establecemos un nuevo debounce para evitar llamadas excesivas a la API
         debounceTimer.current = setTimeout(() => {
-            dispatch(fetchProducts({
+            activeSearchRequest.current?.abort();
+            const request = dispatch(fetchProducts({
                 searchTerm: inputValue.trim(),
                 page: currentPage,
                 sortOrder,
@@ -98,7 +108,11 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                 brand: selectedBrand,
                 model: selectedModel,
                 year: selectedYear,
-            })).finally(() => setIsPreparingSearch(false));
+            }));
+            activeSearchRequest.current = request;
+            request.finally(() => {
+                if (shouldUpdatePreparingState) setIsPreparingSearch(false);
+            });
 
             // Resetear URL a /tienda cuando el input queda vacío
             if (!inputValue.trim()) {
@@ -109,7 +123,9 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
 
         // Función de limpieza para cancelar el timer si el componente se desmonta
         return () => {
+            shouldUpdatePreparingState = false;
             if (debounceTimer.current) clearTimeout(debounceTimer.current);
+            activeSearchRequest.current?.abort();
         };
     }, [dispatch, inputValue, currentPage, sortOrder, userProvince, selectedSubcategory, selectedBrand, selectedModel, selectedYear]);
 
@@ -176,7 +192,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     };
 
     const handleSortOrderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSortOrder(event.target.value as 'asc' | 'desc' | 'proximity' | null);
+        setSortOrder(parseProductSortOrder(event.target.value));
         dispatch(setCurrentPage(1));
     };
 
@@ -188,10 +204,6 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
         }));
         setLoadingPurchase(productId);
         router.push(`/producto/${productId}`);
-    };
-
-    const cleanValue = (text: string) => {
-        return text ? ` ${text.replace('-', '')}` : '';
     };
 
     const handleClearSearch = () => {
@@ -214,6 +226,12 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     };
 
     const shouldShowFiltersAndSort = products.length > 0 || loadingSearch || isPreparingSearch;
+    const showSearchFallback = shouldShowSearchFallback({
+        hasCompletedSearch,
+        isSearching: loadingSearch || isPreparingSearch,
+        resultCount: products.length,
+        status: searchStatus,
+    });
 
     const handleSuggestionSelect = (suggestion: string) => {
         setInputValue(suggestion);      // actualiza el input
@@ -259,6 +277,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                             borderWidth={'2px'}
                             onClear={handleClearSearch} // NUEVO: Función para limpiar la búsqueda
                             onSuggestionSelect={handleSuggestionSelect} // NUEVO: Prop para manejar la selección de sugerencias
+                            isLoading={loadingSearch || isPreparingSearch}
                         />
                     </div>
                     <div className='mobile:w-full mobile:flex mobile:justify-between mobile:items-center mobile:px-4'>
@@ -286,7 +305,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                                         value={sortOrder || ''}
                                         onChange={handleSortOrderChange}
                                     >
-                                        <option disabled value="">Ordenar por</option>
+                                        <option value="">Relevancia</option>
                                         <option value="proximity" disabled={!userProvince}>
                                             Proximidad (más cercanos)
                                         </option>
@@ -310,32 +329,35 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
                     {loadingSearch || isPreparingSearch ? (
                         <div className="flex justify-center my-4">
                             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
+                            <span className="ml-2">Buscando...</span>
                         </div>
-                    ) : error ? (
+                    ) : searchStatus === 'failed' ? (
                         <p className="text-center text-red-500">Error: {error}</p>
                     ) : (
                         <>
                             {products.length > 0 ? (
-                                <section className={'grid grid-cols-4 grid-rows-4 tablet:grid-cols-3 tablet:grid-rows-3 mobile:grid-cols-2 mobile:grid-rows-2'}>
+                                <section className="grid grid-cols-4 tablet:grid-cols-3 mobile:grid-cols-2 gap-x-6 gap-y-8 mobile:gap-x-3 mobile:gap-y-5 items-stretch justify-items-center">
                                     {products.map((product: any) => (
                                         <CardPrice
                                             key={product._id}
                                             title={product.title}
                                             reference={product.mainReference || ''}
-                                            description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+                                            description={formatVehicleDescription({ brand: product.brand, model: product.articleModel, year: product.year })}
                                             price={product?.buscorepuestosPrice || 0}
                                             image={product.images?.[0] || '/nodisponible.png'}
                                             handle={() => handleProductClick(product._id)}
                                             id={product._id}
                                             loading={loadingPurchase === product._id}
                                             location={product.distributorProvince}
+                                            condition={product.condition || getProductCondition(product.isNewProduct)}
+                                            availability={getProductAvailability(product.stock)}
                                             shippingIncluded={true}
                                         />
                                     ))}
                                 </section>
-                            ) : (
+                            ) : showSearchFallback ? (
                                 <NotFoundInStore />
-                            )}
+                            ) : null}
                         </>
                     )}
                     {

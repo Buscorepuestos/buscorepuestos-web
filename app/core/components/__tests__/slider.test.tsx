@@ -28,5 +28,18 @@ describe('Slidera component', () => {
 		const slider = screen.getByRole('region') // Assuming Swiper component renders with role="region"
 		expect(slider.style.height).toBe('550px')
 		expect(slider.style.maxWidth).toBe('100vw')
+		expect(slider.style.marginInline).toBe('auto')
+	})
+
+	test('centers a slider that uses a constrained width', () => {
+		render(
+			<Slider maxWidth="calc(100vw - 96px)">
+				<div>Centered slide</div>
+			</Slider>
+		)
+
+		const slider = screen.getByRole('region')
+		expect(slider.style.maxWidth).toBe('calc(100vw - 96px)')
+		expect(slider.style.marginInline).toBe('auto')
 	})
 })

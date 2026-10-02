@@ -17,6 +17,7 @@ export interface IProductMongoose {
 	images: string[];
 	url: string;
 	distributor?: string;
+	distributorProvince?: string;
 	budgets?: string[];
 	stock?: boolean;
 	distributorReference: string;
@@ -44,6 +45,7 @@ export interface IProductMongoose {
 	brand: string;
 	articleModel: string;
 	isNewProduct: boolean;
+	condition?: string;
 	km?: number;
 	fuel?: string;
 	discountPercent?: number;

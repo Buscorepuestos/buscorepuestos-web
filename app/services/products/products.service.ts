@@ -61,12 +61,18 @@ export const updateMetasyncProduct = async (id: string, data: any): Promise<Axio
 	}
 }
 
-export const getAutocomplete = async (query: string): Promise<AutocompleteResults> => {
+export const getAutocomplete = async (
+	query: string,
+	signal?: AbortSignal
+): Promise<AutocompleteResults> => {
 	if (query.trim().length < 2) return EMPTY_AUTOCOMPLETE;
 	try {
-		const res = await api.get(`/products/autocomplete?q=${encodeURIComponent(query)}`);
+		const res = await api.get(`/products/autocomplete?q=${encodeURIComponent(query)}`, {
+			signal,
+		});
 		return res.data ?? EMPTY_AUTOCOMPLETE;
-	} catch {
+	} catch (error) {
+		if (signal?.aborted) throw error;
 		return EMPTY_AUTOCOMPLETE;
 	}
 };

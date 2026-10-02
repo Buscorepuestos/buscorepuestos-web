@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { useAutocomplete } from '../../hooks/useAutocomplete'
+import { isReferenceSearch } from '../../lib/searchQuery'
 
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 
@@ -55,32 +56,12 @@ function Highlight({ text, query }: { text: string; query: string }) {
     )
 }
 
-// ── Helper: detección de referencia técnica ───────────────────────────────────
-
-function isReferenceSearch(term: string): boolean {
-    if (!term || term.trim().length < 6) return false
-    const t = term.trim()
-    const onlyNumbers = /^\d{6,}$/
-    const specificPattern = /^[A-Za-z0-9]+[\-\.][A-Za-z0-9]+/
-    const mixedPattern = /^[A-Za-z0-9\-\.]+$/
-    const hasNumbers = /\d/
-    const hasLetters = /[A-Za-z]/
-    if (onlyNumbers.test(t)) return true
-    if (specificPattern.test(t)) return true
-    if (
-        mixedPattern.test(t) &&
-        hasNumbers.test(t) &&
-        hasLetters.test(t) &&
-        (t.match(/\d/g) || []).length / t.length >= 0.3
-    ) return true
-    return false
-}
-
 // ── Componente principal ──────────────────────────────────────────────────────
 
 export default function SearchBar(props: SearchBarProps) {
     const {
         results,
+        isLoading: isAutocompleteLoading,
         isOpen,
         closeDropdown,
         openDropdown,
@@ -222,13 +203,13 @@ export default function SearchBar(props: SearchBarProps) {
         }))
         const categories: FlatSuggestion[] = results.categories.map(c => ({
             label: c.name,
-            sublabel: `${c.count} piezas`,
+            sublabel: 'Buscar por categoría',
             type: 'category' as const,
             count: c.count,
         }))
         const brands: FlatSuggestion[] = results.brands.map(b => ({
             label: `${props.value.trim()} ${b.name}`.trim(),
-            sublabel: `${b.count} productos`,
+            sublabel: 'Buscar con esta marca',
             type: 'brand' as const,
             count: b.count,
         }))
@@ -293,6 +274,7 @@ export default function SearchBar(props: SearchBarProps) {
 
     // ¿Mostrar el dropdown de resultados?
     const showResults = mounted && isFocused && isOpen && flatList.length > 0
+    const showAutocompleteLoading = mounted && isFocused && isAutocompleteLoading && props.value.trim().length >= 2
 
     // Índice de inicio de cada grupo dentro del flatList (solo cuando hay resultados)
     const partsEnd = results.parts.length
@@ -325,7 +307,7 @@ export default function SearchBar(props: SearchBarProps) {
                 value={props.value}
                 onChange={props.onChange}
                 onKeyDown={handleKeyDown}
-                disabled={props.isLoading}
+                aria-busy={props.isLoading || undefined}
                 onFocus={() => {
                     trackSearchInteraction()
                     setIsFocused(true)
@@ -382,7 +364,7 @@ export default function SearchBar(props: SearchBarProps) {
             {/* ══════════════════════════════════════════════════════════════
                 PORTAL — dropdown flotante (resultados O recientes)
             ══════════════════════════════════════════════════════════════ */}
-            {mounted && (showResults || showRecents) && createPortal(
+            {mounted && (showResults || showRecents || showAutocompleteLoading) && createPortal(
                 <div
                     style={{
                         position: 'fixed',
@@ -394,8 +376,19 @@ export default function SearchBar(props: SearchBarProps) {
                     }}
                     className="bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-y-auto overscroll-contain"
                 >
+                    {showAutocompleteLoading && !showResults && (
+                        <div
+                            className="flex items-center gap-3 px-4 py-3 text-sm text-gray-500"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#12B1BB] border-t-transparent" />
+                            Buscando sugerencias…
+                        </div>
+                    )}
+
                     {/* ── Panel de búsquedas recientes ─────────────────── */}
-                    {showRecents && !showResults && (
+                    {showRecents && !showResults && !showAutocompleteLoading && (
                         <>
                             <div className="flex items-center justify-between px-4 pt-3 pb-1">
                                 <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
@@ -441,13 +434,12 @@ export default function SearchBar(props: SearchBarProps) {
                                             iconBg="bg-blue-50"
                                             label={<Highlight text={part.title} query={props.value} />}
                                             sublabel={[part.subcategory, part.brand].filter(Boolean).join(' · ')}
-                                            badge={part.count > 1 ? `${part.count} disponibles` : '1 disponible'}
                                             isActive={activeIndex === i}
                                             onSelect={() => selectSuggestion(part.title)}
                                         />
                                     ))}
                                     <SeeMoreLink
-                                        label={`Ver ${results.categories[0]?.count ?? ''} resultados en ${results.parts[0]?.subcategory ?? 'esta categoría'} →`}
+                                        label={`Ver resultados para “${props.value.trim()}” →`}
                                         query={props.value}
                                         onSelect={selectSuggestion}
                                         />
@@ -465,7 +457,7 @@ export default function SearchBar(props: SearchBarProps) {
                                             icon={<CategoryIcon />}
                                             iconBg="bg-gray-100"
                                             label={<Highlight text={cat.name} query={props.value} />}
-                                            sublabel={`${cat.count} piezas disponibles`}
+                                            sublabel="Buscar por categoría"
                                             isActive={activeIndex === partsEnd + i}
                                             onSelect={() => selectSuggestion(cat.name)}
                                         />
@@ -495,7 +487,6 @@ export default function SearchBar(props: SearchBarProps) {
                                                     }`}
                                             >
                                                 <Highlight text={brand.name} query={props.value} />
-                                                <span className="text-gray-400 ml-1">· {brand.count}</span>
                                             </button>
                                         ))}
                                     </div>

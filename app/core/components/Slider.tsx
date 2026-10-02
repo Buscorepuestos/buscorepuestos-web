@@ -47,7 +47,7 @@ export default function slider(props: SliderProps) {
 					clickable: true
 				}}
 				modules={[Grid, Pagination]}
-				style={{ height: height, maxWidth }}
+				style={{ height: height, maxWidth, marginInline: 'auto' }}
 				breakpoints={breakpoints}
 				grid={isMobile ? grid : {}}
 				role='region'

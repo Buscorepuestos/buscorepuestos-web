@@ -6,6 +6,7 @@ import CardInfo from '@/app/core/components/cards/CardInfo'
 import SearchBar from '@/app/core/components/SearchBar'
 import Slider from '@/app/core/components/Slider'
 import CardPrice from '@/app/core/components/cards/CardPrice'
+import { formatVehicleDescription, getProductAvailability, getProductCondition } from '@/app/lib/productPresentation'
 import CardValoration from '@/app/core/components/cards/CardValoration'
 import CardReview from './core/components/cards/CardReview'
 import TagBanner from './core/components/tags/TagBanner'
@@ -261,10 +262,6 @@ export default function Home() {
 		dispatch({ type: 'auth/checkUserStatus' });
 	}, [dispatch]);
 
-
-	const cleanValue = (text: string) => {
-		return `${' ' + text.replace('-', '')}`
-	}
 
 	const handle = (productId: string) => {
 		setLoadingPurchase(productId)
@@ -618,13 +615,18 @@ export default function Home() {
 						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 					</div>
 				) : (
-					<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+					<Slider
+						breakpoints={breakPointsCardPrices}
+						isMobile={isMobile}
+						height={isMobile ? 500 : 510}
+						maxWidth={isMobile ? 'calc(100vw - 24px)' : 'calc(100vw - 96px)'}
+					>
 						{latestProducts.map((product, index) => (
-							<SwiperSlide key={index} className="flex justify-center items-center">
+							<SwiperSlide key={index} className="flex justify-center items-start pt-1">
 								<CardPrice
 									title={product.title}
 									reference={product.mainReference || ''}
-									description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+									description={formatVehicleDescription({ brand: product.brand, model: product.articleModel, year: product.year })}
 									price={product.buscorepuestosPrice || 0}
 									image={product.images?.[0] || '/nodisponible.png'}
 									handle={() => handle(product._id)}
@@ -632,6 +634,10 @@ export default function Home() {
 									loading={loadingPurchase === product._id}
 									shippingIncluded={true}
 									hideRating={true}
+									location={product.distributorProvince}
+									condition={product.condition || getProductCondition(product.isNewProduct)}
+									availability={getProductAvailability(product.stock)}
+									compact
 								/>
 							</SwiperSlide>
 						))}
@@ -712,13 +718,18 @@ export default function Home() {
 						<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin"></div>
 					</div>
 				) : (
-					<Slider breakpoints={breakPointsCardPrices} isMobile={isMobile}>
+					<Slider
+						breakpoints={breakPointsCardPrices}
+						isMobile={isMobile}
+						height={isMobile ? 500 : 510}
+						maxWidth={isMobile ? 'calc(100vw - 24px)' : 'calc(100vw - 96px)'}
+					>
 						{randomProducts.map((product) => (
-							<SwiperSlide key={product._id} className="flex justify-center items-center">
+							<SwiperSlide key={product._id} className="flex justify-center items-start pt-1">
 								<CardPrice
 									title={product.title}
 									reference={product.mainReference || ''}
-									description={`${cleanValue(product.brand)}${cleanValue(product.articleModel)}${cleanValue(product.year.toString())}`}
+									description={formatVehicleDescription({ brand: product.brand, model: product.articleModel, year: product.year })}
 									price={product.buscorepuestosPrice || 0}
 									image={product.images?.[0] || '/nodisponible.png'}
 									handle={() => handle(product._id)}
@@ -726,6 +737,10 @@ export default function Home() {
 									loading={loadingPurchase === product._id}
 									shippingIncluded={true}
 									hideRating={true}
+									location={product.distributorProvince}
+									condition={product.condition || getProductCondition(product.isNewProduct)}
+									availability={getProductAvailability(product.stock)}
+									compact
 								/>
 							</SwiperSlide>
 						))}
