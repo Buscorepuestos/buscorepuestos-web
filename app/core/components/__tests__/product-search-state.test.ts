@@ -82,6 +82,15 @@ describe('product search pagination', () => {
 		expect(params.get('q')).toBe('SLV7700110484')
 	})
 
+	test('normalizes punctuation and casing in text searches sent to the API', () => {
+		const params = buildProductSearchParams({
+			searchTerm: '  mo.tor---BMW  ',
+			page: 1,
+		})
+
+		expect(params.get('q')).toBe('motor bmw')
+	})
+
     test('sends the selected page together with the active search and filters', () => {
         const params = buildProductSearchParams({
             searchTerm: 'faro',
