@@ -99,6 +99,19 @@ describe('getAutocomplete', () => {
 		])
 	})
 
+	test('requests autocomplete with a compact reference while preserving display data', async () => {
+		(api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+			data: { parts: [], categories: [], brands: [], references: [] },
+		})
+
+		await getAutocomplete('SLV77 00110 484')
+
+		expect(api.get).toHaveBeenCalledWith(
+			'/products/autocomplete?q=SLV7700110484',
+			expect.objectContaining({ signal: undefined }),
+		)
+	})
+
 	test('returns safe empty collections for a malformed payload', async () => {
 		(api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
 			data: { references: null },
