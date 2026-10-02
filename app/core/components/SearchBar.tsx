@@ -41,17 +41,18 @@ interface FlatSuggestion {
 
 // ── Helper: resalta la parte del texto que coincide con la query ──────────────
 
-function Highlight({ text, query }: { text: string; query: string }) {
-    if (!query || !text) return <>{text}</>
-    const idx = text.toLowerCase().indexOf(query.toLowerCase())
-    if (idx === -1) return <>{text}</>
+function Highlight({ text, query }: { text: unknown; query: string }) {
+    const safeText = text == null ? '' : String(text)
+    if (!query || !safeText) return <>{safeText}</>
+    const idx = safeText.toLowerCase().indexOf(query.toLowerCase())
+    if (idx === -1) return <>{safeText}</>
     return (
         <>
-            {text.slice(0, idx)}
+            {safeText.slice(0, idx)}
             <span style={{ color: '#12B1BB', fontWeight: 600 }}>
-                {text.slice(idx, idx + query.length)}
+                {safeText.slice(idx, idx + query.length)}
             </span>
-            {text.slice(idx + query.length)}
+            {safeText.slice(idx + query.length)}
         </>
     )
 }

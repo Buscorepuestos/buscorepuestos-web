@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach, test } from 'vitest'
 import api from '../../../../api/api'
 import { IProductMongoose } from '../../../../types/product'
-import { getProducts } from '../../../../services/products/products.service'
+import {
+	getAutocomplete,
+	getProducts,
+} from '../../../../services/products/products.service'
 
 // Mockea el módulo api
 vi.mock('../../../../api/api', () => ({
@@ -69,5 +72,43 @@ describe('getProducts', () => {
 		(api.get as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('API error'))
 
 		await expect(getProducts()).rejects.toThrow('API error')
+	})
+})
+
+describe('getAutocomplete', () => {
+	beforeEach(() => {
+		vi.resetAllMocks()
+	})
+
+	test('normalizes numeric references before rendering suggestions', async () => {
+		(api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+			data: {
+				parts: [],
+				categories: [],
+				brands: [],
+				references: [89004686, 'A6510703287', 'SLV7700110484'],
+			},
+		})
+
+		const results = await getAutocomplete('89004686')
+
+		expect(results.references).toEqual([
+			'89004686',
+			'A6510703287',
+			'SLV7700110484',
+		])
+	})
+
+	test('returns safe empty collections for a malformed payload', async () => {
+		(api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+			data: { references: null },
+		})
+
+		await expect(getAutocomplete('A6510703287')).resolves.toEqual({
+			parts: [],
+			categories: [],
+			brands: [],
+			references: [],
+		})
 	})
 })
