@@ -1,5 +1,6 @@
 import api from '../../api/api'
 import { AxiosResponse } from 'axios'
+import { normalizeSearchQuery } from '../../lib/searchQuery'
 
 export interface AutocompletePart {
 	title: string;
@@ -122,7 +123,8 @@ export const getAutocomplete = async (
 ): Promise<AutocompleteResults> => {
 	if (query.trim().length < 2) return EMPTY_AUTOCOMPLETE;
 	try {
-		const res = await api.get(`/products/autocomplete?q=${encodeURIComponent(query)}`, {
+		const normalizedQuery = normalizeSearchQuery(query);
+		const res = await api.get(`/products/autocomplete?q=${encodeURIComponent(normalizedQuery)}`, {
 			signal,
 		});
 		return normalizeAutocompleteResults(res.data);

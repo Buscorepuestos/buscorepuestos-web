@@ -15,10 +15,26 @@ export function isReferenceSearch(term: string): boolean {
         const shortLetterPrefixWithNumbers =
             /^[a-z]{1,4}$/i.test(tokens[0]) &&
             tokens.slice(1).every(token => /^\d+$/.test(token));
+        const mixedPrefixWithNumbers =
+            /^[a-z0-9]+$/i.test(tokens[0]) &&
+            /[a-z]/i.test(tokens[0]) &&
+            /\d/.test(tokens[0]) &&
+            tokens.slice(1).every(token => /^\d+$/.test(token));
 
-        return allNumeric || shortLetterPrefixWithNumbers;
+        return allNumeric || shortLetterPrefixWithNumbers || mixedPrefixWithNumbers;
     }
 
     const digitCount = (compact.match(/\d/g) || []).length;
     return /[a-z]/i.test(compact) && digitCount / compact.length >= 0.3;
+}
+
+/**
+ * Normaliza únicamente la consulta enviada al buscador. El valor visible en el
+ * input se conserva para no modificar lo que escribió el usuario.
+ */
+export function normalizeSearchQuery(term: string): string {
+    const trimmed = term.trim();
+    return isReferenceSearch(trimmed)
+        ? trimmed.replace(REFERENCE_SEPARATORS, '')
+        : trimmed;
 }
