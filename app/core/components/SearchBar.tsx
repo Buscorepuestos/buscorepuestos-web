@@ -84,6 +84,13 @@ export default function SearchBar(props: SearchBarProps) {
     useEffect(() => { setMounted(true) }, [])
 
     useEffect(() => {
+        if (typeof window.matchMedia !== 'function') {
+            const updateViewport = () => setIsMobileViewport(window.innerWidth <= 639)
+            updateViewport()
+            window.addEventListener('resize', updateViewport)
+            return () => window.removeEventListener('resize', updateViewport)
+        }
+
         const mediaQuery = window.matchMedia('(max-width: 639px)')
         const updateViewport = () => setIsMobileViewport(mediaQuery.matches)
 
