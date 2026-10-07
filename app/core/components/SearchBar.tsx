@@ -78,8 +78,30 @@ export default function SearchBar(props: SearchBarProps) {
     const [mounted, setMounted] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
     const [activeIndex, setActiveIndex] = useState(-1)
+    const [isMobileViewport, setIsMobileViewport] = useState(false)
+    const [areSuggestionsExpanded, setAreSuggestionsExpanded] = useState(false)
 
     useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (typeof window.matchMedia !== 'function') {
+            const updateViewport = () => setIsMobileViewport(window.innerWidth <= 639)
+            updateViewport()
+            window.addEventListener('resize', updateViewport)
+            return () => window.removeEventListener('resize', updateViewport)
+        }
+
+        const mediaQuery = window.matchMedia('(max-width: 639px)')
+        const updateViewport = () => setIsMobileViewport(mediaQuery.matches)
+
+        updateViewport()
+        mediaQuery.addEventListener('change', updateViewport)
+        return () => mediaQuery.removeEventListener('change', updateViewport)
+    }, [])
+
+    useEffect(() => {
+        setAreSuggestionsExpanded(false)
+    }, [props.value])
 
     const trackSearchInteraction = useCallback(() => {
         if (!props.analyticsEventName || hasTrackedInteraction.current) return
@@ -134,7 +156,7 @@ export default function SearchBar(props: SearchBarProps) {
                 closeDropdown()
                 return
             }
-            const isMobileViewport = window.innerWidth <= 639
+            const isMobile = window.innerWidth <= 639
             const visualViewport = window.visualViewport
             const viewportTop = visualViewport?.offsetTop ?? 0
             const viewportHeight = visualViewport?.height ?? window.innerHeight
@@ -144,18 +166,19 @@ export default function SearchBar(props: SearchBarProps) {
             const minMobileHeight = 180
 
             let top = rect.bottom + gap
-            let maxDropdownHeight = isMobileViewport
-                ? Math.max(minMobileHeight, Math.min(preferredMobileHeight, viewportBottom - top - 16))
+            const mobileHeight = areSuggestionsExpanded ? 320 : 220
+            let maxDropdownHeight = isMobile
+                ? Math.max(minMobileHeight, Math.min(mobileHeight, viewportBottom - top - 16))
                 : Math.max(260, Math.min(520, viewportBottom - top - 24))
 
-            if (isMobileViewport && props.value.trim()) {
+            if (isMobile && props.value.trim()) {
                 const spaceBelow = viewportBottom - top - 16
                 const spaceAbove = rect.top - viewportTop - gap
 
                 if (spaceBelow < minMobileHeight && spaceAbove > spaceBelow) {
                     maxDropdownHeight = Math.max(
                         minMobileHeight,
-                        Math.min(preferredMobileHeight, spaceAbove - 16)
+                        Math.min(areSuggestionsExpanded ? 320 : preferredMobileHeight, spaceAbove - 16)
                     )
                     top = Math.max(viewportTop + 12, rect.top - gap - maxDropdownHeight)
                 }
@@ -183,7 +206,7 @@ export default function SearchBar(props: SearchBarProps) {
             window.visualViewport?.removeEventListener('resize', updatePosition)
             window.visualViewport?.removeEventListener('scroll', updatePosition)
         }
-    }, [isOpen, isFocused, recentSearches.length, closeDropdown, props.value])
+    }, [isOpen, isFocused, recentSearches.length, closeDropdown, props.value, areSuggestionsExpanded])
 
     // ── Lista plana para navegación por teclado ───────────────────────────────
     const flatList = useMemo<FlatSuggestion[]>(() => {
@@ -222,6 +245,29 @@ export default function SearchBar(props: SearchBarProps) {
         return [...parts, ...categories, ...brands, ...refs]
     }, [isOpen, results, isFocused, recentSearches, props.value])
 
+    const displayedResults = useMemo(() => {
+        if (!isMobileViewport || areSuggestionsExpanded) return results
+
+        let remaining = 2
+        const take = <T,>(items: T[]) => {
+            const visible = items.slice(0, remaining)
+            remaining -= visible.length
+            return visible
+        }
+
+        return {
+            parts: take(results.parts),
+            categories: take(results.categories),
+            brands: take(results.brands),
+            references: take(results.references),
+        }
+    }, [results, isMobileViewport, areSuggestionsExpanded])
+
+    const hasMoreMobileSuggestions = isMobileViewport && flatList.length > 2
+    const keyboardList = isMobileViewport && !areSuggestionsExpanded
+        ? flatList.slice(0, 2)
+        : flatList
+
     // ── Selección de sugerencia ───────────────────────────────────────────────
     const { onSuggestionSelect } = props
     const selectSuggestion = useCallback((label: string) => {
@@ -235,7 +281,7 @@ export default function SearchBar(props: SearchBarProps) {
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowDown') {
             e.preventDefault()
-            setActiveIndex(i => Math.min(i + 1, flatList.length - 1))
+            setActiveIndex(i => Math.min(i + 1, keyboardList.length - 1))
             return
         }
         if (e.key === 'ArrowUp') {
@@ -244,8 +290,8 @@ export default function SearchBar(props: SearchBarProps) {
             return
         }
         if (e.key === 'Enter') {
-            if (activeIndex >= 0 && flatList[activeIndex]) {
-                selectSuggestion(flatList[activeIndex].label)
+            if (activeIndex >= 0 && keyboardList[activeIndex]) {
+                selectSuggestion(keyboardList[activeIndex].label)
             } else {
                 addRecentSearch(props.value)
                 closeDropdown()
@@ -425,10 +471,10 @@ export default function SearchBar(props: SearchBarProps) {
                     {showResults && (
                         <>
                             {/* Grupo: Piezas */}
-                            {results.parts.length > 0 && (
+                            {displayedResults.parts.length > 0 && (
                                 <>
                                     <SectionHeader label="Piezas" />
-                                    {results.parts.map((part, i) => (
+                                    {displayedResults.parts.map((part, i) => (
                                         <SuggestionRow
                                             key={`part-${i}`}
                                             icon={<PartIcon />}
@@ -439,20 +485,22 @@ export default function SearchBar(props: SearchBarProps) {
                                             onSelect={() => selectSuggestion(part.title)}
                                         />
                                     ))}
-                                    <SeeMoreLink
-                                        label={`Ver resultados para “${props.value.trim()}” →`}
-                                        query={props.value}
-                                        onSelect={selectSuggestion}
+                                    {(!isMobileViewport || areSuggestionsExpanded) && (
+                                        <SeeMoreLink
+                                            label={`Ver resultados para “${props.value.trim()}” →`}
+                                            query={props.value}
+                                            onSelect={selectSuggestion}
                                         />
+                                    )}
                                     <Divider />
                                 </>
                             )}
 
                             {/* Grupo: Categorías */}
-                            {results.categories.length > 0 && (
+                            {displayedResults.categories.length > 0 && (
                                 <>
                                     <SectionHeader label="Categorías" />
-                                    {results.categories.map((cat, i) => (
+                                    {displayedResults.categories.map((cat, i) => (
                                         <SuggestionRow
                                             key={`cat-${i}`}
                                             icon={<CategoryIcon />}
@@ -468,11 +516,11 @@ export default function SearchBar(props: SearchBarProps) {
                             )}
 
                             {/* Grupo: Marcas */}
-                            {results.brands.length > 0 && (
+                            {displayedResults.brands.length > 0 && (
                                 <>
                                     <SectionHeader label="Marcas" />
                                     <div className="flex flex-wrap gap-2 px-3 py-2">
-                                        {results.brands.map((brand, i) => (
+                                        {displayedResults.brands.map((brand, i) => (
                                             <button
                                                 key={`brand-${i}`}
                                                 onPointerDown={(e) => {
@@ -491,15 +539,15 @@ export default function SearchBar(props: SearchBarProps) {
                                             </button>
                                         ))}
                                     </div>
-                                    {results.references.length > 0 && <Divider />}
+                                    {displayedResults.references.length > 0 && <Divider />}
                                 </>
                             )}
 
                             {/* Grupo: Referencias técnicas */}
-                            {results.references.length > 0 && (
+                            {displayedResults.references.length > 0 && (
                                 <>
                                     <SectionHeader label="Referencias técnicas" />
-                                    {results.references.map((ref, i) => (
+                                    {displayedResults.references.map((ref, i) => (
                                         <SuggestionRow
                                             key={`ref-${i}`}
                                             icon={<RefIcon />}
@@ -511,6 +559,33 @@ export default function SearchBar(props: SearchBarProps) {
                                         />
                                     ))}
                                 </>
+                            )}
+
+                            {hasMoreMobileSuggestions && (
+                                <button
+                                    type="button"
+                                    aria-expanded={areSuggestionsExpanded}
+                                    onPointerDown={(e) => {
+                                        e.preventDefault()
+                                        setAreSuggestionsExpanded(expanded => !expanded)
+                                        setActiveIndex(-1)
+                                    }}
+                                    className="sticky bottom-0 z-10 w-full flex items-center justify-center gap-1.5 border-t border-gray-100 bg-white px-4 py-2.5 text-xs font-medium text-[#12B1BB] shadow-[0_-4px_10px_rgba(0,0,0,0.04)] hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#12B1BB]"
+                                >
+                                    {areSuggestionsExpanded
+                                        ? 'Ver menos sugerencias'
+                                        : `Ver ${flatList.length - 2} sugerencias más`}
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        aria-hidden="true"
+                                        className={`transition-transform ${areSuggestionsExpanded ? 'rotate-180' : ''}`}
+                                    >
+                                        <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </button>
                             )}
 
                             {/* Footer con atajos */}
