@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, test } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, test, vi } from 'vitest'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import CardPrice from '../cards/CardPrice'
 
 const renderCard = () => render(
@@ -32,11 +32,26 @@ describe('CardPrice component', () => {
     })
 
     test('links the complete card to the product', () => {
-        renderCard()
+        const handle = vi.fn()
+        render(
+            <CardPrice
+                id="product-1"
+                title="Alternador"
+                reference="06H903017"
+                price={500}
+                image="/alternador.jpg"
+                handle={handle}
+            />
+        )
 
-        expect(screen.getByRole('link', { name: 'Ver Alternador' }).getAttribute('href')).toBe('/producto/product-1')
+        const productLink = screen.getByRole('link', { name: 'Ver Alternador' })
+        expect(productLink.getAttribute('href')).toBe('/producto/product-1')
         expect(screen.getByRole('img', { name: 'Fotografía de Alternador' })).toBeDefined()
         expect(screen.getByRole('button', { name: 'Ver producto' })).toBeDefined()
+
+        productLink.addEventListener('click', event => event.preventDefault())
+        fireEvent.click(productLink)
+        expect(handle).toHaveBeenCalledTimes(1)
     })
 
     test('always shows a location row when the backend has no province', () => {

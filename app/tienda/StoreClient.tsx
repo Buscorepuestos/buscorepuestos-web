@@ -3,7 +3,6 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import CardPrice from '../core/components/cards/CardPrice'
 import SearchBar from '../core/components/SearchBar'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { useRouter } from 'next/navigation'
 import Filters from '../core/components/filters/filters'
 import Facilities from '../core/components/facilities/Facilities'
 import NotFoundInStore from '../core/components/notFound/NotFoundInStore'
@@ -30,7 +29,6 @@ export default function Store() {
 		currentPage,
 		totalPages,
 	} = useAppSelector((state) => state.productSearch)
-	const router = useRouter()
 	const skipNextFetch = useRef(false);
 	const [inputValue, setInputValue] = useState<string>('')
 	const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
@@ -55,12 +53,19 @@ export default function Store() {
 	useEffect(() => {
 		const saved = sessionStorage.getItem('storeSearchTerm');
 		const savedResults = sessionStorage.getItem('storeSearchResults');
-		if (saved && savedResults) {
+		if (saved !== null && savedResults) {
+			const snapshot = JSON.parse(savedResults);
 			setInputValue(saved);
-			dispatch(restoreSearchResults(JSON.parse(savedResults)));
+			setSelectedSubcategory(snapshot.selectedSubcategory ?? null);
+			setSelectedBrand(snapshot.selectedBrand ?? null);
+			setSelectedModel(snapshot.selectedModel ?? null);
+			setSelectedYear(snapshot.selectedYear ?? null);
+			setSortOrder(snapshot.sortOrder ?? null);
+			dispatch(restoreSearchResults(snapshot));
 			skipNextFetch.current = true; // evitar que el efecto de búsqueda vuelva a llamar la API
 			sessionStorage.removeItem('storeSearchTerm');
 			sessionStorage.removeItem('storeSearchResults');
+			requestAnimationFrame(() => window.scrollTo({ top: snapshot.scrollY ?? 0 }));
 		}
 	}, [
 		dispatch
@@ -68,16 +73,20 @@ export default function Store() {
 
 	// Guardar búsqueda cuando el usuario navega a un producto
 	const handleProductClick = (productId: string) => {
-		if (inputValue.trim()) {
-			sessionStorage.setItem('storeSearchTerm', inputValue);
-			sessionStorage.setItem('storeSearchResults', JSON.stringify({
-				results: searchResults,
-				totalPages,
-				currentPage,
-			}));
-		}
+		sessionStorage.setItem('storeSearchTerm', inputValue);
+		sessionStorage.setItem('storeSearchResults', JSON.stringify({
+			results: searchResults,
+			totalPages,
+			currentPage,
+			hasCompletedSearch,
+			selectedSubcategory,
+			selectedBrand,
+			selectedModel,
+			selectedYear,
+			sortOrder,
+			scrollY: window.scrollY,
+		}));
 		setLoadingPurchase(productId);
-		router.push(`/producto/${productId}`);
 	};
 	useEffect(() => {
 		// Pedir la ubicación una sola vez al cargar el componente

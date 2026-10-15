@@ -92,7 +92,7 @@ const productSearchSlice = createSlice({
             state.currentPage = action.payload.currentPage;
             state.loading = false;
             state.status = 'succeeded';
-            state.hasCompletedSearch = Boolean(action.payload.hasCompletedSearch);
+            state.hasCompletedSearch = action.payload.hasCompletedSearch ?? action.payload.results.length === 0;
             state.currentRequestId = null;
         },
     },
