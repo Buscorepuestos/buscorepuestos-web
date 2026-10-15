@@ -14,6 +14,23 @@ const fulfilled = (requestId: string, searchTerm: string, data: unknown[]) => ({
 })
 
 describe('product search request state', () => {
+	test('restores whether the saved results came from an explicit search', () => {
+		const state = reducer(undefined, {
+			type: 'productSearch/restoreSearchResults',
+			payload: {
+				results: [{ _id: 'saved' }],
+				totalPages: 4,
+				currentPage: 2,
+				hasCompletedSearch: true,
+			},
+		})
+
+		expect(state.searchResults).toEqual([{ _id: 'saved' }])
+		expect(state.currentPage).toBe(2)
+		expect(state.totalPages).toBe(4)
+		expect(state.hasCompletedSearch).toBe(true)
+	})
+
     test('ignores a stale response when a newer search is active', () => {
         let state = reducer(undefined, { type: '@@init' })
 

@@ -3,7 +3,6 @@ import React, { ChangeEvent, useEffect, useRef, useState, use } from 'react'
 import CardPrice from '../../core/components/cards/CardPrice'
 import SearchBar from '../../core/components/SearchBar'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { useRouter } from 'next/navigation'
 import Filters from '../../core/components/filters/filters'
 import Facilities from '../../core/components/facilities/Facilities'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
@@ -18,7 +17,6 @@ import { formatVehicleDescription, getProductAvailability, getProductCondition }
 export default function Store({ params }: { params: Promise<{ search: string }> }) {
     const skipNextFetch = useRef(false);
     const dispatch = useAppDispatch();
-    const router = useRouter();
     const { search } = use(params)
 
     const {
@@ -76,12 +74,20 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     useEffect(() => {
         const savedResults = sessionStorage.getItem('storeParamSearchResults');
         if (savedResults) {
-            dispatch(restoreSearchResults(JSON.parse(savedResults)));
+            const snapshot = JSON.parse(savedResults);
+            setInputValue(snapshot.searchTerm ?? decodeURIComponent(search || ''));
+            setSelectedSubcategory(snapshot.selectedSubcategory ?? null);
+            setSelectedBrand(snapshot.selectedBrand ?? null);
+            setSelectedModel(snapshot.selectedModel ?? null);
+            setSelectedYear(snapshot.selectedYear ?? null);
+            setSortOrder(snapshot.sortOrder ?? null);
+            dispatch(restoreSearchResults(snapshot));
             skipNextFetch.current = true;
             setIsPreparingSearch(false);
             sessionStorage.removeItem('storeParamSearchResults');
+            requestAnimationFrame(() => window.scrollTo({ top: snapshot.scrollY ?? 0 }));
         }
-    }, [dispatch]);
+    }, [dispatch, search]);
 
     // Efecto #2: El motor de búsqueda central. Se ejecuta cuando CUALQUIER filtro cambia.
     useEffect(() => {
@@ -201,9 +207,16 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
             results: products,
             totalPages,
             currentPage,
+            hasCompletedSearch,
+            searchTerm: inputValue,
+            selectedSubcategory,
+            selectedBrand,
+            selectedModel,
+            selectedYear,
+            sortOrder,
+            scrollY: window.scrollY,
         }));
         setLoadingPurchase(productId);
-        router.push(`/producto/${productId}`);
     };
 
     const handleClearSearch = () => {
@@ -236,6 +249,7 @@ export default function Store({ params }: { params: Promise<{ search: string }> 
     const handleSuggestionSelect = (suggestion: string) => {
         setInputValue(suggestion);      // actualiza el input
         dispatch(setCurrentPage(1));    // resetea paginación
+        window.history.replaceState(null, '', `/tienda/${encodeURIComponent(suggestion.trim())}`);
         // El useEffect con debounce se encargará de lanzar la búsqueda automáticamente
     };
 
