@@ -43,6 +43,7 @@ export default function CardPrice(props: CardPriceProps) {
 	return (
 		<Link
 			href={props.id ? `/producto/${props.id}` : '#'}
+			onClick={props.handle}
 			className={`block ${props.compact ? 'h-auto' : 'h-full'}`}
 			aria-label={`Ver ${props.title}`}
 		>
@@ -133,7 +134,7 @@ export default function CardPrice(props: CardPriceProps) {
 						{props.loading ? (
 							<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent border-solid rounded-full animate-spin" aria-label="Abriendo producto" />
 						) : (
-							<Button labelName="Ver producto" onClick={props.handle} />
+							<Button labelName="Ver producto" />
 						)}
 					</div>
 				</div>

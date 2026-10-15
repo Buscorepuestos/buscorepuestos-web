@@ -265,7 +265,6 @@ export default function Home() {
 
 	const handle = (productId: string) => {
 		setLoadingPurchase(productId)
-		router.push(`/producto/${productId}`)
 	}
 
 	const handleFilterRoutes = (title: string) => {
