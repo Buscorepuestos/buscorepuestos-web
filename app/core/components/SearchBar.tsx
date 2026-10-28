@@ -72,9 +72,16 @@ export default function SearchBar(props: SearchBarProps) {
     } = useAutocomplete(props.value)
 
     const containerRef = useRef<HTMLDivElement>(null)
+    const dropdownRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const hasTrackedInteraction = useRef(false)
-    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0, maxHeight: 480 })
+    const [dropdownPos, setDropdownPos] = useState<{
+        top?: number
+        bottom?: number
+        left: number
+        width: number
+        maxHeight: number
+    }>({ top: 0, left: 0, width: 0, maxHeight: 480 })
     const [mounted, setMounted] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
     const [activeIndex, setActiveIndex] = useState(-1)
@@ -139,7 +146,12 @@ export default function SearchBar(props: SearchBarProps) {
     // ── Click fuera → cerrar ──────────────────────────────────────────────────
     useEffect(() => {
         const handler = (e: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+            const target = e.target as Node
+            if (
+                containerRef.current &&
+                !containerRef.current.contains(target) &&
+                !dropdownRef.current?.contains(target)
+            ) {
                 closeDropdown()
             }
         }
@@ -165,7 +177,8 @@ export default function SearchBar(props: SearchBarProps) {
             const preferredMobileHeight = 240
             const minMobileHeight = 180
 
-            let top = rect.bottom + gap
+            let top: number | undefined = rect.bottom + gap
+            let bottom: number | undefined
             const mobileHeight = areSuggestionsExpanded ? 320 : 220
             let maxDropdownHeight = isMobile
                 ? Math.max(minMobileHeight, Math.min(mobileHeight, viewportBottom - top - 16))
@@ -180,12 +193,16 @@ export default function SearchBar(props: SearchBarProps) {
                         minMobileHeight,
                         Math.min(areSuggestionsExpanded ? 320 : preferredMobileHeight, spaceAbove - 16)
                     )
-                    top = Math.max(viewportTop + 12, rect.top - gap - maxDropdownHeight)
+                    // Anclar el borde inferior al input. Restar maxDropdownHeight
+                    // dejaba un hueco cuando el contenido era más bajo que ese máximo.
+                    top = undefined
+                    bottom = Math.max(12, window.innerHeight - rect.top + gap)
                 }
             }
 
             setDropdownPos({
                 top,
+                bottom,
                 left: rect.left,
                 width: rect.width,
                 maxHeight: maxDropdownHeight,
@@ -413,9 +430,11 @@ export default function SearchBar(props: SearchBarProps) {
             ══════════════════════════════════════════════════════════════ */}
             {mounted && (showResults || showRecents || showAutocompleteLoading) && createPortal(
                 <div
+                    ref={dropdownRef}
                     style={{
                         position: 'fixed',
                         top: dropdownPos.top,
+                        bottom: dropdownPos.bottom,
                         left: dropdownPos.left,
                         width: dropdownPos.width,
                         maxHeight: dropdownPos.maxHeight,
@@ -442,7 +461,7 @@ export default function SearchBar(props: SearchBarProps) {
                                     Búsquedas recientes
                                 </span>
                                 <button
-                                    onMouseDown={(e) => { e.preventDefault(); clearRecentSearches() }}
+                                    onClick={clearRecentSearches}
                                     className="text-[10px] text-gray-400 hover:text-red-400 transition-colors"
                                 >
                                     Borrar
@@ -451,7 +470,7 @@ export default function SearchBar(props: SearchBarProps) {
                             {recentSearches.map((term, i) => (
                                 <div
                                     key={term}
-                                    onPointerDown={(e) => { e.preventDefault(); selectSuggestion(term) }}
+                                    onClick={() => selectSuggestion(term)}
                                     className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors ${activeIndex === i ? 'bg-blue-50' : 'hover:bg-gray-50'
                                         }`}
                                 >
@@ -523,8 +542,7 @@ export default function SearchBar(props: SearchBarProps) {
                                         {displayedResults.brands.map((brand, i) => (
                                             <button
                                                 key={`brand-${i}`}
-                                                onPointerDown={(e) => {
-                                                    e.preventDefault()
+                                                onClick={() => {
                                                     // Combina la query actual con la marca:
                                                     // "faro derecho" + "Renault" → "faro derecho Renault"
                                                     const combined = `${props.value.trim()} ${brand.name}`.trim()
@@ -566,7 +584,11 @@ export default function SearchBar(props: SearchBarProps) {
                                     type="button"
                                     aria-expanded={areSuggestionsExpanded}
                                     onPointerDown={(e) => {
+                                        // Mantener el foco en el input evita que Android cierre
+                                        // el teclado y que el dropdown desaparezca antes del click.
                                         e.preventDefault()
+                                    }}
+                                    onClick={() => {
                                         setAreSuggestionsExpanded(expanded => !expanded)
                                         setActiveIndex(-1)
                                     }}
@@ -638,7 +660,7 @@ interface SuggestionRowProps {
 function SuggestionRow({ icon, iconBg, label, sublabel, badge, isActive, onSelect }: SuggestionRowProps) {
     return (
         <div
-            onPointerDown={(e) => { e.preventDefault(); onSelect() }}
+            onClick={onSelect}
             className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer transition-colors ${isActive ? 'bg-blue-50' : 'hover:bg-gray-50'
                 }`}
         >
@@ -661,7 +683,7 @@ function SuggestionRow({ icon, iconBg, label, sublabel, badge, isActive, onSelec
 function SeeMoreLink({ label, query, onSelect }: { label: string; query: string; onSelect: (s: string) => void }) {
     return (
         <div
-            onPointerDown={(e) => { e.preventDefault(); onSelect(query) }}
+            onClick={() => onSelect(query)}
             className="px-4 py-1.5 text-[11px] text-[#12B1BB] cursor-pointer hover:text-[#0e9aa3] transition-colors"
         >
             {label}

@@ -151,10 +151,50 @@ describe('SearchBar component', () => {
 
 		const expandButton = screen.getByRole('button', { name: 'Ver 2 sugerencias más' })
 		expect(expandButton.getAttribute('aria-expanded')).toBe('false')
-		fireEvent.pointerDown(expandButton)
+		const pointerDown = new Event('pointerdown', { bubbles: true, cancelable: true })
+		expandButton.dispatchEvent(pointerDown)
+		expect(pointerDown.defaultPrevented).toBe(true)
+		fireEvent.click(expandButton)
 
 		expect(findSuggestion('FARO DERECHO TRES')).not.toBeNull()
 		expect(findSuggestion('FARO DERECHO CUATRO')).not.toBeNull()
 		expect(screen.getByRole('button', { name: 'Ver menos sugerencias' }).getAttribute('aria-expanded')).toBe('true')
+	})
+
+	test('does not select a suggestion when a mobile scroll starts on it', () => {
+		mockMobileViewport(true)
+		const onSuggestionSelect = vi.fn()
+		useAutocompleteMock.mockReturnValue({
+			results: {
+				parts: [{ title: 'FARO DERECHO UNO', subcategory: 'FARO', brand: '', year: null, count: 1 }],
+				categories: [],
+				brands: [],
+				references: [],
+			},
+			isLoading: false,
+			isOpen: true,
+			closeDropdown: vi.fn(),
+			openDropdown: vi.fn(),
+			recentSearches: [],
+			addRecentSearch: vi.fn(),
+			clearRecentSearches: vi.fn(),
+		})
+
+		render(<SearchBar value="faro" onChange={() => {}} onSuggestionSelect={onSuggestionSelect} />)
+		fireEvent.focus(screen.getByRole('textbox'))
+
+		const suggestion = screen.getByText(
+			(_content, element) => element?.textContent === 'FARO DERECHO UNO',
+			{ selector: 'div.text-sm' }
+		).closest('.cursor-pointer') as HTMLElement
+
+		fireEvent.pointerDown(suggestion, { clientY: 200 })
+		fireEvent.pointerMove(suggestion, { clientY: 120 })
+		fireEvent.pointerUp(suggestion, { clientY: 120 })
+
+		expect(onSuggestionSelect).not.toHaveBeenCalled()
+
+		fireEvent.click(suggestion)
+		expect(onSuggestionSelect).toHaveBeenCalledWith('FARO DERECHO UNO')
 	})
 })
