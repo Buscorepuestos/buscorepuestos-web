@@ -74,6 +74,7 @@ export default defineConfig({
 				'app/core/components/productInfo/productInfo.tsx',
 				'app/hooks/useRelatedProducts.ts',
 				'app/core/components/relatedProducts/RelatedProducts.tsx',
+				'app/admin/precios/PriceAdminClient.tsx',
 			],
 			reporter: ['text', 'html', 'json'],
 		},
