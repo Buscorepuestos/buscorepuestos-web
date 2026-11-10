@@ -105,6 +105,7 @@ export default function RootLayout({
 					></iframe>
 				</noscript>
 
+				<link rel="icon" href="/buscorepuestos.svg" />
 				<StoreProvider>
 					<Analytics />
 					<Header />
