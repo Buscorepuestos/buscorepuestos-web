@@ -48,6 +48,13 @@ export const metadata: Metadata = {
 		siteName: 'Buscorepuestos',
 		type: 'website',
 	},
+	icons: {
+		icon: [
+			{ url: '/buscorepuestos.svg', type: 'image/svg+xml' },
+			{ url: '/favicon.ico', sizes: 'any' },
+		],
+		shortcut: '/buscorepuestos.svg',
+	},
 }
 
 export default function RootLayout({
@@ -98,7 +105,6 @@ export default function RootLayout({
 					></iframe>
 				</noscript>
 
-				<link rel="icon" href="/buscorepuestos.svg" />
 				<StoreProvider>
 					<Analytics />
 					<Header />
