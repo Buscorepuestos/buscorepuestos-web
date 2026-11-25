@@ -49,13 +49,13 @@ export default function CardPrice(props: CardPriceProps) {
 		>
 			<article className={`w-full max-w-[207px] flex flex-col pb-[18px] gap-1 shadow-md bg-custom-white rounded-[23px] hover:shadow-2xl transition duration-300 ease-in-out border border-gray-100 ${props.compact ? 'h-[470px] mobile:h-[465px]' : 'h-full'}`}>
 				<Image
-					unoptimized
 					src={imgSrc}
 					alt={`Fotografía de ${props.title}`}
 					width={205}
 					height={140}
 					className="rounded-t-[23px] w-full h-[140px] mobile:h-[132px] object-cover object-center"
 					loading="lazy"
+					quality={60}
 					onError={() => setImgSrc(noDisponible.src)}
 				/>
 
@@ -64,10 +64,12 @@ export default function CardPrice(props: CardPriceProps) {
 						<h4 className="text-base text-dark-grey font-bold line-clamp-2 hover:underline uppercase h-[3rem] leading-6">
 							{props.title}
 						</h4>
+						{props.reference && (
 						<p className="text-sm text-gray-600 truncate w-full">
 							<span className="font-bold">Ref. </span>
-							{props.reference || 'No disponible'}
+							{props.reference}
 						</p>
+						)}
 						{props.description && (
 							<p className="text-sm text-gray-500 truncate overflow-ellipsis whitespace-nowrap max-w-[175px]" title={props.description}>
 								<span className="sr-only">Vehículo compatible: </span>
@@ -87,12 +89,14 @@ export default function CardPrice(props: CardPriceProps) {
 						)}
 						</div>
 
+					{props.location && (
 					<div className="flex w-full items-center justify-center gap-1.5 mt-1 mb-0.5 text-[#0e9aa3] uppercase">
 						<Image src="/ubication.svg" alt="" aria-hidden="true" width={18} height={18} className="w-[18px] h-[18px] shrink-0 opacity-85" />
-						<span className="text-xs leading-none font-semibold tracking-wide truncate" title={props.location || 'Ubicación por confirmar'}>
-							{props.location || 'Ubicación por confirmar'}
+						<span className="text-xs leading-none font-semibold tracking-wide truncate" title={props.location}>
+							{props.location}
 						</span>
 					</div>
+					)}
 
 					{!props.hideRating && (
 						<div className="flex w-full justify-center flex-row gap-1 mobile:gap-2 mb-1">

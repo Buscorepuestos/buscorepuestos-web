@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { getCatalogCount } from '../../../services/products/products.service'
 
-const REFRESH_INTERVAL_MS = 30_000  // refresca cada 30 segundos
 const ANIMATION_DURATION_MS = 1_800 // duración del contador animado
 
 function easeOutExpo(t: number): number {
@@ -53,13 +52,10 @@ export default function CatalogCounter() {
             }
         }
         fetchCount()
-        const interval = setInterval(fetchCount, REFRESH_INTERVAL_MS)
         return () => {
-            clearInterval(interval)
             if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
         }
     }, [])
-    console.log('Catalog count:', displayCount)
     if (displayCount === null) {
         // Skeleton mientras carga la primera vez
         return (

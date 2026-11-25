@@ -367,6 +367,7 @@ export default function SearchBar(props: SearchBarProps) {
                 className="text-title-4 flex-grow bg-transparent outline-none font-semibold pl-6 pr-14 rounded-[34px]"
                 type="text"
                 placeholder={getPlaceholder()}
+                aria-label="Buscar repuestos por nombre, referencia o marca"
                 style={{ color: '#A9A9A9' }}
                 value={props.value}
                 onChange={props.onChange}

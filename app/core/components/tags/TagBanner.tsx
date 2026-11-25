@@ -38,7 +38,7 @@ export default function TagBanner(props: {
 			zIndex: props.zIndex
 		}}>
 			<div className="desktop:max-w-80">
-				<h1 className={'desktop:text-title-2 mobile:text-xl tablet:text-xl text-center leading-none'}>{props.title}</h1>
+				<h2 className={'desktop:text-title-2 mobile:text-xl tablet:text-xl text-center leading-none'}>{props.title}</h2>
 			</div>
 			{props.children}
 		</article>

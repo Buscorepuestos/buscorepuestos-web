@@ -3,6 +3,8 @@ import { withSentryConfig } from '@sentry/nextjs';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
+        formats: ['image/avif', 'image/webp'],
+        minimumCacheTTL: 60 * 60 * 24 * 7,
         remotePatterns: [
             { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
             { protocol: 'https', hostname: 'cdn11.metasync.com' },
@@ -20,6 +22,18 @@ const nextConfig = {
                 destination: 'https://cdn.scalapay.com/widget/scalapay-widget-loader.js',
             },
         ];
+    },
+    async headers() {
+        return [{
+            source: '/:path*',
+            headers: [
+                { key: 'X-Content-Type-Options', value: 'nosniff' },
+                { key: 'X-Frame-Options', value: 'DENY' },
+                { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+                { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self), browsing-topics=()' },
+                { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+            ],
+        }];
     },
 };
 

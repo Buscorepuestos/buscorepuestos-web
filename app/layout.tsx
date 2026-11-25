@@ -8,9 +8,9 @@ import './globals.css'
 
 import { Header } from '@/app/core/components/global/header'
 import { Footer } from '@/app/core/components/global/footer'
-import Script from 'next/script'
 import FacebookPixel from './core/components/facebookPixel/FacebookPixel'
 import CookieConsentModalWrapper from './core/components/cookieConsentModal/CookieConsentModalWrapper'
+import ConsentGatedGoogleTags from './core/components/cookieConsentModal/ConsentGatedGoogleTags'
 
 const workSans = localFont({
 	src: './fonts/WorkSans_wght.ttf',
@@ -48,6 +48,8 @@ export const metadata: Metadata = {
 		siteName: 'Buscorepuestos',
 		type: 'website',
 	},
+	metadataBase: new URL('https://www.buscorepuestos.com'),
+	robots: { index: true, follow: true },
 	icons: {
 		icon: '/icon.svg',
 		shortcut: '/buscorepuestos.svg',
@@ -60,47 +62,11 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="en">
-			<head>
-				{/* Google Tag Manager Script */}
-				<Script
-					id="gtm-script"
-					strategy="afterInteractive"
-					dangerouslySetInnerHTML={{
-						__html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-				j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-				'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-				})(window,document,'script','dataLayer','GTM-TPCVDD8');`,
-					}}
-				/>
-
-			</head>
+		<html lang="es">
+			<head />
 			<body
 				className={`${bebasNeue.variable} ${workSans.variable} ${popins.variable} flex flex-col justify-center min-h-screen font-primary-font`}
 			>
-				<Script
-					src="https://www.googletagmanager.com/gtag/js?id=AW-16784645628"
-					strategy="afterInteractive"
-				/>
-				{/* Configuración de gtag */}
-				<Script id="google-ads-tag" strategy="afterInteractive">
-					{`
-						window.dataLayer = window.dataLayer || [];
-						function gtag(){dataLayer.push(arguments);}
-						gtag('js', new Date());
-						gtag('config', 'AW-16784645628');
-					`}
-				</Script>
-				{/* Google Tag Manager noscript (para casos donde JS está deshabilitado) */}
-				<noscript>
-					<iframe
-						src="https://www.googletagmanager.com/ns.html?id=GTM-TPCVDD8"
-						height="0"
-						width="0"
-						style={{ display: 'none', visibility: 'hidden' }}
-					></iframe>
-				</noscript>
 
 				<StoreProvider>
 					<Analytics />
@@ -112,6 +78,7 @@ export default function RootLayout({
 
 					{/* Envoltorio del modal */}
 					<CookieConsentModalWrapper />
+					<ConsentGatedGoogleTags />
 					<FacebookPixel />
 				</StoreProvider>
 			</body>

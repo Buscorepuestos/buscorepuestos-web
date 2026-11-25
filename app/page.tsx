@@ -1,5 +1,5 @@
 'use client'
-import React, { ChangeEvent, use, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { SwiperSlide } from 'swiper/react'
 import Banner from '@/app/core/components/Banner'
 import CardInfo from '@/app/core/components/cards/CardInfo'
@@ -7,10 +7,8 @@ import SearchBar from '@/app/core/components/SearchBar'
 import Slider from '@/app/core/components/Slider'
 import CardPrice from '@/app/core/components/cards/CardPrice'
 import { formatVehicleDescription, getProductAvailability, getProductCondition } from '@/app/lib/productPresentation'
-import CardValoration from '@/app/core/components/cards/CardValoration'
 import CardReview from './core/components/cards/CardReview'
 import TagBanner from './core/components/tags/TagBanner'
-import Dropdown from './core/components/Dropdown'
 import CatalogCounter from './core/components/catalogCounter/CatalogCounter'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
@@ -23,42 +21,42 @@ import Star from './core/components/svg/star'
 const cardInfoPropsArray = [
 	{
 		title: 'Interior\nHabitáculo',
-		image: '/Interior.svg',
+		image: '/interior.avif',
 		href: '#',
 	},
 	{
 		title: 'Carrocería\ny lunas',
-		image: '/Carroceria.svg',
+		image: '/carroceria.avif',
 		href: '#',
 	},
 	{
 		title: 'Faros y\npilotos',
-		image: '/Faros.svg',
+		image: '/faros.avif',
 		href: '#',
 	},
 	{
 		title: 'Sistema de\nseguridad',
-		image: '/Seguridad.svg',
+		image: '/seguridad.avif',
 		href: '#',
 	},
 	{
 		title: 'Electrónica\ny electricidad',
-		image: '/Electricidad.svg',
+		image: '/electricidad.avif',
 		href: '#',
 	},
 	{
 		title: 'Suspensión,\nEjes y Dirección',
-		image: '/Suspension.svg',
+		image: '/suspension.avif',
 		href: '#',
 	},
 	{
 		title: 'Cajas de\ncambio y\ntransmisión',
-		image: '/Transmision.svg',
+		image: '/transmision.avif',
 		href: '#',
 	},
 	{
 		title: 'Refrigeración y\naire\nacondicionado',
-		image: '/Refrigeracion.svg',
+		image: '/refrigeracion.avif',
 		href: '#',
 	},
 ]
@@ -195,6 +193,8 @@ export default function Home() {
 	const [randomProducts, setRandomProducts] = useState<IProductMongoose[]>([]);
 	const [loadingLatest, setLoadingLatest] = useState(true);
 	const [loadingRandom, setLoadingRandom] = useState(true);
+	const [showLatest, setShowLatest] = useState(false);
+	const [showRandom, setShowRandom] = useState(false);
 	const [loadingPurchase, setLoadingPurchase] = useState<string | null>(null);
 	const [reviews, setReviews] = useState<any[]>([]);
 
@@ -230,26 +230,39 @@ export default function Home() {
 	}
 
 	useEffect(() => {
+		const loadBelowFoldSections = () => {
+			setShowLatest(true);
+			setShowRandom(true);
+		};
+		const timer = window.setTimeout(loadBelowFoldSections, 1200);
+		window.addEventListener('scroll', loadBelowFoldSections, { once: true, passive: true });
+		return () => {
+			window.clearTimeout(timer);
+			window.removeEventListener('scroll', loadBelowFoldSections);
+		};
+	}, []);
+
+	useEffect(() => {
 		const fetchHomeProducts = async () => {
 			// Usamos Promise.allSettled para que si una petición falla, la otra pueda continuar
 			const [latestResult, randomResult] = await Promise.allSettled([
-				api.get('/products/latest?limit=12'),
-				api.get('/products/random?limit=12')
+				showLatest ? api.get('/products/latest?limit=8') : Promise.reject(new Error('deferred')),
+				showRandom ? api.get('/products/random?limit=8') : Promise.reject(new Error('deferred'))
 			]);
 
 			if (latestResult.status === 'fulfilled') {
 				setLatestProducts(latestResult.value.data);
-			} else {
+			} else if (showLatest) {
 				console.error("Error fetching latest products:", latestResult.reason);
 			}
-			setLoadingLatest(false);
+			if (showLatest) setLoadingLatest(false);
 
 			if (randomResult.status === 'fulfilled') {
 				setRandomProducts(randomResult.value.data);
-			} else {
+			} else if (showRandom) {
 				console.error("Error fetching random products:", randomResult.reason);
 			}
-			setLoadingRandom(false);
+			if (showRandom) setLoadingRandom(false);
 		};
 
 		const fetchReviews = async () => {
@@ -260,7 +273,7 @@ export default function Home() {
 
 		fetchHomeProducts();
 		dispatch({ type: 'auth/checkUserStatus' });
-	}, [dispatch]);
+	}, [dispatch, showLatest, showRandom]);
 
 
 	const handle = (productId: string) => {
@@ -426,11 +439,11 @@ export default function Home() {
 				extraCss={'mobile:hidden tablet:hidden'}
 			>
 				<div className="flex justify-center">
-					<h1 className="content-center text-8xl text-custom-white text-left ml-[150px] max-w-[450px] mobile:max-w-[350px] mobile:text-xl">
+					<p className="content-center text-8xl text-custom-white text-left ml-[150px] max-w-[450px] mobile:max-w-[350px] mobile:text-xl">
 						Busca repuestos inter
 						<span className="text-warning">nacionales</span> y
 						compara precios
-					</h1>
+					</p>
 				</div>
 			</Banner>
 			<section className="flex flex-col items-end relative bottom-8 mobile:hidden tablet:hidden">
@@ -510,11 +523,11 @@ export default function Home() {
 				extraCss={'desktop:hidden m-auto items-start h-[650px] sm:h-[750px] md:h-[750px] mobile:h-[920px]'}
 			>
 				<div className="flex justify-center">
-					<h1 className="content-center text-8xl text-custom-white text-left w-[65vw] mt-16 mobile:text-xl">
+					<p className="content-center text-8xl text-custom-white text-left w-[65vw] mt-16 mobile:text-xl">
 						Busca repuestos inter
 						<span className="text-warning">nacionales</span> y
 						compara precios
-					</h1>
+					</p>
 				</div>
 			</Banner>
 			<section

@@ -115,13 +115,9 @@ export default async function Product({ params }: { params: Promise<{ id: string
 	const discountRounded = Math.ceil(data?.discount || 0)
 	const buscoRepuestoPrice = (data?.buscorepuestosPrice || 0).toFixed(2)
 
-	const brandLabel = data.brand
-		? data.brand.charAt(0).toUpperCase() + data.brand.slice(1).toLowerCase()
-		: 'Vehículo'
-
-	const ArticleModelLabel = data.articleModel
-		? data.articleModel.charAt(0).toUpperCase() + data.articleModel.slice(1).toLowerCase()
-		: 'Vehículo'
+	const compatibilityLabel = [data.brand, data.articleModel]
+		.filter((value): value is string => Boolean(value?.trim()))
+		.join(' ')
 
 	return (
 		<>
@@ -178,11 +174,9 @@ export default async function Product({ params }: { params: Promise<{ id: string
 									<polyline points="20 6 9 17 4 12" />
 								</svg>
 								<p className="font-tertiary-font text-[2.8vw] text-green-700 font-semibold leading-snug">
-									Compatible con:{' '}
-									<span className="text-green-800 font-bold">
-										{brandLabel}
-										{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
-									</span>
+									{compatibilityLabel
+										? <>Vehículo asociado: <span className="text-green-800 font-bold">{compatibilityLabel}</span>. Confirma la compatibilidad con tu matrícula.</>
+										: 'Confirma la compatibilidad con tu matrícula antes de comprar.'}
 								</p>
 							</div>
 						</div>
@@ -246,11 +240,9 @@ export default async function Product({ params }: { params: Promise<{ id: string
 									<polyline points="20 6 9 17 4 12" />
 								</svg>
 								<p className="font-tertiary-font text-[14px] text-green-700 font-semibold leading-snug">
-									Compatible con:{' '}
-									<span className="text-green-800 font-bold">
-										{brandLabel}
-										{ArticleModelLabel !== 'Vehículo' && ` ${ArticleModelLabel}`}
-									</span>
+									{compatibilityLabel
+										? <>Vehículo asociado: <span className="text-green-800 font-bold">{compatibilityLabel}</span>. Confirma la compatibilidad con tu matrícula.</>
+										: 'Confirma la compatibilidad con tu matrícula antes de comprar.'}
 								</p>
 							</div>
 						</div>

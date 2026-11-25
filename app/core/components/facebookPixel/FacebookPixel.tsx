@@ -3,36 +3,44 @@
 import { usePathname } from 'next/navigation'
 import Script from 'next/script'
 import { useEffect, useState } from 'react'
+import { CONSENT_CHANGED_EVENT, CONSENT_STORAGE_KEY } from '../cookieConsentModal/CookieConsentModalWrapper'
 
 const FacebookPixel = () => {
     const [loaded, setLoaded] = useState(false)
+    const [hasConsent, setHasConsent] = useState(false)
     const pathname = usePathname()
 
     const pixelId = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID
 
     useEffect(() => {
-        if (!pixelId) {
-            console.warn("Facebook Pixel ID is not set in environment variables.");
+        const updateConsent = () => setHasConsent(localStorage.getItem(CONSENT_STORAGE_KEY) === 'accepted')
+        updateConsent()
+        window.addEventListener(CONSENT_CHANGED_EVENT, updateConsent)
+        return () => window.removeEventListener(CONSENT_CHANGED_EVENT, updateConsent)
+    }, [])
+
+    useEffect(() => {
+        if (!pixelId || !hasConsent) {
             return;
         }
         // Asegúrate de que el script base se cargue solo una vez
         if (!loaded) {
             setLoaded(true)
         }
-    }, [])
+    }, [hasConsent, pixelId])
 
     // Rastrear cambios de ruta para enviar eventos de "Page View"
     useEffect(() => {
-        if (!loaded || !pixelId) {
+        if (!loaded || !pixelId || !hasConsent) {
             return
         }
         
         // @ts-ignore
         window.fbq('track', 'PageView')
         
-    }, [pathname, loaded, pixelId])
+    }, [pathname, loaded, pixelId, hasConsent])
 
-    if (!pixelId) {
+    if (!pixelId || !hasConsent) {
         return null; // No renderizar nada si no hay ID
     }
 

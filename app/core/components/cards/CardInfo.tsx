@@ -10,10 +10,9 @@ export default function CardInfo(props: { title: string, image: string, href?: s
 			>
 					<Image
 						src={props.image}
-						alt="card image"
-						width={0}
-						height={0}
-						priority
+						alt={`Categoría: ${props.title.replace(/\\n/g, ' ')}`}
+						width={180}
+						height={181}
 						className={props.className}
 					/>
 				<h4 className="font-tertiary-font whitespace-pre-wrap flex items-center text-[18px] text-dark-grey font-semibold text-center flex-grow pl-3 pr-3">
