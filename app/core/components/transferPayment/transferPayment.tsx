@@ -37,11 +37,12 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 	matricula,
 	onTransferPayment,
 }) => {
-	const transferDataCaixa: TransferData = {
-		banco: 'La Caixa',
-		beneficiario: 'Finca DDM Canarias, S.L.',
-		iban: 'ES12 2100 2005 2602 0010 7904',
-		bic: 'CAIXESBBXXX',
+	const transferData: TransferData = {
+		beneficiario: 'Finca DDM Canarias S.L (Buscorepuestos.com)',
+		concepto: 'Tu nombre completo',
+		banco: 'SumUp Limited',
+		iban: 'IE42SUMU99036511765388',
+		bic: 'SUMUIE22XXX',
 	}
 	const router = useRouter()
 	const dispatch = useDispatch()
@@ -222,7 +223,7 @@ const TransferPayment: React.FC<TransferPaymentProps> = ({
 				</p>
 			</div>
 			<div className="my-6 flex flex-col gap-4">
-				{renderTransferOption(transferDataCaixa, 1)}
+				{renderTransferOption(transferData, 1)}
 			</div>
 			<div className="text-center mt-4">
 				<p>
